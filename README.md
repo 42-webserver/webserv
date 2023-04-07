@@ -15,7 +15,6 @@
 
 ## Install
 	$ make
-
 <br/><br/><br/>
 
 ## Usage
@@ -24,5 +23,9 @@
 <br/><br/><br/>
 
 ## UML diagram
+#### Class diagram
 ### ![Class diagram](./assets/Class%20diagram.png)
+<br/>
+
+#### Sequence diagram
 ### ![Sequence diagram](./assets/Sequence%20diagram.png)
