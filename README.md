@@ -3,9 +3,10 @@
 <br/><br/><br/>
 
 ## Index
-### ![Summary](Summary)
-### ![Install](Install)
-### ![UML%20diagram](UML%20diagram)
+### [Summary](#summary)
+### [Install](#install)
+### [Usage](#usage)
+### [UML diagram](#uml-diagram)
 <br/><br/><br/>
 
 ## Summary
