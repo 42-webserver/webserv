@@ -29,3 +29,7 @@
 
 ### Sequence diagram
 ### ![Sequence diagram](./assets/Sequence%20diagram.png)
+
+### 문제점
+1. 유저 authentication 구현해야하는가? (cgi가 일반적으로 함)
+2. nginx는 get요청 이외의 요청을 어떻게 처리하는가? (어케해야될지 모르겠음)
