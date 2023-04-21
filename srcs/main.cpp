@@ -14,6 +14,9 @@ int	main(int argc, char **argv) {
 
 	try {
 		config.setServers(servers);
+		for (size_t i=0; i<servers.size(); i++) {
+			std::cout << servers[i] << '\n';
+		}
 	} catch (std::exception &e) {
 		std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
 		return (GENERIC_ERR);
