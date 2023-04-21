@@ -1,6 +1,6 @@
 ---
-name: "\bTask 템플릿"
-about: "\b새로운 \bTask 등록"
+name: "Task 템플릿"
+about: "새로운 Task 등록"
 title: "[feat] 작업내용"
 labels: ''
 assignees: ''
