@@ -17,7 +17,8 @@ SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
 SRCS =	main.cpp \
-		config/Config.cpp
+		config/Config.cpp \
+		server/Server.cpp
 
 
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
@@ -51,6 +52,7 @@ ${OBJS_DIR}:
 	@echo "Build ${NAME}"
 	@mkdir -p ${OBJS_DIR}
 	@mkdir -p ${OBJS_DIR}/config
+	@mkdir -p ${OBJS_DIR}/server
 
 sanitize:
 	@${RM} ${NAME}
