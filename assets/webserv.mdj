@@ -1724,7 +1724,8 @@
 								"$ref": "AAAAAAGHWjD6gKkEu9E="
 							},
 							"name": "multimap confInfo",
-							"documentation": "config ex : \nindex index.php index.html\n\nkey -> index\nvalue -> index.php, index.html"
+							"documentation": "config ex : \nindex index.php index.html\n\nkey -> index\nvalue -> index.php, index.html",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -1733,7 +1734,8 @@
 								"$ref": "AAAAAAGHWjD6gKkEu9E="
 							},
 							"name": "vector locations",
-							"documentation": "Location의 vector"
+							"documentation": "Location의 vector",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -1742,7 +1744,8 @@
 								"$ref": "AAAAAAGHWjD6gKkEu9E="
 							},
 							"name": "map urlMappings",
-							"documentation": "url mapping 정보"
+							"documentation": "url mapping 정보",
+							"type": ""
 						}
 					]
 				},
@@ -1760,7 +1763,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGHWjProKkxjTg="
 							},
-							"name": "fd_set"
+							"name": "fd_set",
+							"type": ""
 						}
 					],
 					"operations": [
@@ -1897,7 +1901,7 @@
 													},
 													"font": "Arial;13;0",
 													"left": 32.72998046875,
-													"top": 13,
+													"top": 5,
 													"width": 110.12890625,
 													"height": 13,
 													"text": "Sequence diagram"
@@ -1910,7 +1914,7 @@
 													},
 													"font": "Arial;13;1",
 													"left": 13,
-													"top": 13,
+													"top": 5,
 													"width": 14.72998046875,
 													"height": 13,
 													"text": "sd"
@@ -1918,9 +1922,8 @@
 											],
 											"font": "Arial;13;0",
 											"left": 8,
-											"top": 8,
 											"width": 1017,
-											"height": 1161,
+											"height": 961,
 											"nameLabel": {
 												"$ref": "AAAAAAGHWlEdPnF+Loo="
 											},
@@ -2032,14 +2035,14 @@
 													"left": 148,
 													"top": 80,
 													"width": 1,
-													"height": 383
+													"height": 881
 												}
 											],
 											"font": "Arial;13;0",
 											"left": 112,
 											"top": 40,
 											"width": 72.736328125,
-											"height": 423,
+											"height": 921,
 											"nameCompartment": {
 												"$ref": "AAAAAAGHWlMk0HHA0xw="
 											},
@@ -2151,14 +2154,14 @@
 													"left": 292,
 													"top": 80,
 													"width": 1,
-													"height": 799
+													"height": 881
 												}
 											],
 											"font": "Arial;13;0",
 											"left": 256,
 											"top": 40,
 											"width": 72.736328125,
-											"height": 839,
+											"height": 921,
 											"nameCompartment": {
 												"$ref": "AAAAAAGHWlOEF3Hh9LA="
 											},
@@ -2504,14 +2507,14 @@
 													"left": 545,
 													"top": 236,
 													"width": 1,
-													"height": 485
+													"height": 725
 												}
 											],
 											"font": "Arial;13;0",
 											"left": 488,
 											"top": 196,
 											"width": 114.67529296875,
-											"height": 525,
+											"height": 765,
 											"nameCompartment": {
 												"$ref": "AAAAAAGHWmE4TXQDKgs="
 											},
@@ -3415,14 +3418,14 @@
 													"left": 637,
 													"top": 628,
 													"width": 1,
-													"height": 496
+													"height": 333
 												}
 											],
 											"font": "Arial;13;0",
 											"left": 584,
 											"top": 588,
 											"width": 105.26171875,
-											"height": 536,
+											"height": 373,
 											"nameCompartment": {
 												"$ref": "AAAAAAGHWoB9V3ao55w="
 											},
@@ -3783,14 +3786,14 @@
 													"left": 820,
 													"top": 80,
 													"width": 1,
-													"height": 1033
+													"height": 881
 												}
 											],
 											"font": "Arial;13;0",
 											"left": 784,
 											"top": 40,
 											"width": 72.736328125,
-											"height": 1073,
+											"height": 921,
 											"nameCompartment": {
 												"$ref": "AAAAAAGHWobmaHeDR7U="
 											},

@@ -21,8 +21,11 @@ private:
 
 public:
     HttpRequest();
-    ~HttpRequest();
-
+    void setBody(std::string body);
+    void setHost(std::string host);
+    void addHeader(std::string header);
+    void setStartLine(std::string line);
+    std::string getProtocol();
 };
 
 #endif
