@@ -1,5 +1,18 @@
 #include "HttpStatus.hpp"
 
+HttpStatus::HttpStatusNotValidException::HttpStatusNotValidException(std::string message)
+{
+    this->_message = message.c_str();
+}
+
+HttpStatus::HttpStatusNotValidException::HttpStatusNotValidException(){
+    this->_message = "Status code not valid";
+}
+
+const char *HttpStatus::HttpStatusNotValidException::what() const throw(){
+    return this->_message;
+}
+
 int HttpStatus::getStatusCode(HttpStatusCode code)
 {
     if (code == CONTINUE)
@@ -86,10 +99,12 @@ int HttpStatus::getStatusCode(HttpStatusCode code)
         return 505;
     else if (code == INSUFFICIENT_STORAGE)
         return 507;
+    throw HttpStatus::HttpStatusNotValidException();
 }
 
 std::string HttpStatus::getReasonPhrase(HttpStatusCode code)
 {
+
     if (code == CONTINUE)
         return "Continue";
     else if (code == SWITCHING_PROTOCOLS)
@@ -174,5 +189,5 @@ std::string HttpStatus::getReasonPhrase(HttpStatusCode code)
         return "HTTP Version Not Supported";
     else if (code == INSUFFICIENT_STORAGE)
         return "Insufficient Storage";
-
+    throw HttpStatus::HttpStatusNotValidException();
 }

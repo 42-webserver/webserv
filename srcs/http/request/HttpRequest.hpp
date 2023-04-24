@@ -23,10 +23,19 @@ public:
     void setBody(const std::string & body);
     void addHeader(const std::string & header);
     void setStartLine(std::string line);
+    std::string getMethod();
+    std::string getUri();
+    std::string getVersion();
+    std::string getBody();
+    std::string getProtocol();
+    std::multimap<std::string, std::string> getHeaders();
+    std::map<std::string, std::string> getQueries();
+    std::map<std::string, std::string> getCookies();
 
 private:
     void setQuery(std::string & uri);
     void setCookie(std::string & cookie);
+    bool esacpeComma(std::string & value);
     void handleMultipleValueHeader(std::string & value, std::string & key);
 };
 

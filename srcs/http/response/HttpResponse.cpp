@@ -23,22 +23,22 @@ void HttpResponse::setStatusCode(HttpStatusCode code)
     this->_statusCode = code;
 }
 
-const std::string &HttpResponse::getVersion()
+std::string HttpResponse::getVersion()
 {
     return (std::string &)this->_version;
 }
 
-const std::string &HttpResponse::getBody()
+std::string HttpResponse::getBody()
 {
     return (std::string &)this->_body;
 }
 
-const std::string &HttpResponse::getProtocol()
+std::string HttpResponse::getProtocol()
 {
     return (std::string &)this->_protocol;
 }
 
-const std::string &HttpResponse::getReasonPhrase()
+std::string HttpResponse::getReasonPhrase()
 {
     return HttpStatus::getReasonPhrase(this->_statusCode);
 }

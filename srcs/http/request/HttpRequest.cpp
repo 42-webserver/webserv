@@ -1,5 +1,8 @@
 #include "HttpRequest.hpp"
 
+HttpRequest::HttpRequest()
+{
+}
 
 void HttpRequest::setBody(const std::string & body)
 {
@@ -26,9 +29,20 @@ void HttpRequest::handleMultipleValueHeader(std::string & value, std::string & k
 
     while (value.find(", ") != std::string::npos)
     {
+        if (key == "User-Agent")
+            break;
         pos = value.find(", ");
         this->_headers.insert(std::pair<std::string, std::string>(key, value.substr(0, pos)));
         value.erase(0, pos + 2);
+    }
+
+    while (value.find(",") != std::string::npos)
+    {
+        if (key == "User-Agent")
+            break;
+        pos = value.find(",");
+        this->_headers.insert(std::pair<std::string, std::string>(key, value.substr(0, pos)));
+        value.erase(0, pos + 1);
     }
     this->_headers.insert(std::pair<std::string, std::string>(key, value));
 }
@@ -64,8 +78,9 @@ void HttpRequest::setStartLine(std::string line)
     if (this->_uri.find("?") != std::string::npos)
         setQuery(this->_uri);
     line.erase(0, pos + 1);
-    this->_version = line.substr(0, line.find("\r\n"));
-    line.erase(0, line.find("\r\n") + 2);
+    this->_protocol = line.substr(0, line.find("/"));
+    line.erase(0, line.find("/") + 1);
+    this->_version = line;
 }
 
 void HttpRequest::setQuery(std::string & uri)
@@ -85,4 +100,44 @@ void HttpRequest::setQuery(std::string & uri)
     key = query.substr(0, query.find("="));
     value = query.substr(query.find("=") + 1);
     this->_queries.insert(std::pair<std::string, std::string>(key, value));
+}
+
+std::string HttpRequest::getMethod()
+{
+    return this->_method;
+}
+
+std::string HttpRequest::getUri()
+{
+    return this->_uri;
+}
+
+std::string HttpRequest::getVersion()
+{
+    return this->_version;
+}
+
+std::string HttpRequest::getBody()
+{
+    return this->_body;
+}
+
+std::string HttpRequest::getProtocol()
+{
+    return this->_protocol;
+}
+
+std::multimap<std::string, std::string> HttpRequest::getHeaders()
+{
+    return this->_headers;
+}
+
+std::map<std::string, std::string> HttpRequest::getQueries()
+{
+    return this->_queries;
+}
+
+std::map<std::string, std::string> HttpRequest::getCookies()
+{
+    return this->_cookies;
 }

@@ -4,14 +4,13 @@
 #include <string>
 #include "../request/HttpRequest.hpp"
 #include "../response/HttpResponse.hpp"
+#include <sstream>
 
 class HttpParser
 {
 
 public:
     HttpParser();
-    ~HttpParser();
-
     HttpRequest &parseRequest(std::string &request);
     std::string &parseResponse(HttpResponse &response);
 };
