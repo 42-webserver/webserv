@@ -1,10 +1,10 @@
-#include "parser/HttpParser.hpp"
-#include "request/HttpRequest.hpp"
-#include "response/HttpResponse.hpp"
+#include "../parser/HttpParser.hpp"
+#include "../request/HttpRequest.hpp"
+#include "../response/HttpResponse.hpp"
 #include <iostream>
 
 int main(){
-    std::string request = "GET / HTTP/1.1\r\n"
+    std::string request = "GET /?car=asd HTTP/1.1\r\n"
                           "Host: localhost:8080\r\n"
                           "Connection: keep-alive\r\n"
                           "Cache-Control: max-age=0\r\n"

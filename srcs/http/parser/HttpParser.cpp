@@ -32,13 +32,16 @@ HttpRequest & HttpParser::parseRequest(std::string &request){
 
 std::string &HttpParser::parseResponse(HttpResponse &response){
     std::string *str = new std::string();
-    std::string key;
-    std::string value;
+    std::string key, value;
     std::multimap<std::string, std::string>::const_iterator it; 
+    std::stringstream ss;
 
+    ss << response.getStatusCode();
+    *str += response.getProtocol();
+    *str += "/";
     *str += response.getVersion();
     *str += " ";
-    *str += response.getStatusCode();
+    *str += ss.str();
     *str += " ";
     *str += response.getReasonPhrase();
     *str += "\r\n";

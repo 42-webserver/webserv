@@ -4,6 +4,7 @@
 #include <string>
 #include "../request/HttpRequest.hpp"
 #include "../response/HttpResponse.hpp"
+#include <sstream>
 
 class HttpParser
 {
