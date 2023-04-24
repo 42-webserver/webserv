@@ -16,9 +16,14 @@ INCS_DIR	= incs
 SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
-SRCS =	main.cpp \
+SRCS =	http/RequestTest.cpp \
 		config/Config.cpp \
-		server/Server.cpp
+		server/Server.cpp \
+		http/parser/HttpParser.cpp \
+		http/request/HttpRequest.cpp \
+		http/response/HttpResponse.cpp \
+		http/utils/HttpStatus.cpp \
+
 
 
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
@@ -53,6 +58,11 @@ ${OBJS_DIR}:
 	@mkdir -p ${OBJS_DIR}
 	@mkdir -p ${OBJS_DIR}/config
 	@mkdir -p ${OBJS_DIR}/server
+	@mkdir -p ${OBJS_DIR}/http
+	@mkdir -p ${OBJS_DIR}/http/parser
+	@mkdir -p ${OBJS_DIR}/http/request
+	@mkdir -p ${OBJS_DIR}/http/response
+	@mkdir -p ${OBJS_DIR}/http/utils
 
 sanitize:
 	@${RM} ${NAME}

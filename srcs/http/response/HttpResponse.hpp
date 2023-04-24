@@ -17,14 +17,13 @@ private:
 
 public:
     HttpResponse();
-    ~HttpResponse();
     void setBody(const std::string & body);
     void addHeader(const std::string & key, const std::string & value);
     void setStatusCode(HttpStatusCode code);
-    const std::string &getVersion();
-    const std::string &getBody();
-    const std::string &getProtocol();
-    const std::string &getReasonPhrase();
+    std::string getVersion();
+    std::string getBody();
+    std::string getProtocol();
+    std::string getReasonPhrase();
     int getStatusCode();
     const std::multimap<std::string, std::string> &getHeaders() const;
 };

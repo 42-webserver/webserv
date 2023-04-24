@@ -1,4 +1,5 @@
-
+#ifndef HTTPSTATUS_HPP
+#define HTTPSTATUS_HPP
 #include <string>
 
 typedef enum HttpStatusCode{
@@ -51,4 +52,17 @@ class HttpStatus{
 public:
     static int getStatusCode(HttpStatusCode code);
     static std::string getReasonPhrase(HttpStatusCode code);
+
+    class HttpStatusNotValidException : public std::exception{
+    private:
+    const char *_message;
+
+    public:
+    HttpStatusNotValidException();
+    HttpStatusNotValidException(std::string message);
+    virtual const char * what () const throw();;
+    };
+    
 };
+
+#endif
