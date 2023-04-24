@@ -12,7 +12,6 @@ private:
     std::string _version;
     std::string _body;
     std::string _protocol;
-    std::string _host;
 
     std::multimap<std::string, std::string> _headers;
     std::map<std::string, std::string> _queries;
@@ -21,11 +20,14 @@ private:
 
 public:
     HttpRequest();
-    void setBody(std::string body);
-    void setHost(std::string host);
-    void addHeader(std::string header);
+    void setBody(const std::string & body);
+    void addHeader(const std::string & header);
     void setStartLine(std::string line);
-    std::string getProtocol();
+
+private:
+    void setQuery(std::string & uri);
+    void setCookie(std::string & cookie);
+    void handleMultipleValueHeader(std::string & value, std::string & key);
 };
 
 #endif
