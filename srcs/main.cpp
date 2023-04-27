@@ -13,7 +13,7 @@ int	main(int argc, char **argv) {
 	std::vector<Server>	servers;
 
 	try {
-		config.setServers(servers);
+		config.initServers(servers);
 		for (size_t i=0; i<servers.size(); i++) {
 			std::cout << servers[i] << '\n';
 		}
