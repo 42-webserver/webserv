@@ -43,6 +43,11 @@ bool	Server::setCgiPass(const std::string &cgi_pass) {
 	return (true);
 }
 
+bool	Server::setIndex(const std::string &index) {
+	this->_indexes.push_back(index);
+	return (true);
+}
+
 //bool	Server::setCgiExtension(const std::string &cgi_extension) {
 //	this->_cgi_extension = cgi_extension;
 //	return (true);

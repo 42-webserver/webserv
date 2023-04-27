@@ -10,7 +10,7 @@ private:
     std::string _method;
     std::string _uri;
     std::string _version;
-    std::string _body;
+    std::string *_body;
     std::string _protocol;
 
     std::multimap<std::string, std::string> _headers;
@@ -20,13 +20,14 @@ private:
 
 public:
     HttpRequest();
-    void setBody(const std::string & body);
+    ~HttpRequest();
+    void setBody( std::string * body);
     void addHeader(const std::string & header);
     void setStartLine(std::string line);
     std::string getMethod();
     std::string getUri();
     std::string getVersion();
-    std::string getBody();
+    std::string *getBody();
     std::string getProtocol();
     std::multimap<std::string, std::string> getHeaders();
     std::map<std::string, std::string> getQueries();
