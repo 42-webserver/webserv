@@ -1,57 +1,88 @@
 #include "../../incs/config/Config.hpp"
 
+// Static
+const std::string	Config::LISTEN = "listen";
+const std::string	Config::PORT = "port";
+const std::string	Config::SERVER_NAME = "server_name";
+const std::string	Config::ROOT = "root";
+const std::string	Config::INDEX = "index";
+const std::string	Config::CLIENT_MAX_BODY_SIZE = "client_max_body_size";
+const std::string	Config::CGI_PASS = "cgi_pass";
+
 Config::Config(const char *file_name): _file_name(file_name) {}
 Config::~Config(void) {}
 
 // Util
-bool	Config::setServer(Server &server, std::ifstream &infile) const throw(std::exception){
-	std::string	token;
+std::map< std::string, std::vector< std::string > >	Config::getConfigMap(std::ifstream &infile) const throw(std::exception) {
+	std::map< std::string, std::vector< std::string > >	ret;
+	std::string											token;
 
-	infile >> token;
-	if (token != "{") {
+	if (!(infile >> token) || token != "{") {
 		throw (Config::InvalidSyntaxException());
 	}
 
 	while (infile >> token) {
-		if (token == "listen") {
-			infile >> token;
-			if (token == "80;") {
-				server.setPort(80);
-			} else if (token == "443;") {
-				server.setPort(443);
-			} else {
+		if (token == "}") {
+			break ;
+		} else if (token == Config::LISTEN) {
+			if (!(infile >> token) || token.back() != ';') {
 				throw (Config::InvalidSyntaxException());
 			}
-		} else if (token == "server_name") {
-			while (infile >> token && token.back() != ';') {
-				server.pushName(token);
+
+			ret[Config::PORT] = std::vector<std::string>(1, token.substr(0, token.length() - 1));
+		} else if (token == Config::SERVER_NAME) {
+			ret[Config::SERVER_NAME] = std::vector<std::string>();
+
+			while (infile >> token) {
+				ret[Config::SERVER_NAME].push_back(token.substr(0, token.find(';')));
+
+				if (token.back() == ';') {
+					break ;
+				}
 			}
-			server.pushName(token.substr(0, token.size()-1));
-		} else if (token == "client_max_body_size") {
-			infile >> token;
-			server.setClientMaxBodySize(std::stoi(token.substr(0, token.size()-1)));
-			//TODO: calculate unit size
-		} else if (token == "root") {
-			infile >> token;
-			server.setRoot(token.substr(0, token.size()-1));
-		} else if (token == "index") {
-			while (infile >> token && token.back() != ';') {
-				server.pushIndex(token);
+		} else if (token == Config::ROOT) {
+			if (!(infile >> token) || token.back() != ';') {
+				throw (Config::InvalidSyntaxException());
 			}
-			server.pushIndex(token.substr(0, token.size()-1));
-		} else if (token == "cgi_pass") {
-			infile >> token;
-			server.setCgiPass(token.substr(0, token.size()-1));
-		} else if (token == "}") {
-			break ;
+
+			ret[Config::ROOT] = std::vector<std::string>(1, token.substr(0, token.length() - 1));
+		} else if (token == Config::INDEX) {
+			ret[Config::INDEX] = std::vector<std::string>();
+
+			while (infile >> token) {
+				ret[Config::INDEX].push_back(token.substr(0, token.find(';')));
+
+				if (token.back() == ';') {
+					break ;
+				}
+			}
+		} else if (token == Config::CLIENT_MAX_BODY_SIZE) {
+			if (!(infile >> token) || token.back() != ';') {
+				throw (Config::InvalidSyntaxException());
+			}
+
+			ret[Config::CLIENT_MAX_BODY_SIZE] = std::vector<std::string>(1, token.substr(0, token.length() - 1));
+		} else if (token == Config::CGI_PASS) {
+			if (!(infile >> token) || token.back() != ';') {
+				throw (Config::InvalidSyntaxException());
+			}
+
+			ret[Config::CGI_PASS] = std::vector<std::string>(1, token.substr(0, token.length() - 1));
 		} else {
-			throw (Config::UnknownException());
+			throw (Config::InvalidSyntaxException());
 		}
 	}
-	return (true);
+
+	for (std::map< std::string, std::vector< std::string > >::iterator it = ret.begin(); it != ret.end(); it++) {
+		if (it->second.size() == 0) {
+			throw (Config::NotEnoughArgumentsException());
+		}
+	}
+
+	return (ret);
 }
 
-bool	Config::setServers(std::vector<Server> &servers) const throw(std::exception) {
+bool	Config::initServers(std::vector<Server> &servers) const throw(std::exception) {
 	std::ifstream	infile(this->_file_name);
 	std::string		token;
 
@@ -64,16 +95,17 @@ bool	Config::setServers(std::vector<Server> &servers) const throw(std::exception
 			throw (Config::InvalidSyntaxException());
 		}
 
-		Server	server;
-
 		try {
-			this->setServer(server, infile);
-		} catch (Config::InvalidSyntaxException &e) {
+			servers.push_back(Server(this->getConfigMap(infile)));
+		} catch (const Config::InvalidSyntaxException &e) {
+			throw (e);
+		} catch (const Server::InvalidPortException &e) {
+			throw (e);
+		} catch (const Server::InvalidClientMaxBodySizeException &e) {
 			throw (e);
 		} catch (...) {
 			throw (Config::UnknownException());
 		}
-		servers.push_back(server);
 	}
 	return (true);
 }
@@ -81,4 +113,5 @@ bool	Config::setServers(std::vector<Server> &servers) const throw(std::exception
 // Exception
 const char	*Config::FailToOpenFileException::what() const throw() { return ("Fail to open file"); }
 const char	*Config::InvalidSyntaxException::what() const throw() { return ("Invalid syntax"); }
+const char	*Config::NotEnoughArgumentsException::what() const throw() { return ("Not enough arguments"); }
 const char	*Config::UnknownException::what() const throw() { return ("Unknown Exception"); }

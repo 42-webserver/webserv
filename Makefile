@@ -16,7 +16,7 @@ INCS_DIR	= incs
 SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
-SRCS =	http/test/GetTest.cpp \
+SRCS =	main.cpp \
 		config/Config.cpp \
 		server/Server.cpp \
 		http/parser/HttpParser.cpp \
