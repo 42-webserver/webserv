@@ -18,9 +18,8 @@ Server::Server(const std::map< std::string, std::vector< std::string > > &config
 }
 Server::~Server(void) {}
 
-// Getters
 const std::string				&Server::getDefaultErrPage(void) { return (_default_err_page); }
-int								Server::getPort(void) const { return (_port); }
+int				 				Server::getPort(void) const { return (_port); }
 const std::vector<std::string>	&Server::getNames(void) const { return (_names); }
 int								Server::getClientMaxBodySize(void) const { return (_client_max_body_size); }
 const std::string				&Server::getRoot(void) const { return (_root); }
