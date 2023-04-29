@@ -1,4 +1,4 @@
-#include "HttpRequestHandler.hpp"
+#include "../../../incs/http/handler/HttpRequestHandler.hpp"
 
 HttpRequestHandler::HttpRequestHandler(){}
 
@@ -6,7 +6,7 @@ HttpResponse * HttpRequestHandler::handle(HttpRequest *request, Server *server)
 {
     if(isAllowdMethod(request->getMethod()) == false)
         return methodNotAllowed();
-    else if (request->getMethod() == HTTP_METHOD_GET)
+    else if (request->getMethod() == HTTP_METHOD::GET)
         return handleGet(request, server);
     else
         return methodNotAllowed();
@@ -95,7 +95,7 @@ std::string * HttpRequestHandler::getRequestPage(HttpRequest *request, Server *s
 
 bool HttpRequestHandler::isAllowdMethod(std::string method)
 {
-    if (method == HTTP_METHOD_GET)
+    if (method == HTTP_METHOD::GET)
         return true;
     return false;
  /*

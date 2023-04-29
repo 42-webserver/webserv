@@ -1,4 +1,4 @@
-#include "ErrorPageHandler.hpp"
+#include "../../../incs/http/handler/ErrorPageHandler.hpp"
 
 std::string * ErrorPageHandler::getErrorPage(HttpStatusCode status)
 {
