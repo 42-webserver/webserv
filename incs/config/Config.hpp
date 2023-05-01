@@ -24,6 +24,8 @@ class Config {
 	private:
 		std::string	_file_name;
 
+		// TODO: Validate file name (extension)
+
 		map		getConfigMap(std::ifstream &infile) const throw(std::exception);
 		bool	initConfigMap(map &config_map) const;
 
