@@ -18,21 +18,24 @@ OBJS_DIR	= objs
 
 SRCS =	main.cpp \
 		config/Config.cpp \
+		http/handler/ErrorPageHandler.cpp \
+		http/handler/HttpRequestHandler.cpp \
 		http/parser/HttpParser.cpp \
 		http/request/HttpRequest.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \
+		http/utils/Cookie.cpp \
 		kqueue/Kqueue.cpp \
 		server/Server.cpp \
 		socket/Socket.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/config \
 				${OBJS_DIR}/http \
+				${OBJS_DIR}/http/handler \
 				${OBJS_DIR}/http/parser \
 				${OBJS_DIR}/http/request \
 				${OBJS_DIR}/http/response \
 				${OBJS_DIR}/http/utils \
-				${OBJS_DIR}/http/test \
 				${OBJS_DIR}/kqueue \
 				${OBJS_DIR}/server \
 				${OBJS_DIR}/socket

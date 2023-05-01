@@ -1,12 +1,20 @@
-#include "HttpRequest.hpp"
+#include "../../../incs/http/request/HttpRequest.hpp"
+
 
 HttpRequest::HttpRequest()
 {
+    this->_body = NULL;
 }
 
-void HttpRequest::setBody(const std::string & body)
+HttpRequest::~HttpRequest()
 {
-    _body = body;
+    if(this->_body != NULL)
+        delete _body;
+}
+
+void HttpRequest::setBody( std::string * body)
+{
+    this->_body = body;
 }
 
 void HttpRequest::addHeader(const std::string & header)
@@ -117,7 +125,7 @@ std::string HttpRequest::getVersion()
     return this->_version;
 }
 
-std::string HttpRequest::getBody()
+std::string *HttpRequest::getBody()
 {
     return this->_body;
 }

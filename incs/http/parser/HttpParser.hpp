@@ -11,8 +11,8 @@ class HttpParser
 
 public:
     HttpParser();
-    HttpRequest &parseRequest(std::string &request);
-    std::string &parseResponse(HttpResponse &response);
+    HttpRequest *parseRequest(std::string *request);
+    std::string *parseResponse(HttpResponse *response);
 };
 
 #endif

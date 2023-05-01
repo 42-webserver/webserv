@@ -1,4 +1,4 @@
-#include "HttpResponse.hpp"
+#include "../../../incs/http/response/HttpResponse.hpp"
 
 
 HttpResponse::HttpResponse()
@@ -6,11 +6,24 @@ HttpResponse::HttpResponse()
     this->_version = "1.1";
     this->_protocol = "HTTP";
     this->setStatusCode(OK);
+    this->_body = NULL;
 }
 
-void HttpResponse::setBody(const std::string & body)
+HttpResponse::~HttpResponse()
+{
+    if(this->_body != NULL)
+        delete _body;
+}
+
+void HttpResponse::setBody(std::string * body)
 {
     this->_body = body;
+}
+
+void HttpResponse::addCookie(const std::string & key, const std::string & value)
+{
+    Cookie cookie(key, value);
+    this->_cookies.push_back(cookie);
 }
 
 void HttpResponse::addHeader(const std::string & key, const std::string & value)
@@ -28,9 +41,14 @@ std::string HttpResponse::getVersion()
     return (std::string &)this->_version;
 }
 
-std::string HttpResponse::getBody()
+std::string *HttpResponse::getBody()
 {
-    return (std::string &)this->_body;
+    return this->_body;
+}
+
+const std::vector<Cookie> &HttpResponse::getCookies() const
+{
+    return (std::vector<Cookie> &)this->_cookies;
 }
 
 std::string HttpResponse::getProtocol()

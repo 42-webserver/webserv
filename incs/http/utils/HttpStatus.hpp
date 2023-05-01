@@ -60,7 +60,7 @@ public:
     public:
     HttpStatusNotValidException();
     HttpStatusNotValidException(std::string message);
-    virtual const char * what () const throw();;
+    virtual const char * what () const throw();
     };
     
 };
