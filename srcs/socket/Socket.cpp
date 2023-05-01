@@ -6,7 +6,7 @@
 Socket::Socket(void) {}
 Socket::Socket(int port) {
 	if ((this->_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-		throw (Socket::SocketCreationErrorException());
+		throw (Socket::FailToCreateException());
 	}
 	this->_addr.sin_family = AF_INET;
 	this->_addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -26,21 +26,34 @@ Socket	&Socket::operator=(const Socket &rhs) {
 int		Socket::getFd(void) const { return (this->_fd); }
 
 // Utils
-bool	Socket::bind(void) {
+bool	Socket::bind(void) throw(std::exception) {
 	if (::bind(this->_fd, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1) {
-		throw (Socket::SocketBindErrorException());
+		throw (Socket::FailToBindException());
 	}
 	return (true);
 }
 
-bool	Socket::listen(void) {
+bool	Socket::listen(void) throw(std::exception) {
 	if (::listen(this->_fd, 5) == -1) {
-		throw (Socket::SocketListenErrorException());
+		throw (Socket::FailToListenException());
 	}
 	return (true);
+}
+
+int	Socket::accept(void) throw(std::exception) {
+	int					client_fd;
+	struct sockaddr_in	client_addr;
+	socklen_t			client_addr_len;
+
+	client_addr_len = sizeof(client_addr);
+	if ((client_fd = ::accept(this->_fd, (struct sockaddr *)&client_addr, &client_addr_len)) == -1) {
+		throw (Socket::FailToAcceptException());
+	}
+	return (client_fd);
 }
 
 // Exception
-const char	*Socket::SocketCreationErrorException::what(void) const throw() { return ("Socket creation error"); }
-const char	*Socket::SocketBindErrorException::what(void) const throw() { return ("Socket bind error"); }
-const char	*Socket::SocketListenErrorException::what(void) const throw() { return ("Socket listen error"); }
+const char	*Socket::FailToCreateException::what(void) const throw() { return ("Fail to create socket"); }
+const char	*Socket::FailToBindException::what(void) const throw() { return ("Fail to bind socket"); }
+const char	*Socket::FailToListenException::what(void) const throw() { return ("Fail to listen socket"); }
+const char	*Socket::FailToAcceptException::what(void) const throw() { return ("Fail to accept socket"); }
