@@ -20,15 +20,43 @@ class Kqueue {
 		~Kqueue(void);
 		Kqueue(const Kqueue &ref);
 		Kqueue	&operator=(const Kqueue &rhs);
+
+	// Setters
+	bool	setEvent(int fd, int filter, int flags, void *udata) throw(std::exception);
+
+	// Util
+	public:
+		int	getEventCount(void);
+		int	getEventFd(int idx) const throw(std::exception);
 	
 	// Exception
 	public:
-		class KqueueCreationErrorException: public std::exception {
+		class FailToCreateException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
 
-		class KqueueControlErrorException: public std::exception {
+		class FailToControlException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class InvalidParameterException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class FailToGetEventCountException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class TimeoutException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class OutOfRangeException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
