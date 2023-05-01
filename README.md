@@ -18,7 +18,7 @@
 <br/><br/><br/>
 
 ## Usage
-	$ ./webserv conf
+	$ ./webserv /path_to_conf/default.conf
 * Information about configuration file
 <br/><br/><br/>
 
