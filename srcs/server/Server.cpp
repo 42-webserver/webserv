@@ -117,8 +117,6 @@ bool	Server::init(void) throw(std::exception) {
 		
 		if (event_count == -1) {
 			throw (Kqueue::FailToGetEventCountException());
-		} else if (event_count == 0) {
-			throw (Kqueue::TimeoutException());
 		}
 
 		for (int i=0; i<event_count; i++) {
