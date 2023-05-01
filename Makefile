@@ -18,13 +18,24 @@ OBJS_DIR	= objs
 
 SRCS =	main.cpp \
 		config/Config.cpp \
-		server/Server.cpp \
 		http/parser/HttpParser.cpp \
 		http/request/HttpRequest.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \
+		kqueue/Kqueue.cpp \
+		server/Server.cpp \
+		socket/Socket.cpp \
 
-
+OBJS_SUBDIR = 	${OBJS_DIR}/config \
+				${OBJS_DIR}/http \
+				${OBJS_DIR}/http/parser \
+				${OBJS_DIR}/http/request \
+				${OBJS_DIR}/http/response \
+				${OBJS_DIR}/http/utils \
+				${OBJS_DIR}/http/test \
+				${OBJS_DIR}/kqueue \
+				${OBJS_DIR}/server \
+				${OBJS_DIR}/socket
 
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
 OBJS := ${SRCS:${SRCS_DIR}/%.cpp=${OBJS_DIR}/%.o}
@@ -55,15 +66,7 @@ ${OBJS_DIR}/%.o: ${SRCS_DIR}/%.cpp | ${OBJS_DIR}
 
 ${OBJS_DIR}:
 	@echo "Build ${NAME}"
-	@mkdir -p ${OBJS_DIR}
-	@mkdir -p ${OBJS_DIR}/config
-	@mkdir -p ${OBJS_DIR}/server
-	@mkdir -p ${OBJS_DIR}/http
-	@mkdir -p ${OBJS_DIR}/http/parser
-	@mkdir -p ${OBJS_DIR}/http/request
-	@mkdir -p ${OBJS_DIR}/http/response
-	@mkdir -p ${OBJS_DIR}/http/utils
-	@mkdir -p ${OBJS_DIR}/http/test
+	@mkdir -p ${OBJS_SUBDIR}
 
 sanitize:
 	@${RM} ${NAME}
