@@ -24,7 +24,8 @@ class Server {
 		//std::string					_cgi_extension;
 		//std::string					_cgi_path;
 		//TODO: routing rules (location, redirect)
-	
+
+	// Static	
 	private:
 		static bool						_is_valid_port(int port);
 		static bool						_is_valid_client_max_body_size(int client_max_body_size);
@@ -32,6 +33,12 @@ class Server {
 	private:
 		Socket							_socket;
 		Kqueue							_kqueue;
+
+	// Utils
+	private:
+		int	accept(void) throw(std::exception);
+		int	read(int event_fd);
+		int	send(int event_fd);
 
 	// Constructor & Destructor
 	public:
@@ -67,6 +74,16 @@ class Server {
 		};
 
 		class UnknownErrorException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class FailToReadException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class FailToSendException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};

@@ -1,5 +1,6 @@
 #include "../../incs/server/Server.hpp"
 #include "../../incs/config/Config.hpp"
+#include <unistd.h>
 
 Server::Server(const Config::map &config_map) throw(std::exception):
 	_port(std::atoi(config_map.find(Config::PORT)->second[0].c_str())),
@@ -21,10 +22,10 @@ Server::Server(const Config::map &config_map) throw(std::exception):
 	try {
 		this->_socket = Socket(this->_port);
 		this->_kqueue = Kqueue(this->_socket.getFd());
-	} catch (const Socket::SocketCreationErrorException &e) {
-		throw (Socket::SocketCreationErrorException());
-	} catch (const Kqueue::KqueueCreationErrorException &e) {
-		throw (Kqueue::KqueueCreationErrorException());
+	} catch (const Socket::FailToCreateException &e) {
+		throw (Socket::FailToCreateException());
+	} catch (const Kqueue::FailToCreateException &e) {
+		throw (Kqueue::FailToCreateException());
 	} catch (...) {
 		throw (Server::UnknownErrorException());
 	}
@@ -34,6 +35,60 @@ Server::~Server(void) {}
 // Static
 bool	Server::_is_valid_port(int port) { return (0 <= port && port <= 65535); }
 bool	Server::_is_valid_client_max_body_size(int client_max_body_size) { return (0 <= client_max_body_size); }
+
+// Utils
+int	Server::accept(void) throw(std::exception) {
+	int	client_fd;
+
+	try {
+		client_fd = this->_socket.accept();
+		this->_kqueue.setEvent(client_fd, EVFILT_READ, EV_ADD, 0);
+		if (this->_kqueue.getEventCount() == -1) {
+			throw (Kqueue::FailToControlException());
+		}
+	} catch (const Socket::FailToAcceptException &e) {
+		throw (Socket::FailToAcceptException());
+	} catch (const Kqueue::FailToControlException &e) {
+		throw (Kqueue::FailToControlException());
+	} catch (...) {
+		throw (Server::UnknownErrorException());
+	}
+	return (true);
+}
+
+int Server::read(int event_fd) {
+	int		read_size;
+	char	buf[1024];
+
+	try {
+		read_size = ::read(event_fd, buf, 1024);
+		if (read_size == -1) {
+			throw (Server::FailToReadException());
+		}
+	} catch (const Server::FailToReadException &e) {
+		throw (Server::FailToReadException());
+	} catch (...) {
+		throw (Server::UnknownErrorException());
+	}
+	return (read_size);
+}
+
+int Server::send(int event_fd) {
+	int		send_size;
+	char	response[1024] = "HTTP/1.1 200 OK\r\nContent-Length: 12\r\n\r\nHello World!";
+
+	try {
+		send_size = ::send(event_fd, response, 1024, 0);
+		if (send_size == -1) {
+			throw (Server::FailToSendException());
+		}
+	} catch (const Server::FailToSendException &e) {
+		throw (Server::FailToSendException());
+	} catch (...) {
+		throw (Server::UnknownErrorException());
+	}
+	return (send_size);
+}
 
 // Getters
 const std::string				&Server::getDefaultErrorPage(void) const { return (this->_default_error_page); }
@@ -49,12 +104,52 @@ bool	Server::init(void) throw(std::exception) {
 	try {
 		this->_socket.bind();
 		this->_socket.listen();
-	} catch (const Socket::SocketBindErrorException &e) {
-		throw (Socket::SocketBindErrorException());
-	} catch (const Socket::SocketListenErrorException &e) {
-		throw (Socket::SocketListenErrorException());
+	} catch (const Socket::FailToBindException &e) {
+		throw (Socket::FailToBindException());
+	} catch (const Socket::FailToListenException &e) {
+		throw (Socket::FailToListenException());
 	} catch (...) {
 		throw (Server::UnknownErrorException());
+	}
+
+	while (true) {
+		int	event_count = this->_kqueue.getEventCount();
+		
+		if (event_count == -1) {
+			throw (Kqueue::FailToGetEventCountException());
+		} else if (event_count == 0) {
+			throw (Kqueue::TimeoutException());
+		}
+
+		for (int i=0; i<event_count; i++) {
+			int	event_fd = this->_kqueue.getEventFd(i);
+			int	client_fd, read_size, send_size;
+
+			if (event_fd == this->_socket.getFd()) {
+				try {
+					client_fd = this->accept();
+				} catch (const Socket::FailToAcceptException &e) {
+					throw (Socket::FailToAcceptException());
+				} catch (const Kqueue::FailToControlException &e) {
+					throw (Kqueue::FailToControlException());
+				} catch (...) {
+					throw (Server::UnknownErrorException());
+				}
+			} else {
+				try {
+					read_size = this->read(event_fd);
+					send_size = this->send(event_fd);
+					close(event_fd);
+				} catch (const Server::FailToReadException &e) {
+					throw (Server::FailToReadException());
+				} catch (const Server::FailToSendException &e) {
+					throw (Server::FailToSendException());
+				} catch (...) {
+					throw (Server::UnknownErrorException());
+				}
+			}
+			(void) client_fd, (void) read_size, (void) send_size;
+		}
 	}
 	return (true);
 }
@@ -81,3 +176,5 @@ std::ostream	&operator<<(std::ostream &os, const Server &rhs) {
 const char	*Server::InvalidPortException::what(void) const throw() { return ("Invalid port"); }
 const char	*Server::InvalidClientMaxBodySizeException::what(void) const throw() { return ("Invalid client_max_body_size"); }
 const char	*Server::UnknownErrorException::what(void) const throw() { return ("Unknown error"); }
+const char	*Server::FailToReadException::what(void) const throw() { return ("Fail to read"); }
+const char	*Server::FailToSendException::what(void) const throw() { return ("Fail to send"); }
