@@ -23,22 +23,28 @@ class Socket {
 
 	// Utils
 	public:
-		bool	bind(void);
-		bool	listen(void);
+		bool	bind(void) throw(std::exception);
+		bool	listen(void) throw(std::exception);
+		int		accept(void) throw(std::exception);
 
 	// Exception
 	public:
-		class SocketCreationErrorException: public std::exception {
+		class FailToCreateException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
 
-		class SocketBindErrorException: public std::exception {
+		class FailToBindException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
 
-		class SocketListenErrorException: public std::exception {
+		class FailToListenException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class FailToAcceptException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
