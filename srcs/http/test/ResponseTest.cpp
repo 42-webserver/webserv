@@ -1,11 +1,11 @@
-#include "../parser/HttpParser.hpp"
-#include "../request/HttpRequest.hpp"
-#include "../response/HttpResponse.hpp"
+#include "../../../incs/http/parser/HttpParser.hpp"
+#include "../../../incs/http/request/HttpRequest.hpp"
+#include "../../../incs/http/response/HttpResponse.hpp"
 #include <iostream>
 
 int main(){
     HttpResponse res;
-    res.setBody("body data!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    res.setBody(new std::string("body data!!!!!!!!!!!!!!!!!!!!!!!!!!"));
     res.addHeader("Content-Type", "text/html");
     res.addHeader("Content-Length", "100");
     res.addHeader("Connection", "keep-alive");
@@ -13,5 +13,5 @@ int main(){
     res.setStatusCode(OK);
 
     HttpParser parser;
-    std::cout << parser.parseResponse(res) << std::endl;
+    std::cout << *parser.parseResponse(&res) << std::endl;
 }
