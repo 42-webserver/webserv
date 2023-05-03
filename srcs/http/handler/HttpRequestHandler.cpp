@@ -47,6 +47,7 @@ HttpResponse * HttpRequestHandler::methodNotAllowed()
     response->addHeader("Content-Type", "text/html");
     ss << (*methodNotAllowdHtml).length();
     response->addHeader("Content-Length", ss.str());
+    // response->addHeader("Allow", "GET");
     response->setBody(methodNotAllowdHtml);
     return response;
 }

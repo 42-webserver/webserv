@@ -33,47 +33,32 @@ HttpRequest * HttpParser::parseRequest(std::string *request){
 }
 
 std::string *HttpParser::parseResponse(HttpResponse *response){
-    std::string *str = new std::string();
+    std::string *str;
     std::string key, value;
     std::multimap<std::string, std::string>::const_iterator it; 
-    std::stringstream ss;
+    std::stringstream ss, ss2;
     std::vector<Cookie> cookies = response->getCookies();
     std::vector<Cookie>::iterator itCookie;
 
     ss << response->getStatusCode();
-    *str += response->getProtocol();
-    *str += "/";
-    *str += response->getVersion();
-    *str += " ";
-    *str += ss.str();
-    *str += " ";
-    *str += response->getReasonPhrase();
-    *str += "\r\n";
+    ss2 << response->getProtocol() << "/" << response->getVersion() << " " << ss.str() << " " << response->getReasonPhrase() << "\r\n";
     it = response->getHeaders().begin();
     while (it != response->getHeaders().end())
     {
         key = it->first;
         value = it->second;
-        *str += key;
-        *str += ": ";
-        *str += value;
-        *str += "\r\n";
+        ss2 << key << ": " << value << "\r\n";
         it++;
     }
     itCookie = cookies.begin();
     while (itCookie != cookies.end())
     {
-        *str += "Set-Cookie: ";
-        *str += itCookie->getKey();
-        *str += "=";
-        *str += itCookie->getValue();
-        *str += "; Max-Age=";
-        *str += itCookie->getMaxAge();
-        *str += "\r\n";
+        ss2 << "Set-Cookie: " << itCookie->getKey() << "=" << 
+            itCookie->getValue() << "; Max-Age=" << itCookie->getMaxAge() << "\r\n";
         itCookie++;
     }
-
-    *str += "\r\n";
-    *str += *response->getBody();
+    ss2 << "\r\n";
+    ss2 << *response->getBody();
+    str = new std::string(ss2.str());
     return (str);
 }
