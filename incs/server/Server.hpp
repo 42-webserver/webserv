@@ -11,7 +11,7 @@
 
 class Server {
 	private:
-		static const int				MAX_EVENTS = 10;
+		static const int				MAX_EVENTS = 16;
 
 	private:
 		const int						_port;
@@ -37,7 +37,7 @@ class Server {
 	// Utils
 	private:
 		int	accept(void) throw(std::exception);
-		int	read(int event_fd);
+		int	read(int event_fd, char *buf);
 		int	send(int event_fd);
 
 	// Constructor & Destructor
@@ -73,17 +73,17 @@ class Server {
 				virtual const char *what() const throw();
 		};
 
-		class UnknownErrorException: public std::exception {
-			public:
-				virtual const char *what() const throw();
-		};
-
 		class FailToReadException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
 
 		class FailToSendException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class UnknownErrorException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};

@@ -2,6 +2,8 @@
 #include <new>
 #include <stddef.h>
 #include <unistd.h>
+#include <iostream>
+#include <errno.h>
 
 // Constructor & Destructor
 Kqueue::Kqueue(void) {}
@@ -9,10 +11,11 @@ Kqueue::Kqueue(int server_fd) {
 	if ((this->_kq_fd = kqueue()) == -1) {
 		throw (Kqueue::FailToCreateException());
 	}
-	this->setEvent(server_fd, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);
-	this->setEvent(server_fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, NULL);
-	if (kevent(this->_kq_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
-		throw (Kqueue::FailToControlException());
+	try {
+		this->addEvent(server_fd);
+	} catch (const Kqueue::FailToControlException &e) {
+		close(this->_kq_fd);
+		throw (e);
 	}
 }
 Kqueue::~Kqueue(void) { close(this->_kq_fd); }
@@ -45,7 +48,8 @@ bool	Kqueue::setEvent(int fd, int filter, int flags, void *udata) throw(std::exc
 }
 
 // Util
-int	Kqueue::getEventCount(void) {
+int	Kqueue::length(void) {
+	std::cout << "Kqueue_fd: " << this->_kq_fd << '\n';
 	return (kevent(this->_kq_fd, NULL, 0, this->_ev_list, MAX_EVENTS, NULL));
 }
 
@@ -56,10 +60,30 @@ int	Kqueue::getEventFd(int idx) const throw(std::exception) {
 	return (this->_ev_list[idx].ident);
 }
 
+bool	Kqueue::addEvent(int client_fd) {
+	this->setEvent(client_fd, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);
+	this->setEvent(client_fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, NULL);
+	if (kevent(this->_kq_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
+		close(client_fd);
+		throw (Kqueue::FailToControlException());
+	}
+	return (true);
+}
+
+bool	Kqueue::deleteEvent(int client_fd) {
+	close(client_fd);
+	this->setEvent(client_fd, EVFILT_READ, EV_DELETE, NULL);
+	this->setEvent(client_fd, EVFILT_WRITE, EV_DELETE, NULL);
+	if (kevent(this->_kq_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
+		throw (Kqueue::FailToControlException());
+	}
+	return (true);
+}
+
 // Exception
-const char	*Kqueue::FailToCreateException::what(void) const throw() { return ("Fail to create"); }
-const char	*Kqueue::FailToControlException::what(void) const throw() { return ("Fail to control"); }
-const char	*Kqueue::InvalidParameterException::what(void) const throw() { return ("Invalid parameter"); }
-const char	*Kqueue::FailToGetEventCountException::what(void) const throw() { return ("Fail to get event count"); }
-const char	*Kqueue::TimeoutException::what(void) const throw() { return ("Timeout"); }
-const char	*Kqueue::OutOfRangeException::what(void) const throw() { return ("Out of range"); }
+const char	*Kqueue::FailToCreateException::what(void) const throw() { return ("Kqueue: Fail to create"); }
+const char	*Kqueue::FailToControlException::what(void) const throw() { return ("Kqueue: Fail to control"); }
+const char	*Kqueue::InvalidParameterException::what(void) const throw() { return ("Kqueue: Invalid parameter"); }
+const char	*Kqueue::FailToGetEventException::what(void) const throw() { return ("Kqueue: Fail to get event"); }
+const char	*Kqueue::TimeoutException::what(void) const throw() { return ("Kqueue: Timeout"); }
+const char	*Kqueue::OutOfRangeException::what(void) const throw() { return ("Kqueue: Out of range"); }

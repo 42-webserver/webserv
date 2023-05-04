@@ -5,9 +5,13 @@
 # include <netinet/in.h>
 
 class Socket {
+	public:
+		static const int	MAX_SIZE = 1024;
+
 	private:
 		int					_fd;
 		struct sockaddr_in	_addr;
+		int					_enable;
 
 	// Constructor & Destructor
 	public:
@@ -45,6 +49,11 @@ class Socket {
 		};
 
 		class FailToAcceptException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+
+		class FailToControlException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};

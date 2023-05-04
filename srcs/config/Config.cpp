@@ -129,7 +129,7 @@ bool	Config::initServers(std::vector<Server> &servers) const throw(std::exceptio
 }
 
 // Exception
-const char	*Config::FailToOpenFileException::what() const throw() { return ("Fail to open file"); }
-const char	*Config::InvalidSyntaxException::what() const throw() { return ("Invalid syntax"); }
-const char	*Config::NotEnoughArgumentsException::what() const throw() { return ("Not enough arguments"); }
-const char	*Config::UnknownException::what() const throw() { return ("Unknown Exception"); }
+const char	*Config::FailToOpenFileException::what() const throw() { return ("Config: Fail to open file"); }
+const char	*Config::InvalidSyntaxException::what() const throw() { return ("Config: Invalid syntax"); }
+const char	*Config::NotEnoughArgumentsException::what() const throw() { return ("Config: Not enough arguments"); }
+const char	*Config::UnknownException::what() const throw() { return ("Config: Unknown Exception"); }
