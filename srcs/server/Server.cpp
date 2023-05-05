@@ -63,17 +63,7 @@ int	Server::accept(void) throw(std::exception) {
 int	Server::read(int event_fd, char *buf) {
 	int	read_size;
 
-	try {
-		read_size = ::read(event_fd, buf, Socket::MAX_SIZE);
-		if (read_size == -1) {
-			this->_kqueue.deleteEvent(event_fd);
-			throw (Server::FailToReadException());
-		}
-	} catch (const Server::FailToReadException &e) {
-		throw (Server::FailToReadException());
-	} catch (...) {
-		throw (Server::UnknownErrorException());
-	}
+	read_size = ::read(event_fd, buf, Socket::MAX_SIZE);
 	buf[read_size] = '\0';
 	return (read_size);
 }
@@ -141,6 +131,8 @@ bool	Server::init(void) throw(std::exception) {
 					}
 					printf("Read: Received Message size: %d\n", read_size);
 					printf("%s\n", buf);
+					// HTTP Request Parsing
+					// Send Response
 					send_size = this->send(event_fd);
 					printf("Send: Message size: %d\n", send_size);
 				} catch (const Server::FailToReadException &e) {

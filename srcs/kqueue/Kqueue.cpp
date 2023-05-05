@@ -49,7 +49,7 @@ bool	Kqueue::setEvent(int fd, int filter, int flags, void *udata) throw(std::exc
 
 // Util
 int	Kqueue::length(void) {
-	std::cout << "Kqueue_fd: " << this->_kq_fd << '\n';
+	// TODO: Error occurs here
 	return (kevent(this->_kq_fd, NULL, 0, this->_ev_list, MAX_EVENTS, NULL));
 }
 

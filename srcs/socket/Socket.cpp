@@ -43,7 +43,7 @@ int		Socket::getFd(void) const { return (this->_fd); }
 
 // Utils
 bool	Socket::bind(void) throw(std::exception) {
-	if (::bind(this->_fd, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1) {
+	if (::bind(this->_fd, (struct sockaddr *) &this->_addr, sizeof(this->_addr)) == -1) {
 		throw (Socket::FailToBindException());
 	}
 	return (true);
