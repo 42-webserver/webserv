@@ -10,13 +10,12 @@ class Socket {
 
 	private:
 		int					_fd;
-		struct sockaddr_in	_addr;
 		int					_enable;
-
+		struct sockaddr_in	_addr;
+	
 	// Constructor & Destructor
 	public:
 		Socket(void);
-		Socket(int port);
 		~Socket(void);
 		Socket(const Socket &ref);
 		Socket	&operator=(const Socket &rhs);
@@ -27,8 +26,7 @@ class Socket {
 
 	// Utils
 	public:
-		bool	bind(void) throw(std::exception);
-		bool	listen(void) throw(std::exception);
+		bool	init(int port) throw(std::exception);
 		int		accept(void) throw(std::exception);
 
 	// Exception
