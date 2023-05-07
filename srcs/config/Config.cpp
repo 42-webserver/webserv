@@ -121,8 +121,18 @@ bool	Config::initServers(std::vector<Server> &servers) const throw(std::exceptio
 			throw (e);
 		} catch (const Server::InvalidClientMaxBodySizeException &e) {
 			throw (e);
-		} catch (const std::exception &e) {
-			throw (Config::UnknownException());
+		} catch (const Socket::FailToCreateException &e) {
+			throw (Socket::FailToCreateException());
+		} catch (const Socket::FailToBindException &e) {
+			throw (Socket::FailToBindException());
+		} catch (const Socket::FailToListenException &e) {
+			throw (Socket::FailToListenException());
+		} catch (const Kqueue::FailToCreateException &e) {
+			throw (Kqueue::FailToCreateException());
+		} catch (const Kqueue::FailToControlException &e) {
+			throw (Kqueue::FailToControlException());
+		} catch (...) {
+			throw (Server::UnknownErrorException());
 		}
 	}
 	return (true);
