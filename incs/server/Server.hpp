@@ -10,9 +10,7 @@
 # include <map>
 
 class Server {
-	private:
-		static const int				MAX_EVENTS = 16;
-
+	// Member variables
 	private:
 		const int						_port;
 		const std::vector<std::string>	_names;
@@ -25,18 +23,19 @@ class Server {
 		//std::string					_cgi_path;
 		//TODO: routing rules (location, redirect)
 
-	// Static	
-	private:
-		static bool						_is_valid_port(int port);
-		static bool						_is_valid_client_max_body_size(int client_max_body_size);
-
+	// Member variables
 	private:
 		Socket							_socket;
 		Kqueue							_kqueue;
 
+	// Static validators
+	private:
+		static bool						_is_valid_port(int port);
+		static bool						_is_valid_client_max_body_size(int client_max_body_size);
+
 	// Utils
 	private:
-		int	accept(void) throw(std::exception);
+		int	accept(void);
 		int	read(int event_fd, char *buf);
 		int	send(int event_fd);
 
@@ -59,7 +58,7 @@ class Server {
 	
 	// Utils
 	public:
-		bool	init(void) throw(std::exception);
+		bool	run(void) throw(std::exception);
 
 	// Exception
 	public:
@@ -73,12 +72,7 @@ class Server {
 				virtual const char *what() const throw();
 		};
 
-		class FailToReadException: public std::exception {
-			public:
-				virtual const char *what() const throw();
-		};
-
-		class FailToSendException: public std::exception {
+		class FailToRunException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
