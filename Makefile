@@ -9,7 +9,7 @@ RM			= rm -f
 
 ifdef SANITIZE
 	CFLAGS += -fsanitize=address -g3
-	LDFLAGS += -fsanitize=address
+	LDFLAGS += -fsanitize=address -g3
 endif
 
 INCS_DIR	= incs
