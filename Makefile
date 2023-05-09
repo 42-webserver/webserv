@@ -40,6 +40,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/config \
 				${OBJS_DIR}/server \
 				${OBJS_DIR}/socket
 
+LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
 OBJS := ${SRCS:${SRCS_DIR}/%.cpp=${OBJS_DIR}/%.o}
 DEPS := ${OBJS:.o=.d}
@@ -71,9 +72,10 @@ ${OBJS_DIR}:
 	@echo "Build ${NAME}"
 	@mkdir -p ${OBJS_SUBDIR}
 
+
 sanitize:
 	@${RM} ${NAME}
-	@${MAKE} SANITIZE=1 all
+	${MAKE} -j8 SANITIZE=1 all
 
 
 clean:
@@ -91,7 +93,7 @@ fclean:
 re:
 	@echo "Rebuild ${NAME}"
 	@${MAKE} fclean
-	@${MAKE} all
+	@${MAKE} -j8 all
 
 
 .PHONY: all clean fclean re
