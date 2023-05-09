@@ -1,9 +1,8 @@
 #ifndef SHAREDPTR_HPP
 # define SHAREDPTR_HPP
 
-namespace ft {
-	class shared_ptr;
-}
+namespace ft
+{
 
 template <typename T>
 class shared_ptr {
@@ -99,5 +98,7 @@ bool	shared_ptr<T>::operator!=(const shared_ptr<T> &ref) const { return (this->_
 
 template <typename T>
 shared_ptr<T>::operator	bool(void) const { return (this->_ptr != NULL); }
+
+}
 
 #endif
