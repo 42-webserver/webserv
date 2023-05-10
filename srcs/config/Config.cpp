@@ -1,5 +1,6 @@
 #include "../../incs/config/Config.hpp"
 #include "../../incs/server/Server.hpp"
+#include "../../libs/shared_ptr/incs/shared_ptr.hpp"
 
 // Static
 const std::string	Config::LISTEN = "listen";
@@ -11,18 +12,61 @@ const std::string	Config::ERROR_PAGE = "error_page";
 const std::string	Config::CLIENT_MAX_BODY_SIZE = "client_max_body_size";
 const std::string	Config::CGI_PASS = "cgi_pass";
 
-Config::Config(const char *file_name): _file_name(file_name) {}
-Config::~Config(void) {}
+Config::Config(void): _file_name(""), _config_maps(std::vector< map >()) {}
+Config::Config(const char *file_name): _file_name(file_name), _config_maps(std::vector< map >()) {
+	std::ifstream	infile(this->_file_name);
+	std::string		token;
 
-// Util
-Config::map	Config::getConfigMap(std::ifstream &infile) const throw(std::exception) {
+	if (Config::invalidFileName(file_name)) {
+		throw (Config::InvalidFileNameException());
+	}
+
+	if (infile.is_open() == false) {
+		throw (Config::FailToOpenFileException());
+	}
+
+	while (infile >> token) {
+		if (token != "server") {
+			throw (Config::InvalidSyntaxException());
+		}
+
+		try {
+			this->_config_maps.push_back(this->getConfigMapOfEachServer(infile));
+		} catch (const Config::InvalidSyntaxException &e) {
+			throw (e);
+		} catch (const Config::NotEnoughArgumentsException &e) {
+			throw (e);
+		}
+	}
+}
+Config::Config(const Config &ref): _file_name(ref._file_name), _config_maps(ref._config_maps) {}
+Config::~Config(void) {}
+Config	&Config::operator=(const Config &rhs) {
+	if (this != &rhs) {
+		this->~Config();
+		new (this) Config(rhs);
+	}
+	return (*this);
+}
+
+bool							Config::invalidFileName(const std::string &file_name) {
+	if (file_name.length() <= 5) {
+		return (true);
+	}
+
+	if (file_name.substr(file_name.length() - 5, 5) != ".conf") {
+		return (true);
+	}
+
+	return (false);
+}
+Config::map						Config::getConfigMapOfEachServer(std::ifstream &infile) const throw(std::exception) {
 	Config::map	ret;
 	std::string	token;
 
 	if (!(infile >> token) || token != "{" || initConfigMap(ret) == false) {
 		throw (Config::InvalidSyntaxException());
 	}
-
 
 	while (infile >> token) {
 		if (token == "}") {
@@ -86,8 +130,7 @@ Config::map	Config::getConfigMap(std::ifstream &infile) const throw(std::excepti
 
 	return (ret);
 }
-
-bool	Config::initConfigMap(map &config_map) const {
+bool							Config::initConfigMap(map &config_map) const {
 	config_map[Config::PORT] = std::vector<std::string>();
 	config_map[Config::SERVER_NAME] = std::vector<std::string>();
 	config_map[Config::ROOT] = std::vector<std::string>();
@@ -97,49 +140,10 @@ bool	Config::initConfigMap(map &config_map) const {
 	config_map[Config::CGI_PASS] = std::vector<std::string>();
 	return (true);
 }
-
-bool	Config::initServers(std::vector<Server> &servers) const throw(std::exception) {
-	std::ifstream	infile(this->_file_name);
-	std::string		token;
-
-	if (infile.is_open() == false) {
-		throw (Config::FailToOpenFileException());
-	}
-
-	while (infile >> token) {
-		if (token != "server") {
-			throw (Config::InvalidSyntaxException());
-		}
-
-		try {
-			servers.push_back(Server(this->getConfigMap(infile)));
-		} catch (const Config::InvalidSyntaxException &e) {
-			throw (e);
-		} catch (const Config::NotEnoughArgumentsException &e) {
-			throw (e);
-		} catch (const Server::InvalidPortException &e) {
-			throw (e);
-		} catch (const Server::InvalidClientMaxBodySizeException &e) {
-			throw (e);
-		} catch (const Socket::FailToCreateException &e) {
-			throw (Socket::FailToCreateException());
-		} catch (const Socket::FailToBindException &e) {
-			throw (Socket::FailToBindException());
-		} catch (const Socket::FailToListenException &e) {
-			throw (Socket::FailToListenException());
-		} catch (const Kqueue::FailToCreateException &e) {
-			throw (Kqueue::FailToCreateException());
-		} catch (const Kqueue::FailToControlException &e) {
-			throw (Kqueue::FailToControlException());
-		} catch (...) {
-			throw (Server::UnknownErrorException());
-		}
-	}
-	return (true);
-}
+const std::vector<Config::map>	&Config::getConfigMaps(void) const { return (this->_config_maps); }
 
 // Exception
+const char	*Config::InvalidFileNameException::what() const throw() { return ("Config: Invalid file name"); }
 const char	*Config::FailToOpenFileException::what() const throw() { return ("Config: Fail to open file"); }
 const char	*Config::InvalidSyntaxException::what() const throw() { return ("Config: Invalid syntax"); }
 const char	*Config::NotEnoughArgumentsException::what() const throw() { return ("Config: Not enough arguments"); }
-const char	*Config::UnknownException::what() const throw() { return ("Config: Unknown Exception"); }

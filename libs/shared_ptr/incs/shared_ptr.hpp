@@ -1,6 +1,8 @@
 #ifndef SHAREDPTR_HPP
 # define SHAREDPTR_HPP
 
+# include <stdlib.h>
+
 namespace ft
 {
 
@@ -32,26 +34,24 @@ class shared_ptr {
 		bool		operator==(const shared_ptr<T> &ref) const;
 		bool		operator!=(const shared_ptr<T> &ref) const;
 		operator	bool(void) const;
-}
+};
 
 template <typename T>
-shared_ptr<T>::shared_ptr(void) : _ptr(NULL), _count(NULL) {}
+shared_ptr<T>::shared_ptr(void): _ptr(NULL), _count(NULL) {}
 
 template <typename T>
-shared_ptr<T>::shared_ptr(T *ptr) : _ptr(ptr), _count(NULL) { this->add_ref(); }
+shared_ptr<T>::shared_ptr(T *ptr): _ptr(ptr), _count(NULL) { this->add_ref(); }
 
 template <typename T>
-shared_ptr<T>::shared_ptr(const shared_ptr<T> &ref) : _ptr(ref._ptr), _count(ref._count) { this->add_ref(); }
+shared_ptr<T>::shared_ptr(const shared_ptr<T> &ref): _ptr(ref._ptr), _count(ref._count) { if (this->_ptr != NULL) this->add_ref(); }
 
 template <typename T>
-shared_ptr<T>::~shared_ptr(void) { this->release(); }
+shared_ptr<T>::~shared_ptr(void) { if (this->_ptr != NULL) this->release(); }
 
 template <typename T>
 shared_ptr<T> &shared_ptr<T>::operator=(const shared_ptr<T> &ref) {
 	if (this != &ref) {
-		this->_ptr = ref._ptr;
-		this->_count = ref._count;
-		this->add_ref();
+		new (this) shared_ptr<T>(ref);
 	}
 	return (*this);
 }

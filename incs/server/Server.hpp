@@ -1,15 +1,15 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include "../../libs/shared_ptr/incs/shared_ptr.hpp"
+# include "../data/Data.hpp"
 # include "../config/Config.hpp"
-# include "../socket/Socket.hpp"
-# include "../kqueue/Kqueue.hpp"
 # include <string>
 # include <vector>
 # include <iostream>
 # include <map>
 
-class Server {
+class Server: public Data {
 	// Member variables
 	private:
 		const int						_port;
@@ -23,27 +23,19 @@ class Server {
 		//std::string					_cgi_path;
 		//TODO: routing rules (location, redirect)
 
-	// Member variables
-	private:
-		Socket							_socket;
-		Kqueue							_kqueue;
-
 	// Static validators
 	private:
 		static bool						_is_valid_port(int port);
 		static bool						_is_valid_client_max_body_size(int client_max_body_size);
 
-	// Utils
-	private:
-		int	accept(void);
-		int	read(int event_fd, char *buf);
-		int	send(int event_fd);
-
 	// Constructor & Destructor
 	public:
 		Server(const Config::map &config_map) throw(std::exception);
-		~Server(void);
-
+		virtual	~Server(void);
+	
+	public:
+		int	accept(void) const;
+	
 	// Getters
 	public:
 		const std::string				&getDefaultErrorPage(void) const;
@@ -56,10 +48,6 @@ class Server {
 		//const std::string				&getCgiExtension(void) const;
 		//const std::string				&getCgiPath(void) const;
 	
-	// Utils
-	public:
-		bool	run(void) throw(std::exception);
-
 	// Exception
 	public:
 		class InvalidPortException: public std::exception {
@@ -72,12 +60,12 @@ class Server {
 				virtual const char *what() const throw();
 		};
 
-		class FailToRunException: public std::exception {
+		class FailToCreateSocketException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
 
-		class UnknownErrorException: public std::exception {
+		class FailToRunException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};

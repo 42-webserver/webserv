@@ -6,8 +6,6 @@
 # include <vector>
 # include <map>
 
-class Server;
-
 class Config {
 	public:
 		typedef std::map< std::string, std::vector<std::string> >	map;
@@ -22,37 +20,39 @@ class Config {
 		const static std::string	CGI_PASS;
 
 	private:
-		std::string	_file_name;
+		static bool	invalidFileName(const std::string &file_name);
 
-		// TODO: Validate file name (extension)
+	private:
+		std::string			_file_name;
+		std::vector< map >	_config_maps;
 
-		map		getConfigMap(std::ifstream &infile) const throw(std::exception);
 		bool	initConfigMap(map &config_map) const;
+		map		getConfigMapOfEachServer(std::ifstream &infile) const throw(std::exception);
 
 	public:
+		Config(void);
 		Config(const char *file_name);
+		Config(const Config &ref);
 		~Config(void);
+		Config	&operator=(const Config &rhs);
 
-		// Util
-		bool	initServers(std::vector<Server> &servers) const throw(std::exception);
+	public:
+		const std::vector< map >	&getConfigMaps(void) const;
 
-		// Exception
+	public:
+		class InvalidFileNameException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
 		class FailToOpenFileException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
-
 		class InvalidSyntaxException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
-
 		class NotEnoughArgumentsException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
-
-		class UnknownException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
