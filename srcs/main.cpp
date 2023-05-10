@@ -1,5 +1,5 @@
 #include "../incs/config/Config.hpp"
-#include "../incs/server/Server.hpp"
+#include "../incs/server/Webserv.hpp"
 #include "../incs/err/err.hpp"
 #include <iostream>
 
@@ -9,21 +9,13 @@ int	main(int argc, char **argv) {
 		return (INVALID_ARG);
 	}
 
-	Config				config(argv[1]);
-	std::vector<Server>	servers;
+	Config	config;
+	Webserv	webserv;
 
 	try {
-		config.initServers(servers);
-		for (size_t i=0; i<servers.size(); i++) {
-			std::cout << servers[i] << '\n';
-			std::cout << '\n';
-			try {
-				servers[i].run();
-			} catch (const std::exception &e) {
-				std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
-				return (GENERIC_ERR);
-			}
-		}
+		config = Config(argv[1]);
+		webserv = Webserv(config);
+		webserv.run();
 	} catch (const std::exception &e) {
 		std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
 		return (GENERIC_ERR);
