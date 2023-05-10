@@ -43,14 +43,15 @@ template <typename T>
 shared_ptr<T>::shared_ptr(T *ptr): _ptr(ptr), _count(NULL) { this->add_ref(); }
 
 template <typename T>
-shared_ptr<T>::shared_ptr(const shared_ptr<T> &ref): _ptr(ref._ptr), _count(ref._count) { if (this->_ptr != NULL) this->add_ref(); }
+shared_ptr<T>::shared_ptr(const shared_ptr<T> &ref): _ptr(ref._ptr), _count(ref._count) { this->add_ref(); }
 
 template <typename T>
-shared_ptr<T>::~shared_ptr(void) { if (this->_ptr != NULL) this->release(); }
+shared_ptr<T>::~shared_ptr(void) { this->release(); }
 
 template <typename T>
 shared_ptr<T> &shared_ptr<T>::operator=(const shared_ptr<T> &ref) {
 	if (this != &ref) {
+		this->~shared_ptr();
 		new (this) shared_ptr<T>(ref);
 	}
 	return (*this);
@@ -58,6 +59,11 @@ shared_ptr<T> &shared_ptr<T>::operator=(const shared_ptr<T> &ref) {
 
 template <typename T>
 void	shared_ptr<T>::add_ref(void) {
+	// Not exist
+	if (this->_ptr == NULL) {
+		return;
+	}
+
 	if (this->_count == NULL) {
 		this->_count = new int(1);
 		*this->_count = 0;
@@ -67,6 +73,11 @@ void	shared_ptr<T>::add_ref(void) {
 
 template <typename T>
 void	shared_ptr<T>::release(void) {
+	// Not exist
+	if (this->_ptr == NULL) {
+		return;
+	}
+
 	if (--(*this->_count) == 0) {
 		delete this->_ptr;
 		delete this->_count;
