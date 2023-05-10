@@ -6,19 +6,22 @@
 #include <errno.h>
 
 // Constructor & Destructor
-Kqueue::Kqueue(void): _fd(0) {
+Kqueue::Kqueue(void) {
+	if ((this->_fd = kqueue()) == -1) {
+		throw (FailToCreateException());
+	}
 	memset(this->_ev_set, 0, 2 * sizeof(struct kevent));
 	memset(this->_ev_list, 0, MAX_EVENTS * sizeof(struct kevent));
 }
-Kqueue::~Kqueue(void) { if (this->_fd) close(this->_fd); }
 Kqueue::Kqueue(const Kqueue &ref): _fd(ref._fd) {
-	for (int i=0; i<2; i++) {
+	for (size_t i=0; i<2; i++) {
 		this->_ev_set[i] = ref._ev_set[i];
 	}
-	for (int i=0; i<MAX_EVENTS; i++) {
+	for (size_t i=0; i<MAX_EVENTS; i++) {
 		this->_ev_list[i] = ref._ev_list[i];
 	}
 }
+Kqueue::~Kqueue(void) { if (this->_fd) close(this->_fd); }
 Kqueue	&Kqueue::operator=(const Kqueue &rhs) {
 	if (this != &rhs) {
 		this->~Kqueue();
@@ -28,18 +31,6 @@ Kqueue	&Kqueue::operator=(const Kqueue &rhs) {
 }
 
 // Util
-bool	Kqueue::init(int server_fd) throw(std::exception) {
-	if ((this->_fd = kqueue()) == -1) {
-		throw (Kqueue::FailToCreateException());
-	}
-	try {
-		this->addEvent(server_fd);
-	} catch (const Kqueue::FailToControlException &e) {
-		throw (e);
-	}
-	return (true);
-}
-
 int		Kqueue::length(void) {
 	int	ret = kevent(this->_fd, NULL, 0, this->_ev_list, MAX_EVENTS, NULL);
 	
@@ -48,29 +39,25 @@ int		Kqueue::length(void) {
 	}
 	return (ret);
 }
-
-int		Kqueue::getEventFd(int idx) const throw(std::exception) {
-	return (this->_ev_list[idx].ident);
-}
-
-bool	Kqueue::addEvent(int socket_fd) {
-	EV_SET(&this->_ev_set[0], socket_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-	EV_SET(&this->_ev_set[1], socket_fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
+int		Kqueue::getEventFd(int idx) const { return (this->_ev_list[idx].ident); }
+void	*Kqueue::getEventData(int idx) const { return (this->_ev_list[idx].udata); }
+bool	Kqueue::addEvent(int fd, void *udata) {
+	EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, udata);
+	EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, udata);
 	if (kevent(this->_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
-		close(socket_fd);
+		close(fd);
 		throw (Kqueue::FailToControlException());
 	}
 	return (true);
 }
-
-bool	Kqueue::deleteEvent(int socket_fd) {
-	EV_SET(&this->_ev_set[0], socket_fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-	EV_SET(&this->_ev_set[1], socket_fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+bool	Kqueue::deleteEvent(int fd, void *udata) {
+	EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_DELETE, 0, 0, udata);
+	EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, udata);
 	if (kevent(this->_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
-		close(socket_fd);
+		close(fd);
 		throw (Kqueue::FailToControlException());
 	}
-	close(socket_fd);
+	close(fd);
 	return (true);
 }
 

@@ -16,17 +16,17 @@ class Kqueue {
 	// Constructor & Destructor
 	public:
 		Kqueue(void);
-		~Kqueue(void);
 		Kqueue(const Kqueue &ref);
+		~Kqueue(void);
 		Kqueue	&operator=(const Kqueue &rhs);
 
 	// Util
 	public:
-		bool	init(int server_fd) throw(std::exception);
 		int		length(void);
-		bool	addEvent(int client_fd);
-		bool	deleteEvent(int client_fd);
-		int		getEventFd(int idx) const throw(std::exception);
+		int		getEventFd(int idx) const;
+		void	*getEventData(int idx) const;
+		bool	addEvent(int fd, void *udata);
+		bool	deleteEvent(int fd, void *udata);
 	
 	// Exception
 	public:
