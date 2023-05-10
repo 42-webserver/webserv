@@ -17,7 +17,9 @@ SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
 SRCS =	main.cpp \
+		client/Client.cpp \
 		config/Config.cpp \
+		data/Data.cpp \
 		http/handler/ErrorPageHandler.cpp \
 		http/handler/HttpRequestHandler.cpp \
 		http/parser/HttpParser.cpp \
@@ -27,9 +29,14 @@ SRCS =	main.cpp \
 		http/utils/Cookie.cpp \
 		kqueue/Kqueue.cpp \
 		server/Server.cpp \
+		server/Webserv.cpp \
 		socket/Socket.cpp \
+		socket/ActiveSocket.cpp \
+		socket/PassiveSocket.cpp \
 
-OBJS_SUBDIR = 	${OBJS_DIR}/config \
+OBJS_SUBDIR = 	${OBJS_DIR}/client \
+				${OBJS_DIR}/config \
+				${OBJS_DIR}/data \
 				${OBJS_DIR}/http \
 				${OBJS_DIR}/http/handler \
 				${OBJS_DIR}/http/parser \
@@ -75,7 +82,7 @@ ${OBJS_DIR}:
 
 sanitize:
 	@${RM} ${NAME}
-	${MAKE} -j8 SANITIZE=1 all
+	@${MAKE} -j8 SANITIZE=1 all
 
 
 clean:
