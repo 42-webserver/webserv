@@ -2,14 +2,14 @@
 # define SERVER_HPP
 
 # include "../../libs/shared_ptr/incs/shared_ptr.hpp"
-# include "../data/Data.hpp"
 # include "../config/Config.hpp"
+# include "../socket/Socket.hpp"
 # include <string>
 # include <vector>
 # include <iostream>
 # include <map>
 
-class Server: public Data {
+class Server {
 	// Member variables
 	private:
 		const int						_port;
@@ -28,13 +28,13 @@ class Server: public Data {
 		static bool						_is_valid_port(int port);
 		static bool						_is_valid_client_max_body_size(int client_max_body_size);
 
+	private:
+		ft::shared_ptr<Socket>			_socket;
+	
 	// Constructor & Destructor
 	public:
 		Server(const Config::map &config_map) throw(std::exception);
 		virtual	~Server(void);
-	
-	public:
-		int	accept(void) const;
 	
 	// Getters
 	public:
@@ -47,6 +47,7 @@ class Server: public Data {
 		const std::string				&getCgiPass(void) const;
 		//const std::string				&getCgiExtension(void) const;
 		//const std::string				&getCgiPath(void) const;
+		const ft::shared_ptr<Socket>	&getSocket(void) const;
 	
 	// Exception
 	public:
@@ -54,17 +55,14 @@ class Server: public Data {
 			public:
 				virtual const char *what() const throw();
 		};
-
 		class InvalidClientMaxBodySizeException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
-
 		class FailToCreateSocketException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
-
 		class FailToRunException: public std::exception {
 			public:
 				virtual const char *what() const throw();
