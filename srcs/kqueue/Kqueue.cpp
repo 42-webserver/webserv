@@ -35,7 +35,7 @@ int		Kqueue::length(void) {
 	int	ret = kevent(this->_fd, NULL, 0, this->_ev_list, MAX_EVENTS, NULL);
 	
 	if (ret == -1) {
-		throw (Kqueue::FailToGetEventException());
+		throw (FailToGetEventException());
 	}
 	return (ret);
 }
@@ -46,7 +46,7 @@ bool	Kqueue::addEvent(int fd, void *udata) {
 	EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, udata);
 	if (kevent(this->_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
 		close(fd);
-		throw (Kqueue::FailToControlException());
+		throw (FailToControlException());
 	}
 	return (true);
 }
@@ -55,7 +55,7 @@ bool	Kqueue::deleteEvent(int fd, void *udata) {
 	EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, udata);
 	if (kevent(this->_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
 		close(fd);
-		throw (Kqueue::FailToControlException());
+		throw (FailToControlException());
 	}
 	close(fd);
 	return (true);

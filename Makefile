@@ -17,9 +17,12 @@ SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
 SRCS =	main.cpp \
-		client/Client.cpp \
 		config/Config.cpp \
-		data/Data.cpp \
+		event/Event.cpp \
+		event/ListenEvent.cpp \
+		event/ReadEvent.cpp \
+		event/TimeEvent.cpp \
+		event/WriteEvent.cpp \
 		http/handler/ErrorPageHandler.cpp \
 		http/handler/HttpRequestHandler.cpp \
 		http/parser/HttpParser.cpp \
@@ -31,12 +34,10 @@ SRCS =	main.cpp \
 		server/Server.cpp \
 		server/Webserv.cpp \
 		socket/Socket.cpp \
-		socket/ActiveSocket.cpp \
-		socket/PassiveSocket.cpp \
 
-OBJS_SUBDIR = 	${OBJS_DIR}/client \
+OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/config \
-				${OBJS_DIR}/data \
+				${OBJS_DIR}/event \
 				${OBJS_DIR}/http \
 				${OBJS_DIR}/http/handler \
 				${OBJS_DIR}/http/parser \

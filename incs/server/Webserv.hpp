@@ -4,7 +4,10 @@
 # include "../../libs/shared_ptr/incs/shared_ptr.hpp"
 # include "../kqueue/Kqueue.hpp"
 # include "../config/Config.hpp"
-# include "../client/Client.hpp"
+# include "../event/Event.hpp"
+# include "../event/ListenEvent.hpp"
+# include "../event/ReadEvent.hpp"
+# include "../event/WriteEvent.hpp"
 # include "Server.hpp"
 
 class Webserv {
@@ -27,9 +30,8 @@ class Webserv {
 		Webserv	&operator=(const Webserv &rhs);
 	
 	private:
-		const_iterator	findServer(int event_fd) const;
-		int				read(int client_fd, Client *client, char *buf);
-		int				send(int client_fd, Client *client);
+		int		read(int client_fd, ReadEvent *read_event);
+		int		send(int client_fd, WriteEvent *write_event);
 
 	public:
 		bool	run(void) throw(std::exception);
