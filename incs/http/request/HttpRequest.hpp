@@ -4,31 +4,31 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <vector>
 
 class HttpRequest
 {
 private:
-    std::string _method;
-    std::string _uri;
-    std::string _version;
-    std::string *_body;
-    std::string _protocol;
+    std::string         _method;
+    std::string         _uri;
+    std::string         _version;
+    std::vector<char>   _body;
+    std::string         _protocol;
+    int                 _bodyDataFd;
+    bool                _isBodyLong;
 
     std::multimap<std::string, std::string> _headers;
-    std::map<std::string, std::string> _queries;
-    std::map<std::string, std::string> _cookies;
-    
+    std::map<std::string, std::string>      _queries;
+    std::map<std::string, std::string>      _cookies;
 
 public:
     HttpRequest();
     ~HttpRequest();
-    void setBody( std::string * body);
     void addHeader(const std::string & header);
     void setStartLine(std::string line);
     std::string getMethod();
     std::string getUri();
     std::string getVersion();
-    std::string *getBody();
     std::string getProtocol();
     std::multimap<std::string, std::string> getHeaders();
     std::map<std::string, std::string> getQueries();
