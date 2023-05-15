@@ -25,7 +25,8 @@ SRCS =	main.cpp \
 		event/WriteEvent.cpp \
 		http/handler/ErrorPageHandler.cpp \
 		http/handler/HttpRequestHandler.cpp \
-		http/parser/HttpParser.cpp \
+		http/parser/HttpRequestParser.cpp \
+		http/parser/HttpResponseParser.cpp \
 		http/request/HttpRequest.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \

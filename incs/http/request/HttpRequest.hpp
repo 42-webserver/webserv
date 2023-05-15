@@ -26,10 +26,12 @@ public:
     ~HttpRequest();
     void addHeader(const std::string & header);
     void setStartLine(std::string line);
+    void setBody(std::string * bodyBuffer);
     std::string getMethod();
     std::string getUri();
     std::string getVersion();
     std::string getProtocol();
+    std::vector<char> getBody();
     std::multimap<std::string, std::string> getHeaders();
     std::map<std::string, std::string> getQueries();
     std::map<std::string, std::string> getCookies();

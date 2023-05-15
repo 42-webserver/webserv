@@ -2,19 +2,17 @@
 
 
 HttpRequest::HttpRequest()
+: _bodyDataFd(-1), _isBodyLong(false)
 {
-    this->_body = NULL;
 }
 
 HttpRequest::~HttpRequest()
 {
-    if(this->_body != NULL)
-        delete _body;
 }
 
-void HttpRequest::setBody( std::string * body)
+void HttpRequest::setBody( std::string * bodyBuffer)
 {
-    this->_body = body;
+    this->_body.insert(this->_body.end(), bodyBuffer->begin(), bodyBuffer->end());
 }
 
 void HttpRequest::addHeader(const std::string & header)
@@ -125,7 +123,7 @@ std::string HttpRequest::getVersion()
     return this->_version;
 }
 
-std::string *HttpRequest::getBody()
+std::vector<char> HttpRequest::getBody()
 {
     return this->_body;
 }

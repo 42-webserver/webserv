@@ -58,7 +58,6 @@ void HttpRequestParser::handleHeaderState(std::string *bufferStr) {
 }
 
 void HttpRequestParser::handleBodyState(std::string *bufferStr) {
-    std::string::size_type pos;
     std::string line;
     if (bufferStr->empty())  
         return;
