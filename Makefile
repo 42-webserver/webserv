@@ -45,6 +45,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/http/request \
 				${OBJS_DIR}/http/response \
 				${OBJS_DIR}/http/utils \
+				${OBJS_DIR}/http/test \
 				${OBJS_DIR}/kqueue \
 				${OBJS_DIR}/server \
 				${OBJS_DIR}/socket
