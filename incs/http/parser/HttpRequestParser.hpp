@@ -2,6 +2,7 @@
 #define HTTP_REQUEST_PARSER_HPP
 
 #include "../request/HttpRequest.hpp"
+#include <vector> 
 
 typedef enum State{
         BEFORE,
@@ -20,13 +21,17 @@ private:
 
 public:
     HttpRequestParser(HttpRequest *httpRequest);
-    void parseRequest(const char *buffer);
+    void parseRequest(const std::vector<char> &buffer);
     void clearBuffer();
+    RequestParseState getState();
+    int getReadBodySize();
+    HttpRequest *getHttpRequest();
+    std::string getBuffer();
 
 private:
-    void handleStartLineState(std::string *bufferStr);
-    void handleHeaderState(std::string *bufferStr);
-    void handleBodyState(std::string *bufferStr);
+    void handleStartLineState(std::string &bufferStr);
+    void handleHeaderState(std::string &bufferStr);
+    void handleBodyState(std::string &bufferStr);
 };
 
 #endif
