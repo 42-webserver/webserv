@@ -4,19 +4,19 @@
 #include <errno.h>
 
 Server::Server(const Config::map &config_map) throw(std::exception):
-	_port(std::atoi(config_map.find(Config::PORT)->second[0].c_str())),
-	_names(config_map.find(Config::SERVER_NAME)->second),
-	_root(config_map.find(Config::ROOT)->second[0]),
-	_indexes(config_map.find(Config::INDEX)->second),
-	_default_error_page(config_map.find(Config::ERROR_PAGE)->second[0]),
-	_client_max_body_size(std::atoi(config_map.find(Config::CLIENT_MAX_BODY_SIZE)->second[0].c_str())),
-	_cgi_pass(config_map.find(Config::CGI_PASS)->second[0]),
+	_port(std::atoi(config_map.at(Config::KEYS[0])[0].c_str())),
+	_names(config_map.at(Config::KEYS[1])),
+	_root(config_map.at(Config::KEYS[2])[0]),
+	_indexes(config_map.at(Config::KEYS[3])),
+	_default_error_page(config_map.at(Config::KEYS[4])[0]),
+	_client_max_body_size(std::atoi(config_map.at(Config::KEYS[5])[0].c_str())),
+	_locations(initLocations(config_map)),
 	_socket(ft::shared_ptr<Socket>(NULL))
 {
-	if (Server::_is_valid_port(_port) == false) {
+	if (Server::isValidPort(_port) == false) {
 		throw (InvalidPortException());
 	}
-	if (Server::_is_valid_client_max_body_size(_client_max_body_size) == false) {
+	if (Server::isValidClientMaxBodySize(_client_max_body_size) == false) {
 		throw (InvalidClientMaxBodySizeException());
 	}
 
@@ -30,8 +30,22 @@ Server::Server(const Config::map &config_map) throw(std::exception):
 Server::~Server(void) {}
 
 // Static
-bool	Server::_is_valid_port(int port) { return (0 <= port && port <= 65535); }
-bool	Server::_is_valid_client_max_body_size(int client_max_body_size) { return (0 <= client_max_body_size); }
+bool	Server::isValidPort(int port) { return (0 <= port && port <= 65535); }
+bool	Server::isValidClientMaxBodySize(int client_max_body_size) { return (0 <= client_max_body_size); }
+
+std::vector<Location>	Server::initLocations(const Config::map &config_map) {
+	std::vector<Location>	locations;
+
+	for (size_t i=0; i<config_map.at(std::string("location_") + Config::LOCATION_KEYS[0]).size(); i++) {
+		try {
+			locations.push_back(Location(config_map, i));
+		} catch (const std::exception &e) {
+			std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
+			throw (FailToInitializeLocationException());
+		}
+	}
+	return (locations);
+}
 
 // Getters
 const std::string				&Server::getDefaultErrorPage(void) const { return (this->_default_error_page); }
@@ -40,7 +54,7 @@ const std::vector<std::string>	&Server::getNames(void) const { return (this->_na
 int								Server::getClientMaxBodySize(void) const { return (this->_client_max_body_size); }
 const std::string				&Server::getRoot(void) const { return (this->_root); }
 const std::vector<std::string>	&Server::getIndexes(void) const { return (this->_indexes); }
-const std::string				&Server::getCgiPass(void) const { return (this->_cgi_pass); }
+const std::vector<Location>		&Server::getLocations(void) const { return (this->_locations); }
 const ft::shared_ptr<Socket>	&Server::getSocket(void) const { return (this->_socket); }
 
 // Operator overload
@@ -58,12 +72,15 @@ std::ostream	&operator<<(std::ostream &os, const Server &rhs) {
 		os << rhs.getIndexes()[i] << ' ';
 	}
 	os << '\n';
-	os << "cgi_pass: " << rhs.getCgiPass();
+	for (size_t i=0; i<rhs.getLocations().size(); i++) {
+		os << rhs.getLocations()[i] << '\n';
+	}
 	return (os);
 }
 
 // Exception
 const char	*Server::InvalidPortException::what(void) const throw() { return ("Server: Invalid port"); }
 const char	*Server::InvalidClientMaxBodySizeException::what(void) const throw() { return ("Server: Invalid client_max_body_size"); }
+const char	*Server::FailToInitializeLocationException::what(void) const throw() { return ("Server: Fail to initialize location"); }
 const char	*Server::FailToCreateSocketException::what(void) const throw() { return ("Server: Fail to create socket"); }
 const char	*Server::FailToRunException::what(void) const throw() { return ("Server: Fail to run"); }
