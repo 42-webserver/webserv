@@ -4,6 +4,7 @@
 # include "../../libs/shared_ptr/incs/shared_ptr.hpp"
 # include "../config/Config.hpp"
 # include "../socket/Socket.hpp"
+# include "Location.hpp"
 # include <string>
 # include <vector>
 # include <iostream>
@@ -18,15 +19,13 @@ class Server {
 		const std::vector<std::string>	_indexes;
 		const std::string				_default_error_page;
 		const int						_client_max_body_size;
-		const std::string				_cgi_pass;
-		//std::string					_cgi_extension;
-		//std::string					_cgi_path;
-		//TODO: routing rules (location, redirect)
+		const std::vector<Location>		_locations;
 
 	// Static validators
 	private:
-		static bool						_is_valid_port(int port);
-		static bool						_is_valid_client_max_body_size(int client_max_body_size);
+		static bool						isValidPort(int port);
+		static bool						isValidClientMaxBodySize(int client_max_body_size);
+		static std::vector<Location>	initLocations(const Config::map &config_map);
 
 	private:
 		ft::shared_ptr<Socket>			_socket;
@@ -44,9 +43,7 @@ class Server {
 		int								getClientMaxBodySize(void) const;
 		const std::string				&getRoot(void) const;
 		const std::vector<std::string>	&getIndexes(void) const;
-		const std::string				&getCgiPass(void) const;
-		//const std::string				&getCgiExtension(void) const;
-		//const std::string				&getCgiPath(void) const;
+		const std::vector<Location>		&getLocations(void) const;
 		const ft::shared_ptr<Socket>	&getSocket(void) const;
 	
 	// Exception
@@ -56,6 +53,10 @@ class Server {
 				virtual const char *what() const throw();
 		};
 		class InvalidClientMaxBodySizeException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+		class FailToInitializeLocationException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
