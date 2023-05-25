@@ -1,5 +1,5 @@
-#ifndef TRIE_HPP
-# define TRIE_HPP
+#ifndef TRI_HPP
+# define TRI_HPP
 
 #include <map>
 #include <string>
