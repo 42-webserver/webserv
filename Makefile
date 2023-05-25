@@ -8,7 +8,7 @@ LDFLAGS		=
 RM			= rm -f
 
 ifdef SANITIZE
-	CFLAGS += -fsanitize=address -g3
+	CXXFLAGS += -fsanitize=address -g3
 	LDFLAGS += -fsanitize=address -g3
 endif
 
@@ -25,12 +25,14 @@ SRCS =	main.cpp \
 		event/WriteEvent.cpp \
 		http/handler/ErrorPageHandler.cpp \
 		http/handler/HttpRequestHandler.cpp \
-		http/parser/HttpParser.cpp \
+		http/parser/HttpRequestParser.cpp \
+		http/parser/HttpResponseParser.cpp \
 		http/request/HttpRequest.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \
 		http/utils/Cookie.cpp \
 		kqueue/Kqueue.cpp \
+		server/Location.cpp \
 		server/Server.cpp \
 		server/Webserv.cpp \
 		socket/Socket.cpp \
@@ -44,6 +46,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/http/request \
 				${OBJS_DIR}/http/response \
 				${OBJS_DIR}/http/utils \
+				${OBJS_DIR}/http/test \
 				${OBJS_DIR}/kqueue \
 				${OBJS_DIR}/server \
 				${OBJS_DIR}/socket
@@ -82,7 +85,6 @@ ${OBJS_DIR}:
 
 
 sanitize:
-	@${RM} ${NAME}
 	@${MAKE} -j8 SANITIZE=1 all
 
 

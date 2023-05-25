@@ -10,24 +10,39 @@ class Config {
 	public:
 		typedef std::map< std::string, std::vector<std::string> >	map;
 
-		const static std::string	LISTEN;
-		const static std::string	PORT;
-		const static std::string	SERVER_NAME;
-		const static std::string	ROOT;
-		const static std::string	INDEX;
-		const static std::string	ERROR_PAGE;
-		const static std::string	CLIENT_MAX_BODY_SIZE;
-		const static std::string	CGI_PASS;
-
+	public:
+		const static std::vector<std::string>	KEYS;
+		const static std::vector<std::string>	LOCATION_KEYS;
+	
 	private:
-		static bool	invalidFileName(const std::string &file_name);
+		static bool	(*const	HANDLERS[])(map &config_map, std::ifstream &infile);
+		static bool	(*const	LOCATION_HANDLERS[])(map &config_map, std::ifstream &infile);
 
 	private:
 		std::string			_file_name;
-		std::vector< map >	_config_maps;
+		std::vector<map>	_config_maps;
 
-		bool	initConfigMap(map &config_map) const;
-		map		getConfigMapOfEachServer(std::ifstream &infile) const throw(std::exception);
+	private:
+		static bool	invalidFileName(const std::string &file_name);
+		static bool	initConfigMap(map &config_map);
+		static map	getConfigMapOfEachServer(std::ifstream &infile) throw(std::exception);
+
+	private:
+		static bool	handlePort(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleServerName(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleRoot(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleIndex(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleErrorPage(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleClientMaxBodySize(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocation(map &config_map, std::ifstream &infile) throw(std::exception);
+	
+	private:
+		static bool	initLocationVector(map &config_map);
+		static bool	handleLocationDir(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocationRoot(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocationAlias(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocationAutoIndex(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocationReturn(map &config_map, std::ifstream &infile) throw(std::exception);
 
 	public:
 		Config(void);
@@ -37,7 +52,7 @@ class Config {
 		Config	&operator=(const Config &rhs);
 
 	public:
-		const std::vector< map >	&getConfigMaps(void) const;
+		const std::vector<map>	&getConfigMaps(void) const;
 
 	public:
 		class InvalidFileNameException: public std::exception {
@@ -52,7 +67,23 @@ class Config {
 			public:
 				virtual const char* what() const throw();
 		};
+		class InvalidArgumentException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
 		class NotEnoughArgumentsException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToConfigurateLocationException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToConfigurateServerException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToConfigurateException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
