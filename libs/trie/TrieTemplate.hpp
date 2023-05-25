@@ -6,7 +6,7 @@ template <typename T, typename Value>
 struct TrieNode {
     bool isEndOfWord;
     std::map<T, ft::unique_ptr<TrieNode<T, Value> > > children;
-    ft::unique_ptr<Value> value;  // Store the actual data here.
+    ft::unique_ptr<Value> value;
 
     TrieNode() : isEndOfWord(false) {}
 };
