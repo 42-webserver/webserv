@@ -1,8 +1,6 @@
 #ifndef UNIQUEPTR_HPP
 #define UNIQUEPTR_HPP
 
-//interface 
-
 namespace ft {
 
 template <typename T>
@@ -21,16 +19,9 @@ public:
     void reset(T* p = 0);
 
 private:
-    // Disable copy constructor and copy assignment operator
-    unique_ptr(const unique_ptr&) = delete;
-    unique_ptr& operator=(const unique_ptr&) = delete;
+    unique_ptr(const unique_ptr&);
+    unique_ptr& operator=(const unique_ptr&);
 };
-
-} 
-
-// implementation
-
-namespace ft {
 
 template <typename T>
 unique_ptr<T>::unique_ptr(T* p) : ptr(p) {}
@@ -70,8 +61,6 @@ void unique_ptr<T>::reset(T* p) {
     }
 }
 
-} 
-//implementation
-
+} // namespace ft
 
 #endif
