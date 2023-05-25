@@ -5,16 +5,16 @@
 # include "../socket/Socket.hpp"
 # include "../../libs/HandlerChain/HandlerChain.hpp"
 
-class ConnectionFdClass;
+class ConnectionFd;
 class EventHandler;
 
 class Event{
 protected:
-    ConnectionFdClass* connection;
+    ConnectionFd* connection;
     EventHandler* eventHandler;
 
 public:
-    Event(ConnectionFdClass* conn, EventHandler* handler)
+    Event(ConnectionFd* conn, EventHandler* handler)
         : connection(conn), eventHandler(handler) {}
 
     virtual ~Event() {}  // Virtual destructor
