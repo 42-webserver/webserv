@@ -31,7 +31,7 @@ public:
     std::string getUri();
     std::string getVersion();
     std::string getProtocol();
-    std::vector<char> getBody();
+    std::vector<char> &getBody();
     std::multimap<std::string, std::string> getHeaders();
     std::map<std::string, std::string> getQueries();
     std::map<std::string, std::string> getCookies();

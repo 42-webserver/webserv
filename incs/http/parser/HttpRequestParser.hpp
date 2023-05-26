@@ -11,27 +11,31 @@ typedef enum State{
         BODY
 } RequestParseState;
 
+static const char               _crlf[] = "\r\n";
+static const int                _crlfPatternSize = sizeof(_crlf) - 1;
+static const std::vector<char>  _crlfPattern = std::vector<char>(_crlf, _crlf + _crlfPatternSize);
+
 class HttpRequestParser{
 
 private:
-    HttpRequest         *_httpRequest;
-    RequestParseState   _state;
-    std::string         _buffer;
-    int                 _readBodySize;
+    HttpRequest                     *_httpRequest;
+    RequestParseState               _state;
+    std::vector<char>               _buffer;
+    int                             _readBodySize;
 
 public:
     HttpRequestParser(HttpRequest *httpRequest);
-    void parseRequest(const std::vector<char> &buffer);
+    void parseRequest(std::vector<char> &buffer);
     void clearBuffer();
     RequestParseState getState();
     int getReadBodySize();
     HttpRequest *getHttpRequest();
-    std::string getBuffer();
+    std::vector<char> getBuffer();
 
 private:
-    void handleStartLineState(std::string &bufferStr);
-    void handleHeaderState(std::string &bufferStr);
-    void handleBodyState(std::string &bufferStr);
+    void handleStartLineState(std::vector<char> &buffer);
+    void handleHeaderState(std::vector<char> &buffer);
+    void handleBodyState(std::vector<char> &buffer);
 };
 
 #endif

@@ -6,63 +6,65 @@ HttpRequestParser::HttpRequestParser(HttpRequest *httpRequest)
 {
 }
 
-void HttpRequestParser::parseRequest(const std::vector<char> &buffer) {
-     std::string bufferStr(buffer.begin(), buffer.end());
+void HttpRequestParser::parseRequest(std::vector<char> &buffer) {
     if (!this->_buffer.empty()){
-        bufferStr.insert(0, this->_buffer);
+        buffer.insert(buffer.begin(), this->_buffer.begin(), this->_buffer.end());
         this->_buffer.clear();
     }
     if (_state == BEFORE || _state == START_LINE)
-        handleStartLineState(bufferStr);
+        handleStartLineState(buffer);
     if (_state == HEADERS)
-        handleHeaderState(bufferStr);
+        handleHeaderState(buffer);
     if (_state == BODY)
-        handleBodyState(bufferStr);
+        handleBodyState(buffer);
 }
 
-void HttpRequestParser::handleStartLineState(std::string &bufferStr) {
-    if (bufferStr.empty())
+void HttpRequestParser::handleStartLineState(std::vector<char> &buffer) {
+    if (buffer.empty())
         return;
-    std::string::size_type pos = bufferStr.find("\r\n");
-    std::string line = bufferStr.substr(0, pos);
-    
-    if(pos == std::string::npos){
+    std::vector<char>::iterator find = std::search(buffer.begin(), buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+    if (find == buffer.end())
+    {
         this->_state = START_LINE;
-        this->_buffer = bufferStr;
+        this->_buffer.insert(this->_buffer.end(), buffer.begin(), buffer.end());
         return;
     }
-    _httpRequest->setStartLine(line);
-    bufferStr.erase(0, pos + 2);
+    _httpRequest->setStartLine(std::string(buffer.begin(), find));
+    buffer.erase(buffer.begin(), find + _crlfPatternSize);
     this->_state = HEADERS;
 }
 
-void HttpRequestParser::handleHeaderState(std::string &bufferStr) {
-    std::string::size_type pos;
-    std::string line;
-    if (bufferStr.empty())  
+void HttpRequestParser::handleHeaderState(std::vector<char> &buffer) {
+    if (buffer.empty())
         return;
-    pos = bufferStr.find("\r\n");
-    while(pos != std::string::npos){
-        line = bufferStr.substr(0, pos);
+    std::string line;
+    std::vector<char>::iterator find = std::search(buffer.begin(), buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+    if (find == buffer.end())
+    {
+        this->_state = HEADERS;
+        this->_buffer.insert(this->_buffer.end(), buffer.begin(), buffer.end());
+        return;
+    }
+    while(find != buffer.end()){
+        line = std::string(buffer.begin(), find);
         if (line.empty())
         {
-            bufferStr.erase(0, pos + 2);
+            buffer.erase(buffer.begin(), find + _crlfPatternSize);
             this->_state = BODY;
             return;
         }
         _httpRequest->addHeader(line);
-        bufferStr.erase(0, pos + 2);
-        pos = bufferStr.find("\r\n");
+        buffer.erase(buffer.begin(), find + _crlfPatternSize);
+        find = std::search(buffer.begin(), buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
     }
-    this->_buffer = bufferStr;
+    this->_buffer.insert(this->_buffer.end(), buffer.begin(), buffer.end());
 }
 
-void HttpRequestParser::handleBodyState(std::string &bufferStr) {
-    std::string line;
-    if (bufferStr.empty())  
+void HttpRequestParser::handleBodyState(std::vector<char> &buffer) {
+    if (buffer.empty())  
         return;
-    this->_buffer = bufferStr;
-    _readBodySize += bufferStr.size();
+    this->_buffer.insert(this->_buffer.end(), buffer.begin(), buffer.end());
+    _readBodySize += buffer.size();
 }
 
 RequestParseState HttpRequestParser::getState() {
@@ -77,6 +79,6 @@ HttpRequest *HttpRequestParser::getHttpRequest() {
     return this->_httpRequest;
 }
 
-std::string HttpRequestParser::getBuffer() {
+std::vector<char> HttpRequestParser::getBuffer() {
     return this->_buffer;
 }
