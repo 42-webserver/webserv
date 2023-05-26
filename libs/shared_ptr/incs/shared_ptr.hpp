@@ -110,6 +110,9 @@ bool	shared_ptr<T>::operator!=(const shared_ptr<T> &ref) const { return (this->_
 template <typename T>
 shared_ptr<T>::operator	bool(void) const { return (this->_ptr != NULL); }
 
+template <typename T>
+shared_ptr<T>	make_shared(T arg) { return (shared_ptr<T>(new T(arg))); }
+
 }
 
 #endif
