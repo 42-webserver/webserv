@@ -123,7 +123,7 @@ std::string HttpRequest::getVersion()
     return this->_version;
 }
 
-std::vector<char> HttpRequest::getBody()
+std::vector<char> &HttpRequest::getBody()
 {
     return this->_body;
 }
