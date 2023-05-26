@@ -3,20 +3,40 @@
 
 # include "../../libs/shared_ptr/incs/shared_ptr.hpp"
 # include "../socket/Socket.hpp"
+# include "../../libs/HandlerChain/HandlerChain.hpp"
 
-class Event {
-	protected:
-		int	_fd;
+class ConnectionFd;
+class EventHandler;
 
-	public:
-		Event(void);
-		Event(int fd);
-		Event(const Event &ref);
-		virtual	~Event(void);
-		Event	&operator=(const Event &rhs);
-	
-	public:
-		int	getFd(void) const;
+class Event{
+protected:
+    ConnectionFd* connection;
+    EventHandler* eventHandler;
+
+public:
+    Event(ConnectionFd* conn, EventHandler* handler)
+        : connection(conn), eventHandler(handler) {}
+
+    virtual ~Event() {}  // Virtual destructor
+
+    virtual void callEventHandler() = 0;
+
+private:
+    // Disable copy constructor and copy assignment operator
+    Event(const Event&);
+    Event& operator=(const Event&);
 };
+
+class EventHandler {
+public:
+    virtual ~EventHandler() {}  // Virtual destructor
+
+
+};
+
+
+
+
+
 
 #endif

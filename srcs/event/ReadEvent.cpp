@@ -2,9 +2,9 @@
 #include <new>
 #include <string>
 
-ReadEvent::ReadEvent(void): Event() {}
-ReadEvent::ReadEvent(int fd): Event(fd) {}
-ReadEvent::ReadEvent(const ReadEvent &ref): Event(ref) {}
+ReadEvent::ReadEvent(void): Event(), _buffer(ReadEvent::MAX_SIZE) {}
+ReadEvent::ReadEvent(int fd): Event(fd), _buffer(ReadEvent::MAX_SIZE) {}
+ReadEvent::ReadEvent(const ReadEvent &ref): Event(ref), _buffer(ReadEvent::MAX_SIZE) {}
 ReadEvent::~ReadEvent(void) {}
 ReadEvent	&ReadEvent::operator=(const ReadEvent &rhs) {
 	if (this != &rhs) {

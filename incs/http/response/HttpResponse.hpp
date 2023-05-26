@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "../utils/HttpStatus.hpp"
 #include "../utils/Cookie.hpp"
 class HttpResponse
