@@ -9,6 +9,7 @@
 # include "../../incs/kqueue/Kqueue.hpp"
 class Kqueue;
 class Event;
+
 class EventHandler {
 public:
     virtual ~EventHandler();  // Virtual destructor
@@ -25,7 +26,8 @@ public:
     virtual ~Event();// Virtual destructor
 
     virtual void callEventHandler() = 0;
-
+    const int &getFd() const;
+    const ft::shared_ptr<Kqueue>    getKqueue() const;
 private:
     Event(const Event&);
     Event& operator=(const Event&);
