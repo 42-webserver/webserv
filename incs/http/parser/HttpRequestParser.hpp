@@ -25,12 +25,12 @@ private:
 
 public:
     HttpRequestParser(HttpRequest *httpRequest);
-    void parseRequest(std::vector<char> &buffer);
+    const RequestParseState &parseRequest(std::vector<char> &buffer);
     void clearBuffer();
-    RequestParseState getState();
-    int getReadBodySize();
-    HttpRequest *getHttpRequest();
-    std::vector<char> getBuffer();
+    const RequestParseState &getState();
+    const int & getReadBodySize();
+    const HttpRequest &getHttpRequest();
+    const std::vector<char> & getBuffer();
 
 private:
     void handleStartLineState(std::vector<char> &buffer);
