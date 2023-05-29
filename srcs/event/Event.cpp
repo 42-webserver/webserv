@@ -6,6 +6,7 @@ Event::Event(int connectionFd, EventHandler* EventHandler, ft::shared_ptr<Kqueue
 
 Event::~Event(void) {}
 
+// To do: check Event Handler 랑 EventFactory구현 물 채워야 되는지
 EventHandler::~EventHandler() {
 }
 

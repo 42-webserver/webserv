@@ -1,6 +1,8 @@
 #include "../../incs/event/WriteEvent.hpp"
 #include <new>
 
+// To do: implement WriteEvent
+
 WriteEvent::WriteEvent(void): Event() {}
 WriteEvent::WriteEvent(int fd): Event(fd) {}
 WriteEvent::WriteEvent(const WriteEvent &ref): Event(ref) {}

@@ -1,6 +1,8 @@
 #include "../../incs/event/TimeEvent.hpp"
 #include <new>
 
+// To do: implement TimeEvent
+
 TimeEvent::TimeEvent(void): Event() {}
 TimeEvent::TimeEvent(const TimeEvent &ref): Event(ref) {}
 TimeEvent::~TimeEvent(void) {}
