@@ -2,25 +2,35 @@
 #include <new>
 #include <string>
 
-ReadEvent::ReadEvent(void): Event(), _buffer(ReadEvent::MAX_SIZE) {}
-ReadEvent::ReadEvent(int fd): Event(fd), _buffer(ReadEvent::MAX_SIZE) {}
-ReadEvent::ReadEvent(const ReadEvent &ref): Event(ref), _buffer(ReadEvent::MAX_SIZE) {}
+// READ EVENT
+ReadEvent::ReadEvent(int fd, EventHandler *ReadEventHandler):
+Event(fd, ReadEventHandler), _buffer(ReadEvent::BUF_SIZE) {}
 ReadEvent::~ReadEvent(void) {}
-ReadEvent	&ReadEvent::operator=(const ReadEvent &rhs) {
-	if (this != &rhs) {
-		this->~ReadEvent();
-		new (this) ReadEvent(rhs);
-	}
-	return (*this);
+
+// const std::vector<char>	&ReadEvent::getBuffer(void) const { return (this->_buffer); }
+
+ReadEventHandler::~ReadEventHandler() {
+    // Cleanup code here
 }
 
-// Getters
-const std::vector<char>	&ReadEvent::getBuffer(void) const { return (this->_buffer); }
 
-// Utils
-bool	ReadEvent::append(const char *buf) {
-	std::string	str(buf);
+// READ EVENT
 
-	this->_buffer.insert(this->_buffer.end(), str.begin(), str.end());
-	return (true);
+// Read EvClient
+
+ReadEvClient::ReadEvClient(int fd, EventHandler *ReadEvClientHandler) :  
+ReadEvent(fd, ReadEvClientHandler) {}
+
+ReadEvClient::~ReadEvClient() {
+}
+void ReadEvClient::callEventHandler() {
+	this->_eventHandler->handleEvent(*this);
+}
+
+ReadEvClientHandler::ReadEvClientHandler() {}
+void ReadEvClientHandler::handleEvent(Event &event) {
+	std::cout << "hi?\n";
+}
+ReadEvClientHandler::~ReadEvClientHandler() {
+    // Cleanup code here
 }
