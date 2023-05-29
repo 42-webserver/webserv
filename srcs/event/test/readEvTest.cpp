@@ -1,7 +1,8 @@
-#include "../../incs/event/Event.hpp"
-#include "../../incs/event/ReadEvent.hpp"
+#include "../../../incs/event/Event.hpp"
+#include "../../../incs/event/ReadEvent.hpp"
 #include <unistd.h>
 #include <fcntl.h>
+// g++ ./test/readEvTest.cpp ReadEvent.cpp Event.cpp ../../libs/unique_ptr/unique_ptr.hpp ../file/file.cpp
 void foo(void)
 {
 	int fd = open("a", O_RDONLY | O_CREAT);

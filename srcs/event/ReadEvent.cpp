@@ -23,14 +23,20 @@ ReadEvent(fd, ReadEvClientHandler) {}
 
 ReadEvClient::~ReadEvClient() {
 }
+
 void ReadEvClient::callEventHandler() {
 	this->_eventHandler->handleEvent(*this);
 }
+// Read EvClient
+
+// Read EvClientHandler
 
 ReadEvClientHandler::ReadEvClientHandler() {}
 void ReadEvClientHandler::handleEvent(Event &event) {
+	//test용
 	std::cout << "hi?\n";
+	//
 }
 ReadEvClientHandler::~ReadEvClientHandler() {
-    // Cleanup code here
 }
+// Read EvClientHandler
