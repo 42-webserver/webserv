@@ -24,4 +24,7 @@ private:
     static ft::unique_ptr<T> instance;
 };
 
+template <typename T>
+ft::unique_ptr<T> Singleton<T>::instance = 0;
+
 #endif

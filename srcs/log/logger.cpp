@@ -1,4 +1,4 @@
-#include "../../incs/loglogger.hpp"
+#include "../../incs/log/logger.hpp"
 
 Logger::Logger()
     {
