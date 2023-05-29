@@ -3,8 +3,8 @@
 #include <string>
 
 // READ EVENT
-ReadEvent::ReadEvent(int fd, EventHandler *ReadEventHandler):
-Event(fd, ReadEventHandler), _buffer(ReadEvent::BUF_SIZE) {}
+ReadEvent::ReadEvent(int fd, EventHandler *ReadEventHandler, ft::shared_ptr<Kqueue> kqueue):
+Event(fd, ReadEventHandler, kqueue), _buffer(ReadEvent::BUF_SIZE) {}
 ReadEvent::~ReadEvent(void) {}
 
 // const std::vector<char>	&ReadEvent::getBuffer(void) const { return (this->_buffer); }
@@ -18,8 +18,8 @@ ReadEventHandler::~ReadEventHandler() {
 
 // Read EvClient
 
-ReadEvClient::ReadEvClient(int fd, EventHandler *ReadEvClientHandler) :  
-ReadEvent(fd, ReadEvClientHandler) {}
+ReadEvClient::ReadEvClient(int fd, EventHandler *ReadEvClientHandler, ft::shared_ptr<Kqueue> kqueue) :  
+ReadEvent(fd, ReadEvClientHandler, kqueue) {}
 
 ReadEvClient::~ReadEvClient() {
 }

@@ -5,6 +5,8 @@
 # include <sys/event.h>
 # include "../event/Event.hpp"
 
+class Event;
+
 enum EventType {
 	LISTEN,
 	READ,

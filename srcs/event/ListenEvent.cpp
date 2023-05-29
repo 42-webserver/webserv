@@ -32,8 +32,16 @@ int		ListenEvent::accept(void) const throw(std::exception) {
 
 // To do: 
 // Listen Event Handler 
-// Method 구현 : 꼭 vtable신경
+ListenEvHandler::ListenEvHandler() {};
+ListenEvHandler::~ListenEvHandler() {};
+void ListenEvHandler::handleEvent(Event &event) throw (std::exception) {
+	int					client_fd;
+	struct sockaddr_in	client_addr;
+	socklen_t			client_addr_len;
+	int					flags;
+}
 
+// Method 구현 : 꼭 vtable신경
 // Exception
 const char	*ListenEvent::FailToAcceptException::what(void) const throw() { return ("ListenEvent: Fail to accept"); }
 const char	*ListenEvent::FailToControlException::what(void) const throw() { return ("ListenEvent: Fail to control"); }
