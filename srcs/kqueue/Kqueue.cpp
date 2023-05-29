@@ -31,7 +31,7 @@ Kqueue	&Kqueue::operator=(const Kqueue &rhs) {
 }
 
 // Util
-int		Kqueue::length(void) {
+int		Kqueue::pullEvents(void) {
 	int	ret = kevent(this->_fd, NULL, 0, this->_ev_list, MAX_EVENTS, NULL);
 	
 	if (ret == -1) {
@@ -40,24 +40,61 @@ int		Kqueue::length(void) {
 	return (ret);
 }
 int		Kqueue::getEventFd(int idx) const { return (this->_ev_list[idx].ident); }
-void	*Kqueue::getEventData(int idx) const { return (this->_ev_list[idx].udata); }
-bool	Kqueue::addEvent(int fd, void *udata) {
-	EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, udata);
-	EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, udata);
-	if (kevent(this->_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
-		close(fd);
-		throw (FailToControlException());
+Event	*Kqueue::getEventData(int idx) const { 
+	return static_cast<Event*>(this->_ev_list[idx].udata);
+}
+bool	Kqueue::addEvent(int fd, void *udata, EventType type) {
+	switch (type)
+	{
+		case LISTEN:
+		EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, udata);
+		if (kevent(this->_fd, this->_ev_set, 1, NULL, 0, NULL) == -1) {
+			close(fd);
+			throw (FailToControlException());
+		}
+		break;
+		case READ:
+		EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, udata);
+		if (kevent(this->_fd, this->_ev_set, 1, NULL, 0, NULL) == -1) {
+			close(fd);
+			throw (FailToControlException());
+		}
+		case WRITE:
+		EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, udata);
+		if (kevent(this->_fd, this->_ev_set, 1, NULL, 0, NULL) == -1) {
+			close(fd);
+			throw (FailToControlException());
+		}
+		//To do: Timer 추가 해야됨 
+		break;
 	}
 	return (true);
 }
-bool	Kqueue::deleteEvent(int fd, void *udata) {
-	EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_DELETE, 0, 0, udata);
-	EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, udata);
-	if (kevent(this->_fd, this->_ev_set, 2, NULL, 0, NULL) == -1) {
-		close(fd);
-		throw (FailToControlException());
+bool	Kqueue::deleteEvent(int fd, void *udata, EventType type) {
+	switch (type)
+	{
+		case LISTEN:
+		EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_DELETE, 0, 0, udata);
+		if (kevent(this->_fd, this->_ev_set, 1, NULL, 0, NULL) == -1) {
+			close(fd);
+			throw (FailToControlException());
+		}
+		break;
+		case READ:
+		EV_SET(&this->_ev_set[0], fd, EVFILT_READ, EV_DELETE, 0, 0, udata);
+		if (kevent(this->_fd, this->_ev_set, 1, NULL, 0, NULL) == -1) {
+			close(fd);
+			throw (FailToControlException());
+		}
+		case WRITE:
+		EV_SET(&this->_ev_set[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, udata);
+		if (kevent(this->_fd, this->_ev_set, 1, NULL, 0, NULL) == -1) {
+			close(fd);
+			throw (FailToControlException());
+		}
+		//To do: Timer 추가 해야됨 
+		break;
 	}
-	close(fd);
 	return (true);
 }
 

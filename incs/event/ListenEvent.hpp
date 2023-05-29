@@ -1,18 +1,19 @@
 #ifndef LISTENEVENT_HPP
 # define LISTENEVENT_HPP
 
-# include "Event.hpp"
+# include "./Event.hpp"
 
 class ListenEvent: public Event {
 	public:
-		ListenEvent(void);
-		ListenEvent(int fd);
-		ListenEvent(const ListenEvent &ref);
+		ListenEvent(int fd, EventHandler *ReadEventHandler);
 		virtual	~ListenEvent(void);
-		ListenEvent	&operator=(const ListenEvent &rhs);
+		virtual void	callEventHandler(void);
 
-	public:
+
+	private:
+		ListenEvent	&operator=(const ListenEvent &rhs);
 		int	accept(void) const throw(std::exception);
+		ListenEvent(const ListenEvent &ref);
 
 	public:
 		class FailToAcceptException: public std::exception {
@@ -23,6 +24,14 @@ class ListenEvent: public Event {
 			public:
 				virtual const char *what() const throw();
 		};
+};
+
+class ListenEvHandler: public EventHandler {
+	public:
+		ListenEvHandler();
+		virtual	~ListenEvHandler(void);
+	public:
+		virtual void	handleEvent(Event &event);
 };
 
 #endif

@@ -3,7 +3,14 @@
 
 # include <exception>
 # include <sys/event.h>
+# include "../event/Event.hpp"
 
+enum EventType {
+	LISTEN,
+	READ,
+	WRITE,
+	Timer
+};
 class Kqueue {
 	private:
 		static const int	MAX_EVENTS = 16;
@@ -22,11 +29,11 @@ class Kqueue {
 
 	// Util
 	public:
-		int		length(void);
+		int		pullEvents(void);
 		int		getEventFd(int idx) const;
-		void	*getEventData(int idx) const;
-		bool	addEvent(int fd, void *udata);
-		bool	deleteEvent(int fd, void *udata);
+		Event	*getEventData(int idx) const;
+		bool	addEvent(int fd, void *udata, EventType type);
+		bool	deleteEvent(int fd, void *udata, EventType type);
 	
 	// Exception
 	public:

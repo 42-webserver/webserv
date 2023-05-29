@@ -30,8 +30,9 @@ class Webserv {
 		Webserv	&operator=(const Webserv &rhs);
 	
 	private:
-		int		read(int client_fd, ReadEvent *read_event);
-		int		send(int client_fd, WriteEvent *write_event);
+	// comment: 필요 없을 것 같음
+		// int		read(int client_fd, ReadEvent *read_event);
+		// int		send(int client_fd, WriteEvent *write_event);
 
 	public:
 		bool	run(void) throw(std::exception);

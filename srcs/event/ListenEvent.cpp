@@ -3,19 +3,12 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-ListenEvent::ListenEvent(void): Event() {}
-ListenEvent::ListenEvent(int fd): Event(fd) {}
-ListenEvent::ListenEvent(const ListenEvent &ref): Event(ref) {}
+ListenEvent::ListenEvent(int fd, EventHandler *ReadEventHandler): Event(fd, ReadEventHandler) {}
 ListenEvent::~ListenEvent(void) {}
-ListenEvent	&ListenEvent::operator=(const ListenEvent &rhs) {
-	if (this != &rhs) {
-		this->~ListenEvent();
-		new (this) ListenEvent(rhs);
-	}
-	return (*this);
+void ListenEvent::callEventHandler(){
+	this->_eventHandler->handleEvent(*this);
 }
-
-// Utils
+// To do:: ListentEvent::accept를 Event Handler 의 매서드로 넘겨주어야 함
 int		ListenEvent::accept(void) const throw(std::exception) {
 	int					client_fd;
 	struct sockaddr_in	client_addr;
@@ -36,6 +29,10 @@ int		ListenEvent::accept(void) const throw(std::exception) {
 	}
 	return (client_fd);
 }
+
+// To do: 
+// Listen Event Handler 
+// Method 구현 : 꼭 vtable신경
 
 // Exception
 const char	*ListenEvent::FailToAcceptException::what(void) const throw() { return ("ListenEvent: Fail to accept"); }
