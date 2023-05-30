@@ -11,6 +11,7 @@ void foo(void)
 	Logger &log = Logger::getInstance();
 	log.debug("start shread");
 	ft::shared_ptr<Kqueue> kq(new Kqueue());
+	ft::shared_ptr<Kqueue> kq2 = kq;
 	log.debug("finish shread");
 	ListenEvFactory &factory = ListenEvFactory::getInstance();
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
