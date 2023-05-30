@@ -12,10 +12,10 @@ Webserv::Webserv(const Config &config): _kqueue(ft::shared_ptr<Kqueue>(new Kqueu
 
 	for (size_t i=0; i<server_configs.size(); ++i) {
 		try {
+			ListenEvFactory &factory = ListenEvFactory::getInstance();
 			this->_servers.push_back(Server(server_configs[i]));
 			this->_kqueue->addEvent(this->_servers.back().getSocket()->getFd(), 
-			new ListenEvent(this->_servers.back().getSocket()->getFd(), 
-			new ListenEvHandler()), LISTEN);
+			factory.createEvent(this->_servers.back().getSocket()->getFd(), this->_kqueue), LISTEN);
 			std::cout << this->_servers.back() << '\n';
 		} catch (const std::exception &e) {
 			std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';

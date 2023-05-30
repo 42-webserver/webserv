@@ -9,11 +9,14 @@
 void foo(void)
 {
 	Logger &log = Logger::getInstance();
-	ft::shared_ptr<Kqueue> kq = ft::make_shared<Kqueue>(Kqueue());
+	log.debug("start shread");
+	ft::shared_ptr<Kqueue> kq(new Kqueue());
+	log.debug("finish shread");
 	ListenEvFactory &factory = ListenEvFactory::getInstance();
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 		std::cout << listenfd << '\n';
 
+	log.info("{} ,123, {}, 1234, {}", 3, "hi", "hi", "hi");
     int enable = 1;
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
 

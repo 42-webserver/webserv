@@ -23,12 +23,12 @@ int ListenEvHandler::connectClient(int SocketFd) const throw(std::exception) {
 
 	//For Debug
 	// Set the socket to non-blocking mode before calling accept
-	flags = fcntl(SocketFd, F_GETFL, 0);
-	if (fcntl(SocketFd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		Logger::getInstance().info("Fail to control socket");
-		throw (FailToControlException());
-	}
-	//
+	// flags = fcntl(SocketFd, F_GETFL, 0);
+	// if (fcntl(SocketFd, F_SETFL, flags | O_NONBLOCK) == -1) {
+	// 	Logger::getInstance().info("Fail to control socket");
+	// 	throw (FailToControlException());
+	// }
+	// //
 
 
 	
@@ -50,7 +50,6 @@ int ListenEvHandler::connectClient(int SocketFd) const throw(std::exception) {
 		throw (FailToControlException());
 	}
 
-	Logger::getInstance().info("Success to accept client");
 	return (client_fd);	
 }
 

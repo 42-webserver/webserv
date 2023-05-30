@@ -50,4 +50,113 @@
 [2023-05-29 16:07:47] [WARNING]: hi format This is a warning message!
 [2023-05-29 16:07:47] [ERROR]: hi format This is an error message!
 [2023-05-29 16:07:47] [DEBUG]: hi format This is a debug message!
-[
+[[[[2023-05-30 07:19:22] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:19:22] [INFO]: Enter Listen Create
+[2023-05-30 07:19:22] [INFO]: Try to accept client
+[2023-05-30 07:19:43] [INFO]: Success to accept client
+[2023-05-30 07:19:43] [INFO]: Success to accept client
+[2023-05-30 07:19:43] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:25:02] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:25:02] [INFO]: Enter Listen Create
+[2023-05-30 07:25:02] [INFO]: Try to accept client
+[2023-05-30 07:25:08] [INFO]: Success to accept client
+[2023-05-30 07:25:08] [INFO]: Success to accept client
+[2023-05-30 07:25:08] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:26:07] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:26:07] [INFO]: Enter Listen Create
+[2023-05-30 07:26:07] [INFO]: Try to accept client
+[2023-05-30 07:26:11] [INFO]: Success to accept client
+[2023-05-30 07:26:11] [INFO]: Success to accept client
+[2023-05-30 07:26:11] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:33:15] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:33:15] [INFO]: Enter Listen Create
+[2023-05-30 07:33:15] [INFO]: Try to accept client
+[2023-05-30 07:33:22] [INFO]: Success to accept client
+[2023-05-30 07:33:22] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:33:55] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:33:55] [INFO]: Enter Listen Create
+[2023-05-30 07:33:55] [INFO]: Try to accept client
+[2023-05-30 07:34:03] [INFO]: Success to accept client
+[2023-05-30 07:34:03] [INFO]: Add Event
+[2023-05-30 07:34:03] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:35:29] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:35:29] [INFO]: Enter Listen Create
+[2023-05-30 07:35:29] [INFO]: Try to accept client
+[2023-05-30 07:35:33] [INFO]: Success to accept client
+[2023-05-30 07:35:33] [INFO]: Add Event
+[2023-05-30 07:35:33] [INFO]: Add Read Event
+[2023-05-30 07:35:33] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:45:24] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:45:24] [INFO]: Enter Listen Create
+[2023-05-30 07:45:24] [INFO]: Try to accept client
+[2023-05-30 07:45:35] [INFO]: Success to accept client
+[2023-05-30 07:45:35] [INFO]: Add Event
+[2023-05-30 07:45:35] [INFO]: Add Read Event
+[2023-05-30 07:45:35] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:46:25] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:46:25] [INFO]: Enter Listen Create
+[2023-05-30 07:46:25] [INFO]: Try to accept client
+[2023-05-30 07:46:29] [INFO]: Success to accept client
+[2023-05-30 07:46:29] [INFO]: Add Event
+[2023-05-30 07:46:29] [INFO]: Add Read Event
+[2023-05-30 07:46:29] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:46:58] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:46:58] [INFO]: Enter Listen Create
+[2023-05-30 07:46:58] [INFO]: Try to accept client
+[2023-05-30 07:47:01] [INFO]: Success to accept client
+[2023-05-30 07:47:01] [INFO]: Add Event
+[2023-05-30 07:47:01] [INFO]: Add Read Event
+[2023-05-30 07:47:01] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:51:56] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:51:56] [INFO]: Enter Listen Create
+[2023-05-30 07:51:56] [INFO]: Try to accept client
+[2023-05-30 07:52:01] [INFO]: Success to accept client
+[2023-05-30 07:52:01] [INFO]: Add Event
+[2023-05-30 07:52:01] [INFO]: Add Read Event
+[2023-05-30 07:52:01] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:54:03] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:54:03] [INFO]: Enter Listen Create
+[2023-05-30 07:54:03] [INFO]: Try to accept client
+[2023-05-30 07:54:09] [INFO]: Success to accept client
+[2023-05-30 07:54:09] [INFO]: Add Event
+[2023-05-30 07:54:09] [INFO]: Add Read Event
+[2023-05-30 07:54:09] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:56:59] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:56:59] [INFO]: Enter Listen Create
+[2023-05-30 07:56:59] [INFO]: Try to accept client
+[2023-05-30 07:57:11] [INFO]: Success to accept client
+[2023-05-30 07:57:11] [INFO]: Add Event
+[2023-05-30 07:57:11] [INFO]: Add Read Event
+[2023-05-30 07:57:11] [ERROR]: Kqueue: Fail to control
+[2023-05-30 07:58:18] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 07:58:18] [INFO]: Enter Listen Create
+[2023-05-30 07:58:18] [INFO]: Try to accept client
+[2023-05-30 07:58:22] [INFO]: Success to accept client
+[2023-05-30 07:58:22] [INFO]: Add Event
+[2023-05-30 07:58:22] [INFO]: Add Read Event
+[2023-05-30 07:58:22] [ERROR]: Kqueue: Fail to control
+[2023-05-30 08:01:55] [INFO]: Kqueue Create
+[2023-05-30 08:01:55] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 08:01:55] [INFO]: Enter Listen Create
+[2023-05-30 08:01:55] [INFO]: Try to accept client
+[2023-05-30 08:02:00] [INFO]: Success to accept client
+[2023-05-30 08:02:00] [INFO]: Add Event
+[2023-05-30 08:02:00] [INFO]: Add Read Event
+[2023-05-30 08:02:00] [ERROR]: Kqueue: Fail to control
+[2023-05-30 08:04:39] [ERROR]: Kqueue Destroy
+[2023-05-30 08:04:39] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 08:04:39] [INFO]: Enter Listen Create
+[2023-05-30 08:04:39] [INFO]: Try to accept client
+[2023-05-30 08:04:46] [INFO]: Success to accept client
+[2023-05-30 08:04:46] [INFO]: Add Event
+[2023-05-30 08:04:46] [INFO]: Add Read Event
+[2023-05-30 08:04:46] [ERROR]: Kqueue: Fail to control
+[2023-05-30 08:18:47] [DEBUG]: start shread
+[2023-05-30 08:18:47] [DEBUG]: finish shread
+[2023-05-30 08:18:47] [INFO]: hi ,123, hi, 1234, hi
+[2023-05-30 08:18:47] [INFO]: Enter Listen Create
+[2023-05-30 08:18:47] [INFO]: Try to accept client
+[2023-05-30 08:18:58] [INFO]: Success to accept client
+[2023-05-30 08:18:58] [INFO]: Add Event
+[2023-05-30 08:18:58] [INFO]: Add Read Event
+[2023-05-30 08:18:58] [INFO]: Add Write Event
