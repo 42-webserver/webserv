@@ -1,4 +1,4 @@
-#include "../../incs/log/logger.hpp"
+#include "../../../incs/log/logger.hpp"
 int main() {
     // Get a reference to the Logger instance
     Logger& logger = Logger::getInstance();

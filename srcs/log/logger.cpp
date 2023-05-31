@@ -28,18 +28,33 @@ Logger::~Logger()
     }
 }
 
+std::string Logger::converformatMessage(const std::string& format, int count, va_list args) {
+    std::string message = format;
+
+    for(int i = 0; i < count; i++) {
+        size_t pos = message.find("{}");
+        if (pos != std::string::npos) {
+            std::string content = va_arg(args, char*);
+            message.replace(pos, 2, content);
+        }
+    }
+
+    return message;
+}
+
+
+
 void Logger::info(const std::string& message)
 {
     log(INFO, message);
 }
 
-void Logger::info(const std::string& format, const std::string& content)
+void Logger::info(const std::string& format, int count, ...)
 {
-    std::string message = format;
-    size_t pos = message.find("{}");
-    if (pos != std::string::npos) {
-        message.replace(pos, 2, content);
-    }
+    va_list args;
+    va_start(args, count);
+    std::string message = converformatMessage(format, count, args);
+    va_end(args);
     log(INFO, message);
 }
 
@@ -48,13 +63,12 @@ void Logger::warning(const std::string& message)
     log(WARNING, message);
 }
 
-void Logger::warning(const std::string& format, const std::string& content)
+void Logger::warning(const std::string& format, int count, ...)
 {
-    std::string message = format;
-    size_t pos = message.find("{}");
-    if (pos != std::string::npos) {
-        message.replace(pos, 2, content);
-    }
+    va_list args;
+    va_start(args, count);
+    std::string message = converformatMessage(format, count, args);
+    va_end(args);
     log(WARNING, message);
 }
 
@@ -63,13 +77,12 @@ void Logger::error(const std::string& message)
     log(ERROR, message);
 }
 
-void Logger::error(const std::string& format, const std::string& content)
+void Logger::error(const std::string& format, int count, ...)
 {
-    std::string message = format;
-    size_t pos = message.find("{}");
-    if (pos != std::string::npos) {
-        message.replace(pos, 2, content);
-    }
+    va_list args;
+    va_start(args, count);
+    std::string message = converformatMessage(format, count, args);
+    va_end(args);
     log(ERROR, message);
 }
 
@@ -78,15 +91,15 @@ void Logger::debug(const std::string& message)
     log(DEBUG, message);
 }
 
-void Logger::debug(const std::string& format, const std::string& content)
+void Logger::debug(const std::string& format, int count, ...)
 {
-    std::string message = format;
-    size_t pos = message.find("{}");
-    if (pos != std::string::npos) {
-        message.replace(pos, 2, content);
-    }
+    va_list args;
+    va_start(args, count);
+    std::string message = converformatMessage(format, count, args);
+    va_end(args);
     log(DEBUG, message);
 }
+
 
 void Logger::log(LogLevel level, const std::string& message)
 {

@@ -23,6 +23,8 @@ SRCS =	main.cpp \
 		event/ReadEvent.cpp \
 		event/TimeEvent.cpp \
 		event/WriteEvent.cpp \
+		log/logger.cpp \
+		file/file.cpp \
 		http/handler/ErrorPageHandler.cpp \
 		http/handler/HttpRequestHandler.cpp \
 		http/parser/HttpRequestParser.cpp \
@@ -31,7 +33,7 @@ SRCS =	main.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \
 		http/utils/Cookie.cpp \
-		kqueue/Kqueue.cpp \
+		EventQueue/EventQueue.cpp \
 		server/Location.cpp \
 		server/Server.cpp \
 		server/Webserv.cpp \
@@ -49,9 +51,11 @@ OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/http/response \
 				${OBJS_DIR}/http/utils \
 				${OBJS_DIR}/http/test \
-				${OBJS_DIR}/kqueue \
+				${OBJS_DIR}/EventQueue\
 				${OBJS_DIR}/server \
 				${OBJS_DIR}/socket \
+				${OBJS_DIR}/log \
+				${OBJS_DIR}/file \
 				${OBJS_DIR}/route \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
