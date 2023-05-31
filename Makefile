@@ -36,6 +36,8 @@ SRCS =	main.cpp \
 		server/Server.cpp \
 		server/Webserv.cpp \
 		socket/Socket.cpp \
+		route/Match.cpp \
+		route/RouteOrAliasHandler.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/config \
@@ -49,7 +51,8 @@ OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/http/test \
 				${OBJS_DIR}/kqueue \
 				${OBJS_DIR}/server \
-				${OBJS_DIR}/socket
+				${OBJS_DIR}/socket \
+				${OBJS_DIR}/route \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
