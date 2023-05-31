@@ -5,11 +5,11 @@
 # include "../log/logger.hpp"
 class ListenEvent: public Event {
 	public:
-		ListenEvent(int fd, EventHandler *ReadEventHandler, ft::shared_ptr<Kqueue> kqueue);
+		ListenEvent(int fd, EventHandler *ReadEventHandler);
 		virtual	~ListenEvent(void);
 		virtual void	callEventHandler(void);
-
-
+		virtual void	onboardQueue() throw (std::exception);
+		virtual void	offboardQueue() throw (std::exception);
 	private:
 		ListenEvent	&operator=(const ListenEvent &rhs);
 		ListenEvent(const ListenEvent &ref);
@@ -57,8 +57,8 @@ public:
         return instance;
     }
 
-    Event* createEvent(int fd, ft::shared_ptr<Kqueue> kqueue) {
-        return new ListenEvent(fd, new ListenEvHandler(), kqueue);
+    Event* createEvent(int fd) {
+        return new ListenEvent(fd, new ListenEvHandler());
     }
 
 private:

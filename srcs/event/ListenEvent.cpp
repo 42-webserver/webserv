@@ -3,49 +3,62 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "../../incs/log/logger.hpp"
-ListenEvent::ListenEvent(int fd, EventHandler *ReadEventHandler, 
-ft::shared_ptr<Kqueue> kqueue): Event(fd, ReadEventHandler, kqueue) {}
+
+ListenEvent::ListenEvent(int fd, EventHandler *ReadEventHandler): 
+Event(fd, ReadEventHandler) {}
 ListenEvent::~ListenEvent(void) {}
 void ListenEvent::callEventHandler(){
 	this->_eventHandler->handleEvent(*this);
 }
+void ListenEvent::onboardQueue() throw (std::exception) {
+	EventQueue &EvQueue = EventQueue::getInstance();
 
+	Logger::getInstance().info("onboard Listen Event");
+
+	int listenfd = this->getConnectionFd();
+	void *Event = this;
+
+	EV_SET(EvQueue.getEvSetElementPtr(READ_SET), listenfd,
+	EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, Event);
+	if (kevent(EvQueue.getEvQueFd(), EvQueue.getEventSet(), 1, NULL, 0, NULL) == -1) {
+		perror("kevent");
+		throw (FailToControlException());
+	}
+}
+
+void ListenEvent::offboardQueue() throw (std::exception) {
+	EventQueue &EvQueue = EventQueue::getInstance();
+
+	Logger::getInstance().info("Remove Listen Event");
+	EV_SET(EvQueue.getEvSetElementPtr(READ_SET), this->getConnectionFd(),
+	EVFILT_READ, EV_DELETE, 0, 0, this);
+	if (kevent(EvQueue.getEvQueFd(), EvQueue.getEventSet(), 1, NULL, 0, NULL) == -1) {
+		perror("kevent");
+		throw (FailToControlException());
+	}
+}
 // To do: 
 // Listen Event Handler 
 ListenEvHandler::ListenEvHandler() {};
 ListenEvHandler::~ListenEvHandler() {};
-int ListenEvHandler::connectClient(int SocketFd) const throw(std::exception) {
+int ListenEvHandler::connectClient(int PassiveSocketFd) const throw(std::exception) {
 	int					client_fd;
-	struct sockaddr_in	client_addr;
-	socklen_t			client_addr_len;
 	int					flags;
-	Logger::getInstance().info("Try to accept client");
-
-	//For Debug
-	// Set the socket to non-blocking mode before calling accept
-	// flags = fcntl(SocketFd, F_GETFL, 0);
-	// if (fcntl(SocketFd, F_SETFL, flags | O_NONBLOCK) == -1) {
-	// 	Logger::getInstance().info("Fail to control socket");
-	// 	throw (FailToControlException());
-	// }
-	// //
-
-
 	
-	client_addr_len = sizeof(client_addr);
-	if ((client_fd = ::accept(SocketFd, (struct sockaddr *)&client_addr, &client_addr_len)) == -1) {
-		Logger::getInstance().info("Fail to accept client");
+	if ((client_fd = ::accept(PassiveSocketFd, (struct sockaddr *)NULL, NULL)) == -1) {
+		Logger::getInstance().error("Fail to accept client");
 		throw (FailToAcceptException());
+		return (-1);
 	}
 
 	// Set the client socket to non-blocking mode after accept
 	if ((flags = fcntl(client_fd, F_GETFL, 0)) == -1) {
-		Logger::getInstance().info("Fail to control client");
+		Logger::getInstance().error("Fail to control client");
 		close(client_fd);
 		throw (FailToControlException());
 	}
 	if (fcntl(client_fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		Logger::getInstance().info("Fail to control client");
+		Logger::getInstance().error("Fail to control client");
 		close(client_fd);
 		throw (FailToControlException());
 	}
@@ -54,36 +67,31 @@ int ListenEvHandler::connectClient(int SocketFd) const throw(std::exception) {
 }
 
 void ListenEvHandler::handleEvent(Event &event) throw (std::exception) {
-	int client_fd = connectClient(event.getFd());
+	static int i = 1;
+
+	std::cout << i++ <<'\n';
 	Logger &log = Logger::getInstance();
-	if (client_fd == -1) {
-		log.error("Fail to accept client");
+	int client_fd;
+	try {
+		client_fd = connectClient(event.getConnectionFd());
+		if (client_fd != -1)
+			log.info("Client connected");
+	} catch (const std::exception &e) {
+		log.error(e.what());
 		return ;
 	}
 
-	else {
-		log.info("Success to accept client");
-	}
-
-	ListenEvFactory &factory = ListenEvFactory::getInstance();
-	try {
-		// To do: Listen Event 로 수정해야됨
-
-		event.getKqueue()->addEvent(client_fd, factory.createEvent(client_fd, event.getKqueue()),
-		READ);
-	} catch (const std::exception &e) {
-		log.error(e.what());
-
-		//check: 이렇게 하는게 맞을지 생각 
-		close(client_fd);
-	}
+	//to do: readEvClientFactory
+	// readEvClientFactory &factory = ListenEvFactory::getInstance();
+	// try {
+	// 	// To do: 싱글톤 호출로 바꿈 
+	// 	EventQueue &EvQueue = EventQueue::getInstance();
+	// 	EvQueue.pushEvent(factory.createEvent(client_fd));
+	// } catch (const std::exception &e) {
+	// 	log.error(e.what());
+	// 	//check: 이렇게 하는게 맞을지 생각
+	// }
 }
-// void ListenEvHandler::handleEvent(Event &event) throw (std::exception) {
-// 	int					client_fd;
-// 	struct sockaddr_in	client_addr;
-// 	socklen_t			client_addr_len;
-// 	int					flags;
-// }
 
 // Method 구현 : 꼭 vtable신경
 // Exception

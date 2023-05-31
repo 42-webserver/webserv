@@ -2,9 +2,9 @@
 #include <new>
 #include <string>
 
-// READ EVENT
-ReadEvent::ReadEvent(int fd, EventHandler *ReadEventHandler, ft::shared_ptr<Kqueue> kqueue):
-Event(fd, ReadEventHandler, kqueue), _buffer(ReadEvent::BUF_SIZE) {}
+// READ EVENT start!
+ReadEvent::ReadEvent(int fd, EventHandler *ReadEventHandler):
+Event(fd, ReadEventHandler), _buffer(ReadEvent::BUF_SIZE) {}
 ReadEvent::~ReadEvent(void) {}
 
 // To do: check Read Buffer need 
@@ -15,13 +15,13 @@ ReadEventHandler::~ReadEventHandler() {
 }
 
 
-// READ EVENT
+// READ EVENT End!
 
-// Read EvClient
+// Read EvClient start!
 //	To do : check ReadEvClient
 
-ReadEvClient::ReadEvClient(int fd, EventHandler *ReadEvClientHandler, ft::shared_ptr<Kqueue> kqueue) :  
-ReadEvent(fd, ReadEvClientHandler, kqueue) {}
+ReadEvClient::ReadEvClient(int fd, EventHandler *ReadEvClientHandler) :  
+ReadEvent(fd, ReadEvClientHandler) {}
 
 ReadEvClient::~ReadEvClient() {
 }
@@ -29,16 +29,28 @@ ReadEvClient::~ReadEvClient() {
 void ReadEvClient::callEventHandler() {
 	this->_eventHandler->handleEvent(*this);
 }
-// Read EvClient
 
-// Read EvClientHandler
+void ReadEvClient::onboardQueue() throw (std::exception) {
+	//to do!
+}
+
+void ReadEvClient::offboardQueue() throw (std::exception) {
+	//to do!
+}
+
+// Read EvClient end!
+
+// Read EvClientHandler start!
 // To do : implement ReadEvClientHandler
 ReadEvClientHandler::ReadEvClientHandler() {}
 void ReadEvClientHandler::handleEvent(Event &event) {
 	//test용
+	event.callEventHandler();
 	std::cout << "hi?\n";
 	//
 }
 ReadEvClientHandler::~ReadEvClientHandler() {
 }
 // Read EvClientHandler
+
+// Read EvClientFactory start!

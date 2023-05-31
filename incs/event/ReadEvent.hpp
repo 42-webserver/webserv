@@ -12,9 +12,11 @@ class ReadEvent: public Event {
 		std::vector<char>	_buffer;
 
 	public:
-		ReadEvent(int fd, EventHandler *ReadEventHandler, ft::shared_ptr<Kqueue> kqueue);
+		ReadEvent(int fd, EventHandler *ReadEventHandler);
 		virtual	~ReadEvent(void);
 		virtual void	callEventHandler(void) = 0;
+		virtual void onboardQueue() throw (std::exception)= 0;
+    	virtual void offboardQueue() throw (std::exception)= 0;
 	public:
 		//  const std::vector<char>	&getBuffer(void);
 	
@@ -35,7 +37,7 @@ protected:
 
 public:
 	virtual ~ReadEventFactory() {}
-    virtual Event* createEvent(int fd, ft::shared_ptr<Kqueue> kqueue) = 0;
+    virtual Event* createEvent(int fd) = 0;
 
 private:
     ReadEventFactory(const ReadEventFactory&);
@@ -45,10 +47,12 @@ private:
 
 class ReadEvClient: public ReadEvent {
 	public:
-		ReadEvClient(int fd, EventHandler *ReadEvClientHandler, ft::shared_ptr<Kqueue> kqueue);
+		ReadEvClient(int fd, EventHandler *ReadEvClientHandler);
 		virtual	~ReadEvClient(void);
 	public:
 		virtual void	callEventHandler(void);
+		virtual void onboardQueue() throw (std::exception);
+		virtual void offboardQueue() throw (std::exception);
 };
 
 class ReadEvClientHandler: public ReadEventHandler {
@@ -59,19 +63,19 @@ class ReadEvClientHandler: public ReadEventHandler {
 		virtual void	handleEvent(Event &event);
 };
 
-class ReadEvClientFactory : public ReadEventFactory {
+class ReadEvClientFactory : public EventFactory {
 public:
     static ReadEvClientFactory& getInstance() {
         static ReadEvClientFactory instance;
         return instance;
     }
 
-    Event* createEvent(int fd, ft::shared_ptr<Kqueue> kqueue) {
-        return new ReadEvClient(fd, new ReadEvClientHandler(), kqueue);
+    Event* createEvent(int fd) {
+        return new ReadEvClient(fd, new ReadEvClientHandler());
     }
 
 private:
-    ReadEvClientFactory() : ReadEventFactory() {}
+    ReadEvClientFactory() : EventFactory() {}
     ReadEvClientFactory(const ReadEvClientFactory&);
     ReadEvClientFactory& operator=(const ReadEvClientFactory&);
 };
@@ -79,7 +83,10 @@ class ReadEvCgi: public ReadEvent {
 	public:
 		ReadEvCgi();
 		virtual	~ReadEvCgi(void);
+
 	public:
-		virtual void	callEventHandler(void);
+		virtual void callEventHandler(void);
+		virtual void onboardQueue() throw (std::exception);
+		virtual void offboardQueue() throw (std::exception);
 };
 #endif
