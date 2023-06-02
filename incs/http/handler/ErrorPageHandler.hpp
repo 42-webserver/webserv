@@ -9,9 +9,9 @@
 class ErrorPageHandler
 {
 public:
-    static std::string * getErrorPage(HttpStatusCode status);
+	static std::string * getErrorPage(HttpStatusCode status);
 private:
-    static std::string getErrorPageName(HttpStatusCode status);
+	static std::string getErrorPageName(HttpStatusCode status);
 
 };
 

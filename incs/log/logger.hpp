@@ -10,39 +10,48 @@
 const std::string DEFAULT_LOG_FILE_NAME = "../../LogSave/Log.txt";
 
 enum LogLevel {
-    INFO,
-    WARNING,
-    ERROR,
-    DEBUG
+	INFO,
+	WARNING,
+	ERROR,
+	DEBUG
 };
 
 class Logger {
-private:
-    std::ostream* outputStream;
-    std::ofstream fileStream;
-    bool logToStdOut;
-    std::string formattedMessage;
+	private:
+		const static std::string	_format[];
+		const static std::string	_log_color[];
 
-    Logger();
+	private:
+		std::ostream	*_output_stream;
+		std::ofstream	_file_stream;
+		bool 			_log_to_stdout;
+		std::string		_formatted_message;
 
-public:
-    static Logger& getInstance();
+	private:
+		Logger(void);
 
-    ~Logger();
-    void info(const std::string& message) ;
+	public:
+		~Logger(void);
 
-    void info(const std::string& format, int count, ...);
-    void warning(const std::string& message) ;
-    void warning(const std::string& format, int count, ...); 
-    void error(const std::string& message); 
-    void error(const std::string& format, int count, ...);
-    void debug(const std::string& message) ;
-    void debug(const std::string& format, int count, ...);
+	public:
+		static Logger	&getInstance(void);
 
-private:
-    void log(LogLevel level, const std::string& message); 
-    std::string converformatMessage(const std::string& format, int count, va_list args);
-    std::string getLogColor(LogLevel level) ;
-    std::string formatMessage(LogLevel level, const std::string& message);
+	public:
+		void	info(const std::string& message) ;
+		void	info(const std::string& format, int count, ...);
+		void	warning(const std::string& message) ;
+		void	warning(const std::string& format, int count, ...); 
+		void	error(const std::string& message); 
+		void	error(const std::string& format, int count, ...);
+		void	debug(const std::string& message) ;
+		void	debug(const std::string& format, int count, ...);
+
+	private:
+		void	log(LogLevel level, const std::string &message); 
+
+	private:
+		std::string	converformatMessage(const std::string &format, int count, va_list args);
+		std::string	formatMessage(LogLevel level, const std::string &message);
 };
+
 #endif

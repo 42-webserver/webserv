@@ -3,7 +3,7 @@
 
 #include <string>
 #include "./match.hpp"
-#include "../server/Location.hpp"
+#include "../Server/Location.hpp"
 class RouteOrAliasHandler{
 
 

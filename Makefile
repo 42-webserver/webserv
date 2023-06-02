@@ -17,14 +17,14 @@ SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
 SRCS =	main.cpp \
-		config/Config.cpp \
-		event/Event.cpp \
-		event/ListenEvent.cpp \
-		event/ReadEvent.cpp \
-		event/TimeEvent.cpp \
-		event/WriteEvent.cpp \
-		log/logger.cpp \
-		file/file.cpp \
+		Config/Config.cpp \
+		Event/Event.cpp \
+		Event/ListenEvent.cpp \
+		Event/ReadEvent.cpp \
+		Event/TimeEvent.cpp \
+		Event/WriteEvent.cpp \
+		EventQueue/EventQueue.cpp \
+		FileDescriptor/FileDescriptor.cpp \
 		http/handler/ErrorPageHandler.cpp \
 		http/handler/HttpRequestHandler.cpp \
 		http/parser/HttpRequestParser.cpp \
@@ -33,17 +33,19 @@ SRCS =	main.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \
 		http/utils/Cookie.cpp \
-		EventQueue/EventQueue.cpp \
-		server/Location.cpp \
-		server/Server.cpp \
-		server/Webserv.cpp \
-		socket/Socket.cpp \
+		Log/Logger.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
+		Server/Location.cpp \
+		Server/Server.cpp \
+		Server/Webserv.cpp \
+		Socket/Socket.cpp \
 
-OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
-				${OBJS_DIR}/config \
-				${OBJS_DIR}/event \
+OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
+				${OBJS_DIR}/Config \
+				${OBJS_DIR}/Event \
+				${OBJS_DIR}/EventQueue\
+				${OBJS_DIR}/FileDescriptor \
 				${OBJS_DIR}/http \
 				${OBJS_DIR}/http/handler \
 				${OBJS_DIR}/http/parser \
@@ -51,12 +53,10 @@ OBJS_SUBDIR = 	${OBJS_DIR}/cgi \
 				${OBJS_DIR}/http/response \
 				${OBJS_DIR}/http/utils \
 				${OBJS_DIR}/http/test \
-				${OBJS_DIR}/EventQueue\
-				${OBJS_DIR}/server \
-				${OBJS_DIR}/socket \
-				${OBJS_DIR}/log \
-				${OBJS_DIR}/file \
+				${OBJS_DIR}/Log \
 				${OBJS_DIR}/route \
+				${OBJS_DIR}/Server \
+				${OBJS_DIR}/Socket \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}

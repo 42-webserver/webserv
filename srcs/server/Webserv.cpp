@@ -1,4 +1,4 @@
-#include "../../incs/server/Webserv.hpp"
+#include "../../incs/Server/Webserv.hpp"
 #include <unistd.h>
 #include "../../libs/unique_ptr/unique_ptr.hpp"
 
@@ -12,14 +12,13 @@ Webserv::Webserv(const Config &config): _servers(std::vector<Server>()) {
 
 	for (size_t i=0; i<server_configs.size(); ++i) {
 		try {
-			this->_servers.push_back(Server(server_configs[i]));
+			ListenEventFactory	&factory = ListenEventFactory::getInstance();
+			EventQueue 			&event_queue = EventQueue::getInstance();
+			int 				listen_fd;
 			
-			int ListenFd = this->_servers.back().getSocket()->getFd();
-			ListenEvFactory &factory = ListenEvFactory::getInstance();
-			EventQueue &EvQueue = EventQueue::getInstance();
-
-			EvQueue.pushEvent(factory.createEvent(ListenFd));
-			std::cout << this->_servers.back() << '\n';
+			this->_servers.push_back(Server(server_configs[i]));
+			listen_fd = this->_servers.back().getSocket()->getFd();
+			event_queue.pushEvent(factory.createEvent(listen_fd));
 		} catch (const std::exception &e) {
 			Logger::getInstance().error(e.what());
 			throw (FailToConstructException());
@@ -37,20 +36,23 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 }
 
 bool	Webserv::run(void) throw(std::exception) {
+	EventQueue	&event_queue = EventQueue::getInstance();
+	int			event_length;
+	Event		*event_data;
+
 	// Run server
 	while (true) {
-		EventQueue &EvQueue = EventQueue::getInstance();
-		int	event_length;
 		// Polling event
 		try {
-			event_length = EvQueue.pullEvents();
+			event_length = event_queue.pullEvents();
 		} catch (const std::exception &e) {
 			Logger::getInstance().error(e.what());
 			throw (FailToRunException());
 		}
+
 		// Handle event
 		for (int i=0; i<event_length; i++) {
-			Event *event_data = EvQueue.getEventData(i);
+			event_data = event_queue.getEventData(i);
 			event_data->callEventHandler();
 		}
 	}

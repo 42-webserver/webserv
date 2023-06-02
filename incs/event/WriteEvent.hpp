@@ -13,9 +13,10 @@ class WriteEvent: public Event {
 
 	public:
 		WriteEvent(void);
-		WriteEvent(int fd);
-		WriteEvent(const WriteEvent &ref);
 		virtual	~WriteEvent(void);
+		
+	private:
+		WriteEvent(const WriteEvent &ref);
 		WriteEvent	&operator=(const WriteEvent &rhs);
 };
 

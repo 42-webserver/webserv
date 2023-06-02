@@ -1,5 +1,5 @@
-#include "../incs/config/Config.hpp"
-#include "../incs/server/Webserv.hpp"
+#include "../incs/Config/Config.hpp"
+#include "../incs/Server/Webserv.hpp"
 #include "../incs/err/err.hpp"
 #include <iostream>
 

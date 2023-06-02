@@ -6,8 +6,10 @@
 class TimeEvent: public Event {
 	public:
 		TimeEvent(void);
-		TimeEvent(const TimeEvent &ref);
 		virtual	~TimeEvent(void);
+	
+	private:
+		TimeEvent(const TimeEvent &ref);
 		TimeEvent	&operator=(const TimeEvent &rhs);
 };
 

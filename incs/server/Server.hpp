@@ -1,9 +1,9 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "../../libs/shared_ptr/incs/shared_ptr.hpp"
-# include "../config/Config.hpp"
-# include "../socket/Socket.hpp"
+# include "../../libs/shared_ptr/shared_ptr.hpp"
+# include "../Config/Config.hpp"
+# include "../Socket/Socket.hpp"
 # include "Location.hpp"
 # include <string>
 # include <vector>

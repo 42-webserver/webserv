@@ -1,4 +1,4 @@
-#include "../../incs/socket/Socket.hpp"
+#include "../../incs/Socket/Socket.hpp"
 #include <new>
 #include <sys/_endian.h>
 #include <memory.h>

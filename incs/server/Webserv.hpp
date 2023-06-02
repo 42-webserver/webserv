@@ -1,13 +1,13 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "../../libs/shared_ptr/incs/shared_ptr.hpp"
+# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../EventQueue/EventQueue.hpp"
-# include "../config/Config.hpp"
-# include "../event/Event.hpp"
-# include "../event/ListenEvent.hpp"
-# include "../event/ReadEvent.hpp"
-# include "../event/WriteEvent.hpp"
+# include "../Config/Config.hpp"
+# include "../Event/Event.hpp"
+# include "../Event/ListenEvent.hpp"
+# include "../Event/ReadEvent.hpp"
+# include "../Event/WriteEvent.hpp"
 # include "Server.hpp"
 
 class Webserv {

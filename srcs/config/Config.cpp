@@ -1,6 +1,6 @@
-#include "../../incs/config/Config.hpp"
-#include "../../incs/server/Server.hpp"
-#include "../../libs/shared_ptr/incs/shared_ptr.hpp"
+#include "../../incs/Config/Config.hpp"
+#include "../../incs/Server/Server.hpp"
+#include "../../libs/shared_ptr/shared_ptr.hpp"
 
 static const std::string	g_keys[] = {
 	"listen",

@@ -1,4 +1,4 @@
-#include "../../incs/server/Server.hpp"
+#include "../../incs/Server/Server.hpp"
 #include <unistd.h>
 #include <iostream>
 #include <errno.h>
