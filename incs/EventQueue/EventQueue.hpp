@@ -1,13 +1,29 @@
-#ifndef KQUEUE_HPP
-# define KQUEUE_HPP
+#ifndef EVENTQUEUE_HPP
+# define EVENTQUEUE_HPP
 
 # include <exception>
 # include <sys/event.h>
+# include "../event/Event.hpp"
 
-class Kqueue {
+class Event;
+
+enum EventType {
+	LISTEN,
+	READ,
+	WRITE,
+	Timer
+};
+
+enum EvSetIndex {
+	READ_SET,
+	WRITE_SET
+};
+
+class EventQueue {
 	private:
 		static const int	MAX_EVENTS = 16;
-
+		static EventQueue	*_instance;
+		EventQueue();
 	private:
 		int				_fd;
 		struct kevent	_ev_set[2];
@@ -15,19 +31,24 @@ class Kqueue {
 
 	// Constructor & Destructor
 	public:
-		Kqueue(void);
-		Kqueue(const Kqueue &ref);
-		~Kqueue(void);
-		Kqueue	&operator=(const Kqueue &rhs);
-
+		static EventQueue	&getInstance(void) {
+			if (_instance == NULL) {
+				_instance = new EventQueue();
+			}
+			return (*_instance);
+		}
+		~EventQueue();
 	// Util
 	public:
-		int		length(void);
+		int		pullEvents(void);
 		int		getEventFd(int idx) const;
-		void	*getEventData(int idx) const;
-		bool	addEvent(int fd, void *udata);
-		bool	deleteEvent(int fd, void *udata);
-	
+		Event	*getEventData(int idx) const;
+		bool	pushEvent(Event *event);
+		bool	popEvent(Event *event);
+		int		getEvQueFd(void) const;
+		struct kevent	*getEventList(void);
+		struct kevent 	*getEventSet(void);
+		struct kevent *getEvSetElementPtr(EvSetIndex index);
 	// Exception
 	public:
 		class FailToCreateException: public std::exception {
@@ -50,5 +71,6 @@ class Kqueue {
 				virtual const char *what() const throw();
 		};
 };
+
 
 #endif

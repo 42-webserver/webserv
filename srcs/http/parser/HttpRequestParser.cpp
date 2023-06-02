@@ -6,7 +6,7 @@ HttpRequestParser::HttpRequestParser(HttpRequest *httpRequest)
 {
 }
 
-void HttpRequestParser::parseRequest(std::vector<char> &buffer) {
+const RequestParseState &HttpRequestParser::parseRequest(std::vector<char> &buffer) {
     if (!this->_buffer.empty()){
         buffer.insert(buffer.begin(), this->_buffer.begin(), this->_buffer.end());
         this->_buffer.clear();
@@ -17,6 +17,7 @@ void HttpRequestParser::parseRequest(std::vector<char> &buffer) {
         handleHeaderState(buffer);
     if (_state == BODY)
         handleBodyState(buffer);
+    return this->_state;
 }
 
 void HttpRequestParser::handleStartLineState(std::vector<char> &buffer) {
@@ -67,18 +68,18 @@ void HttpRequestParser::handleBodyState(std::vector<char> &buffer) {
     _readBodySize += buffer.size();
 }
 
-RequestParseState HttpRequestParser::getState() {
+const RequestParseState &HttpRequestParser::getState() {
     return this->_state;
 }
 
-int HttpRequestParser::getReadBodySize() {
+const int &HttpRequestParser::getReadBodySize() {
     return this->_readBodySize;
 }
 
-HttpRequest *HttpRequestParser::getHttpRequest() {
-    return this->_httpRequest;
+const HttpRequest &HttpRequestParser::getHttpRequest() {
+    return *(this->_httpRequest);
 }
 
-std::vector<char> HttpRequestParser::getBuffer() {
+const std::vector<char> &HttpRequestParser::getBuffer() {
     return this->_buffer;
 }
