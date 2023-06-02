@@ -46,6 +46,10 @@ class Server {
 		const std::vector<Location>		&getLocations(void) const;
 		const ft::shared_ptr<Socket>	&getSocket(void) const;
 	
+	//Operator
+	public:
+		bool operator<(const Server& other) const;
+
 	// Exception
 	public:
 		class InvalidPortException: public std::exception {
