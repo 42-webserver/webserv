@@ -58,6 +58,10 @@ const std::vector<Location>		&Server::getLocations(void) const { return (this->_
 const ft::shared_ptr<Socket>	&Server::getSocket(void) const { return (this->_socket); }
 
 // Operator overload
+bool Server::operator<(const Server& other) const {
+    	    return _names < other._names;
+}
+
 std::ostream	&operator<<(std::ostream &os, const Server &rhs) {
 	os << "port: " << rhs.getPort() << '\n';
 	os << "names: ";
