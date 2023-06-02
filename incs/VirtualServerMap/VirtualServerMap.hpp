@@ -9,6 +9,7 @@
 class VirtualServerMap {
 public:
     typedef std::pair<int, std::string> KeyType;
+    typedef std::map<std::vector<std::string>, Server*>& TargetMap;
     typedef std::map<KeyType, std::map<std::vector<std::string>, Server*> >::iterator iterator;
 
 private:
@@ -20,7 +21,7 @@ public:
     void addOrUpdateServer(const KeyType& key, const std::vector<std::string>& serverNames, Server* currentServer);
 
     void addKey(const KeyType& key, const std::vector<std::string>& serverNames, Server* currentServer);
-    std::map<std::vector<std::string>, Server*>& getVertualServerMap(const KeyType& key);
+   const TargetMap& getVertualServerMap(const KeyType& key);
 };
 
 #endif

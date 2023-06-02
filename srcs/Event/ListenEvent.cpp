@@ -120,7 +120,6 @@ Event	*ListenEventFactory::createEvent(int fd) {
 	EventHandler	*event_handler = new ListenEventHandler();
 	ListenEvent		*event = new ListenEvent(fd, event_handler);
 
-	event->onboardQueue();
 	return (event);
 }
 
