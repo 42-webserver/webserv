@@ -3,7 +3,7 @@
 
 # include <exception>
 # include <sys/event.h>
-# include "../event/Event.hpp"
+# include "../Event/Event.hpp"
 
 class Event;
 
@@ -11,10 +11,10 @@ enum EventType {
 	LISTEN,
 	READ,
 	WRITE,
-	Timer
+	TIMER
 };
 
-enum EvSetIndex {
+enum EventSetIndex {
 	READ_SET,
 	WRITE_SET
 };
@@ -23,33 +23,34 @@ class EventQueue {
 	private:
 		static const int	MAX_EVENTS = 16;
 		static EventQueue	*_instance;
-		EventQueue();
+
 	private:
 		int				_fd;
 		struct kevent	_ev_set[2];
 		struct kevent	_ev_list[MAX_EVENTS];
 
-	// Constructor & Destructor
+	private:
+		EventQueue(void);
+
 	public:
-		static EventQueue	&getInstance(void) {
-			if (_instance == NULL) {
-				_instance = new EventQueue();
-			}
-			return (*_instance);
-		}
-		~EventQueue();
-	// Util
+		~EventQueue(void);
+
+	public:
+		static EventQueue	&getInstance(void);
+
 	public:
 		int		pullEvents(void);
-		int		getEventFd(int idx) const;
-		Event	*getEventData(int idx) const;
 		bool	pushEvent(Event *event);
 		bool	popEvent(Event *event);
-		int		getEvQueFd(void) const;
+
+	public:
+		int				getEventFd(int idx) const;
+		int				getEventQueueFd(void) const;
+		Event			*getEventData(int idx) const;
 		struct kevent	*getEventList(void);
 		struct kevent 	*getEventSet(void);
-		struct kevent *getEvSetElementPtr(EvSetIndex index);
-	// Exception
+		struct kevent	*getEventSetElementPtr(EventSetIndex index);
+
 	public:
 		class FailToCreateException: public std::exception {
 			public:

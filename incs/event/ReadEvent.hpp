@@ -12,17 +12,20 @@ class ReadEvent: public Event {
 		std::vector<char>	_buffer;
 
 	public:
-		ReadEvent(int fd, EventHandler *ReadEventHandler);
+		ReadEvent(int fd, EventHandler *read_event_handler);
 		virtual	~ReadEvent(void);
-		virtual void	callEventHandler(void) = 0;
-		virtual void onboardQueue() throw (std::exception)= 0;
-    	virtual void offboardQueue() throw (std::exception)= 0;
-	public:
-		//  const std::vector<char>	&getBuffer(void);
-	
+
 	private:
 		ReadEvent(const ReadEvent &ref);
 		ReadEvent	&operator=(const ReadEvent &rhs);
+	
+	public:
+		virtual void	callEventHandler(void) = 0;
+		virtual void	onboardQueue(void) throw (std::exception) = 0;
+		virtual void	offboardQueue(void) throw (std::exception) = 0;
+
+	//public:
+		//const std::vector<char>	&getBuffer(void);
 };
 
 class ReadEventHandler: public EventHandler {
@@ -31,62 +34,63 @@ class ReadEventHandler: public EventHandler {
 		virtual void	handleEvent(Event &event) = 0;
 };
 
-class ReadEventFactory : public EventFactory {
-protected:
-	ReadEventFactory() : EventFactory() {}
+class ReadEventFactory: public EventFactory {
+	protected:
+		ReadEventFactory(void);
 
-public:
-	virtual ~ReadEventFactory() {}
-    virtual Event* createEvent(int fd) = 0;
+	public:
+		virtual ~ReadEventFactory(void);
 
-private:
-    ReadEventFactory(const ReadEventFactory&);
-    ReadEventFactory& operator=(const ReadEventFactory&);
+	private:
+		ReadEventFactory(const ReadEventFactory&);
+		ReadEventFactory& operator=(const ReadEventFactory&);
+
+	public:
+		virtual Event	*createEvent(int fd) = 0;
 };
 
 
-class ReadEvClient: public ReadEvent {
+class ReadEventClient: public ReadEvent {
 	public:
-		ReadEvClient(int fd, EventHandler *ReadEvClientHandler);
-		virtual	~ReadEvClient(void);
+		ReadEventClient(int fd, EventHandler *read_event_client_handler);
+		virtual	~ReadEventClient(void);
+
 	public:
 		virtual void	callEventHandler(void);
-		virtual void onboardQueue() throw (std::exception);
-		virtual void offboardQueue() throw (std::exception);
+		virtual void	onboardQueue(void) throw (std::exception);
+		virtual void	offboardQueue(void) throw (std::exception);
 };
 
-class ReadEvClientHandler: public ReadEventHandler {
+class ReadEventClientHandler: public ReadEventHandler {
 	public:
-		ReadEvClientHandler();
-		virtual	~ReadEvClientHandler(void);
+		ReadEventClientHandler(void);
+		virtual	~ReadEventClientHandler(void);
+
 	public:
 		virtual void	handleEvent(Event &event);
 };
 
-class ReadEvClientFactory : public EventFactory {
-public:
-    static ReadEvClientFactory& getInstance() {
-        static ReadEvClientFactory instance;
-        return instance;
-    }
+class ReadEventClientFactory: public EventFactory {
+	public:
+		static ReadEventClientFactory	&getInstance(void);
 
-    Event* createEvent(int fd) {
-        return new ReadEvClient(fd, new ReadEvClientHandler());
-    }
+	public:
+		Event	*createEvent(int fd);
 
-private:
-    ReadEvClientFactory() : EventFactory() {}
-    ReadEvClientFactory(const ReadEvClientFactory&);
-    ReadEvClientFactory& operator=(const ReadEvClientFactory&);
+	private:
+		ReadEventClientFactory(void);
+		ReadEventClientFactory(const ReadEventClientFactory &ref);
+		ReadEventClientFactory	&operator=(const ReadEventClientFactory &rhs);
 };
-class ReadEvCgi: public ReadEvent {
+
+class ReadEventCgi: public ReadEvent {
 	public:
-		ReadEvCgi();
-		virtual	~ReadEvCgi(void);
+		ReadEventCgi(void);
+		virtual	~ReadEventCgi(void);
 
 	public:
-		virtual void callEventHandler(void);
-		virtual void onboardQueue() throw (std::exception);
-		virtual void offboardQueue() throw (std::exception);
+		virtual void	callEventHandler(void);
+		virtual void	onboardQueue(void) throw (std::exception);
+		virtual void	offboardQueue(void) throw (std::exception);
 };
 #endif

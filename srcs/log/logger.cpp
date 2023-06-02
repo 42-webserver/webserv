@@ -1,165 +1,127 @@
-#include "../../incs/log/logger.hpp"
+#include "../../incs/Log/Logger.hpp"
 
-Logger::Logger()
-    {
-        fileStream.open(DEFAULT_LOG_FILE_NAME.c_str(), std::ofstream::out | std::ofstream::app);
-        if (!fileStream) {
-            std::cerr << "Log file could not be opened" << std::endl;
-            outputStream = &std::cout;
-        } else {
-            outputStream = &fileStream;
-        }
-        logToStdOut = false;
-        #ifdef DEBUG_FLAG
-            logToStdOut = true;
-        #endif
-    }
+const std::string	Logger::_format[] = {
+	"[INFO] ",
+	"[WARNING] ",
+	"[ERROR] ",
+	"[DEBUG] "
+};
 
-Logger& Logger::getInstance()
-{
-    static Logger instance;
-    return instance;
+const std::string	Logger::_log_color[] = {
+	"\033[0;37m", // INFO
+	"\033[0;33m", // WARNING
+	"\033[0;31m", // ERROR
+	"\033[0;32m"  // DEBUG
+};
+
+Logger::Logger(void) {
+	this->_file_stream.open(DEFAULT_LOG_FILE_NAME.c_str(), std::ofstream::out | std::ofstream::app);
+	
+	if (!this->_file_stream) {
+		std::cerr << "Error: Logger: Fail to open file" << '\n';
+		this->_output_stream = &std::cout;
+	} else {
+		this->_output_stream = &this->_file_stream;
+	}
+
+	this->_log_to_stdout = false;
+	#ifdef DEBUG_FLAG
+		this->_log_to_stdout = true;
+	#endif
 }
 
-Logger::~Logger()
-{
-    if (outputStream != &std::cout && fileStream.is_open()) {
-        fileStream.close();
-    }
+Logger	&Logger::getInstance(void) {
+	static Logger	instance;
+
+	return (instance);
+}
+
+Logger::~Logger(void) {
+	if (this->_output_stream != &std::cout && this->_file_stream.is_open()) {
+		this->_file_stream.close();
+	}
 }
 
 std::string Logger::converformatMessage(const std::string& format, int count, va_list args) {
-    std::string message = format;
+	std::string	message = format;
 
-    for(int i = 0; i < count; i++) {
-        size_t pos = message.find("{}");
-        if (pos != std::string::npos) {
-            std::string content = va_arg(args, char*);
-            message.replace(pos, 2, content);
-        }
-    }
+	for(int i=0; i<count; i++) {
+		size_t	pos = message.find("{}");
 
-    return message;
+		if (pos != std::string::npos) {
+			std::string	content = va_arg(args, char *);
+
+			message.replace(pos, 2, content);
+		}
+	}
+
+	return (message);
 }
 
 
 
-void Logger::info(const std::string& message)
-{
-    log(INFO, message);
+void	Logger::info(const std::string& message) { log(INFO, message); }
+void	Logger::info(const std::string& format, int count, ...) {
+	va_list		args;
+
+	va_start(args, count);
+	log(INFO, converformatMessage(format, count, args));
+	va_end(args);
 }
 
-void Logger::info(const std::string& format, int count, ...)
-{
-    va_list args;
-    va_start(args, count);
-    std::string message = converformatMessage(format, count, args);
-    va_end(args);
-    log(INFO, message);
+void	Logger::warning(const std::string& message) { log(WARNING, message); }
+void	Logger::warning(const std::string& format, int count, ...) {
+	va_list 	args;
+
+	va_start(args, count);
+	log(WARNING, converformatMessage(format, count, args));
+	va_end(args);
 }
 
-void Logger::warning(const std::string& message)
-{
-    log(WARNING, message);
+void	Logger::error(const std::string& message) { log(ERROR, message); }
+void	Logger::error(const std::string& format, int count, ...) {
+	va_list		args;
+
+	va_start(args, count);
+	log(ERROR, converformatMessage(format, count, args));
+	va_end(args);
 }
 
-void Logger::warning(const std::string& format, int count, ...)
-{
-    va_list args;
-    va_start(args, count);
-    std::string message = converformatMessage(format, count, args);
-    va_end(args);
-    log(WARNING, message);
-}
+void	Logger::debug(const std::string& message) { log(DEBUG, message); }
+void	Logger::debug(const std::string& format, int count, ...) {
+	va_list		args;
+	std::string	message;
 
-void Logger::error(const std::string& message)
-{
-    log(ERROR, message);
-}
-
-void Logger::error(const std::string& format, int count, ...)
-{
-    va_list args;
-    va_start(args, count);
-    std::string message = converformatMessage(format, count, args);
-    va_end(args);
-    log(ERROR, message);
-}
-
-void Logger::debug(const std::string& message)
-{
-    log(DEBUG, message);
-}
-
-void Logger::debug(const std::string& format, int count, ...)
-{
-    va_list args;
-    va_start(args, count);
-    std::string message = converformatMessage(format, count, args);
-    va_end(args);
-    log(DEBUG, message);
+	va_start(args, count);
+	log(DEBUG, converformatMessage(format, count, args));
+	va_end(args);
 }
 
 
-void Logger::log(LogLevel level, const std::string& message)
-{
-    formattedMessage = formatMessage(level, message);
+void	Logger::log(LogLevel level, const std::string& message) {
+	this->_formatted_message = formatMessage(level, message);
 
-    if (logToStdOut) {
-        std::cout << getLogColor(level) << formattedMessage << "\033[0m";
-    }
+	if (this->_log_to_stdout) {
+		std::cout << Logger::_log_color[level] << this->_formatted_message << "\033[0m";
+	}
 
-    if (outputStream && outputStream != &std::cout) {
-        (*outputStream) << formattedMessage;
-    }
+	if (this->_output_stream && this->_output_stream != &std::cout) {
+		(*this->_output_stream) << this->_formatted_message;
+	}
 }
 
-std::string Logger::getLogColor(LogLevel level)
-{
-    switch (level) {
-        case INFO:
-            return "\033[1;37m";   // White
-        case WARNING:
-            return "\033[1;33m";   // Yellow
-        case ERROR:
-            return "\033[1;31m";   // Red
-        case DEBUG:
-            return "\033[1;32m";   // Green
-        default:
-            return "";
-    }
-}
+std::string	Logger::formatMessage(LogLevel level, const std::string& message) {
+	std::ostringstream	formatted_message_stream;
+	std::time_t			currentTime = std::time(NULL);
+	std::tm				*localTime = std::localtime(&currentTime);
 
-std::string Logger::formatMessage(LogLevel level, const std::string& message)
-{
-    std::ostringstream formattedMessageStream;
+	formatted_message_stream	<< "[" << (localTime->tm_year + 1900) << "-"
+								<< std::setfill('0') << std::setw(2) << (localTime->tm_mon + 1) << "-"
+								<< std::setfill('0') << std::setw(2) << localTime->tm_mday << " "
+								<< std::setfill('0') << std::setw(2) << localTime->tm_hour << ":"
+								<< std::setfill('0') << std::setw(2) << localTime->tm_min << ":"
+								<< std::setfill('0') << std::setw(2) << localTime->tm_sec << "] "
+								<< Logger::_format[level] << message << '\n';
 
-    std::time_t currentTime = std::time(NULL);
-    std::tm* localTime = std::localtime(&currentTime);
-
-    formattedMessageStream << "[" << (localTime->tm_year + 1900) << "-"
-                           << std::setfill('0') << std::setw(2) << (localTime->tm_mon + 1) << "-"
-                           << std::setfill('0') << std::setw(2) << localTime->tm_mday << " "
-                           << std::setfill('0') << std::setw(2) << localTime->tm_hour << ":"
-                           << std::setfill('0') << std::setw(2) << localTime->tm_min << ":"
-                           << std::setfill('0') << std::setw(2) << localTime->tm_sec << "] ";
-
-    switch (level) {
-        case INFO:
-            formattedMessageStream << "[INFO]: ";
-            break;
-        case WARNING:
-            formattedMessageStream << "[WARNING]: ";
-            break;
-        case ERROR:
-            formattedMessageStream << "[ERROR]: ";
-            break;
-        case DEBUG:
-            formattedMessageStream << "[DEBUG]: ";
-            break;
-    }
-
-    formattedMessageStream << message << std::endl;
-
-    return formattedMessageStream.str();
+	return (formatted_message_stream.str());
 }

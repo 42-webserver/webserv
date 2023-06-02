@@ -2,17 +2,21 @@
 # define LISTENEVENT_HPP
 
 # include "./Event.hpp"
-# include "../log/logger.hpp"
+# include "../Log/Logger.hpp"
+
 class ListenEvent: public Event {
 	public:
-		ListenEvent(int fd, EventHandler *ReadEventHandler);
+		ListenEvent(int fd, EventHandler *listen_event_handler);
 		virtual	~ListenEvent(void);
-		virtual void	callEventHandler(void);
-		virtual void	onboardQueue() throw (std::exception);
-		virtual void	offboardQueue() throw (std::exception);
+
 	private:
 		ListenEvent	&operator=(const ListenEvent &rhs);
 		ListenEvent(const ListenEvent &ref);
+	
+	public:
+		virtual void	callEventHandler(void);
+		virtual void	onboardQueue(void) throw (std::exception);
+		virtual void	offboardQueue(void) throw (std::exception);
 
 	public:
 		class FailToAcceptException: public std::exception {
@@ -25,46 +29,40 @@ class ListenEvent: public Event {
 		};
 };
 
-class ListenEvHandler: public EventHandler {
+class ListenEventHandler: public EventHandler {
 	public:
-		ListenEvHandler();
-		virtual	~ListenEvHandler(void);
+		ListenEventHandler(void);
+		virtual	~ListenEventHandler(void);
+
 	private:
 		int	connectClient(int SocketFd) const throw(std::exception);
+
 	public:
 		virtual void	handleEvent(Event &event)  throw(std::exception);
+
 	private:
 		class FailToAcceptException: public std::exception {
 			public:
-				const char *what() const throw() {
-					return "Failed to accept client connection";
-				}
+				const char *what() const throw();
 		};
-
 		class FailToControlException: public std::exception {
 			public:
-				const char *what() const throw() {
-					return "Failed to control the event";
-				}
+				const char *what() const throw();
 		};
-
 };
 
-class ListenEvFactory : public EventFactory {
-public:
-    static ListenEvFactory& getInstance() {
-        static ListenEvFactory instance;
-        return instance;
-    }
+class ListenEventFactory: public EventFactory {
+	public:
+		static ListenEventFactory	&getInstance(void);
 
-    Event* createEvent(int fd) {
-        return new ListenEvent(fd, new ListenEvHandler());
-    }
+	public:
+		Event	*createEvent(int fd);
 
-private:
-    ListenEvFactory() : EventFactory() {}
-    ListenEvFactory(const ListenEvFactory&);
-    ListenEvFactory& operator=(const ListenEvFactory&);
+	private:
+		ListenEventFactory(void);
+		~ListenEventFactory(void);
+		ListenEventFactory(const ListenEventFactory &rhs);
+		ListenEventFactory	&operator=(const ListenEventFactory &ref);
 };
 
 #endif

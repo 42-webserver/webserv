@@ -1,56 +1,48 @@
-#include "../../incs/event/ReadEvent.hpp"
+#include "../../incs/Event/ReadEvent.hpp"
 #include <new>
 #include <string>
 
 // READ EVENT start!
-ReadEvent::ReadEvent(int fd, EventHandler *ReadEventHandler):
-Event(fd, ReadEventHandler), _buffer(ReadEvent::BUF_SIZE) {}
+ReadEvent::ReadEvent(int fd, EventHandler *read_event_handler): Event(fd, read_event_handler), _buffer(ReadEvent::BUF_SIZE) {}
 ReadEvent::~ReadEvent(void) {}
 
 // To do: check Read Buffer need 
 // const std::vector<char>	&ReadEvent::getBuffer(void) const { return (this->_buffer); }
 
-ReadEventHandler::~ReadEventHandler() {
-    // Cleanup code here
+ReadEventHandler::~ReadEventHandler(void) {
+	// Cleanup code here
 }
 
 
 // READ EVENT End!
 
 // Read EvClient start!
-//	To do : check ReadEvClient
+//	To do : check ReadEventClient
 
-ReadEvClient::ReadEvClient(int fd, EventHandler *ReadEvClientHandler) :  
-ReadEvent(fd, ReadEvClientHandler) {}
+ReadEventClient::ReadEventClient(int fd, EventHandler *read_event_client_handler): ReadEvent(fd, read_event_client_handler) {}
+ReadEventClient::~ReadEventClient(void) {}
 
-ReadEvClient::~ReadEvClient() {
-}
-
-void ReadEvClient::callEventHandler() {
-	this->_eventHandler->handleEvent(*this);
-}
-
-void ReadEvClient::onboardQueue() throw (std::exception) {
+void	ReadEventClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
+void	ReadEventClient::onboardQueue() throw (std::exception) {
 	//to do!
 }
-
-void ReadEvClient::offboardQueue() throw (std::exception) {
+void	ReadEventClient::offboardQueue() throw (std::exception) {
 	//to do!
 }
 
 // Read EvClient end!
 
 // Read EvClientHandler start!
-// To do : implement ReadEvClientHandler
-ReadEvClientHandler::ReadEvClientHandler() {}
-void ReadEvClientHandler::handleEvent(Event &event) {
+// To do : implement ReadEventClientHandler
+ReadEventClientHandler::ReadEventClientHandler(void) {}
+void ReadEventClientHandler::handleEvent(Event &event) {
 	//test용
 	event.callEventHandler();
 	std::cout << "hi?\n";
 	//
 }
-ReadEvClientHandler::~ReadEvClientHandler() {
-}
+
+ReadEventClientHandler::~ReadEventClientHandler(void) {}
 // Read EvClientHandler
 
 // Read EvClientFactory start!

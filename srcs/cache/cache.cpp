@@ -1,23 +1,26 @@
-#include "../../incs/cache/cache.hpp"
+#include "../../incs/Cache/Cache.hpp"
 
-LruCache::LruCache(int capacity): capacity(capacity) {}
-std::vector<char> LruCache::get(std::string uri) {
-        if (cache.find(uri) == cache.end()) {
-            return std::vector<char>();
-        } else {
-            lru_list.splice(lru_list.begin(), lru_list, cache[uri]);
-            return cache[uri]->second;
-        }
-    }
+LruCache::LruCache(void): _capacity(0) {}
+LruCache::~LruCache(void) {}
+LruCache::LruCache(int capacity): _capacity(capacity) {}
 
-void LruCache::put(std::string uri, std::vector<char> content) {
-        if (cache.size() >= capacity) {
-            lrulist_t::iterator last = lru_list.end();
-            --last;
-            cache.erase(last->first);
-            lru_list.pop_back();
-        }
+std::vector<char>	LruCache::get(std::string uri) {
+	if (this->_cache.find(uri) == this->_cache.end()) {
+		return (std::vector<char>());
+	}
 
-        lru_list.push_front(std::make_pair(uri, content));
-        cache[uri] = lru_list.begin();
-    }
+	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);
+	return (this->_cache[uri]->second);
+}
+void				LruCache::put(std::string uri, std::vector<char> content) {
+	if (this->_cache.size() >= this->_capacity) {
+		lru_list_t::iterator	last = this->_lru_list.end();
+
+		last--;
+		this->_cache.erase(last->first);
+		this->_lru_list.pop_back();
+	}
+
+	this->_lru_list.push_front(std::make_pair(uri, content));
+	this->_cache[uri] = this->_lru_list.begin();
+}

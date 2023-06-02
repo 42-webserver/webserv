@@ -1,24 +1,29 @@
 #ifndef CACHE_HPP
 # define CACHE_HPP
 
-#include <iostream>
-#include <list>
-#include <map>
-#include <vector>
+# include <iostream>
+# include <list>
+# include <map>
+# include <vector>
 
 class LruCache {
-private:
-    int capacity;
-    typedef std::list<std::pair<std::string, std::vector<char> > > lrulist_t;
-    lrulist_t lru_list; 
-    std::map<std::string, lrulist_t::iterator> cache; 
+	public:
+		typedef std::list< std::pair< std::string, std::vector< char> > > lru_list_t;
+		typedef std::map< std::string, lru_list_t::iterator > cache_map_t;
 
-public:
-    LruCache(int capacity);
+	private:
+		int			_capacity;
+		lru_list_t	_lru_list; 
+		cache_map_t	_cache; 
 
-    std::vector<char> get(std::string uri);
-    void put(std::string uri, std::vector<char> content);
+	public:
+		LruCache(void);
+		~LruCache(void);
+		LruCache(int capacity);
 
+	public:
+		std::vector<char>	get(std::string uri);
+		void				put(std::string uri, std::vector<char> content);
 };
 
 #endif

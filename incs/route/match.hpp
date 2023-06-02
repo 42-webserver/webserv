@@ -4,12 +4,12 @@
 #include <iostream>
 #include "../../libs/Trie/Trie.hpp"
 #include "./RouteOrAliasHandler.hpp"
-#include "../server/Location.hpp"
+#include "../Server/Location.hpp"
 
 class MatchHandler {
 private:
 public:
-    static Location searchLocation(const std::string uri, const ft::Trie<Location>& trie);
+	static Location searchLocation(const std::string uri, const ft::Trie<Location>& trie);
 };
 
 #endif

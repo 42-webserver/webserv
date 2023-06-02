@@ -1,7 +1,7 @@
 #ifndef LOCATION_HPP
 # define LOCATION_HPP
 
-# include "../config/Config.hpp"
+# include "../Config/Config.hpp"
 # include <string>
 # include <map>
 # include <vector>

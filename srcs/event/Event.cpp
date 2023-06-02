@@ -1,18 +1,19 @@
-#include "../../incs/event/Event.hpp"
+#include "../../incs/Event/Event.hpp"
 #include <new>
 
-Event::Event(int connectionFd, EventHandler* EventHandler)  : _connection(new FdClass(connectionFd)),
- _eventHandler(EventHandler){}
-
+Event::Event(void): _fd(ft::shared_ptr<FileDescriptor>(NULL)), _event_handler(NULL) {}
+Event::Event(int fd, EventHandler *event_handler): _fd(ft::shared_ptr<FileDescriptor>(new FileDescriptor(fd))), _event_handler(event_handler) {}
 Event::~Event(void) {}
-const int &Event::getConnectionFd(void) const { return (this->_connection->getFd()); }
-// To do: check Event Handler 랑 EventFactory구현 물 채워야 되는지
-EventHandler::~EventHandler() {
-}
 
-EventFactory::EventFactory() {}	
-EventFactory::~EventFactory() {}
+int	Event::getFd(void) const { return (this->_fd->getFd()); }
+
+// To do: check Event Handler 랑 EventFactory구현 물 채워야 되는지
+EventHandler::EventHandler(void) {}
+EventHandler::~EventHandler(void) {}
+
+EventFactory::EventFactory(void) {}
+EventFactory::~EventFactory(void) {}
 
 //Exception
-const char	*Event::FailToOnboardException::what(void) const throw() { return ("evnet: Fail to onboard"); }
-const char	*Event::FailToOffboardException::what(void) const throw() { return ("evnet: Fail to offboard"); }
+const char	*Event::FailToOnboardException::what(void) const throw() { return ("Event: Fail to onboard"); }
+const char	*Event::FailToOffboardException::what(void) const throw() { return ("Event: Fail to offboard"); }

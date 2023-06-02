@@ -1,4 +1,4 @@
-#include "../../incs/server/Location.hpp"
+#include "../../incs/Server/Location.hpp"
 
 // Constructor & Destructor
 Location::Location(void): _dir(""), _root(""), _alias(""), _autoindex(""), _return_status(""), _return_url("") {}
