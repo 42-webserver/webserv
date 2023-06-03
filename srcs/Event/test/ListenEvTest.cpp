@@ -11,7 +11,6 @@ void foo(void)
 	Logger &log = Logger::getInstance();
 	log.debug("start ");
 	EventQueue &kq = EventQueue::getInstance();
-	ListenEventFactory &factory = ListenEventFactory::getInstance();
 	int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	// log.info("{} ,123, {}, 1234, {}", 3, "hi", "hi", "hi");
@@ -27,7 +26,9 @@ void foo(void)
 	listen(listenfd, 10);
 
 	log.info("Enter Listen Create");
-	Event *ListenEvent(factory.createEvent(listenfd));
+
+	EventFactory &factory = ListenEventFactory::getInstance();
+	Event *ListenEvent(factory.createEvent(EventDto(listenfd, TargetMap)));
 	ListenEvent->onboardQueue();
 }
 int main(void) {

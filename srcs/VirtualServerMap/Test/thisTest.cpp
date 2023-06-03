@@ -7,21 +7,18 @@ int main() {
 
     // Create a config map
     Config::map configMap;
-    configMap[Config::KEYS[0]] = std::vector<std::string>(1, "8080"); // Port
-    configMap[Config::KEYS[1]] = std::vector<std::string>(1, "localhost"); // Names
-    configMap[Config::KEYS[2]] = std::vector<std::string>(1, "/var/www/html"); // Root
-    configMap[Config::KEYS[3]] = std::vector<std::string>(1, "index.html"); // Indexes
-    configMap[Config::KEYS[4]] = std::vector<std::string>(1, "404.html"); // Default error page
-    configMap[Config::KEYS[5]] = std::vector<std::string>(1, "1000000"); // Client max body size
+    configMap[Config::KEYS[0]] = std::vector<std::string>{"8080"}; // Port
+    configMap[Config::KEYS[1]] = std::vector<std::string>{"localhost"}; // Names
+    configMap[Config::KEYS[2]] = std::vector<std::string>{"/var/www/html"}; // Root
+    configMap[Config::KEYS[3]] = std::vector<std::string>{"index.html"}; // Indexes
+    configMap[Config::KEYS[4]] = std::vector<std::string>{"404.html"}; // Default error page
+    configMap[Config::KEYS[5]] = std::vector<std::string>{"1000000"}; // Client max body size
 
-    // Create a Config object
-    Config config(configMap);
+    // Create a Server object
+    Server testServer(configMap);
 
-    // Create a Server object using the Config object
-    Server testServer(config);
-
-    virtualServerMap::KeyType key(8080, "localhost");
-    std::vector<std::string> serverNames = { "test-server" };
+    VirtualServerMap::KeyType key(8080, "localhost");
+    std::vector<std::string> serverNames = {"test-server"};
     vServerMap.addOrUpdateServer(key, serverNames, &testServer);
 
     // Get the value (map) for the given key from the virtualServerMap
