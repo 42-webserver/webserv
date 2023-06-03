@@ -27,6 +27,6 @@ void VirtualServerMap::addKey(const KeyType& key, const std::vector<std::string>
         _listenSocket[key][serverNames] = currentServer;
     }
 
-const VirtualServerMap::TargetMap& VirtualServerMap::getVertualServerMap(const KeyType& key) {
-        return _listenSocket[key];
+const VirtualServerMap::TargetMap* VirtualServerMap::getVertualServerMap(const KeyType& key) {
+        return &_listenSocket[key];
     }

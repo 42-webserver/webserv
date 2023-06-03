@@ -3,17 +3,22 @@
 
 # include "./Event.hpp"
 # include "../Log/Logger.hpp"
+# include "../VirtualServerMap/VirtualServerMap.hpp"
 
 class ListenEvent: public Event {
 	public:
-		ListenEvent(int fd, EventHandler *listen_event_handler);
+		ListenEvent(int fd, EventHandler *listen_event_handler, 
+			const VirtualServerMap::TargetMap *TargetMap);
 		virtual	~ListenEvent(void);
 
 	private:
 		ListenEvent	&operator=(const ListenEvent &rhs);
 		ListenEvent(const ListenEvent &ref);
+	private:
+		const VirtualServerMap::TargetMap	*_TargetMap;
 	
 	public:
+		VirtualServerMap::TargetMap	*getTargetMap(void) const;
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);
@@ -21,11 +26,11 @@ class ListenEvent: public Event {
 	public:
 		class FailToAcceptException: public std::exception {
 			public:
-				virtual const char *what() const throw();
+				const char *what() const throw();
 		};
 		class FailToControlException: public std::exception {
 			public:
-				virtual const char *what() const throw();
+				const char *what() const throw();
 		};
 };
 
@@ -56,7 +61,7 @@ class ListenEventFactory: public EventFactory {
 		static ListenEventFactory	&getInstance(void);
 
 	public:
-		Event	*createEvent(int fd);
+		Event	*createEvent(const EventDto &EventDto);
 
 	private:
 		ListenEventFactory(void);
