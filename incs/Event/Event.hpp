@@ -6,6 +6,7 @@
 # include "../FileDescriptor/FileDescriptor.hpp"
 # include "../EventQueue/EventQueue.hpp"
 # include "../Socket/Socket.hpp"
+# include "../EventDto/EventDto.hpp"
 
 class EventQueue;
 class EventHandler;
@@ -31,7 +32,7 @@ class Event {
 
 	public:
 		int	getFd(void) const;
-
+		ft::shared_ptr<FileDescriptor>	getFileDescriptor(void);
 	public:
 		class FailToOnboardException: public std::exception {
 			public:
@@ -66,7 +67,7 @@ class EventFactory {
 		EventFactory	&operator=(const EventFactory &rhs);
 	
 	public:
-		virtual Event	*createEvent(int fd) const = 0;
+		virtual Event	*createEvent(const EventDto &EventDto) const = 0;
 };
 
 #endif

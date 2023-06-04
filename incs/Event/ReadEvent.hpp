@@ -3,6 +3,8 @@
 
 # include "./Event.hpp"
 # include <vector>
+# include "../EventDto/EventDto.hpp"
+# include "../../incs/Log/Logger.hpp"
 
 class ReadEvent: public Event {
 	public:
@@ -46,19 +48,24 @@ class ReadEventFactory: public EventFactory {
 		ReadEventFactory& operator=(const ReadEventFactory&);
 
 	public:
-		virtual Event	*createEvent(int fd) const = 0;
+		virtual Event	*createEvent(const EventDto &EventDto) const = 0;
 };
 
 
 class ReadEventClient: public ReadEvent {
 	public:
-		ReadEventClient(int fd, EventHandler *read_event_client_handler);
+		ReadEventClient(int fd, EventHandler *read_event_client_handler,
+		const VirtualServerMap::TargetMap *TargetMap);
+		
 		virtual	~ReadEventClient(void);
 
 	public:
+		const VirtualServerMap::TargetMap	*getTargetMap(void) const;
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);
+	private:
+		const VirtualServerMap::TargetMap *_TargetMap;
 };
 
 class ReadEventClientHandler: public ReadEventHandler {
@@ -75,7 +82,11 @@ class ReadEventClientFactory: public EventFactory {
 		static ReadEventClientFactory	&getInstance(void);
 
 	public:
+<<<<<<< HEAD
 		Event	*createEvent(int fd) const;
+=======
+		Event	*createEvent(const EventDto &EventDto);
+>>>>>>> main
 
 	private:
 		ReadEventClientFactory(void);
