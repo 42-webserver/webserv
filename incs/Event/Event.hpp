@@ -67,7 +67,7 @@ class EventFactory {
 		EventFactory	&operator=(const EventFactory &rhs);
 	
 	public:
-		virtual Event	*createEvent(const EventDto &EventDto) = 0;
+		virtual Event	*createEvent(const EventDto &EventDto) const = 0;
 };
 
 #endif

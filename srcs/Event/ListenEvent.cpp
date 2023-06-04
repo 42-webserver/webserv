@@ -114,7 +114,7 @@ ListenEventFactory	&ListenEventFactory::getInstance(void) {
 	return (instance);
 }
 
-Event	*ListenEventFactory::createEvent(const EventDto &EventDto) {
+Event	*ListenEventFactory::createEvent(const EventDto &EventDto) const {
 	EventHandler	*event_handler = new ListenEventHandler();
 	ListenEvent		*event = new ListenEvent(EventDto.getFd(), 
 	event_handler, EventDto.getTargetMap());

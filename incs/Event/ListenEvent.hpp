@@ -61,7 +61,7 @@ class ListenEventFactory: public EventFactory {
 		static ListenEventFactory	&getInstance(void);
 
 	public:
-		Event	*createEvent(const EventDto &EventDto);
+		Event	*createEvent(const EventDto &EventDto) const;
 
 	private:
 		ListenEventFactory(void);

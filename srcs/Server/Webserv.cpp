@@ -2,30 +2,9 @@
 #include <unistd.h>
 #include "../../libs/unique_ptr/unique_ptr.hpp"
 
-Webserv::Webserv(void): _servers(std::vector<Server>()) {}
-Webserv::Webserv(const Config &config): _servers(std::vector<Server>()) {
-	std::vector< Config::map >	server_configs = config.getConfigMaps();
-
-	if (MAX_SERVERS <= server_configs.size()) {
-		throw (TooManyServersException());
-	}
-
-	for (size_t i=0; i<server_configs.size(); ++i) {
-		try {
-			ListenEventFactory	&factory = ListenEventFactory::getInstance();
-			EventQueue 			&event_queue = EventQueue::getInstance();
-			int 				listen_fd;
-			
-			this->_servers.push_back(Server(server_configs[i]));
-			listen_fd = this->_servers.back().getSocket()->getFd();
-			event_queue.pushEvent(factory.createEvent(listen_fd));
-		} catch (const std::exception &e) {
-			Logger::getInstance().error(e.what());
-			throw (FailToConstructException());
-		}
-	}
-}
-Webserv::Webserv(const Webserv &ref): _servers(ref._servers) {}
+Webserv::Webserv(void): _physical_server_map(PhysicalServerMap()) {}
+Webserv::Webserv(const Config &config): _physical_server_map(_initPhysicalServerMap(config)) {}
+Webserv::Webserv(const Webserv &ref): _physical_server_map(ref._physical_server_map) {}
 Webserv::~Webserv(void) {}
 Webserv	&Webserv::operator=(const Webserv &rhs) {
 	if (this != &rhs) {
@@ -33,6 +12,41 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 		new (this) Webserv(rhs);
 	}
 	return (*this);
+}
+
+PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config) throw(std::exception) {
+	const std::vector<Config::map>	server_configs = config.getConfigMaps();
+	const ListenEventFactory		&factory = ListenEventFactory::getInstance();
+	EventQueue 						&event_queue = EventQueue::getInstance();
+	PhysicalServerMap				ret;
+
+	if (MAX_SERVERS <= server_configs.size()) {
+		throw (TooManyServersException());
+	}
+
+	for (size_t i=0; i<server_configs.size(); ++i) {
+		std::string						host;
+		int								port;
+		ft::shared_ptr<PhysicalServer>	physical_server;
+
+		try {
+			host = _initHost(server_configs[i].at(Config::KEYS[0])[0]);
+			port = _initPort(server_configs[i].at(Config::KEYS[0])[0]);
+			physical_server = ret.at(std::make_pair(port, host));
+
+			if (physical_server.get() == NULL) {
+				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer(host, port));
+				ret.insert(std::make_pair(std::make_pair(port, host), physical_server));
+				event_queue.pushEvent(factory.createEvent(physical_server->getSocket()->getFd()));
+			}
+
+			physical_server->addVirtualServer(server_configs[i]);
+		} catch (const std::exception &e) {
+			Logger::getInstance().error(e.what());
+			throw (FailToConstructException());
+		}
+	}
+	return (ret);
 }
 
 bool	Webserv::run(void) throw(std::exception) {
