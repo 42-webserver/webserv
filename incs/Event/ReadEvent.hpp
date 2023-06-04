@@ -46,7 +46,7 @@ class ReadEventFactory: public EventFactory {
 		ReadEventFactory& operator=(const ReadEventFactory&);
 
 	public:
-		virtual Event	*createEvent(int fd) = 0;
+		virtual Event	*createEvent(int fd) const = 0;
 };
 
 
@@ -75,7 +75,7 @@ class ReadEventClientFactory: public EventFactory {
 		static ReadEventClientFactory	&getInstance(void);
 
 	public:
-		Event	*createEvent(int fd);
+		Event	*createEvent(int fd) const;
 
 	private:
 		ReadEventClientFactory(void);

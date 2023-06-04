@@ -28,7 +28,7 @@ class Config {
 		static map	getConfigMapOfEachServer(std::ifstream &infile) throw(std::exception);
 
 	private:
-		static bool	handlePort(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleListen(map &config_map, std::ifstream &infile) throw(std::exception);
 		static bool	handleServerName(map &config_map, std::ifstream &infile) throw(std::exception);
 		static bool	handleRoot(map &config_map, std::ifstream &infile) throw(std::exception);
 		static bool	handleIndex(map &config_map, std::ifstream &infile) throw(std::exception);
