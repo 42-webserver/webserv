@@ -116,7 +116,7 @@ ListenEventFactory	&ListenEventFactory::getInstance(void) {
 	return (instance);
 }
 
-Event	*ListenEventFactory::createEvent(int fd) {
+Event	*ListenEventFactory::createEvent(int fd) const {
 	EventHandler	*event_handler = new ListenEventHandler();
 	ListenEvent		*event = new ListenEvent(fd, event_handler);
 

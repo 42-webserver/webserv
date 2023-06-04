@@ -1,6 +1,6 @@
 #include "../../incs/Config/Config.hpp"
-#include "../../incs/Server/Server.hpp"
 #include "../../libs/shared_ptr/shared_ptr.hpp"
+#include <iostream>
 
 static const std::string	g_keys[] = {
 	"listen",
@@ -23,7 +23,7 @@ static const std::string	g_location_keys[] = {
 const std::vector<std::string>	Config::KEYS(g_keys, g_keys + sizeof(g_keys) / sizeof(std::string));
 const std::vector<std::string>	Config::LOCATION_KEYS(g_location_keys, g_location_keys + sizeof(g_location_keys) / sizeof(std::string));
 bool	(*const	Config::HANDLERS[])(Config::map &config_map, std::ifstream &infile) = {
-	Config::handlePort,
+	Config::handleListen,
 	Config::handleServerName,
 	Config::handleRoot,
 	Config::handleIndex,
@@ -133,7 +133,7 @@ Config::map	Config::getConfigMapOfEachServer(std::ifstream &infile) throw(std::e
 	return (ret);
 }
 
-bool	Config::handlePort(map &config_map, std::ifstream &infile) throw(std::exception) {
+bool	Config::handleListen(map &config_map, std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
 	if (!(infile >> token) || token.back() != ';') {

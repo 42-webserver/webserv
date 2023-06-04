@@ -2,24 +2,24 @@
 # define WEBSERV_HPP
 
 # include "../../libs/shared_ptr/shared_ptr.hpp"
-# include "../EventQueue/EventQueue.hpp"
 # include "../Config/Config.hpp"
+# include "../Server/PhysicalServer.hpp"
 # include "../Event/Event.hpp"
 # include "../Event/ListenEvent.hpp"
 # include "../Event/ReadEvent.hpp"
 # include "../Event/WriteEvent.hpp"
-# include "Server.hpp"
+# include "../EventQueue/EventQueue.hpp"
+# include <map>
 
 class Webserv {
 	public:
-		typedef std::vector<Server>::iterator		iterator;
-		typedef std::vector<Server>::const_iterator	const_iterator;
+		typedef std::map< std::pair<int, std::string>, ft::shared_ptr< PhysicalServer > >	PhysicalServerMap;
 
 	private:
 		static const int		MAX_SERVERS = 8;
 
 	private:
-		std::vector<Server>		_servers;
+		PhysicalServerMap	_physical_server_map;
 
 	public:
 		Webserv(void);
@@ -27,6 +27,12 @@ class Webserv {
 		Webserv(const Webserv &ref);
 		~Webserv(void);
 		Webserv	&operator=(const Webserv &rhs);
+
+	private:
+		static PhysicalServerMap	_initPhysicalServerMap(const Config &config) throw(std::exception);
+		static std::string			_initHost(const std::string &listen);
+		static int					_initPort(const std::string &listen);
+
 	public:
 		bool	run(void) throw(std::exception);
 
