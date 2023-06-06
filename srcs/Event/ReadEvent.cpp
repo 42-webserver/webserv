@@ -1,6 +1,7 @@
 #include "../../incs/Event/ReadEvent.hpp"
 #include <new>
 #include <string>
+#include "../../incs/Event/BufReadHandler.hpp"
 
 // READ EVENT start!
 ReadEvent::ReadEvent(int fd, EventHandler *read_event_handler): Event(fd, read_event_handler), _buffer(ReadEvent::BUF_SIZE) {}
@@ -83,12 +84,40 @@ ft::shared_ptr<PhysicalServer>	ReadEventClient::getPhysicalServer(void) const { 
 
 // Read EvClientHandler start!
 // To do : implement ReadEventClientHandler
-ReadEventClientHandler::ReadEventClientHandler(void) {}
+ReadEventClientHandler::ReadEventClientHandler(void) : _httpRequestParser(new HttpRequestParser()) {}
+ft::unique_ptr<HttpRequestParser>	&ReadEventClientHandler::getHttpRequestParser(void) { return (this->_httpRequestParser); }
 void ReadEventClientHandler::handleEvent(Event &event) {
-	//test용
-	event.callEventHandler();
-	std::cout << "hi?\n";
-	//
+	std::vector<char>	buf;
+	BufReadHandler		buf_read_handler(event.getFd(), ReadEvent::BUF_SIZE);
+	
+	//check Moudle
+	try {
+		buf = buf_read_handler.readBuf();
+	} catch (const std::exception &e) {
+		Logger::getInstance().info("e.what()");
+		return ;
+	}
+	if (buf.empty()) {
+		event.offboardQueue();
+		return ;
+	}
+
+	const RequestParseState state = this->getHttpRequestParser()->parseRequest(buf);
+
+	if(state == HEADERS)
+		return ;
+	else if (state == BODY) {
+		// // To do : check Host and Select virtual server
+		// ReadEventClient *readEventClient = dynamic_cast<ReadEventClient*>(&event);
+		// std::string host =  this->getHttpRequestParser()->getHttpRequest().getHost();
+		// readEventClient->getPhysicalServer()->findVirtualServer(host);
+
+		// // To do : buildResponseHeader
+		
+		// //
+
+		// // To do : Add Appropriate Event
+	}
 }
 
 ReadEventClientHandler::~ReadEventClientHandler(void) {}

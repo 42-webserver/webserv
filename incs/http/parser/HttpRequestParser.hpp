@@ -24,7 +24,8 @@ private:
 	int							 _readBodySize;
 
 public:
-	HttpRequestParser(HttpRequest *httpRequest);
+	//check: this maybe void
+	HttpRequestParser(void);
 	const RequestParseState &parseRequest(std::vector<char> &buffer);
 	void clearBuffer();
 	const RequestParseState &getState();

@@ -42,6 +42,7 @@ SRCS =	main.cpp \
 		Server/PhysicalServer.cpp \
 		Socket/Socket.cpp \
 		EventDto/EventDto.cpp \
+		Event/BufReadHandler.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
