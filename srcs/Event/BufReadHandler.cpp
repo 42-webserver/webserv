@@ -3,7 +3,7 @@
 BufReadHandler::BufReadHandler(int fd, const int buf_size): _fd(fd), _buf_size(buf_size) {}
 BufReadHandler::~BufReadHandler(void) {}
 
-std::vector<char> BufReadHandler::readBuf(void) {
+std::vector<char> BufReadHandler::readBuf(void)  throw(std::exception) {
 	std::vector<char>	buf(this->_buf_size);
 	ssize_t					read_size;
 
