@@ -65,7 +65,7 @@ void									PhysicalServer::addVirtualServer(const Config::map &config_map) thr
 }
 
 ft::shared_ptr<Socket>					PhysicalServer::getSocket(void) const { return (this->_socket); }
-const PhysicalServer::VirtualServerMap	&PhysicalServer::getVirtualServerMap(void) const { return (this->_virtual_server_map); }
+const PhysicalServer::VirtualServerMap	*PhysicalServer::getVirtualServerMap(void) const { return &(this->_virtual_server_map); }
 
 const char	*PhysicalServer::InvalidHostException::what(void) const throw() { return ("PhysicalServer: Invalid host"); }
 const char	*PhysicalServer::InvalidPortException::what(void) const throw() { return ("PhysicalServer: Invalid port"); }
@@ -73,7 +73,7 @@ const char	*PhysicalServer::FailToCreateSocketException::what(void) const throw(
 const char	*PhysicalServer::DuplicatedVirtualServerException::what(void) const throw() { return ("PhysicalServer: Duplicated virtual server"); }
 
 std::ostream	&operator<<(std::ostream &os, const PhysicalServer &ref) {
-	const PhysicalServer::VirtualServerMap				virtual_server_map = ref.getVirtualServerMap();
+	const PhysicalServer::VirtualServerMap				virtual_server_map = *ref.getVirtualServerMap();
 
 	for (PhysicalServer::VirtualServerMap::const_iterator it=virtual_server_map.begin(); it!=virtual_server_map.end(); it++) {
 		os << "Virtual Server name: " << it->first << '\n';
