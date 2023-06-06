@@ -4,14 +4,21 @@
 # include "../Server/VirtualServer.hpp"
 # include "../Server/PhysicalServer.hpp"
 class EventDto {
-	private : 
-		int _fd;
+	private: 
+		int 									_fd;
 		const PhysicalServer::VirtualServerMap  *_TargetMap;
-	public :
-		EventDto(int fd, const PhysicalServer::VirtualServerMap *getTargetMap);
+
+	public:
+		EventDto(void);
 		EventDto(int fd);
-		int getFd() const;
-		const PhysicalServer::VirtualServerMap *getTargetMap() const;
+		EventDto(int fd, const PhysicalServer::VirtualServerMap *getTargetMap);
+		EventDto(const EventDto &ref);
+		~EventDto(void);
+		EventDto &operator=(const EventDto &rhs);
+	
+	public:
+		int 									getFd() const;
+		const PhysicalServer::VirtualServerMap	*getTargetMap() const;
 };
 
 #endif

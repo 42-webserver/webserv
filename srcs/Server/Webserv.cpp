@@ -16,6 +16,8 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 
 Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config) throw(std::exception) {
 	const std::vector<Config::map>	server_configs = config.getConfigMaps();
+	const EventFactory				&factory = ListenEventFactory::getInstance();
+	EventQueue 						&event_queue = EventQueue::getInstance();
 	PhysicalServerMap				ret;
 
 	if (MAX_SERVERS <= server_configs.size()) {
@@ -33,14 +35,9 @@ Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config)
 			physical_server = ret.at(std::make_pair(port, host));
 
 			if (physical_server.get() == NULL) {
-				const EventFactory				&factory = ListenEventFactory::getInstance();
-				EventQueue 						&event_queue = EventQueue::getInstance();
-
 				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer(host, port));
 				ret.insert(std::make_pair(std::make_pair(port, host), physical_server));
-
 				EventDto event_dto(physical_server->getSocket()->getFd(), physical_server->getVirtualServerMap());
-
 				event_queue.pushEvent(factory.createEvent(event_dto));
 			}
 
@@ -52,6 +49,8 @@ Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config)
 	}
 	return (ret);
 }
+
+const Webserv::PhysicalServerMap	&Webserv::getPhysicalServerMap(void) const { return (this->_physical_server_map); }
 
 bool	Webserv::run(void) throw(std::exception) {
 	EventQueue	&event_queue = EventQueue::getInstance();
@@ -77,44 +76,37 @@ bool	Webserv::run(void) throw(std::exception) {
 	return (true);
 }
 
-std::string	Webserv::_initHost(const std::string &host)  {
-	std::string	ret;
-	std::string::size_type	prev_pos = 0;
-	std::string::size_type	cur_pos = 0;
-	size_t					number_of_dots = 0;
+std::string	Webserv::_initHost(const std::string &listen)  {
+	std::string				ret = "0.0.0.0";
+	std::string::size_type	pos = listen.find(':');
 
-	while ((cur_pos = host.find('.', prev_pos)) != std::string::npos) {
-		if (std::atoi(host.substr(prev_pos, cur_pos - prev_pos).c_str()) < 256) {
-			ret += host.substr(prev_pos, cur_pos - prev_pos);
-			ret += '.';
-		}
-		//  else {
-		// 	throw (PhysicalServer::InvalidHostException());
-		// }
-		number_of_dots++;
-		prev_pos = cur_pos + 1;
+	if (pos != std::string::npos) {
+		ret = listen.substr(0, pos);
 	}
-	if (std::atoi(host.substr(prev_pos).c_str()) < 256) {
-		ret += host.substr(prev_pos);
-	} 
-	// else {
-	// 	throw (PhysicalServer::InvalidHostException());
-	// }
-	// if (number_of_dots != 3) {
-	// 	throw (PhysicalServer::InvalidHostException());
-	// }
 	return (ret);
 }
+int			Webserv::_initPort(const std::string &listen) {
+	int						ret = 0;
+	std::string::size_type	pos = listen.find(':');
 
-int			Webserv::_initPort(const std::string &host) {
-	int	ret = std::atoi(host.c_str());
-
-	// if (ret < 0 || 65535 < ret) {
-	// 	throw (PhysicalServer::InvalidPortException());
-	// }
+	if (pos != std::string::npos) {
+		ret = std::atoi(listen.substr(pos + 1).c_str());
+	} else {
+		ret = std::atoi(listen.c_str());
+	}
 	return (ret);
 }
 
 const char	*Webserv::TooManyServersException::what() const throw() { return ("Webserv: Too many server_configs"); }
 const char	*Webserv::FailToConstructException::what() const throw() { return ("Webserv: Fail to construct"); }
 const char	*Webserv::FailToRunException::what() const throw() { return ("Webserv: Fail to run"); }
+
+std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {
+	const Webserv::PhysicalServerMap	&physical_server_map = webserv.getPhysicalServerMap();
+
+	for (Webserv::PhysicalServerMap::const_iterator it=physical_server_map.begin(); it!=physical_server_map.end(); ++it) {
+		os << "Physical Server: " << it->first.first << " " << it->first.second << '\n';
+		os << *(it->second) << '\n';
+	}	
+	return (os);
+}

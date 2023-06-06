@@ -4,6 +4,7 @@
 # include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../Config/Config.hpp"
 # include "VirtualServer.hpp"
+# include <iostream>
 # include <string>
 # include <map>
 
@@ -29,6 +30,7 @@ class PhysicalServer {
 	private:
 		static ft::shared_ptr<Socket>	initSocket(int port) throw(std::exception);
 
+	private:
 		static bool						hostIsValid(const std::string &host);
 		static bool						portIsValid(int port);
 	
@@ -37,7 +39,8 @@ class PhysicalServer {
 	
 	public:
 		ft::shared_ptr<Socket>			getSocket(void) const;
-		const VirtualServerMap			*getVirtualServerMap(void) const;
+		const VirtualServerMap			&getVirtualServerMap(void) const;
+
 	public:
 		class InvalidHostException: public std::exception {
 			public:
@@ -56,5 +59,7 @@ class PhysicalServer {
 				virtual const char *what() const throw();
 		};
 };
+
+std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server);
 
 #endif
