@@ -24,14 +24,14 @@ PhysicalServer	&PhysicalServer::operator=(const PhysicalServer &rhs) {
 	return (*this);
 }
 
-ft::shared_ptr<Socket>	initSocket(int port) throw(std::exception) {
+ft::shared_ptr<Socket>	PhysicalServer::initSocket(int port) throw(std::exception) {
 	ft::shared_ptr<Socket>	ret;
 
 	try {
 		ret = ft::shared_ptr<Socket>(new Socket(port));
 	} catch (const std::exception &e) {
 		std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
-		throw (FailToCreateSocketException());
+		throw (PhysicalServer::FailToCreateSocketException());
 	}
 	return (ret);
 }
@@ -53,18 +53,18 @@ bool					PhysicalServer::hostIsValid(const std::string &host) {
 }
 bool					PhysicalServer::portIsValid(int port) { return (0 <= port && port <= 65535); }
 
-void					PhysicalServer::addVirtualServer(const Config::map &config_map) {
+void					PhysicalServer::addVirtualServer(const Config::map &config_map) throw(std::exception){
 	const std::vector<std::string>	server_names = config_map.at(Config::KEYS[1]);
 
 	for (size_t i=0; i<server_names.size(); i++) {
 		if (this->_virtual_server_map.find(server_names[i]) != this->_virtual_server_map.end()) {
-			throw (DuplicatedVirtualServerException());
+			throw (PhysicalServer::DuplicatedVirtualServerException());
 		}
 		this->_virtual_server_map[server_names[i]] = ft::shared_ptr<VirtualServer>(new VirtualServer(config_map));
 	}
 }
 ft::shared_ptr<Socket>	PhysicalServer::getSocket(void) const { return (this->_socket); }
-
+const PhysicalServer::VirtualServerMap			*PhysicalServer::getVirtualServerMap(void) const { return &(this->_virtual_server_map); }
 const char	*PhysicalServer::InvalidHostException::what(void) const throw() { return ("PhysicalServer: Invalid host"); }
 const char	*PhysicalServer::InvalidPortException::what(void) const throw() { return ("PhysicalServer: Invalid port"); }
 const char	*PhysicalServer::FailToCreateSocketException::what(void) const throw() { return ("PhysicalServer: Fail to create socket"); }

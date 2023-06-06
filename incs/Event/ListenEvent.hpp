@@ -3,22 +3,22 @@
 
 # include "./Event.hpp"
 # include "../Log/Logger.hpp"
-# include "../VirtualServerMap/VirtualServerMap.hpp"
+# include "../Server/VirtualServer.hpp"
 
 class ListenEvent: public Event {
 	public:
 		ListenEvent(int fd, EventHandler *listen_event_handler, 
-			const VirtualServerMap::TargetMap *TargetMap);
+			const PhysicalServer::VirtualServerMap *TargetMap);
 		virtual	~ListenEvent(void);
 
 	private:
 		ListenEvent	&operator=(const ListenEvent &rhs);
 		ListenEvent(const ListenEvent &ref);
 	private:
-		const VirtualServerMap::TargetMap	*_TargetMap;
+		const PhysicalServer::VirtualServerMap *_TargetMap;
 	
 	public:
-		VirtualServerMap::TargetMap	*getTargetMap(void) const;
+		const PhysicalServer::VirtualServerMap *getTargetMap(void) const;
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);

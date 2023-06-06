@@ -37,10 +37,10 @@ SRCS =	main.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
 		Server/Location.cpp \
-		Server/Server.cpp \
+		Server/VirtualServer.cpp \
 		Server/Webserv.cpp \
+		Server/PhysicalServer.cpp \
 		Socket/Socket.cpp \
-		VirtualServerMap/VirtualServerMap.cpp \
 		EventDto/EventDto.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
@@ -59,7 +59,6 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \
 				${OBJS_DIR}/Socket \
-				${OBJS_DIR}/VirtualServerMap \
 				${OBJS_DIR}/EventDto \
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}

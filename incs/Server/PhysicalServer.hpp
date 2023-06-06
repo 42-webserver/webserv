@@ -9,7 +9,7 @@
 
 class PhysicalServer {
 	public:
-		typedef std::map<std::string, ft::shared_ptr<VirtualServer>> VirtualServerMap;
+		typedef std::map<std::string, ft::shared_ptr<VirtualServer> > VirtualServerMap;
 
 	private:
 		std::string				_host;
@@ -37,7 +37,7 @@ class PhysicalServer {
 	
 	public:
 		ft::shared_ptr<Socket>			getSocket(void) const;
-
+		const VirtualServerMap			*getVirtualServerMap(void) const;
 	public:
 		class InvalidHostException: public std::exception {
 			public:
