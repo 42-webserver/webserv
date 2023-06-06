@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include "../../incs/Event/ReadEvent.hpp"
 ListenEvent::ListenEvent(int fd, EventHandler *listen_event_handler, 
-const VirtualServerMap::TargetMap *TargetMap): Event(fd, listen_event_handler), 
+const PhysicalServer::VirtualServerMap *TargetMap): Event(fd, listen_event_handler), 
 _TargetMap(TargetMap) {}
 
 ListenEvent::~ListenEvent(void) {}
@@ -62,7 +62,7 @@ void	ListenEvent::offboardQueue(void) throw (std::exception) {
 	}
 }
 
-VirtualServerMap::TargetMap	*ListenEvent::getTargetMap(void) const { return (const_cast<VirtualServerMap::TargetMap *>(this->_TargetMap)); }
+const PhysicalServer::VirtualServerMap *ListenEvent::getTargetMap(void) const { return ((this->_TargetMap)); }
 // To do: 
 // Listen Event Handler 
 ListenEventHandler::ListenEventHandler(void) {};

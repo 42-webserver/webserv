@@ -20,10 +20,10 @@ ReadEventHandler::~ReadEventHandler(void) {
 //	To do : check ReadEventClient
 
 ReadEventClient::ReadEventClient(int fd, EventHandler *read_event_client_handler,
-const VirtualServerMap::TargetMap *TargetMap) : 
+const PhysicalServer::VirtualServerMap *TargetMap) : 
 ReadEvent(fd, read_event_client_handler), _TargetMap(TargetMap) {}
 ReadEventClient::~ReadEventClient(void) {}
-const VirtualServerMap::TargetMap	*ReadEventClient::getTargetMap(void) const { return (this->_TargetMap); }
+const PhysicalServer::VirtualServerMap *ReadEventClient::getTargetMap(void) const { return (this->_TargetMap); }
 void	ReadEventClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
 void	ReadEventClient::onboardQueue() throw (std::exception) {
 	EventQueue	&event_queue = EventQueue::getInstance();
@@ -98,7 +98,7 @@ ReadEventClientFactory &ReadEventClientFactory::getInstance(void) {
 	return (instance);
 }
 
-Event	*ReadEventClientFactory::createEvent(const EventDto &event_dto) {
+Event	*ReadEventClientFactory::createEvent(const EventDto &event_dto) const {
 	EventHandler	*event_handler = new ReadEventClientHandler();
 	ReadEventClient	*event = new ReadEventClient(
 	event_dto.getFd(), 

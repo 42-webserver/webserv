@@ -14,10 +14,8 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 	return (*this);
 }
 
-PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config) throw(std::exception) {
+Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config) throw(std::exception) {
 	const std::vector<Config::map>	server_configs = config.getConfigMaps();
-	const ListenEventFactory		&factory = ListenEventFactory::getInstance();
-	EventQueue 						&event_queue = EventQueue::getInstance();
 	PhysicalServerMap				ret;
 
 	if (MAX_SERVERS <= server_configs.size()) {
@@ -35,9 +33,15 @@ PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config) throw(st
 			physical_server = ret.at(std::make_pair(port, host));
 
 			if (physical_server.get() == NULL) {
+				const EventFactory				&factory = ListenEventFactory::getInstance();
+				EventQueue 						&event_queue = EventQueue::getInstance();
+
 				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer(host, port));
 				ret.insert(std::make_pair(std::make_pair(port, host), physical_server));
-				event_queue.pushEvent(factory.createEvent(physical_server->getSocket()->getFd()));
+
+				EventDto event_dto(physical_server->getSocket()->getFd(), physical_server->getVirtualServerMap());
+
+				event_queue.pushEvent(factory.createEvent(event_dto));
 			}
 
 			physical_server->addVirtualServer(server_configs[i]);
@@ -71,6 +75,44 @@ bool	Webserv::run(void) throw(std::exception) {
 		}
 	}
 	return (true);
+}
+
+std::string	Webserv::_initHost(const std::string &host)  {
+	std::string	ret;
+	std::string::size_type	prev_pos = 0;
+	std::string::size_type	cur_pos = 0;
+	size_t					number_of_dots = 0;
+
+	while ((cur_pos = host.find('.', prev_pos)) != std::string::npos) {
+		if (std::atoi(host.substr(prev_pos, cur_pos - prev_pos).c_str()) < 256) {
+			ret += host.substr(prev_pos, cur_pos - prev_pos);
+			ret += '.';
+		}
+		//  else {
+		// 	throw (PhysicalServer::InvalidHostException());
+		// }
+		number_of_dots++;
+		prev_pos = cur_pos + 1;
+	}
+	if (std::atoi(host.substr(prev_pos).c_str()) < 256) {
+		ret += host.substr(prev_pos);
+	} 
+	// else {
+	// 	throw (PhysicalServer::InvalidHostException());
+	// }
+	// if (number_of_dots != 3) {
+	// 	throw (PhysicalServer::InvalidHostException());
+	// }
+	return (ret);
+}
+
+int			Webserv::_initPort(const std::string &host) {
+	int	ret = std::atoi(host.c_str());
+
+	// if (ret < 0 || 65535 < ret) {
+	// 	throw (PhysicalServer::InvalidPortException());
+	// }
+	return (ret);
 }
 
 const char	*Webserv::TooManyServersException::what() const throw() { return ("Webserv: Too many server_configs"); }

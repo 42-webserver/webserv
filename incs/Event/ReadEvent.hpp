@@ -48,28 +48,24 @@ class ReadEventFactory: public EventFactory {
 		ReadEventFactory& operator=(const ReadEventFactory&);
 
 	public:
-<<<<<<< HEAD
 		virtual Event	*createEvent(const EventDto &EventDto) const = 0;
-=======
-		virtual Event	*createEvent(int fd) const = 0;
->>>>>>> 6a33be9a3c2599b0f8a995faec56b6ebdf28b924
 };
 
 
 class ReadEventClient: public ReadEvent {
 	public:
 		ReadEventClient(int fd, EventHandler *read_event_client_handler,
-		const VirtualServerMap::TargetMap *TargetMap);
+		const PhysicalServer::VirtualServerMap *TargetMap);
 		
 		virtual	~ReadEventClient(void);
 
 	public:
-		const VirtualServerMap::TargetMap	*getTargetMap(void) const;
+		const PhysicalServer::VirtualServerMap *getTargetMap(void) const;
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);
 	private:
-		const VirtualServerMap::TargetMap *_TargetMap;
+		const PhysicalServer::VirtualServerMap *_TargetMap;
 };
 
 class ReadEventClientHandler: public ReadEventHandler {

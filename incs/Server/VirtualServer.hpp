@@ -25,11 +25,13 @@ class VirtualServer {
 		static int						_initClientMaxBodySize(const Config::map &config_map);
 		static std::vector<Location>	_initLocations(const Config::map &config_map);
 
-		static bool						_rootIsValid(const std::string &root);
-		static bool						_indexesIsValid(const std::vector<std::string> &indexes);
-		static bool						_defaultErrorPageIsValid(const std::string &default_error_page);
-		static bool						_clientMaxBodySizeIsValid(const int client_max_body_size);
-		static bool						_locationsIsValid(const std::vector<Location> &locations);
+	//Custom will be added
+		// static bool						_rootIsValid(const std::string &root);
+		// static bool						_indexesIsValid(const std::vector<std::string> &indexes);
+		// static bool						_defaultErrorPageIsValid(const std::string &default_error_page);
+		// static bool						_clientMaxBodySizeIsValid(const int client_max_body_size);
+		// static bool						_locationsIsValid(const std::vector<Location> &locations);
+	//Custom will be added
 
 	public:
 		VirtualServer(const Config::map &config_map) throw(std::exception);

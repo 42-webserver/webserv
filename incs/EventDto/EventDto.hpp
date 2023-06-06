@@ -1,17 +1,17 @@
 #ifndef EVENTDTO_HPP
 # define EVENTDTO_HPP
 
-# include "../VirtualServerMap/VirtualServerMap.hpp"
-
+# include "../Server/VirtualServer.hpp"
+# include "../Server/PhysicalServer.hpp"
 class EventDto {
 	private : 
 		int _fd;
-		const VirtualServerMap::TargetMap  *_TargetMap;
+		const PhysicalServer::VirtualServerMap  *_TargetMap;
 	public :
-		EventDto(int fd, VirtualServerMap::TargetMap *getTargetMap);
+		EventDto(int fd, const PhysicalServer::VirtualServerMap *getTargetMap);
 		EventDto(int fd);
 		int getFd() const;
-		const VirtualServerMap::TargetMap *getTargetMap() const;
+		const PhysicalServer::VirtualServerMap *getTargetMap() const;
 };
 
 #endif
