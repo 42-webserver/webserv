@@ -3,17 +3,26 @@
 
 # include "./ReadEvent.hpp"
 
-class BufReadHandler: public ReadEventHandler {
+class BufReadHandler {
 	public:
-		BufReadHandler();
-		virtual ~BufReadHandler(void);
+		BufReadHandler(int fd, const int buf_size);
+		~BufReadHandler(void);
+
+	private:
+		int	_fd;
+		const int	_buf_size;
 
 	private:
 		BufReadHandler(const BufReadHandler&);
 		BufReadHandler& operator=(const BufReadHandler&);
 
 	public:
-		virtual void	handleEvent(Event &event);
+		std::vector<char>	readBuf(void) throw(std::exception);
+	public:
+		class FailToReadNonBlockException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
 };
 
 #endif

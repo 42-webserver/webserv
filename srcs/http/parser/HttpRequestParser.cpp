@@ -1,8 +1,9 @@
 #include "../../../incs/http/parser/HttpRequestParser.hpp"
 
 
-HttpRequestParser::HttpRequestParser(HttpRequest *httpRequest)
-: _httpRequest(httpRequest), _state(BEFORE), _readBodySize(0)
+//check: this maybe void
+HttpRequestParser::HttpRequestParser(void)
+: _httpRequest(NULL), _state(BEFORE), _readBodySize(0)
 {
 }
 

@@ -5,6 +5,7 @@
 # include <vector>
 # include "../EventDto/EventDto.hpp"
 # include "../../incs/Log/Logger.hpp"
+#include "../../incs/http/parser/HttpRequestParser.hpp"
 
 class ReadEvent: public Event {
 	public:
@@ -65,6 +66,7 @@ class ReadEventClient: public ReadEvent {
 		virtual void	offboardQueue(void) throw (std::exception);
 	private:
 		ft::shared_ptr<PhysicalServer>			_physical_server;
+
 };
 
 class ReadEventClientHandler: public ReadEventHandler {
@@ -74,6 +76,9 @@ class ReadEventClientHandler: public ReadEventHandler {
 
 	public:
 		virtual void	handleEvent(Event &event);
+		ft::unique_ptr<HttpRequestParser>	&getHttpRequestParser(void);
+	private:
+		ft::unique_ptr<HttpRequestParser>	_httpRequestParser;
 };
 
 class ReadEventClientFactory: public EventFactory {
