@@ -39,7 +39,7 @@ class PhysicalServer {
 	
 	public:
 		ft::shared_ptr<Socket>			getSocket(void) const;
-		const VirtualServerMap			*getVirtualServerMap(void) const;
+		// const VirtualServerMap			&getVirtualServerMap(void) const;
 
 	public:
 		class InvalidHostException: public std::exception {
@@ -60,6 +60,6 @@ class PhysicalServer {
 		};
 };
 
-std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server);
+// std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server);
 
 #endif

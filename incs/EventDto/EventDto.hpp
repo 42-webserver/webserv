@@ -6,19 +6,19 @@
 class EventDto {
 	private: 
 		int 									_fd;
-		const PhysicalServer::VirtualServerMap  *_TargetMap;
+		ft::shared_ptr<PhysicalServer>			_physical_server;
 
 	public:
 		EventDto(void);
 		EventDto(int fd);
-		EventDto(int fd, const PhysicalServer::VirtualServerMap *getTargetMap);
+		EventDto(int fd, ft::shared_ptr<PhysicalServer> physical_server);
 		EventDto(const EventDto &ref);
 		~EventDto(void);
 		EventDto &operator=(const EventDto &rhs);
 	
 	public:
 		int 									getFd() const;
-		const PhysicalServer::VirtualServerMap	*getTargetMap() const;
+		ft::shared_ptr<PhysicalServer>			getPhysicalServer() const;
 };
 
 #endif

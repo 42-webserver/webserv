@@ -8,17 +8,17 @@
 class ListenEvent: public Event {
 	public:
 		ListenEvent(int fd, EventHandler *listen_event_handler, 
-			const PhysicalServer::VirtualServerMap *TargetMap);
+			ft::shared_ptr<PhysicalServer> physical_server);
 		virtual	~ListenEvent(void);
 
 	private:
 		ListenEvent	&operator=(const ListenEvent &rhs);
 		ListenEvent(const ListenEvent &ref);
 	private:
-		const PhysicalServer::VirtualServerMap *_TargetMap;
+		ft::shared_ptr<PhysicalServer>			_physical_server;
 	
 	public:
-		const PhysicalServer::VirtualServerMap *getTargetMap(void) const;
+		ft::shared_ptr<PhysicalServer>			getPhysicalServer(void) const;
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);
