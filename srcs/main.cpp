@@ -15,6 +15,8 @@ int	main(int argc, char **argv) {
 	try {
 		config = Config(argv[1]);
 		webserv = Webserv(config);
+
+		std::cout << webserv << '\n';
 		webserv.run();
 	} catch (const std::exception &e) {
 		std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
