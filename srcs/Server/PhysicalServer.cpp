@@ -53,7 +53,7 @@ bool					PhysicalServer::hostIsValid(const std::string &host) {
 }
 bool					PhysicalServer::portIsValid(int port) { return (0 <= port && port <= 65535); }
 
-void					PhysicalServer::addVirtualServer(const Config::map &config_map) throw(std::exception){
+void									PhysicalServer::addVirtualServer(const Config::map &config_map) throw(std::exception){
 	const std::vector<std::string>	server_names = config_map.at(Config::KEYS[1]);
 
 	for (size_t i=0; i<server_names.size(); i++) {
@@ -63,9 +63,22 @@ void					PhysicalServer::addVirtualServer(const Config::map &config_map) throw(s
 		this->_virtual_server_map[server_names[i]] = ft::shared_ptr<VirtualServer>(new VirtualServer(config_map));
 	}
 }
-ft::shared_ptr<Socket>	PhysicalServer::getSocket(void) const { return (this->_socket); }
-const PhysicalServer::VirtualServerMap			*PhysicalServer::getVirtualServerMap(void) const { return &(this->_virtual_server_map); }
+
+ft::shared_ptr<Socket>					PhysicalServer::getSocket(void) const { return (this->_socket); }
+const PhysicalServer::VirtualServerMap	&PhysicalServer::getVirtualServerMap(void) const { return (this->_virtual_server_map); }
+
 const char	*PhysicalServer::InvalidHostException::what(void) const throw() { return ("PhysicalServer: Invalid host"); }
 const char	*PhysicalServer::InvalidPortException::what(void) const throw() { return ("PhysicalServer: Invalid port"); }
 const char	*PhysicalServer::FailToCreateSocketException::what(void) const throw() { return ("PhysicalServer: Fail to create socket"); }
 const char	*PhysicalServer::DuplicatedVirtualServerException::what(void) const throw() { return ("PhysicalServer: Duplicated virtual server"); }
+
+std::ostream	&operator<<(std::ostream &os, const PhysicalServer &ref) {
+	const PhysicalServer::VirtualServerMap				virtual_server_map = ref.getVirtualServerMap();
+
+	for (PhysicalServer::VirtualServerMap::const_iterator it=virtual_server_map.begin(); it!=virtual_server_map.end(); it++) {
+		os << "Virtual Server name: " << it->first << '\n';
+		os << *(it->second);
+		os << '\n';
+	}
+	return (os);
+}

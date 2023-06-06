@@ -9,6 +9,7 @@
 # include "../Event/ReadEvent.hpp"
 # include "../Event/WriteEvent.hpp"
 # include "../EventQueue/EventQueue.hpp"
+# include <iostream>
 # include <map>
 
 class Webserv {
@@ -16,7 +17,7 @@ class Webserv {
 		typedef std::map< std::pair<int, std::string>, ft::shared_ptr< PhysicalServer > >	PhysicalServerMap;
 
 	private:
-		static const int		MAX_SERVERS = 8;
+		static const int	MAX_SERVERS = 8;
 
 	private:
 		PhysicalServerMap	_physical_server_map;
@@ -32,6 +33,9 @@ class Webserv {
 		static PhysicalServerMap	_initPhysicalServerMap(const Config &config) throw(std::exception);
 		static std::string			_initHost(const std::string &listen);
 		static int					_initPort(const std::string &listen);
+
+	public:
+		const PhysicalServerMap		&getPhysicalServerMap(void) const;
 
 	public:
 		bool	run(void) throw(std::exception);
@@ -50,5 +54,7 @@ class Webserv {
 				virtual const char* what() const throw();
 		};
 };
+
+std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
 
 #endif

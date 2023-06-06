@@ -68,7 +68,6 @@ std::vector<Location>		VirtualServer::_initLocations(const Config::map &config_m
 // bool						VirtualServer::_defaultErrorPageIsValid(const std::string &default_error_page) { return (true); }
 // bool						VirtualServer::_clientMaxBodySizeIsValid(const int client_max_body_size) { return (true); }
 // bool						VirtualServer::_locationsIsValid(const std::vector<Location> &locations) { return (true); }
-
 // Custom For use!!
 
 // Getters
@@ -77,6 +76,15 @@ int								VirtualServer::getClientMaxBodySize(void) const { return (this->_clie
 const std::string				&VirtualServer::getRoot(void) const { return (this->_root); }
 const std::vector<std::string>	&VirtualServer::getIndexes(void) const { return (this->_indexes); }
 const std::vector<Location>		&VirtualServer::getLocations(void) const { return (this->_locations); }
+
+// Exception
+const char	*VirtualServer::InvalidRootException::what(void) const throw() { return ("VirtualServer: Invalid root"); }
+const char	*VirtualServer::InvalidIndexesException::what(void) const throw() { return ("VirtualServer: Invalid indexes"); }
+const char	*VirtualServer::InvalidDefaultErrorPageException::what(void) const throw() { return ("VirtualServer: Invalid default_error_page"); }
+const char	*VirtualServer::InvalidClientMaxBodySizeException::what(void) const throw() { return ("VirtualServer: Invalid client_max_body_size"); }
+const char	*VirtualServer::FailToInitializeLocationException::what(void) const throw() { return ("VirtualServer: Fail to initialize location"); }
+const char	*VirtualServer::InvalidLocationException::what(void) const throw() { return ("VirtualServer: Invalid location"); }
+const char	*VirtualServer::FailToRunException::what(void) const throw() { return ("VirtualServer: Fail to run"); }
 
 // Operator overload
 std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs) {
@@ -92,12 +100,3 @@ std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs) {
 	}
 	return (os);
 }
-
-// Exception
-const char	*VirtualServer::InvalidRootException::what(void) const throw() { return ("VirtualServer: Invalid root"); }
-const char	*VirtualServer::InvalidIndexesException::what(void) const throw() { return ("VirtualServer: Invalid indexes"); }
-const char	*VirtualServer::InvalidDefaultErrorPageException::what(void) const throw() { return ("VirtualServer: Invalid default_error_page"); }
-const char	*VirtualServer::InvalidClientMaxBodySizeException::what(void) const throw() { return ("VirtualServer: Invalid client_max_body_size"); }
-const char	*VirtualServer::FailToInitializeLocationException::what(void) const throw() { return ("VirtualServer: Fail to initialize location"); }
-const char	*VirtualServer::InvalidLocationException::what(void) const throw() { return ("VirtualServer: Invalid location"); }
-const char	*VirtualServer::FailToRunException::what(void) const throw() { return ("VirtualServer: Fail to run"); }
