@@ -55,17 +55,16 @@ class ReadEventFactory: public EventFactory {
 class ReadEventClient: public ReadEvent {
 	public:
 		ReadEventClient(int fd, EventHandler *read_event_client_handler,
-		const PhysicalServer::VirtualServerMap *TargetMap);
-		
+		ft::shared_ptr<PhysicalServer> physicalServer);
 		virtual	~ReadEventClient(void);
 
 	public:
-		const PhysicalServer::VirtualServerMap *getTargetMap(void) const;
+		ft::shared_ptr<PhysicalServer>			getPhysicalServer(void) const;
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);
 	private:
-		const PhysicalServer::VirtualServerMap *_TargetMap;
+		ft::shared_ptr<PhysicalServer>			_physical_server;
 };
 
 class ReadEventClientHandler: public ReadEventHandler {

@@ -20,6 +20,8 @@ Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config)
 	EventQueue 						&event_queue = EventQueue::getInstance();
 	PhysicalServerMap				ret;
 
+	//Todo ::  implement feature for Update physicalServerMap ::
+
 	if (MAX_SERVERS <= server_configs.size()) {
 		throw (TooManyServersException());
 	}
@@ -37,7 +39,7 @@ Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config)
 			if (physical_server.get() == NULL) {
 				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer(host, port));
 				ret.insert(std::make_pair(std::make_pair(port, host), physical_server));
-				EventDto event_dto(physical_server->getSocket()->getFd(), physical_server->getVirtualServerMap());
+				EventDto event_dto(physical_server->getSocket()->getFd(), physical_server);
 				event_queue.pushEvent(factory.createEvent(event_dto));
 			}
 
@@ -101,12 +103,13 @@ const char	*Webserv::TooManyServersException::what() const throw() { return ("We
 const char	*Webserv::FailToConstructException::what() const throw() { return ("Webserv: Fail to construct"); }
 const char	*Webserv::FailToRunException::what() const throw() { return ("Webserv: Fail to run"); }
 
-std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {
-	const Webserv::PhysicalServerMap	&physical_server_map = webserv.getPhysicalServerMap();
+// getter 사라져서 다시 구현 필요
+// std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {
+// 	const Webserv::PhysicalServerMap	&physical_server_map = webserv.getPhysicalServerMap();
 
-	for (Webserv::PhysicalServerMap::const_iterator it=physical_server_map.begin(); it!=physical_server_map.end(); ++it) {
-		os << "Physical Server: " << it->first.first << " " << it->first.second << '\n';
-		os << *(it->second) << '\n';
-	}	
-	return (os);
-}
+// 	for (Webserv::PhysicalServerMap::const_iterator it=physical_server_map.begin(); it!=physical_server_map.end(); ++it) {
+// 		os << "Physical Server: " << it->first.first << " " << it->first.second << '\n';
+// 		os << *(it->second) << '\n';
+// 	}	
+// 	return (os);
+// }

@@ -3,9 +3,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "../../incs/Event/ReadEvent.hpp"
-ListenEvent::ListenEvent(int fd, EventHandler *listen_event_handler, 
-const PhysicalServer::VirtualServerMap *TargetMap): Event(fd, listen_event_handler), 
-_TargetMap(TargetMap) {}
+
+ListenEvent::ListenEvent(int fd, EventHandler *listen_event_handler,
+ft::shared_ptr<PhysicalServer> physicalServer): Event(fd, listen_event_handler),
+_physical_server(physicalServer) {}
 
 ListenEvent::~ListenEvent(void) {}
 
@@ -62,7 +63,7 @@ void	ListenEvent::offboardQueue(void) throw (std::exception) {
 	}
 }
 
-const PhysicalServer::VirtualServerMap *ListenEvent::getTargetMap(void) const { return ((this->_TargetMap)); }
+ft::shared_ptr<PhysicalServer>	ListenEvent::getPhysicalServer(void) const { return (this->_physical_server); }
 // To do: 
 // Listen Event Handler 
 ListenEventHandler::ListenEventHandler(void) {};
@@ -98,7 +99,7 @@ void	ListenEventHandler::handleEvent(Event &event) throw (std::exception) {
 		EventQueue &event_queue = EventQueue::getInstance();
 		ListenEvent *listenEvent = dynamic_cast<ListenEvent *>(&event);
 
-		EventDto event_dto(client_fd, listenEvent->getTargetMap());
+		EventDto event_dto(client_fd, listenEvent->getPhysicalServer());
 		event_queue.pushEvent(factory.createEvent(event_dto));
 	} catch (const std::exception &e) {
 		log.error(e.what());
@@ -117,7 +118,7 @@ ListenEventFactory	&ListenEventFactory::getInstance(void) {
 Event	*ListenEventFactory::createEvent(const EventDto &EventDto) const {
 	EventHandler	*event_handler = new ListenEventHandler();
 	ListenEvent		*event = new ListenEvent(EventDto.getFd(), 
-	event_handler, EventDto.getTargetMap());
+	event_handler, EventDto.getPhysicalServer());
 
 	return (event);
 }

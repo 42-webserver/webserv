@@ -55,6 +55,7 @@ class Webserv {
 		};
 };
 
-std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
+// Todo:
+// std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
 
 #endif

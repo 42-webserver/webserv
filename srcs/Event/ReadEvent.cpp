@@ -20,10 +20,12 @@ ReadEventHandler::~ReadEventHandler(void) {
 //	To do : check ReadEventClient
 
 ReadEventClient::ReadEventClient(int fd, EventHandler *read_event_client_handler,
-const PhysicalServer::VirtualServerMap *TargetMap) : 
-ReadEvent(fd, read_event_client_handler), _TargetMap(TargetMap) {}
+ft::shared_ptr<PhysicalServer> physicalServer) :
+ReadEvent(fd, read_event_client_handler), _physical_server(physicalServer) {}
+
+
 ReadEventClient::~ReadEventClient(void) {}
-const PhysicalServer::VirtualServerMap *ReadEventClient::getTargetMap(void) const { return (this->_TargetMap); }
+
 void	ReadEventClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
 void	ReadEventClient::onboardQueue() throw (std::exception) {
 	EventQueue	&event_queue = EventQueue::getInstance();
@@ -76,6 +78,7 @@ void	ReadEventClient::offboardQueue() throw (std::exception) {
 	}
 }
 
+ft::shared_ptr<PhysicalServer>	ReadEventClient::getPhysicalServer(void) const { return (this->_physical_server); }
 // Read EvClient end!
 
 // Read EvClientHandler start!
@@ -103,7 +106,7 @@ Event	*ReadEventClientFactory::createEvent(const EventDto &event_dto) const {
 	ReadEventClient	*event = new ReadEventClient(
 	event_dto.getFd(), 
 	event_handler, 
-	event_dto.getTargetMap());
+	event_dto.getPhysicalServer());
 
 	return (event);
 }
