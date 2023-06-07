@@ -69,7 +69,7 @@ void HttpRequestParser::handleBodyState(std::vector<char> &buffer) {
 		writeInFile(buffer);
 	else
 		writeInMemory(buffer);
-	_readBodySize + buffer.size();
+	_readBodySize += buffer.size();
 	if (_readBodySize >= _MAX_BODY_MEMORY_SIZE && !_httpRequest->isBodyLong()) {
 		_httpRequest->setBodyDataFilename(generateUniqueFileName());
 		_httpRequest->setBodyLong(true);
@@ -96,11 +96,12 @@ void HttpRequestParser::writeInFile(std::vector<char> &buffer) {
 	this->_bodyFile.write(buffer.data(), buffer.size());
 }
 
-bool IsFileExists(const std::string& filename)
+bool HttpRequestParser::isFileExists(const std::string& filename)
 {
     std::ifstream file(filename.c_str());
     return file.good();
 }
+
 
 std::string HttpRequestParser::generateUniqueFileName()
 {
@@ -110,7 +111,7 @@ std::string HttpRequestParser::generateUniqueFileName()
     filenameStream << "file_" << currentTime << ".txt";
     
     std::string filename = filenameStream.str();
-    while (IsFileExists(filename))
+    while (isFileExists(filename))
     {
         currentTime++;
         filenameStream.str("");

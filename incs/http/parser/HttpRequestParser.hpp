@@ -45,7 +45,7 @@ private:
 	void handleStartLineState(std::vector<char> &buffer);
 	void handleHeaderState(std::vector<char> &buffer);
 	void handleBodyState(std::vector<char> &buffer);
-	bool IsFileExists(const std::string& filename);
+	bool isFileExists(const std::string& filename);
 	std::string generateUniqueFileName();
 	void writeInFile(std::vector<char> &buffer);
 	void writeInMemory(std::vector<char> &buffer);
