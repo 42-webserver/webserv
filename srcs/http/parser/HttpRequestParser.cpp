@@ -64,8 +64,60 @@ void HttpRequestParser::handleHeaderState(std::vector<char> &buffer) {
 void HttpRequestParser::handleBodyState(std::vector<char> &buffer) {
 	if (buffer.empty())  
 		return;
-	this->_buffer.insert(this->_buffer.end(), buffer.begin(), buffer.end());
-	_readBodySize += buffer.size();
+	if (_httpRequest->isBodyLong())
+		writeInFile(buffer);
+	else
+		writeInMemory(buffer);
+	_readBodySize + buffer.size();
+	if (_readBodySize >= _MAX_BODY_MEMORY_SIZE && !_httpRequest->isBodyLong()) {
+		_httpRequest->setBodyDataFilename(generateUniqueFileName());
+		_httpRequest->setBodyLong(true);
+		this->_bodyFile.open(_httpRequest->getBodyDataFilename(), std::ios::app);
+		std::vector<char> tmpBuffer(this->_httpRequest->getBody().begin(), this->_httpRequest->getBody().end());
+		tmpBuffer.insert(tmpBuffer.end(), buffer.begin(), buffer.end());
+		this->_httpRequest->getBody().clear();
+		writeInFile(tmpBuffer);
+	}
+	std::multimap<std::string, std::string> &_headers = this->_httpRequest->getHeaders();
+	int contentLength = std::atoi(_headers.find("Content-Length")->second.c_str());
+	if(_readBodySize >= contentLength)
+	{
+		this->_state = FINISH;
+		this->_bodyFile.close();
+	}
+}
+
+void HttpRequestParser::writeInMemory(std::vector<char> &buffer) {
+	this->_httpRequest->setBody(buffer);
+}
+
+void HttpRequestParser::writeInFile(std::vector<char> &buffer) {
+	this->_bodyFile.write(buffer.data(), buffer.size());
+}
+
+bool IsFileExists(const std::string& filename)
+{
+    std::ifstream file(filename.c_str());
+    return file.good();
+}
+
+std::string HttpRequestParser::generateUniqueFileName()
+{
+    std::stringstream filenameStream;
+    
+    std::time_t currentTime = std::time(NULL);
+    filenameStream << "file_" << currentTime << ".txt";
+    
+    std::string filename = filenameStream.str();
+    while (IsFileExists(filename))
+    {
+        currentTime++;
+        filenameStream.str("");
+        filenameStream << "file_" << currentTime << ".txt";
+        filename = filenameStream.str();
+    }
+    
+    return filename;
 }
 
 const RequestParseState &HttpRequestParser::getState() {

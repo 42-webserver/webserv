@@ -9,12 +9,12 @@
 class HttpRequest
 {
 private:
-	std::string		 _method;
-	std::string		 _uri;
-	std::string		 _version;
+	std::string		 	_method;
+	std::string		 	_uri;
+	std::string		 	_version;
 	std::vector<char>   _body;
-	std::string		 _protocol;
-	int				 _bodyDataFd;
+	std::string		 	_protocol;
+	std::string		 	_bodyDataFilename;
 	bool				_isBodyLong;
 
 	std::multimap<std::string, std::string> _headers;
@@ -26,15 +26,19 @@ public:
 	~HttpRequest();
 	void addHeader(const std::string & header);
 	void setStartLine(std::string line);
-	void setBody(std::string * bodyBuffer);
+	void setBody(std::vector<char> &buffer);
 	std::string getMethod();
 	std::string getUri();
 	std::string getVersion();
 	std::string getProtocol();
 	std::vector<char> &getBody();
-	std::multimap<std::string, std::string> getHeaders();
+	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();
 	std::map<std::string, std::string> getCookies();
+	bool isBodyLong() const;
+	std::string &getBodyDataFilename();
+	void setBodyDataFilename(std::string filename);
+	void setBodyLong(bool isBodyLong);
 
 private:
 	void setQuery(std::string & uri);
