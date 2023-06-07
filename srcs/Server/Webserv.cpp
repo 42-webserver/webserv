@@ -42,7 +42,7 @@ Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config)
 				ret.insert(std::make_pair(std::make_pair(port, host), physical_server));
 				EventDto event_dto(physical_server->getSocket()->getFd(), physical_server);
 				
-				event_queue.pushEvent(factory.createEvent());
+				event_queue.pushEvent(factory.createEvent(event_dto));
 			}
 
 			physical_server->addVirtualServer(server_configs[i]);
