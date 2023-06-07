@@ -2,6 +2,8 @@
 #include "../../libs/shared_ptr/shared_ptr.hpp"
 #include <iostream>
 
+//Refactoring::hyunkyle Enum
+
 static const std::string	g_keys[] = {
 	"listen",
 	"server_name",
@@ -39,6 +41,7 @@ bool	(*const	Config::LOCATION_HANDLERS[])(Config::map &config_map, std::ifstream
 	Config::handleLocationReturn
 };
 
+//Refactoring::Hyunkyle-Constructor Fix:method
 Config::Config(void): _file_name(""), _config_maps(std::vector<map>()) {}
 Config::Config(const char *file_name): _file_name(file_name), _config_maps(std::vector<map>()) {
 	std::ifstream	infile(this->_file_name);

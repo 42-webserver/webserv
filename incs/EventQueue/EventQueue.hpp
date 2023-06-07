@@ -7,13 +7,6 @@
 
 class Event;
 
-enum EventType {
-	LISTEN,
-	READ,
-	WRITE,
-	TIMER
-};
-
 enum EventSetIndex {
 	READ_SET,
 	WRITE_SET

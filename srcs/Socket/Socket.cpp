@@ -5,6 +5,7 @@
 
 // Constructor & Destructor
 Socket::Socket(void): _fd(0), _enable(0) { memset(&this->_addr, 0, sizeof(struct sockaddr_in)); }
+//Refactoring::Daegulee-> open Method, Method Separate 여기서 nonBlocksetting안하고 onboard할떄
 Socket::Socket(int port): _fd(0), _enable(0) {
 	// Create socket
 	if ((this->_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {

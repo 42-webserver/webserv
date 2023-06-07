@@ -2,7 +2,7 @@
 
 
 //check: this maybe void
-HttpRequestParser::HttpRequestParser(void)
+HttpRequestParser::HttpRequestParser()
 : _httpRequest(NULL), _state(BEFORE), _readBodySize(0)
 {
 }
@@ -62,6 +62,9 @@ void HttpRequestParser::handleHeaderState(std::vector<char> &buffer) {
 	this->_buffer.insert(this->_buffer.end(), buffer.begin(), buffer.end());
 }
 
+//Refactory::hyunkyle CheckClientMaxBodySize ->Exception
+//Refactory::hyunkyle CheckTransfer, MultipartFormData	
+//Refactory::hyunkyle if문 내용 분리 생각
 void HttpRequestParser::handleBodyState(std::vector<char> &buffer) {
 	if (buffer.empty())  
 		return;

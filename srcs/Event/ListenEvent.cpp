@@ -17,7 +17,7 @@ void	ListenEvent::onboardQueue(void) throw (std::exception) {
 	Event		*event = this;
 
 	Logger::getInstance().info("onboard Listen Event");
-
+	
 	try {
 		event->getFileDescriptor()->setNonBlocking();
 	} catch (const std::exception &e) {
@@ -75,20 +75,18 @@ int		ListenEventHandler::connectClient(int server_fd) const throw(std::exception
 	if ((client_fd = ::accept(server_fd, (struct sockaddr *) NULL, NULL)) == -1) {
 		Logger::getInstance().error("Fail to accept client");
 		throw (FailToAcceptException());
-		return (-1);
 	}
 
-	return (client_fd);	
+	return (client_fd);
 }
+
 void	ListenEventHandler::handleEvent(Event &event) throw (std::exception) {
 	Logger		&log = Logger::getInstance();
 	int 		client_fd;
 
 	try {
 		client_fd = connectClient(event.getFd());
-		if (client_fd != -1) {
-			log.info("Client connected");
-		}
+		log.info("Client connected");
 	} catch (const std::exception &e) {
 		log.error(e.what());
 		return ;

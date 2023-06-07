@@ -22,6 +22,7 @@ static const std::vector<char>  _crlfPattern = std::vector<char>(_crlf, _crlf + 
 static const int 				_MAX_BODY_MEMORY_SIZE = 10000;
 static const std::string		_tmpDir = "../../../tmp/";
 
+//Refactoring::hyunkyle Shared_ptr-void
 class HttpRequestParser{
 
 private:
@@ -33,7 +34,7 @@ private:
 
 public:
 	//check: this maybe void
-	HttpRequestParser(void);
+	HttpRequestParser();
 	const RequestParseState &parseRequest(std::vector<char> &buffer);
 	void clearBuffer();
 	const RequestParseState &getState();
