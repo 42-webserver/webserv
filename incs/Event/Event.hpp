@@ -11,6 +11,8 @@
 class EventQueue;
 class EventHandler;
 
+//Refactoring::daegulee factory 너무 쓸대없는데 코스트쓴다 보내주자!. 연습했다
+//Refactoring::daegulee static getInstance + privateConstructor
 class Event {
 	protected:
 		ft::shared_ptr<FileDescriptor>	_fd;

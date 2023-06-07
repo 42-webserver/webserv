@@ -7,7 +7,9 @@
 # include <ctime>
 # include <cstdarg>
 
+// Refactoring::daegulee  access, error Expand!
 const std::string DEFAULT_LOG_FILE_NAME = "../../LogSave/Log.txt";
+
 
 enum LogLevel {
 	INFO,

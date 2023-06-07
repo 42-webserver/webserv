@@ -3,6 +3,7 @@
 #include "../../libs/unique_ptr/unique_ptr.hpp"
 
 Webserv::Webserv(void): _physical_server_map(PhysicalServerMap()) {}
+//Refactoring::daegulee- construcotr -> Method
 Webserv::Webserv(const Config &config): _physical_server_map(_initPhysicalServerMap(config)) {}
 Webserv::Webserv(const Webserv &ref): _physical_server_map(ref._physical_server_map) {}
 Webserv::~Webserv(void) {}
@@ -16,7 +17,7 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 
 Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config) throw(std::exception) {
 	const std::vector<Config::map>	server_configs = config.getConfigMaps();
-	const EventFactory				&factory = ListenEventFactory::getInstance();
+	const ListenEventFactory		&factory = ListenEventFactory::getInstance();
 	EventQueue 						&event_queue = EventQueue::getInstance();
 	PhysicalServerMap				ret;
 
@@ -40,7 +41,8 @@ Webserv::PhysicalServerMap	Webserv::_initPhysicalServerMap(const Config &config)
 				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer(host, port));
 				ret.insert(std::make_pair(std::make_pair(port, host), physical_server));
 				EventDto event_dto(physical_server->getSocket()->getFd(), physical_server);
-				event_queue.pushEvent(factory.createEvent(event_dto));
+				
+				event_queue.pushEvent(factory.createEvent());
 			}
 
 			physical_server->addVirtualServer(server_configs[i]);

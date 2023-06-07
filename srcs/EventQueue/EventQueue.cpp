@@ -16,6 +16,7 @@ EventQueue::EventQueue(void) {
 		throw (FailToCreateException());
 	}
 }
+
 EventQueue::~EventQueue(void) {
 	if (this->_fd) {
 		close(this->_fd);

@@ -12,7 +12,6 @@ class FileDescriptor{
 		int _fd;
 
 	public:
-		FileDescriptor(void);
 		FileDescriptor(int fd);
 		~FileDescriptor(void);
 		void setNonBlocking(void) throw (std::exception);

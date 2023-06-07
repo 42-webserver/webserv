@@ -48,6 +48,7 @@ int							VirtualServer::_initClientMaxBodySize(const Config::map &config_map) {
 
 	return (ret);
 }
+
 std::vector<Location>		VirtualServer::_initLocations(const Config::map &config_map) {
 	std::vector<Location>	ret;
 

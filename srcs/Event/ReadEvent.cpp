@@ -104,18 +104,17 @@ void ReadEventClientHandler::handleEvent(Event &event) {
 
 	const RequestParseState state = this->getHttpRequestParser()->parseRequest(buf);
 
-	if(state == HEADERS)
-		return ;
-	else if (state == BODY) {
+
+	if (state == FINISH) {
 		// // To do : check Host and Select virtual server
+		// findHandler 
 		// ReadEventClient *readEventClient = dynamic_cast<ReadEventClient*>(&event);
 		// std::string host =  this->getHttpRequestParser()->getHttpRequest().getHost();
 		// readEventClient->getPhysicalServer()->findVirtualServer(host);
+		//
+		// // To do : prepareResponse->cgi, client 
 
-		// // To do : buildResponseHeader
-		
 		// //
-
 		// // To do : Add Appropriate Event
 	}
 }
