@@ -2,7 +2,7 @@
 
 
 HttpRequest::HttpRequest()
-: _bodyDataFd(-1), _isBodyLong(false)
+:_isBodyLong(false)
 {
 }
 
@@ -10,9 +10,26 @@ HttpRequest::~HttpRequest()
 {
 }
 
-void HttpRequest::setBody( std::string * bodyBuffer)
+void HttpRequest::setBody(std::vector<char> &buffer)
 {
-	this->_body.insert(this->_body.end(), bodyBuffer->begin(), bodyBuffer->end());
+	this->_body.insert(this->_body.end(), buffer.begin(), buffer.end());
+}
+
+bool HttpRequest::isBodyLong() const
+{
+	return this->_isBodyLong;
+}
+
+std::string & HttpRequest::getBodyDataFilename(){
+	return this->_bodyDataFilename;
+}
+
+void HttpRequest::setBodyDataFilename(std::string filename){
+	this->_bodyDataFilename = filename;
+}
+
+void HttpRequest::setBodyLong(bool isBodyLong){
+	this->_isBodyLong = isBodyLong;
 }
 
 void HttpRequest::addHeader(const std::string & header)
@@ -133,7 +150,7 @@ std::string HttpRequest::getProtocol()
 	return this->_protocol;
 }
 
-std::multimap<std::string, std::string> HttpRequest::getHeaders()
+std::multimap<std::string, std::string> & HttpRequest::getHeaders()
 {
 	return this->_headers;
 }
