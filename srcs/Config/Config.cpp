@@ -44,10 +44,23 @@ bool	(*const	Config::LOCATION_HANDLERS[])(Config::map &config_map, std::ifstream
 //Refactoring::Hyunkyle-Constructor Fix:method
 Config::Config(void): _file_name(""), _config_maps(std::vector<map>()) {}
 Config::Config(const char *file_name): _file_name(file_name), _config_maps(std::vector<map>()) {
+}
+
+Config::Config(const Config &ref): _file_name(ref._file_name), _config_maps(ref._config_maps) {}
+Config::~Config(void) {}
+Config	&Config::operator=(const Config &rhs) {
+	if (this != &rhs) {
+		this->~Config();
+		new (this) Config(rhs);
+	}
+	return (*this);
+}
+
+void Config::startParse(void) throw(std::exception) {
 	std::ifstream	infile(this->_file_name);
 	std::string		token;
 
-	if (Config::invalidFileName(file_name)) {
+	if (Config::invalidFileName(this->_file_name)) {
 		throw (InvalidFileNameException());
 	}
 
@@ -67,15 +80,6 @@ Config::Config(const char *file_name): _file_name(file_name), _config_maps(std::
 			throw (FailToConfigurateException());
 		}
 	}
-}
-Config::Config(const Config &ref): _file_name(ref._file_name), _config_maps(ref._config_maps) {}
-Config::~Config(void) {}
-Config	&Config::operator=(const Config &rhs) {
-	if (this != &rhs) {
-		this->~Config();
-		new (this) Config(rhs);
-	}
-	return (*this);
 }
 
 // Static functions
@@ -174,6 +178,7 @@ bool	Config::handleRoot(map &config_map, std::ifstream &infile) throw(std::excep
 	config_map["root"].push_back(token.substr(0, token.length() - 1));
 	return (true);
 }
+
 bool	Config::handleIndex(map &config_map, std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
