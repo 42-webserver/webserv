@@ -53,6 +53,7 @@ class Config {
 
 	public:
 		const std::vector<map>	&getConfigMaps(void) const;
+		void startParse(void) throw(std::exception);
 
 	public:
 		class InvalidFileNameException: public std::exception {

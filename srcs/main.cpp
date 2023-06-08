@@ -14,6 +14,7 @@ int	main(int argc, char **argv) {
 
 	try {
 		config = Config(argv[1]);
+		config.startParse();
 		webserv = Webserv(config);
 
 		// std::cout << webserv << '\n';
