@@ -2,15 +2,16 @@
 
 
 HttpRequest::HttpRequest()
-:_isBodyLong(false)
+:_isBodyLong(false), _bodyType(NORMAL)
 {
+	this->_body.reserve(_MEMORY_BODY_SIZE);
 }
 
 HttpRequest::~HttpRequest()
 {
 }
 
-void HttpRequest::setBody(std::vector<char> &buffer)
+void HttpRequest::insertBody(std::vector<char> &buffer)
 {
 	this->_body.insert(this->_body.end(), buffer.begin(), buffer.end());
 }
@@ -48,24 +49,15 @@ void HttpRequest::addHeader(const std::string & header)
 
 void HttpRequest::handleMultipleValueHeader(std::string & value, std::string & key)
 {
-	std::string::size_type pos;
+	std::string::size_type pos = value.find(",");
 
-	while (value.find(", ") != std::string::npos)
+	while (pos != std::string::npos)
 	{
 		if (key == "User-Agent")
 			break;
-		pos = value.find(", ");
-		this->_headers.insert(std::pair<std::string, std::string>(key, value.substr(0, pos)));
-		value.erase(0, pos + 2);
-	}
-
-	while (value.find(",") != std::string::npos)
-	{
-		if (key == "User-Agent")
-			break;
-		pos = value.find(",");
 		this->_headers.insert(std::pair<std::string, std::string>(key, value.substr(0, pos)));
 		value.erase(0, pos + 1);
+		pos = value.find(",");
 	}
 	this->_headers.insert(std::pair<std::string, std::string>(key, value));
 }
@@ -163,4 +155,29 @@ std::map<std::string, std::string> HttpRequest::getQueries()
 std::map<std::string, std::string> HttpRequest::getCookies()
 {
 	return this->_cookies;
+}
+
+std::vector<MultipartRequest> & HttpRequest::getMultipartRequests()
+{
+	return this->_multipartRequests;
+}
+
+int HttpRequest::getContentLength()
+{
+	std::multimap<std::string, std::string>::iterator it;
+
+	it = this->_headers.find("Content-Length");
+	if (it == this->_headers.end())
+		return -1;
+	return std::stoi(it->second);
+}
+
+BodyType HttpRequest::getBodyType()
+{
+	return this->_bodyType;
+}
+
+void HttpRequest::setBodyType(BodyType bodyType)
+{
+	this->_bodyType = bodyType;
 }
