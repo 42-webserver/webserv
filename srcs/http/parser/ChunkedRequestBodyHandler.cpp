@@ -7,21 +7,28 @@ ChunkedRequestBodyHandler::ChunkedRequestBodyHandler(void)
 ChunkedRequestBodyHandler::~ChunkedRequestBodyHandler(void)
 {}
 
-bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req)
+bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req) throw(ChunkDataSizeNotMatchException)
 {
     if (!this->_buffer.empty())
         reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
+    
+    //find chunk size
     std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
     while (find != reqBuffer.end()) {
         size_t chunkSize = hexToDec(std::string(reqBuffer.begin(), find));
+        reqBuffer.erase(reqBuffer.begin(), find + _crlfPattern.size());
         if (chunkSize == 0) {
             reqBuffer.clear();
             return true;
         }
-        if (reqBuffer.size() >= chunkSize) {
+
+        //find chunk data
+        find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+        if (find != reqBuffer.end()) {
+            std::vector<char> tmp = std::vector<char>(reqBuffer.begin(), find);
+            if (tmp.size() != chunkSize)
+                throw ChunkDataSizeNotMatchException();
             reqBuffer.erase(reqBuffer.begin(), find + _crlfPattern.size());
-            std::vector<char> tmp = std::vector<char>(reqBuffer.begin(), reqBuffer.begin() + chunkSize);
-            reqBuffer.erase(reqBuffer.begin(), reqBuffer.begin() + chunkSize + 2);
             if (req->isBodyLong())
                 writeInFile(tmp, req);
             else
@@ -32,6 +39,7 @@ bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::sha
             reqBuffer.clear();
             return false;
         }
+        //find chunk size
         find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
     }
     this->_buffer.insert(this->_buffer.end(), reqBuffer.begin(), reqBuffer.end());
@@ -67,4 +75,9 @@ int ChunkedRequestBodyHandler::hexToDec(const std::string& hexStr) {
     int decValue;
     std::istringstream(hexStr) >> std::hex >> decValue;
     return decValue;
+}
+
+const char * ChunkedRequestBodyHandler::ChunkDataSizeNotMatchException::what() const throw()
+{
+    return "Chunk data size not match";
 }

@@ -5,11 +5,18 @@
 
 class ChunkedRequestBodyHandler : public RequestBodyHandler
 {
+
+public:
+class ChunkDataSizeNotMatchException : public std::exception {
+	public:
+			virtual const char* what() const throw();
+};
+
 private:
     std::vector<char>   _buffer;
 
 public:
-    bool handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+    bool handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req) throw(ChunkDataSizeNotMatchException);
     ChunkedRequestBodyHandler(void);
     ~ChunkedRequestBodyHandler(void);
 

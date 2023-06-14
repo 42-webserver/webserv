@@ -10,7 +10,7 @@ std::string createChunkedRequestBody(const std::string& bodyData) {
 
     // 청크 데이터
     std::vector<std::string> chunks;
-    const size_t chunkSize = 10;  // 각 청크의 크기 설정 
+    const size_t chunkSize = 9;  // 각 청크의 크기 설정 
     size_t offset = 0;
     while (offset < bodyData.length()) {
         chunks.push_back(bodyData.substr(offset, chunkSize));

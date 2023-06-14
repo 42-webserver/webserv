@@ -4,7 +4,7 @@ MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary)
     : RequestBodyHandler(0), _targetIdx(0), _state(M_HEADER)
 {
     this->_boundaryStart = "--" + boundary;
-    this->_boundaryEnd =  "--" + boundary + "--\r\n";
+    this->_boundaryEnd =  "--" + boundary + "--";
 }
 
 MultipartRequestBodyHandler::~MultipartRequestBodyHandler(void)
@@ -67,9 +67,8 @@ bool MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &reqBuffer, 
         writeParts(reqBuffer, req);
         reqBuffer.clear();
     }
-    find = std::search(reqBuffer.begin(), reqBuffer.end(), _boundaryEnd.begin(), _boundaryEnd.end());
-    std::string endBoundary(find, reqBuffer.end());
-    if (endBoundary == this->_boundaryEnd && reqBuffer.size() == _boundaryEnd.size()){
+    find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+    if (find != reqBuffer.end() && std::string(reqBuffer.begin(), find) == _boundaryEnd){
         reqBuffer.clear();
         return true;
     }
