@@ -29,7 +29,13 @@ SRCS =	main.cpp \
 		http/handler/HttpRequestHandler.cpp \
 		http/parser/HttpRequestParser.cpp \
 		http/parser/HttpResponseParser.cpp \
+		http/parser/ChunkedRequestBodyHandler.cpp \
+		http/parser/FileNameGenerator.cpp \
+		http/parser/MultipartRequestBodyHandler.cpp \
+		http/parser/NormalBodyHandler.cpp \
+		http/parser/RequestBodyHandler.cpp \
 		http/request/HttpRequest.cpp \
+		http/request/MultipartRequest.cpp \
 		http/response/HttpResponse.cpp \
 		http/utils/HttpStatus.cpp \
 		http/utils/Cookie.cpp \

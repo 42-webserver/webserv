@@ -2,11 +2,18 @@
 #define HTTP_REQUEST_PARSER_HPP
 
 #include "../request/HttpRequest.hpp"
+#include "../../Config/Config.hpp"
+#include "../../../libs/shared_ptr/shared_ptr.hpp"
+#include "../../../libs/unique_ptr/unique_ptr.hpp"
+#include "ParsePatternMatcher.hpp"
+#include "MultipartRequestBodyHandler.hpp"
+#include "RequestBodyHandler.hpp"
+#include "NormalBodyHandler.hpp"
+#include "ChunkedRequestBodyHandler.hpp"
+#include "FileNameGenerator.hpp"
 #include <vector>
 #include <iostream>
-#include <sstream>
-#include <ctime>
-#include <fstream>
+
 
 typedef enum State{
 		BEFORE,
@@ -16,40 +23,42 @@ typedef enum State{
 		FINISH
 } RequestParseState;
 
-static const char			   	_crlf[] = "\r\n";
-static const int				_crlfPatternSize = sizeof(_crlf) - 1;
-static const std::vector<char>  _crlfPattern = std::vector<char>(_crlf, _crlf + _crlfPatternSize);
-static const int 				_MAX_BODY_MEMORY_SIZE = 10000;
-static const std::string		_tmpDir = "../../../tmp/";
 
 //Refactoring::hyunkyle Shared_ptr-void
 class HttpRequestParser{
 
+public:
+class ClientBodySizeInvalidException : public std::exception {
+	public:
+			virtual const char* what() const throw();
+};
+
 private:
-	HttpRequest			*_httpRequest;
-	RequestParseState	_state;
-	std::vector<char>	_buffer;
-	int				 	_readBodySize;
-	std::ofstream 		_bodyFile;
+	ft::shared_ptr<HttpRequest>			_httpRequest;
+	RequestParseState					_state;
+	std::vector<char>					_buffer;
+	int				 					_readBodySize;
+	ft::shared_ptr<RequestBodyHandler>	_bodyHandler;
+
 
 public:
 	//check: this maybe void
-	HttpRequestParser();
-	const RequestParseState &parseRequest(std::vector<char> &buffer);
+	HttpRequestParser(void);
+	const RequestParseState &parseRequest(std::vector<char> &reqBuffer, int clientBodyMaxSize);
 	void clearBuffer();
 	const RequestParseState &getState();
 	const int & getReadBodySize();
-	const HttpRequest &getHttpRequest();
+	const ft::shared_ptr<HttpRequest>	 getHttpRequest();
 	const std::vector<char> & getBuffer();
 
 private:
-	void handleStartLineState(std::vector<char> &buffer);
-	void handleHeaderState(std::vector<char> &buffer);
-	void handleBodyState(std::vector<char> &buffer);
+	void handleStartLineState(std::vector<char> &reqBuffer);
+	void handleHeaderState(std::vector<char> &reqBuffer, int clientBodyMaxSize);
+	void handleBodyState(std::vector<char> &reqBuffer);
 	bool isFileExists(const std::string& filename);
 	std::string generateUniqueFileName();
-	void writeInFile(std::vector<char> &buffer);
-	void writeInMemory(std::vector<char> &buffer);
+	void changeStateToBody(int clientBodyMaxSize) throw(ClientBodySizeInvalidException);
+	void injectionHandler();
 };
 
 #endif

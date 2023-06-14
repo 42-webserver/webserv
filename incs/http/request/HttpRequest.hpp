@@ -5,6 +5,15 @@
 #include <map>
 #include <iostream>
 #include <vector>
+#include "MultipartRequest.hpp"
+
+typedef enum BodyType{
+		NORMAL,
+		CHUNKED,
+		MULTIPART_FORM_DATA
+} BodyType;
+
+static const int				_MEMORY_BODY_SIZE = 16 * 1024;
 
 class HttpRequest
 {
@@ -16,17 +25,19 @@ private:
 	std::string		 	_protocol;
 	std::string		 	_bodyDataFilename;
 	bool				_isBodyLong;
+	BodyType			_bodyType;
 
 	std::multimap<std::string, std::string> _headers;
-	std::map<std::string, std::string>	  _queries;
-	std::map<std::string, std::string>	  _cookies;
+	std::map<std::string, std::string>	  	_queries;
+	std::map<std::string, std::string>	  	_cookies;
+	std::vector<MultipartRequest>		 	_multipartRequests;
 
 public:
 	HttpRequest();
 	~HttpRequest();
 	void addHeader(const std::string & header);
 	void setStartLine(std::string line);
-	void setBody(std::vector<char> &buffer);
+	void insertBody(std::vector<char> &buffer);
 	std::string getMethod();
 	std::string getUri();
 	std::string getVersion();
@@ -39,6 +50,10 @@ public:
 	std::string &getBodyDataFilename();
 	void setBodyDataFilename(std::string filename);
 	void setBodyLong(bool isBodyLong);
+	int  getContentLength();
+	std::vector<MultipartRequest> &getMultipartRequests();
+	BodyType getBodyType();
+	void setBodyType(BodyType bodyType);
 
 private:
 	void setQuery(std::string & uri);

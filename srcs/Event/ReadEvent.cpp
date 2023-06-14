@@ -102,10 +102,10 @@ void ReadEventClientHandler::handleEvent(Event &event) {
 		return ;
 	}
 
-	const RequestParseState state = this->getHttpRequestParser()->parseRequest(buf);
+	// const RequestParseState state = this->getHttpRequestParser()->parseRequest(buf);
 
 
-	if (state == FINISH) {
+	// if (state == FINISH) {
 		// // To do : check Host and Select virtual server
 		// findHandler 
 		// ReadEventClient *readEventClient = dynamic_cast<ReadEventClient*>(&event);
@@ -116,7 +116,7 @@ void ReadEventClientHandler::handleEvent(Event &event) {
 
 		// //
 		// // To do : Add Appropriate Event
-	}
+	// }
 }
 
 ReadEventClientHandler::~ReadEventClientHandler(void) {}
