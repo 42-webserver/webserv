@@ -42,6 +42,7 @@ public:
 	std::string getUri();
 	std::string getVersion();
 	std::string getProtocol();
+	std::string getHost();
 	std::vector<char> &getBody();
 	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();
