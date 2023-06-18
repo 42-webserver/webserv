@@ -11,32 +11,22 @@
 # include "../EventQueue/EventQueue.hpp"
 # include <iostream>
 # include <map>
-
+# include "./PhysicalServerManager.hpp"
 class Webserv {
-	public:
-		typedef std::map< std::pair<int, std::string>, ft::shared_ptr< PhysicalServer > >	PhysicalServerMap;
 
 	private:
 		static const int	MAX_SERVERS = 8;
 
 	private:
-		PhysicalServerMap	_physical_server_map;
+		PhysicalServerManager	_physicalServerManager;
 
 	public:
 		Webserv(void);
-		Webserv(const Config &config);
-		Webserv(const Webserv &ref);
 		~Webserv(void);
 		Webserv	&operator=(const Webserv &rhs);
 
-	private:
-		static PhysicalServerMap	_initPhysicalServerMap(const Config &config) throw(std::exception);
-		static std::string			_initHost(const std::string &listen);
-		static int					_initPort(const std::string &listen);
-
 	public:
-		const PhysicalServerMap		&getPhysicalServerMap(void) const;
-
+		void	build(const Config &config) throw(std::exception);
 	public:
 		bool	run(void) throw(std::exception);
 

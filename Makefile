@@ -46,6 +46,8 @@ SRCS =	main.cpp \
 		Server/VirtualServer.cpp \
 		Server/Webserv.cpp \
 		Server/PhysicalServer.cpp \
+		Server/PhysicalServerManager.cpp \
+		Server/VirtualServerManager.cpp \
 		Socket/Socket.cpp \
 		EventDto/EventDto.cpp \
 		Event/BufReadHandler.cpp \

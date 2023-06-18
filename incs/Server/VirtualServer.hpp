@@ -17,14 +17,14 @@ class VirtualServer {
 		const std::string				_default_error_page;
 		const int						_client_max_body_size;
 		const std::vector<Location>		_locations;
-
+		const std::string				_ip;
 	private:
 		static std::string				_initRoot(const Config::map &config_map);
 		static std::vector<std::string>	_initIndexes(const Config::map &config_map);
 		static std::string				_initDefaultErrorPage(const Config::map &config_map);
 		static int						_initClientMaxBodySize(const Config::map &config_map);
 		static std::vector<Location>	_initLocations(const Config::map &config_map);
-
+		static std::string				_initIp(const Config::map &config_map);
 	//Custom will be added
 		// static bool						_rootIsValid(const std::string &root);
 		// static bool						_indexesIsValid(const std::vector<std::string> &indexes);
@@ -43,7 +43,7 @@ class VirtualServer {
 		const std::string				&getRoot(void) const;
 		const std::vector<std::string>	&getIndexes(void) const;
 		const std::vector<Location>		&getLocations(void) const;
-	
+		const std::string				&getIP(void) const;
 	public:
 		class InvalidRootException: public std::exception {
 			public:
