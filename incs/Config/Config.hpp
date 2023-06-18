@@ -6,6 +6,28 @@
 # include <vector>
 # include <map>
 
+namespace ConfigKey {
+enum {
+	LISTEN,
+	SERVER_NAME,
+	ROOT,
+	INDEX,
+	ERROR_PAGE,
+	CLIENT_MAX_BODY_SIZE,
+	LOCATION,
+	NUM_OF_SERVER_KEYS
+};
+}
+namespace LocationKey {
+enum {
+	DIR,
+	ROOT,
+	ALIAS,
+	AUTO_INDEX,
+	RETURN,
+	NUM_OF_LOCATION_KEYS
+};
+}
 class Config {
 	public:
 		typedef std::map< std::string, std::vector<std::string> >	map;
