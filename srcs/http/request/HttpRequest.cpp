@@ -172,6 +172,16 @@ int HttpRequest::getContentLength()
 	return std::stoi(it->second);
 }
 
+std::string HttpRequest::getHost()
+{
+	std::multimap<std::string, std::string>::iterator it;
+
+	it = this->_headers.find("Host");
+	if (it == this->_headers.end())
+		return "";
+	return it->second;
+}
+
 BodyType HttpRequest::getBodyType()
 {
 	return this->_bodyType;
