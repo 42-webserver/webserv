@@ -68,8 +68,8 @@ PhysicalServerManager::buildDomainMap(const std::map<ip, ft::shared_ptr<VirtualS
 }
 
 void PhysicalServerManager::createAndStoreVirtualServerManager(std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap, 
-std::map<serverName, ft::shared_ptr<VirtualServer> >& domainMap) {
-    VirtualServerManager vsm;
+std::map<serverName, ft::shared_ptr<VirtualServer> >& domainMap, int port) {
+    VirtualServerManager vsm(port);
     vsm.buildFromPhysicalServerManager(ipMap, domainMap);
     _VirtualServerManagers.push_back(vsm);
 }
@@ -83,14 +83,15 @@ void PhysicalServerManager::buildAllVirtualServerManagers() {
             // If wildcard IP exists, create one VirtualServerManager
             std::map<ip, ft::shared_ptr<VirtualServer> > ip_map = buildIPMap(port_it->second, true, "");
             std::map<serverName, ft::shared_ptr<VirtualServer> > domainMap = buildDomainMap(ip_map);
-            createAndStoreVirtualServerManager(ip_map, domainMap);
+            
+            createAndStoreVirtualServerManager(ip_map, domainMap, port_it->first);
         } else {
             // If wildcard IP does not exist, create a VirtualServerManager for each IP
             for (std::multimap<ip, ft::shared_ptr<VirtualServer> >::const_iterator ip_it = port_it->second.begin();
             ip_it != port_it->second.end(); ++ip_it) {
                 std::map<ip, ft::shared_ptr<VirtualServer> > ip_map = buildIPMap(port_it->second, false, ip_it->first);
                 std::map<serverName, ft::shared_ptr<VirtualServer> > domainMap = buildDomainMap(ip_map);
-                createAndStoreVirtualServerManager(ip_map, domainMap);
+                createAndStoreVirtualServerManager(ip_map, domainMap, port_it->first);
             }
         }
     }
