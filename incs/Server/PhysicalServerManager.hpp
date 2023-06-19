@@ -34,7 +34,8 @@ private:
     bool checkWildcardIP(const std::multimap<ip, ft::shared_ptr<VirtualServer> >& ipMultimap);
     std::map<ip, ft::shared_ptr<VirtualServer> > buildIPMap(const std::multimap<ip, ft::shared_ptr<VirtualServer> >& ipMultimap, bool isWildcard, ip targetIP);
     std::map<serverName, ft::shared_ptr<VirtualServer> > buildDomainMap(const std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap);
-    void createAndStoreVirtualServerManager(std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap, std::map<serverName, ft::shared_ptr<VirtualServer> >& domainMap);
+    void createAndStoreVirtualServerManager(std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap, std::map<serverName, 
+    ft::shared_ptr<VirtualServer> >& domainMap, int port);
 public:
     class FailToConstructException: public std::exception {
         public:

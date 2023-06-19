@@ -4,7 +4,7 @@
 
 VirtualServerManager::hostsMap VirtualServerManager::hostsFromFile = VirtualServerManager::hostsMap();
 
-VirtualServerManager::VirtualServerManager() { 
+VirtualServerManager::VirtualServerManager(int port) : _port(port){ 
     parseHostsFile();
 }
 VirtualServerManager::~VirtualServerManager() {}
@@ -15,6 +15,17 @@ void VirtualServerManager::buildFromPhysicalServerManager(const serverMap& serve
 }
 
 
+VirtualServerManager::ip VirtualServerManager::getListenIP() const {
+    if (_servers.find("0.0.0.0") != _servers.end()) {
+        return "0.0.0.0";
+    } else {   
+        return _servers.begin()->first;
+    }
+}
+
+int VirtualServerManager::getListenPort() const {
+    return _port;
+}
 ft::shared_ptr<VirtualServer> VirtualServerManager::find(const std::string& hostheader ) {
     std::string host = hostheader.substr(0, hostheader.find(':'));
     // local host <-here .
