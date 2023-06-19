@@ -1,10 +1,11 @@
-#include "../../incs/Config/Config.hpp"
 #include "../../libs/shared_ptr/shared_ptr.hpp"
+#include "../../incs/Config/Config.hpp"
+#include "../../incs/Logger/Logger.hpp"
 #include <iostream>
 
 //Refactoring::hyunkyle Enum
 
-static const std::string	g_keys[] = {
+const static std::string	g_keys[] = {
 	"listen",
 	"server_name",
 	"root",
@@ -13,7 +14,7 @@ static const std::string	g_keys[] = {
 	"client_max_body_size",
 	"location"
 };
-static const std::string	g_location_keys[] = {
+const static std::string	g_location_keys[] = {
 	"dir",
 	"root",
 	"alias",
@@ -21,7 +22,6 @@ static const std::string	g_location_keys[] = {
 	"return"
 };
 
-// Const static variables
 const std::vector<std::string>	Config::KEYS(g_keys, g_keys + sizeof(g_keys) / sizeof(std::string));
 const std::vector<std::string>	Config::LOCATION_KEYS(g_location_keys, g_location_keys + sizeof(g_location_keys) / sizeof(std::string));
 bool	(*const	Config::HANDLERS[])(Config::map &config_map, std::ifstream &infile) = {
@@ -41,9 +41,14 @@ bool	(*const	Config::LOCATION_HANDLERS[])(Config::map &config_map, std::ifstream
 	Config::handleLocationReturn
 };
 
-//Refactoring::Hyunkyle-Constructor Fix:method
 Config::Config(void): _file_name(""), _config_maps(std::vector<map>()) {}
 Config::Config(const char *file_name): _file_name(file_name), _config_maps(std::vector<map>()) {
+	try {
+		this->_init();
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToConfigurateException());
+	}
 }
 
 Config::Config(const Config &ref): _file_name(ref._file_name), _config_maps(ref._config_maps) {}
@@ -56,7 +61,7 @@ Config	&Config::operator=(const Config &rhs) {
 	return (*this);
 }
 
-void Config::startParse(void) throw(std::exception) {
+bool							Config::_init(void) throw(std::exception) {
 	std::ifstream	infile(this->_file_name);
 	std::string		token;
 
@@ -81,8 +86,8 @@ void Config::startParse(void) throw(std::exception) {
 		}
 	}
 }
+const std::vector<Config::map>	&Config::getConfigMaps(void) const { return (this->_config_maps); }
 
-// Static functions
 bool		Config::invalidFileName(const std::string &file_name) {
 	if (file_name.length() <= 5) {
 		return (true);
@@ -178,7 +183,6 @@ bool	Config::handleRoot(map &config_map, std::ifstream &infile) throw(std::excep
 	config_map["root"].push_back(token.substr(0, token.length() - 1));
 	return (true);
 }
-
 bool	Config::handleIndex(map &config_map, std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
@@ -322,9 +326,6 @@ bool	Config::handleLocationReturn(map &config_map, std::ifstream &infile) throw(
 	config_map["location_return"].back() = token.substr(0, token.length() - 1);
 	return (true);
 }
-
-// Getter
-const std::vector<Config::map>	&Config::getConfigMaps(void) const { return (this->_config_maps); }
 
 // Exception
 const char	*Config::InvalidFileNameException::what() const throw() { return ("Config: Invalid file name"); }

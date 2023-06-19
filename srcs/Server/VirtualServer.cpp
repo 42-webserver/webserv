@@ -8,29 +8,12 @@ VirtualServer::VirtualServer(const Config::map &config_map) throw(std::exception
 	_indexes(_initIndexes(config_map)),
 	_default_error_page(_initDefaultErrorPage(config_map)),
 	_client_max_body_size(_initClientMaxBodySize(config_map)),
-	_locations(_initLocations(config_map)),
-	_ip(_initIp(config_map))
-	//Refactoring :: daegulee check ip delete! later
+	_locations(_initLocations(config_map))
 	{}
 VirtualServer::~VirtualServer(void) {}
 
-std::string					VirtualServer::_initIp(const Config::map &config_map) {
-	std::string	ret = config_map.at(Config::KEYS[ConfigKey::LISTEN])[0];
-	std::string ip;
-	if (ret.find(':') == std::string::npos) {
-		ip = "0.0.0.0";
-	}
-	else {
-		ip = ret.substr(0, ret.find(':'));
-	}
-	// if (_ipIsValid(ret) == false) {
-	// 	throw (FailToInitializeLocationException());
-	// }
-
-	return (ret);
-}
 std::string					VirtualServer::_initRoot(const Config::map &config_map) {
-	std::string	ret = config_map.at(Config::KEYS[ConfigKey::ROOT])[0];
+	std::string	ret = config_map.at(Config::KEYS[Config::ROOT])[0];
 
 	// if (_rootIsValid(ret) == false) {
 	// 	throw (FailToInitializeLocationException());
@@ -39,18 +22,18 @@ std::string					VirtualServer::_initRoot(const Config::map &config_map) {
 	return (ret);
 }
 std::vector<std::string>	VirtualServer::_initIndexes(const Config::map &config_map) {
-	std::vector<std::string>	ret = config_map.at(Config::KEYS[ConfigKey::INDEX]);
+	std::vector<std::string>	ret = config_map.at(Config::KEYS[Config::INDEX]);
 
 	return (ret);
 }
 std::string					VirtualServer::_initDefaultErrorPage(const Config::map &config_map) {
-	std::string	ret = config_map.at(Config::KEYS[ConfigKey::ERROR_PAGE])[0];
+	std::string	ret = config_map.at(Config::KEYS[Config::ERROR_PAGE])[0];
 
 
 	return (ret);
 }
 int							VirtualServer::_initClientMaxBodySize(const Config::map &config_map) {
-	int	ret = std::atoi(config_map.at(Config::KEYS[ConfigKey::CLIENT_MAX_BODY_SIZE])[0].c_str());
+	int	ret = std::atoi(config_map.at(Config::KEYS[Config::CLIENT_MAX_BODY_SIZE])[0].c_str());
 
 	// if (_clientMaxBodySizeIsValid(ret) == false) {
 	// 	throw (FailToInitializeLocationException());
@@ -58,7 +41,6 @@ int							VirtualServer::_initClientMaxBodySize(const Config::map &config_map) {
 
 	return (ret);
 }
-
 std::vector<Location>		VirtualServer::_initLocations(const Config::map &config_map) {
 	std::vector<Location>	ret;
 
@@ -88,7 +70,7 @@ int								VirtualServer::getClientMaxBodySize(void) const { return (this->_clie
 const std::string				&VirtualServer::getRoot(void) const { return (this->_root); }
 const std::vector<std::string>	&VirtualServer::getIndexes(void) const { return (this->_indexes); }
 const std::vector<Location>		&VirtualServer::getLocations(void) const { return (this->_locations); }
-const std::string				&VirtualServer::getIP(void) const { return (this->_ip); }
+
 // Exception
 const char	*VirtualServer::InvalidRootException::what(void) const throw() { return ("VirtualServer: Invalid root"); }
 const char	*VirtualServer::InvalidIndexesException::what(void) const throw() { return ("VirtualServer: Invalid indexes"); }

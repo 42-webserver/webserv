@@ -6,31 +6,30 @@
 # include <vector>
 # include <map>
 
-namespace ConfigKey {
-enum {
-	LISTEN,
-	SERVER_NAME,
-	ROOT,
-	INDEX,
-	ERROR_PAGE,
-	CLIENT_MAX_BODY_SIZE,
-	LOCATION,
-	NUM_OF_SERVER_KEYS
-};
-}
-namespace LocationKey {
-enum {
-	DIR,
-	ROOT,
-	ALIAS,
-	AUTO_INDEX,
-	RETURN,
-	NUM_OF_LOCATION_KEYS
-};
-}
 class Config {
 	public:
 		typedef std::map< std::string, std::vector<std::string> >	map;
+
+	public:
+		typedef enum e_key {
+			LISTEN,
+			SERVER_NAME,
+			ROOT,
+			INDEX,
+			ERROR_PAGE,
+			CLIENT_MAX_BODY_SIZE,
+			LOCATION,
+			NUM_OF_SERVER_KEYS
+		}	KEY;
+
+		typedef enum e_location_key {
+			DIR,
+			ROOT,
+			ALIAS,
+			AUTO_INDEX,
+			RETURN,
+			NUM_OF_LOCATION_KEYS
+		}	LOCATION_KEY;
 
 	public:
 		const static std::vector<std::string>	KEYS;
@@ -43,6 +42,9 @@ class Config {
 	private:
 		std::string			_file_name;
 		std::vector<map>	_config_maps;
+	
+	private:
+		bool	init(void) throw(std::exception);
 
 	private:
 		static bool	invalidFileName(const std::string &file_name);
@@ -75,7 +77,6 @@ class Config {
 
 	public:
 		const std::vector<map>	&getConfigMaps(void) const;
-		void startParse(void) throw(std::exception);
 
 	public:
 		class InvalidFileNameException: public std::exception {

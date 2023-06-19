@@ -3,8 +3,6 @@
 #include "../../libs/unique_ptr/unique_ptr.hpp"
 
 Webserv::Webserv(void): _physicalServerManager() {}
-//Refactoring::daegulee- construcotr -> Method
-
 Webserv::~Webserv(void) {}
 Webserv	&Webserv::operator=(const Webserv &rhs) {
 	if (this != &rhs) {
@@ -14,26 +12,15 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 	return (*this);
 }
 
-void	Webserv::build(const Config &config) throw(std::exception) {
-	// Build physical servers
+bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
-		_physicalServerManager.run(config);
+		this->_build(config);
+		this->_physicalServerManager.run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
-		throw (FailToConstructException());
+		throw (FailToRunException());
 	}
 
-	// EventQueue	&event_queue = EventQueue::getInstance();
-	// Comment Not to Change Relation, Add Method for All Listening Event Build
-	
-	// for (int i = 0; i < _physicalServerManager.getVirtualServerManagerCount(); i++) {
-	// 	//To do: 1. EventFactroy.createEvent(Listen, )
-	// 	EventFactory& eventFactory = ListenEventFactory::getInstance();
-	// 	// event_queue.pushEvent(eventFactory.createEvent(_physicalServerManager.getCurrentVirtualServerManager()));
-	// }
-}
-
-bool	Webserv::run(void) throw(std::exception) {
 	EventQueue	&event_queue = EventQueue::getInstance();
 	int			event_length;
 	Event		*event_data;
@@ -57,8 +44,16 @@ bool	Webserv::run(void) throw(std::exception) {
 	return (true);
 }
 
-const char	*Webserv::TooManyServersException::what() const throw() { return ("Webserv: Too many server_configs"); }
-const char	*Webserv::FailToConstructException::what() const throw() { return ("Webserv: Fail to construct"); }
+bool	Webserv::_build(const Config &config) throw(std::exception) {
+	try {
+		this->_physicalServerManager.build(config);
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildException());
+	}
+}
+
+const char	*Webserv::FailToBuildException::what() const throw() { return ("Webserv: Fail to construct"); }
 const char	*Webserv::FailToRunException::what() const throw() { return ("Webserv: Fail to run"); }
 
 // getter 사라져서 다시 구현 필요

@@ -13,7 +13,7 @@ class PhysicalServerManager {
 	public:
 		typedef VirtualServerManager 							PhysicalServer;
 		typedef std::map<Ip, ft::shared_ptr<PhysicalServer> >	IpMap;
-		typedef std::map<Port, IpMap>							PortMap;
+		typedef std::map<Port, ft::shared_ptr<IpMap> >			PortMap;
 
 	private:
 		static const int	MAX_SERVERS = 8;
@@ -26,31 +26,38 @@ class PhysicalServerManager {
 		~PhysicalServerManager(void);
 	
 	public:
-		bool	run(const Config &config_map) throw(std::exception);
+		bool	build(const Config &config_map) throw(std::exception);
+		bool	run(void) throw(std::exception);
 
 	private:
-		bool	_init(const Config &config_map) throw(std::exception);
-		bool	_build(void) throw(std::exception);
+		bool	_initPhysicalServers(const Config &config_map) throw(std::exception);
+		bool	_mergeWildCardIpMaps(void) throw(std::exception);
+		bool	_buildAllPhysicalServers(void) throw(std::exception) throw(std::exception);
+		bool	_registerAllListeningEvents(void) throw(std::exception) throw(std::exception);
 
 	private:
-		int 		_initPort(const std::string &listen);
-		std::string _initIp(const std::string &listen);
-	
-	private:
+		int 							_initPort(const std::string &listen) throw(std::exception);
+		std::string 					_initIp(const std::string &listen) throw(std::exception);
 		ft::shared_ptr<PhysicalServer>	_initPhysicalServer(void) const;
-		bool							_insertPhysicalServer(const Port port, const Ip &ip, ft::shared_ptr<PhysicalServer> physicalServer) throw(std::exception);
-		bool							_insertVirtualServerToPhysicalServer(ft::shared_ptr<PhysicalServer> physicalServer, const Config::map &config_map) throw(std::exception);
-		bool							_mergeIpMapByPort(const PortMap::const_iterator portIt) throw(std::exception);
+		bool							_insertPhysicalServer(const Port &port, const Ip &ip, const ft::shared_ptr<PhysicalServer> &physicalServer) throw(std::exception);
+		bool							_mergeIpMapsByPort(const PortMap::const_iterator &portIt);
 	
+
 	private:
-		bool	_wildCardIpExists(const PortMap::const_iterator portIt) const;
-		bool	_ipIsWildCard(const std::string &ip) const;
+		static bool	_portIsValid(const Port &port);
+		static bool	_ipIsValid(const Ip &ip);
+		static bool	_wildCardIpExists(const PortMap::const_iterator &portIt);
+		static bool	_ipIsWildCard(const std::string &ip);
 	
 	public:
 		ft::shared_ptr<PhysicalServer>	findPhysicalServer(const int port, const std::string &ip) const;
 
 	public:
-		class FailToRun: public std::exception {
+		class FailToRunException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToBuildException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
@@ -58,11 +65,23 @@ class PhysicalServerManager {
 			public:
 				virtual const char* what() const throw();
 		};
-		class FailToInit: public std::exception {
+		class InvalidPortException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
-		class FailToBuild: public std::exception {
+		class InvalidIpException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToInitPhysicalServersException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToBuildAllPhysicalServersException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToRegisterAllListeningEventsException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};

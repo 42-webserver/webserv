@@ -25,17 +25,18 @@ class Webserv {
 		~Webserv(void);
 		Webserv	&operator=(const Webserv &rhs);
 
+	private:
+		bool	_build(const Config &config) throw(std::exception);
+
 	public:
-		void	build(const Config &config) throw(std::exception);
-	public:
-		bool	run(void) throw(std::exception);
+		bool	run(const Config &config) throw(std::exception);
 
 	public:
 		class TooManyServersException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
-		class FailToConstructException: public std::exception {
+		class FailToBuildException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
