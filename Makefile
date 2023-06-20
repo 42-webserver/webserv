@@ -16,7 +16,7 @@ INCS_DIR	= incs
 SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
-SRCS =	main.cpp \
+SRCS =	../libs/Trie/ServerTriTest.cpp \
 		Config/Config.cpp \
 		Event/Event.cpp \
 		Event/ListenEvent.cpp \

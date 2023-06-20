@@ -162,7 +162,7 @@ bool	Config::handleServerName(map &config_map, std::ifstream &infile) throw(std:
 		}
 	}
 
-	if (config_map["server_name"].size() == 0) {
+	if (config_map["server_name"].size() == 0) {\
 		throw (InvalidSyntaxException());
 	}
 
