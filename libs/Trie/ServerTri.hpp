@@ -22,7 +22,7 @@ public:
     ServerTrie(): _type(NONE) {}
 
     void insert(ft::shared_ptr<VirtualServer> curVirtualServer) {
-        std::vector<bool> ipBits = convertIPToVector(curVirtualServer->getIP());
+        std::vector<bool> ipBits = getIpToVector(curVirtualServer->getIP());
         _insert(ipBits, curVirtualServer);
     }
     void _insert(const std::vector<bool> &ipBits, ft::shared_ptr<VirtualServer> curVirtualServer, 
@@ -61,18 +61,39 @@ public:
         _longestPrefix(ipBits, 0, current, result);
         return result;
     }
-	void checkingSocketInTrie(){
-		if (_type == Server) {
-			_type = Socket;
-		}
-		else {
-			for (std::map<bool, ServerTrie>::iterator it = _next.begin(); it != _next.end(); ++it) {
-				it->second.checkingSocketInTrie();
-			}
-		}
-	}
+void checkingSocketInTrie(int depth = 0) {
+    if (_type == Server) {
+        _type = Socket;
+        std::cout << "depth: " << depth << " " << _data.get()->getIP() << std::endl;
+        return ;
+    }
+
+    for (std::map<bool, ServerTrie>::iterator it = _next.begin(); it != _next.end(); ++it) {
+        it->second.checkingSocketInTrie(depth + 1);
+    }
+}
+
 
 private:
+    void print(std::ostream& os, const std::string& prefix = "") const {
+        if (_type == Server || _type == Socket) {
+            os << "Bit: " << prefix << " Type: " << _type << " Data: " << _data.get()->getIP() << std::endl;
+        }
+
+        std::map<bool, ServerTrie>::const_iterator it;
+        for (it = _next.begin(); it != _next.end(); ++it) {
+            std::string new_prefix = prefix + (it->first ? "1" : "0");
+            it->second.print(os, new_prefix);
+        }
+    }
+std::vector<bool> getIpToVector(const std::string& ip) {
+    std::vector<bool> result = convertIPToVector(ip);
+    result = removeTrailingZeros(result);
+    if (result.size() == 0) {
+        result.push_back(false);
+    }
+    return result;
+}
 std::vector<bool> convertIPToVector(const std::string& ip) {
     std::vector<bool> result(32);
     std::stringstream ss(ip);
@@ -90,6 +111,20 @@ std::vector<bool> convertIPToVector(const std::string& ip) {
         ++segNum;
     }
     
+    return result;
+}
+
+std::vector<bool> removeTrailingZeros(const std::vector<bool>& ipBits) {
+    std::vector<bool> result = ipBits;
+    int zerosCount = 0;
+    for (int i = result.size() - 1; i >= 0; --i) {
+        if (result[i] == false) {
+            ++zerosCount;
+        } else {
+            break;
+        }
+    }
+    result.resize(result.size() - zerosCount);
     return result;
 }
     void _longestPrefix(const std::vector<bool> &ipBits, std::vector<bool>::size_type 
@@ -113,18 +148,12 @@ public:
 		return "Fail to find data in trie";
 		}
 	};
-    friend std::ostream& operator<<(std::ostream& os, const ServerTrie& trie);
 
+    friend std::ostream& operator<<(std::ostream& os, const ServerTrie& trie) {
+        trie.print(os);
+        return os;
+    }
 };
 
-std::ostream& operator<<(std::ostream& os, const ServerTrie& trie) {
-    os << "type: " << trie._type << std::endl;
-    os << "data: " << trie._data.get()->getIP() << std::endl;
-    os << "next: " << std::endl;
-    for (std::map<bool, ServerTrie>::const_iterator it = trie._next.begin(); it != trie._next.end(); ++it) {
-        os << it->first << ": " << it->second << std::endl;
-    }
-    return os;
-}
 
 #endif

@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
 	curServerConfig != server_configs.end(); ++curServerConfig) {
 		ft::shared_ptr<VirtualServer> current(new VirtualServer(*curServerConfig));
 		virtualServers.push_back(current);
+		std::cout << virtualServers.back().get()->getIP() << std::endl;
 		serverTrie.insert(current);
 	}
 	serverTrie.checkingSocketInTrie();
