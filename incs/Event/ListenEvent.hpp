@@ -1,24 +1,26 @@
 #ifndef LISTENEVENT_HPP
 # define LISTENEVENT_HPP
 
-# include "./Event.hpp"
+# include "Event.hpp"
 # include "../Log/Logger.hpp"
-# include "../Server/VirtualServer.hpp"
+# include "../Server/VirtualServerManager.hpp"
 
 class ListenEvent: public Event {
 	public:
-		ListenEvent(int fd, EventHandler *listen_event_handler, 
-			ft::shared_ptr<PhysicalServer> physical_server);
+		ListenEvent(int fd, EventHandler *listen_event_handler, ft::shared_ptr<VirtualServerManager> physical_server);
 		virtual	~ListenEvent(void);
 
 	private:
-		ListenEvent	&operator=(const ListenEvent &rhs);
 		ListenEvent(const ListenEvent &ref);
+		ListenEvent	&operator=(const ListenEvent &rhs);
+
 	private:
-		ft::shared_ptr<PhysicalServer>			_physical_server;
+		ft::shared_ptr<VirtualServerManager>	_physical_server;
 	
 	public:
-		ft::shared_ptr<PhysicalServer>			getPhysicalServer(void) const;
+		ft::shared_ptr<VirtualServerManager>	getPhysicalServer(void) const;
+
+	public:
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);

@@ -43,11 +43,10 @@ SRCS =	main.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
 		Server/Location.cpp \
-		Server/VirtualServer.cpp \
-		Server/Webserv.cpp \
-		Server/PhysicalServer.cpp \
 		Server/PhysicalServerManager.cpp \
+		Server/VirtualServer.cpp \
 		Server/VirtualServerManager.cpp \
+		Server/Webserv.cpp \
 		Socket/Socket.cpp \
 		EventDto/EventDto.cpp \
 		Event/BufReadHandler.cpp \

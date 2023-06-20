@@ -1,37 +1,37 @@
 #include "../../../incs/http/parser/HttpRequestParser.hpp"
 
 std::string createChunkedRequestBody(const std::string& bodyData) {
-    std::string requestBody;
-    requestBody += "POST / HTTP/1.1\r\n";
-    requestBody += "Host: localhost:8080\r\n";
-    requestBody += "User-Agent: curl/7.64.1\r\n";
-    requestBody += "Transfer-Encoding: chunked\r\n";
-    requestBody += "\r\n";
+	std::string requestBody;
+	requestBody += "POST / HTTP/1.1\r\n";
+	requestBody += "Host: localhost:8080\r\n";
+	requestBody += "User-Agent: curl/7.64.1\r\n";
+	requestBody += "Transfer-Encoding: chunked\r\n";
+	requestBody += "\r\n";
 
-    // 청크 데이터
-    std::vector<std::string> chunks;
-    const size_t chunkSize = 9;  // 각 청크의 크기 설정 
-    size_t offset = 0;
-    while (offset < bodyData.length()) {
-        chunks.push_back(bodyData.substr(offset, chunkSize));
-        offset += chunkSize;
-    }
+	// 청크 데이터
+	std::vector<std::string> chunks;
+	const size_t chunkSize = 9;  // 각 청크의 크기 설정 
+	size_t offset = 0;
+	while (offset < bodyData.length()) {
+		chunks.push_back(bodyData.substr(offset, chunkSize));
+		offset += chunkSize;
+	}
 
-    for (size_t i = 0; i < chunks.size(); i++) {
+	for (size_t i = 0; i < chunks.size(); i++) {
 		std::string chunk = chunks[i];
-        requestBody += std::to_string(chunk.length()) + "\r\n";  // 청크 크기 헤더
-        requestBody += chunk + "\r\n";  // 청크 데이터
-    }
+		requestBody += std::to_string(chunk.length()) + "\r\n";  // 청크 크기 헤더
+		requestBody += chunk + "\r\n";  // 청크 데이터
+	}
 
-    requestBody += "0\r\n";  // 마지막 청크 표시
-    requestBody += "\r\n";  // 청크 데이터 종료
+	requestBody += "0\r\n";  // 마지막 청크 표시
+	requestBody += "\r\n";  // 청크 데이터 종료
 
-    return requestBody;
+	return requestBody;
 }
 
 int main(){
 	std::string bodyData = "This is the request body data. !!!!! hello world !!!!!";
-    std::string chunkedBodyRequest = createChunkedRequestBody(bodyData);
+	std::string chunkedBodyRequest = createChunkedRequestBody(bodyData);
 	
 	
 	std::vector<char> httpReqeustBuffer;

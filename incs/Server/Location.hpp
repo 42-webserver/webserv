@@ -2,10 +2,9 @@
 # define LOCATION_HPP
 
 # include "../Config/Config.hpp"
+# include <iostream>
 # include <string>
 # include <map>
-# include <vector>
-# include <iostream>
 
 class Location {
 	private:

@@ -14,7 +14,7 @@ Location	&Location::operator=(const Location &rhs) {
 }
 
 std::string		Location::parseDir(const Config::map &config_map, size_t idx) throw(std::exception) {
-	std::string	ret = config_map.at("location_dir")[idx];
+	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::DIR])[idx];
 
 	if (ret != "" && ret[0] != '/') {
 		throw (InvalidSyntaxException());
@@ -22,7 +22,8 @@ std::string		Location::parseDir(const Config::map &config_map, size_t idx) throw
 	return (ret);
 }
 std::string		Location::parseRoot(const Config::map &config_map, size_t idx) throw(std::exception) {
-	std::string	ret = config_map.at("location_root")[idx];
+	std::vector<std::string>	location_root = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ROOT]);
+	std::string					ret = ()
 
 	if (ret != "" && ret[0] != '/') {
 		throw (InvalidSyntaxException());
@@ -30,7 +31,7 @@ std::string		Location::parseRoot(const Config::map &config_map, size_t idx) thro
 	return (ret);
 }
 std::string		Location::parseAlias(const Config::map &config_map, size_t idx) throw(std::exception) {
-	std::string	ret = config_map.at("location_alias")[idx];
+	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ALIAS])[idx];
 
 	if (ret != "" && ret[0] != '/') {
 		throw (InvalidSyntaxException());
@@ -38,7 +39,7 @@ std::string		Location::parseAlias(const Config::map &config_map, size_t idx) thr
 	return (ret);
 }
 std::string		Location::parseAutoIndex(const Config::map &config_map, size_t idx) throw(std::exception) {
-	std::string	ret = config_map.at("location_autoindex")[idx];
+	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::AUTO_INDEX])[idx];
 
 	if (ret != "" && ret != "on" && ret != "off") {
 		throw (InvalidAutoIndexValueException());
@@ -47,7 +48,7 @@ std::string		Location::parseAutoIndex(const Config::map &config_map, size_t idx)
 }
 std::string		Location::parseReturnStatus(const Config::map &config_map, size_t idx) throw(std::exception) {
 	return ("301");
-	std::string	ret = config_map.at("location_return_status")[idx];
+	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_STATUS])[idx];
 
 	// TODO: check redirect status code
 
@@ -57,7 +58,7 @@ std::string		Location::parseReturnStatus(const Config::map &config_map, size_t i
 	return (ret);
 }
 std::string		Location::parseReturnUrl(const Config::map &config_map, size_t idx) throw(std::exception) {
-	std::string	ret = config_map.at("location_return")[idx];
+	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_URL])[idx];
 
 	if (ret != "" && ret[0] != '/') {
 		throw (InvalidSyntaxException());

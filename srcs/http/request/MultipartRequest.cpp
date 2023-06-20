@@ -10,7 +10,7 @@ MultipartRequest::~MultipartRequest(void)
 
 
 std::string & MultipartRequest::getBodyDataFilename(){
-    return this->_bodyDataFilename;
+	return this->_bodyDataFilename;
 }
 
 
@@ -41,17 +41,17 @@ void MultipartRequest::handleMultipleValueHeader(std::string & value, std::strin
 
 void MultipartRequest::insertBody(std::vector<char> &buffer)
 {
-    this->_memoryBody.insert(this->_memoryBody.end(), buffer.begin(), buffer.end());
+	this->_memoryBody.insert(this->_memoryBody.end(), buffer.begin(), buffer.end());
 }
 
 void MultipartRequest::setBodyDataFilename(std::string filename){
-    this->_bodyDataFilename = filename;
+	this->_bodyDataFilename = filename;
 }
 
 std::multimap<std::string, std::string> &MultipartRequest::getHeaders(){
-    return this->_headers;
+	return this->_headers;
 }
 
 std::vector<char> &MultipartRequest::getMemoryBody(){
-    return this->_memoryBody;
+	return this->_memoryBody;
 }

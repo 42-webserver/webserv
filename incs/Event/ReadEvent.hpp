@@ -1,11 +1,11 @@
 #ifndef READEVENT_HPP
 # define READEVENT_HPP
 
-# include "./Event.hpp"
-# include <vector>
+# include "Event.hpp"
 # include "../EventDto/EventDto.hpp"
-# include "../../incs/Log/Logger.hpp"
-#include "../../incs/http/parser/HttpRequestParser.hpp"
+# include "../Log/Logger.hpp"
+#include "../http/parser/HttpRequestParser.hpp"
+# include <vector>
 
 class ReadEvent: public Event {
 	public:
@@ -55,17 +55,19 @@ class ReadEventFactory: public EventFactory {
 
 class ReadEventClient: public ReadEvent {
 	public:
-		ReadEventClient(int fd, EventHandler *read_event_client_handler,
-		ft::shared_ptr<PhysicalServer> physicalServer);
+		ReadEventClient(int fd, EventHandler *read_event_client_handler, ft::shared_ptr<VirtualServerManager> physicalServer);
 		virtual	~ReadEventClient(void);
 
 	public:
-		ft::shared_ptr<PhysicalServer>			getPhysicalServer(void) const;
+		ft::shared_ptr<VirtualServerManager>	getPhysicalServer(void) const;
+
+	public:
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void) throw (std::exception);
 		virtual void	offboardQueue(void) throw (std::exception);
+	
 	private:
-		ft::shared_ptr<PhysicalServer>			_physical_server;
+		ft::shared_ptr<VirtualServerManager>	_physical_server;
 
 };
 
@@ -75,10 +77,13 @@ class ReadEventClientHandler: public ReadEventHandler {
 		virtual	~ReadEventClientHandler(void);
 
 	public:
-		virtual void	handleEvent(Event &event);
 		ft::unique_ptr<HttpRequestParser>	&getHttpRequestParser(void);
+
+	public:
+		virtual void	handleEvent(Event &event);
+
 	private:
-		ft::unique_ptr<HttpRequestParser>	_httpRequestParser;
+		ft::unique_ptr<HttpRequestParser>	_http_request_parser;
 };
 
 class ReadEventClientFactory: public EventFactory {

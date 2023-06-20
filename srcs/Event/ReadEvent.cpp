@@ -20,10 +20,10 @@ ReadEventHandler::~ReadEventHandler(void) {
 // Read EvClient start!
 //	To do : check ReadEventClient
 
-ReadEventClient::ReadEventClient(int fd, EventHandler *read_event_client_handler,
-ft::shared_ptr<PhysicalServer> physicalServer) :
-ReadEvent(fd, read_event_client_handler), _physical_server(physicalServer) {}
-
+ReadEventClient::ReadEventClient(int fd, EventHandler *read_event_client_handler, ft::shared_ptr<VirtualServerManager> physical_server):
+	ReadEvent(fd, read_event_client_handler),
+	_physical_server(physical_server)
+	{}
 
 ReadEventClient::~ReadEventClient(void) {}
 
@@ -79,13 +79,13 @@ void	ReadEventClient::offboardQueue() throw (std::exception) {
 	}
 }
 
-ft::shared_ptr<PhysicalServer>	ReadEventClient::getPhysicalServer(void) const { return (this->_physical_server); }
+ft::shared_ptr<VirtualServerManager>	ReadEventClient::getPhysicalServer(void) const { return (this->_physical_server); }
 // Read EvClient end!
 
 // Read EvClientHandler start!
 // To do : implement ReadEventClientHandler
-ReadEventClientHandler::ReadEventClientHandler(void) : _httpRequestParser(new HttpRequestParser()) {}
-ft::unique_ptr<HttpRequestParser>	&ReadEventClientHandler::getHttpRequestParser(void) { return (this->_httpRequestParser); }
+ReadEventClientHandler::ReadEventClientHandler(void) : _http_request_parser(new HttpRequestParser()) {}
+ft::unique_ptr<HttpRequestParser>	&ReadEventClientHandler::getHttpRequestParser(void) { return (this->_http_request_parser); }
 void ReadEventClientHandler::handleEvent(Event &event) {
 	std::vector<char>	buf;
 	BufReadHandler		buf_read_handler(event.getFd(), ReadEvent::BUF_SIZE);

@@ -2,12 +2,12 @@
 
 int main(){
 	std::string bodyData = "This is the request body data.";
-    std::string normalBodyRequest = "GET / HTTP/1.1\r\n"
-                          "Host: localhost:8080\r\n"
-                          "User-Agent: curl/7.64.1\r\n"
-                          "Accept: */*\r\n"
-                          "Content-Length: " + std::to_string(bodyData.length()) + "\r\n"
-                          "\r\n" + bodyData;
+	std::string normalBodyRequest = "GET / HTTP/1.1\r\n"
+						  "Host: localhost:8080\r\n"
+						  "User-Agent: curl/7.64.1\r\n"
+						  "Accept: */*\r\n"
+						  "Content-Length: " + std::to_string(bodyData.length()) + "\r\n"
+						  "\r\n" + bodyData;
 	
 	
 	std::vector<char> httpReqeustBuffer;
@@ -27,12 +27,12 @@ int main(){
 	std::cout << "== 나뉘어져 들어오는 request ==" << std::endl;
 
 	std::string normalBodyRequest1 = "GET / HTTP/1.1\r\n"
-                          "Host: localhost:8080\r\n"
-                          "User-Agent: curl/7.64.1\r\n";
+						  "Host: localhost:8080\r\n"
+						  "User-Agent: curl/7.64.1\r\n";
 	
 	std::string normalBodyRequest2 = "Accept: */*\r\n"
-                          "Content-Length: " + std::to_string(bodyData.length()) + "\r\n"
-                          "\r\n" + bodyData;
+						  "Content-Length: " + std::to_string(bodyData.length()) + "\r\n"
+						  "\r\n" + bodyData;
 	
 	std::vector<char> httpReqeustBuffer1;
 	httpReqeustBuffer1.assign(normalBodyRequest1.begin(), normalBodyRequest1.end());

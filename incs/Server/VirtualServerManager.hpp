@@ -1,10 +1,12 @@
 #ifndef VIRUTALSERVERMANAGER_HPP
 # define VIRUTALSERVERMANAGER_HPP
 
-# include "VirtualServer.hpp"
+# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../Config/Config.hpp"
 # include "../Socket/Socket.hpp"
-# include <sstream>
+# include "VirtualServer.hpp"
+# include <string>
+# include <map>
 
 class VirtualServerManager {
 	public:
@@ -12,7 +14,7 @@ class VirtualServerManager {
 		typedef std::map<serverName, ft::shared_ptr<VirtualServer> >	DomainMap;
 
 	private:
-		DomainMap 				_domainMap;
+		DomainMap 				_domain_map;
 		ft::shared_ptr<Socket>	_socket;
 		//static hostsMap hostsFromFile;  // static member variable to store hosts from /etc/hosts
 
@@ -23,6 +25,9 @@ class VirtualServerManager {
 	public:
 		bool	build(const int port, const std::string &ip) throw(std::exception);
 		bool	run(void) throw(std::exception);
+	
+	public:
+		ft::shared_ptr<VirtualServer>	findVirtualServer(const std::string &domain) const;
 	
 	public:
 		bool	addVirtualServers(const Config::map &config_map) throw(std::exception);

@@ -1,0 +1,27 @@
+[2023-06-20 15:50:07] [ERROR] Config: Invalid argument
+[2023-06-20 15:50:07] [ERROR] Config: Fail to configurate server
+[2023-06-20 15:50:07] [ERROR] Config: Fail to configurate
+[2023-06-20 15:59:16] [ERROR] Config: Invalid argument
+[2023-06-20 15:59:16] [ERROR] Config: Fail to configurate server
+[2023-06-20 15:59:16] [ERROR] Config: Fail to configurate
+[2023-06-20 15:59:16] [ERROR] Config: Fail to configurate
+[2023-06-20 16:02:48] [ERROR] Config: Invalid argument
+[2023-06-20 16:02:48] [ERROR] Config: Fail to configurate server
+[2023-06-20 16:02:48] [ERROR] Config: Fail to configurate
+[2023-06-20 16:02:48] [ERROR] Config: Fail to construct
+[2023-06-20 16:05:39] [ERROR] Config: Invalid argument
+[2023-06-20 16:05:39] [ERROR] Config: Fail to configurate server
+[2023-06-20 16:05:39] [ERROR] Config: Fail to configurate
+[2023-06-20 16:05:39] [ERROR] Config: Fail to construct
+[2023-06-20 16:05:58] [ERROR] map::at:  key not found
+[2023-06-20 16:05:58] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-20 16:05:58] [ERROR] PhysicalServerManager: Fail to init physical servers
+[2023-06-20 16:05:58] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-20 16:05:58] [ERROR] Webserv: Fail to construct
+[2023-06-20 16:05:58] [ERROR] Webserv: Fail to run
+[2023-06-20 16:07:29] [ERROR] map::at:  key not found
+[2023-06-20 16:07:29] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-20 16:07:29] [ERROR] PhysicalServerManager: Fail to init physical servers
+[2023-06-20 16:07:29] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-20 16:07:29] [ERROR] Webserv: Fail to construct
+[2023-06-20 16:07:29] [ERROR] Webserv: Fail to run

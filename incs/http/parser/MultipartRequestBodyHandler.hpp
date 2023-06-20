@@ -6,31 +6,31 @@
 #include "ParsePatternMatcher.hpp"
 
 typedef enum MultipartState{
-    M_HEADER,
-    M_BODY
+	M_HEADER,
+	M_BODY
 } MultipartParseState;
 
 class MultipartRequestBodyHandler : public RequestBodyHandler {
 private:
-    std::vector<char>           _buffer;
-    std::string                 _boundaryStart;
-    std::string                 _boundaryEnd;
-    int                         _targetIdx;
-    MultipartParseState         _state;
+	std::vector<char>		   _buffer;
+	std::string				 _boundaryStart;
+	std::string				 _boundaryEnd;
+	int						 _targetIdx;
+	MultipartParseState		 _state;
 
 public:
-    bool handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-    MultipartRequestBodyHandler(std::string boundary);
-    ~MultipartRequestBodyHandler(void);
+	bool handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	MultipartRequestBodyHandler(std::string boundary);
+	~MultipartRequestBodyHandler(void);
 
 
 private:
-    void handleMultipartHeader(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-    bool parsePartOfBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-    void writeInFile(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-    void writeInMemory(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-    void writeParts(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-    
+	void handleMultipartHeader(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	bool parsePartOfBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	void writeInFile(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	void writeInMemory(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	void writeParts(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	
 };
 
 #endif

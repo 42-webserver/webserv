@@ -1,8 +1,10 @@
-#include "../../incs/Server/Webserv.hpp"
-#include <unistd.h>
 #include "../../libs/unique_ptr/unique_ptr.hpp"
+#include "../../incs/EventQueue/EventQueue.hpp"
+#include "../../incs/Server/Webserv.hpp"
+#include "../../incs/Log/Logger.hpp"
+#include <unistd.h>
 
-Webserv::Webserv(void): _physicalServerManager() {}
+Webserv::Webserv(void): _physical_server_manager() {}
 Webserv::~Webserv(void) {}
 Webserv	&Webserv::operator=(const Webserv &rhs) {
 	if (this != &rhs) {
@@ -15,7 +17,7 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_build(config);
-		this->_physicalServerManager.run();
+		this->_physical_server_manager.run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
@@ -25,9 +27,7 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 	int			event_length;
 	Event		*event_data;
 
-	// Run server
 	while (true) {
-		// Polling event
 		try {
 			event_length = event_queue.pullEvents();
 		} catch (const std::exception &e) {
@@ -35,7 +35,6 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 			throw (FailToRunException());
 		}
 
-		// Handle event
 		for (int i=0; i<event_length; i++) {
 			event_data = event_queue.getEventData(i);
 			event_data->callEventHandler();
@@ -46,11 +45,13 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 
 bool	Webserv::_build(const Config &config) throw(std::exception) {
 	try {
-		this->_physicalServerManager.build(config);
+		this->_physical_server_manager.build(config);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToBuildException());
 	}
+
+	return (true);
 }
 
 const char	*Webserv::FailToBuildException::what() const throw() { return ("Webserv: Fail to construct"); }

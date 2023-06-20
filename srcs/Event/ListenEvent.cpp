@@ -4,9 +4,10 @@
 #include <fcntl.h>
 #include "../../incs/Event/ReadEvent.hpp"
 
-ListenEvent::ListenEvent(int fd, EventHandler *listen_event_handler,
-ft::shared_ptr<PhysicalServer> physicalServer): Event(fd, listen_event_handler),
-_physical_server(physicalServer) {}
+ListenEvent::ListenEvent(int fd, EventHandler *listen_event_handler, ft::shared_ptr<VirtualServerManager> physical_server):
+	Event(fd, listen_event_handler),
+	_physical_server(physical_server)
+	{}
 
 ListenEvent::~ListenEvent(void) {}
 
@@ -63,7 +64,7 @@ void	ListenEvent::offboardQueue(void) throw (std::exception) {
 	}
 }
 
-ft::shared_ptr<PhysicalServer>	ListenEvent::getPhysicalServer(void) const { return (this->_physical_server); }
+ft::shared_ptr<VirtualServerManager>	ListenEvent::getPhysicalServer(void) const { return (this->_physical_server); }
 // To do: 
 // Listen Event Handler 
 ListenEventHandler::ListenEventHandler(void) {};

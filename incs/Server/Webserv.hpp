@@ -1,24 +1,17 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../Config/Config.hpp"
-# include "../Server/PhysicalServer.hpp"
-# include "../Event/Event.hpp"
-# include "../Event/ListenEvent.hpp"
-# include "../Event/ReadEvent.hpp"
-# include "../Event/WriteEvent.hpp"
-# include "../EventQueue/EventQueue.hpp"
+# include "PhysicalServerManager.hpp"
 # include <iostream>
-# include <map>
-# include "./PhysicalServerManager.hpp"
+
 class Webserv {
 
 	private:
 		static const int	MAX_SERVERS = 8;
 
 	private:
-		PhysicalServerManager	_physicalServerManager;
+		PhysicalServerManager	_physical_server_manager;
 
 	public:
 		Webserv(void);

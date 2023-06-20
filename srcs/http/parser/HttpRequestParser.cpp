@@ -124,5 +124,5 @@ const std::vector<char> &HttpRequestParser::getBuffer() {
 }
 
 const char * HttpRequestParser::ClientBodySizeInvalidException::what() const throw() { 
-	return ("client max body size is invalid");
+	return ("HttpRequestParse: client max body size is invalid");
 }

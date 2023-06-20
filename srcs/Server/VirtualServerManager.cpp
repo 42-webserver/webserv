@@ -32,32 +32,49 @@ bool	VirtualServerManager::run(void) throw(std::exception) {
 	return (true);
 }
 
-bool	VirtualServerManager::addVirtualServers(const Config::map &config_map) throw(std::exception) {
-	ft::shared_ptr<VirtualServer> virtualServer = ft::shared_ptr<VirtualServer>(new VirtualServer(config_map));
+//ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const std::string &domain) const {
+//	DomainMap::const_iterator	it;
 
-	for (size_t i=0; i<config_map.at(Config::KEYS[Config::SERVER_NAME]).size(); ++i) {
-		if (this->_domainMap.count(config_map.at(Config::KEYS[Config::SERVER_NAME])[i]) > 0) {
+//	if ((it = this->_domain_map.find(domain)) == this->_domain_map.end()) {
+//		return (ft::shared_ptr<VirtualServer>(NULL));
+//	}
+
+//	return (it->second);
+//}
+
+//bool	registerListeningEvent() {
+//	EventQueue		&eventQueue = EventQueue::getInstance();
+//	EventFactory	&eventFactory = ListeningEventFactory::getInstance();
+
+//	eventQueue.pushEvent(eventFactory.createEvent(EventDto()));
+//}
+
+bool	VirtualServerManager::addVirtualServers(const Config::map &config_map) throw(std::exception) {
+	ft::shared_ptr<VirtualServer> virtual_server = ft::shared_ptr<VirtualServer>(new VirtualServer(config_map));
+
+	for (size_t i=0; i<config_map.at(Config::KEYS[Config::KEY::SERVER_NAME]).size(); ++i) {
+		if (this->_domain_map.count(config_map.at(Config::KEYS[Config::KEY::SERVER_NAME])[i]) > 0) {
 			throw (VirtualServerManager::DuplicatedServerNameException());
 		}
 
-		this->_domainMap[config_map.at(Config::KEYS[Config::SERVER_NAME])[i]] = virtualServer;
+		this->_domain_map[config_map.at(Config::KEYS[Config::KEY::SERVER_NAME])[i]] = virtual_server;
 	}
 
 	return (true);
 }
 bool	VirtualServerManager::mergeVirtualServers(const ft::shared_ptr<VirtualServerManager> &virtualServerManager) throw(std::exception) {
 	for (DomainMap::const_iterator it=virtualServerManager->getDomainMap().begin(); it!=virtualServerManager->getDomainMap().end(); ++it) {
-		if (this->_domainMap.count(it->first) > 0) {
+		if (this->_domain_map.count(it->first) > 0) {
 			throw (VirtualServerManager::DuplicatedServerNameException());
 		}
 
-		this->_domainMap[it->first] = it->second;
+		this->_domain_map[it->first] = it->second;
 	}
 
 	return (true);
 }
 
-const VirtualServerManager::DomainMap	&VirtualServerManager::getDomainMap(void) const { return (this->_domainMap); }
+const VirtualServerManager::DomainMap	&VirtualServerManager::getDomainMap(void) const { return (this->_domain_map); }
 
 //ft::shared_ptr<VirtualServer> VirtualServerManager::find(const std::string& hostheader ) {
 //	std::string host = hostheader.substr(0, hostheader.find(':'));
@@ -66,8 +83,8 @@ const VirtualServerManager::DomainMap	&VirtualServerManager::getDomainMap(void) 
 //		return _servers[hostsFromFile[host]];
 //	}
 //	else if (isDomainFormat(host)) {
-//		if (_domainMap.count(host) > 0) {
-//			return _domainMap[host];
+//		if (_domain_map.count(host) > 0) {
+//			return _domain_map[host];
 //		}
 //	} else if (isIPFormat(host)) {
 //		if (_servers.count(host) > 0) {

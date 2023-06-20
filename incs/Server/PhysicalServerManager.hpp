@@ -1,9 +1,10 @@
 #ifndef PHYSICALSERVERMANAGER_HPP
 # define PHYSICALSERVERMANAGER_HPP
 
-# include "VirtualServer.hpp"
+# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "VirtualServerManager.hpp"
-# include <sstream>
+# include <string>
+# include <map>
 
 class PhysicalServerManager {
 	public:
@@ -19,7 +20,7 @@ class PhysicalServerManager {
 		static const int	MAX_SERVERS = 8;
 
 	private:
-		PortMap	_portMap;
+		PortMap	_port_map;
 
 	public:
 		PhysicalServerManager(void);
@@ -28,30 +29,26 @@ class PhysicalServerManager {
 	public:
 		bool	build(const Config &config_map) throw(std::exception);
 		bool	run(void) throw(std::exception);
-
-	private:
-		bool	_initPhysicalServers(const Config &config_map) throw(std::exception);
-		bool	_mergeWildCardIpMaps(void) throw(std::exception);
-		bool	_buildAllPhysicalServers(void) throw(std::exception) throw(std::exception);
-		bool	_registerAllListeningEvents(void) throw(std::exception) throw(std::exception);
-
-	private:
-		int 							_initPort(const std::string &listen) throw(std::exception);
-		std::string 					_initIp(const std::string &listen) throw(std::exception);
-		ft::shared_ptr<PhysicalServer>	_initPhysicalServer(void) const;
-		bool							_insertPhysicalServer(const Port &port, const Ip &ip, const ft::shared_ptr<PhysicalServer> &physicalServer) throw(std::exception);
-		bool							_mergeIpMapsByPort(const PortMap::const_iterator &portIt);
-	
-
-	private:
-		static bool	_portIsValid(const Port &port);
-		static bool	_ipIsValid(const Ip &ip);
-		static bool	_wildCardIpExists(const PortMap::const_iterator &portIt);
-		static bool	_ipIsWildCard(const std::string &ip);
 	
 	public:
 		ft::shared_ptr<PhysicalServer>	findPhysicalServer(const int port, const std::string &ip) const;
 
+	private:
+		bool	_initPhysicalServers(const Config &config_map) throw(std::exception);
+		bool	_mergeWildCardIpMaps(void);
+		bool	_buildAllPhysicalServers(void) throw(std::exception);
+		bool	_registerAllListeningEvents(void) throw(std::exception);
+		bool	_insertPhysicalServer(const Port &port, const Ip &ip, const ft::shared_ptr<PhysicalServer> &physicalServer);
+		bool	_mergeIpMapsByPort(const PortMap::const_iterator &portIt);
+
+	private:
+		static int 			_parsePort(const std::string &listen) throw(std::exception);
+		static std::string	_parseIp(const std::string &listen) throw(std::exception);
+		static bool			_portIsValid(const Port &port);
+		static bool			_ipIsValid(const Ip &ip);
+		static bool			_wildCardIpExists(const PortMap::const_iterator &portIt);
+		static bool			_ipIsWildCard(const std::string &ip);
+	
 	public:
 		class FailToRunException: public std::exception {
 			public:

@@ -11,10 +11,10 @@ static const std::string FILE_LOCATION = "/tmp/";
 class FileNameGenerator
 {
 public:
-    static std::string generateUniqueFileName();
+	static std::string generateUniqueFileName();
 
 private:
-    static bool isFileExists(const std::string& filename);
+	static bool isFileExists(const std::string& filename);
 };
 
 #endif
