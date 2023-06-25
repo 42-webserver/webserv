@@ -1,5 +1,6 @@
 #include "../../incs/Cache/Cache.hpp"
 
+//Refactoring : daegulee! cache reload update
 LruCache::LruCache(void): _capacity(0) {}
 LruCache::~LruCache(void) {}
 LruCache::LruCache(int capacity): _capacity(capacity) {}

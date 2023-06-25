@@ -26,8 +26,9 @@ VirtualServerManager::ip VirtualServerManager::getListenIP() const {
 int VirtualServerManager::getListenPort() const {
     return _port;
 }
-ft::shared_ptr<VirtualServer> VirtualServerManager::find(const std::string& hostheader ) {
-    std::string host = hostheader.substr(0, hostheader.find(':'));
+ft::shared_ptr<VirtualServer> VirtualServerManager::find(const std::string& host ) {
+    // std::string host = hostheader.substr(0, hostheader.find(':'));
+    
     // local host <-here .
 	if (isInEtcHosts(host)) {
 		return _servers[hostsFromFile[host]];

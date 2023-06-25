@@ -21,5 +21,9 @@ int main(int argc, char **argv) {
 	}
 	serverTrie.checkingSocketInTrie();
 	std::cout << serverTrie << std::endl;
+	std::cout << serverTrie.FindVirtualServer("127.0.0.0").get()->getIP() << '\n';
+	std::cout << serverTrie.FindVirtualServer("127.0.0.1").get()->getIP() << '\n';
+		std::cout << serverTrie.FindVirtualServer("64.128.196.1").get()->getIP() << '\n';
+
 	return (0);
 }
