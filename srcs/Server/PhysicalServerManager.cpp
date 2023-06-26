@@ -8,7 +8,7 @@ PhysicalServerManager::~PhysicalServerManager(void) {}
 bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 	try {
 		this->_initPhysicalServers(config);
-		this->_mergeWildCardIpMaps();
+		this->_mergeWildCardIpTries();
 		this->_buildAllPhysicalServers();
 		this->_registerAllListeningEvents();
 	} catch (const std::exception &e) {
@@ -20,7 +20,7 @@ bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 }
 bool	PhysicalServerManager::run(void) throw(std::exception) {
 	for (PortMap::const_iterator it=this->_port_map.begin(); it!=this->_port_map.end(); ++it) {
-		for (IpMap::const_iterator ipIt=it->second->begin(); ipIt!=it->second->end(); ++ipIt) {
+		for (IpTrie::const_iterator ipIt=it->second->begin(); ipIt!=it->second->end(); ++ipIt) {
 			try {
 				ipIt->second->run();
 			} catch (const std::exception &e) {
@@ -34,7 +34,7 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 
 ft::shared_ptr<PhysicalServerManager::PhysicalServer>	PhysicalServerManager::findPhysicalServer(const int port, const std::string &ip) const {
 	PortMap::const_iterator	portIt;
-	IpMap::const_iterator	ipIt;
+	IpTrie::const_iterator	ipIt;
 
 	if ((portIt = this->_port_map.find(port)) == this->_port_map.end() || \
 		(ipIt = portIt->second->find(ip)) == portIt->second->end()) {
@@ -70,10 +70,10 @@ bool	PhysicalServerManager::_initPhysicalServers(const Config &config) throw(std
 
 	return (true);
 }
-bool	PhysicalServerManager::_mergeWildCardIpMaps(void) {
+bool	PhysicalServerManager::_mergeWildCardIpTries(void) {
 	for (PortMap::const_iterator portIt=this->_port_map.begin(); portIt!=this->_port_map.end(); ++portIt) {
 		if (this->_wildCardIpExists(portIt)) {
-			this->_mergeIpMapsByPort(portIt);
+			this->_mergeIpTriesByPort(portIt);
 		}
 	}
 
@@ -81,7 +81,7 @@ bool	PhysicalServerManager::_mergeWildCardIpMaps(void) {
 }
 bool	PhysicalServerManager::_buildAllPhysicalServers(void) throw(std::exception) {
 	for (PortMap::const_iterator portIt=this->_port_map.begin(); portIt!=this->_port_map.end(); ++portIt) {
-		for (IpMap::const_iterator ipIt=portIt->second->begin(); ipIt!=portIt->second->end(); ++ipIt) {
+		for (IpTrie::const_iterator ipIt=portIt->second->begin(); ipIt!=portIt->second->end(); ++ipIt) {
 			try {
 				ipIt->second->build(portIt->first, ipIt->first);
 			} catch (const std::exception &e) {
@@ -95,7 +95,7 @@ bool	PhysicalServerManager::_buildAllPhysicalServers(void) throw(std::exception)
 }
 bool	PhysicalServerManager::_registerAllListeningEvents(void) throw(std::exception) {
 	//for (PortMap::const_iterator portIt=this->_port_map.begin(); portIt!=this->_port_map.end(); ++portIt) {
-	//	for (IpMap::const_iterator ipIt=portIt->second->begin(); ipIt!=portIt->second->end(); ++ipIt) {
+	//	for (IpTrie::const_iterator ipIt=portIt->second->begin(); ipIt!=portIt->second->end(); ++ipIt) {
 	//		try {
 	//			ft::shared_ptr<VirtualServerManager>	vsm = ipIt->second;
 	//			vsm->registerListeningEvents();
@@ -109,20 +109,20 @@ bool	PhysicalServerManager::_registerAllListeningEvents(void) throw(std::excepti
 	return (true);
 }
 bool	PhysicalServerManager::_insertPhysicalServer(const Port &port, const Ip &ip, const ft::shared_ptr<PhysicalServer> &physicalServer) {
-	ft::shared_ptr<IpMap>	ipMap = ft::shared_ptr<IpMap>(new IpMap());
+	ft::shared_ptr<IpTrie>	IpTrie = ft::shared_ptr<IpTrie>(new IpTrie());
 
-	ipMap->operator[](ip) = physicalServer;
-	this->_port_map[port] = ipMap;
+	IpTrie->operator[](ip) = physicalServer;
+	this->_port_map[port] = IpTrie;
 	return (true);
 }
-bool	PhysicalServerManager::_mergeIpMapsByPort(const PortMap::const_iterator &portIt) {
-	ft::shared_ptr<IpMap>	ipMap = ft::shared_ptr<IpMap>(new IpMap());
+bool	PhysicalServerManager::_mergeIpTriesByPort(const PortMap::const_iterator &portIt) {
+	ft::shared_ptr<IpTrie>	IpTrie = ft::shared_ptr<IpTrie>(new IpTrie());
 
-	ipMap->operator[]("0.0.0.0") = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
-	for (IpMap::const_iterator ipMapIt=portIt->second->begin(); ipMapIt!=portIt->second->end(); ++ipMapIt) {
-		ipMap->operator[]("0.0.0.0")->mergeVirtualServers(ipMapIt->second);
+	IpTrie->operator[]("0.0.0.0") = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
+	for (IpTrie::const_iterator IpTrieIt=portIt->second->begin(); IpTrieIt!=portIt->second->end(); ++IpTrieIt) {
+		IpTrie->operator[]("0.0.0.0")->mergeVirtualServers(IpTrieIt->second);
 	}
-	this->_port_map[portIt->first] = ipMap;
+	this->_port_map[portIt->first] = IpTrie;
 
 	return (true);
 }
@@ -168,7 +168,7 @@ bool		PhysicalServerManager::_ipIsValid(const Ip &ip) {
 	return (true);
 }
 bool		PhysicalServerManager::_wildCardIpExists(const PortMap::const_iterator &portIt) {
-	for (IpMap::const_iterator ipIt=portIt->second->begin(); ipIt!=portIt->second->end(); ++ipIt) {
+	for (IpTrie::const_iterator ipIt=portIt->second->begin(); ipIt!=portIt->second->end(); ++ipIt) {
 		if (PhysicalServerManager::_ipIsWildCard(ipIt->first)) {
 			return (true);
 		}

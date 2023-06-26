@@ -2,6 +2,7 @@
 # define PHYSICALSERVERMANAGER_HPP
 
 # include "../../libs/shared_ptr/shared_ptr.hpp"
+# include "../../libs/Trie/Trie.hpp"
 # include "VirtualServerManager.hpp"
 # include <string>
 # include <map>
@@ -12,9 +13,9 @@ class PhysicalServerManager {
 		typedef std::string	Ip;
 
 	public:
-		typedef VirtualServerManager 							PhysicalServer;
-		typedef std::map<Ip, ft::shared_ptr<PhysicalServer> >	IpMap;
-		typedef std::map<Port, ft::shared_ptr<IpMap> >			PortMap;
+		typedef VirtualServerManager 						PhysicalServer;
+		typedef ft::Trie< ft::shared_ptr<PhysicalServer> >	IpTrie;
+		typedef std::map< Port, ft::shared_ptr<IpTrie> >	PortMap;
 
 	private:
 		static const int	MAX_SERVERS = 8;
@@ -35,11 +36,11 @@ class PhysicalServerManager {
 
 	private:
 		bool	_initPhysicalServers(const Config &config_map) throw(std::exception);
-		bool	_mergeWildCardIpMaps(void);
+		bool	_mergeWildCardIpTries(void);
 		bool	_buildAllPhysicalServers(void) throw(std::exception);
 		bool	_registerAllListeningEvents(void) throw(std::exception);
 		bool	_insertPhysicalServer(const Port &port, const Ip &ip, const ft::shared_ptr<PhysicalServer> &physicalServer);
-		bool	_mergeIpMapsByPort(const PortMap::const_iterator &portIt);
+		bool	_mergeIpTriesByPort(const PortMap::const_iterator &portIt);
 
 	private:
 		static int 			_parsePort(const std::string &listen) throw(std::exception);
