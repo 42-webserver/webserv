@@ -1,47 +1,42 @@
 #include "../../../incs/http/parser/HttpRequestParser.hpp"
 
-std::string createMultipartFormData(const std::string& boundary, const std::string& fieldName, const std::string& fieldValue, const std::string& fileName, const std::string& fileContent) {
-    std::string formData;
-    formData += "--" + boundary + "\r\n";
-    formData += "Content-Disposition: form-data; name=\"" + fieldName + "\"\r\n";
-    formData += "\r\n";
-    formData += fieldValue + "\r\n";
-
-    formData += "--" + boundary + "\r\n";
-    formData += "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"\r\n";
-    formData += "Content-Type: application/octet-stream\r\n";
-    formData += "\r\n";
-    formData += fileContent + "\r\n";
-
-    formData += "--" + boundary + "--\r\n";
-
-    return formData;
-}
-
 std::string createMultipartRequestBody(const std::string& fieldName, const std::string& fieldValue, const std::string& fileName, const std::string& fileContent) {
     std::string requestBody;
-    std::string boundary = "----Boundary" + std::to_string(std::rand());
-    requestBody += "POST / HTTP/1.1\r\n";
-    requestBody += "Host: localhost:8080\r\n";
-    requestBody += "User-Agent: curl/7.64.1\r\n";
-    requestBody += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n";
-    requestBody += "Content-Length: " + std::to_string(createMultipartFormData(boundary, fieldName, fieldValue, fileName, fileContent).length()) + "\r\n";
+    std::string boundary = "boundary";
+
+    requestBody += "--" + boundary + "\r\n";
+    requestBody += "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "5" + "\"\r\n";
     requestBody += "\r\n";
-    requestBody += createMultipartFormData(boundary, fieldName, fieldValue, fileName, fileContent);
+    requestBody += fieldValue + "\r\n";
+
+    requestBody += "--" + boundary + "\r\n";
+    requestBody += "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "5" + "\"\r\n";
+    requestBody += "\r\n";
+    requestBody += fileContent + "\r\n";
+
+    requestBody += "--" + boundary + "--\r\n";
 
     return requestBody;
 }
 
 int main(){
-	std::string fieldName = "text_field";
-    std::string fieldValue = "This is a text field value.";
-    std::string fileName = "example.txt";
-    std::string fileContent = "This is the content of the file.";
-	
-     std::string multipartBodyRequest = createMultipartRequestBody(fieldName, fieldValue, fileName, fileContent);
-	
+	 std::string fieldName = "field1";
+    std::string fieldValue = "value1";
+    std::string fileName = "example1.txt";
+    std::string fileContent = "value2";
+
+    std::string multipartBodyRequest = createMultipartRequestBody(fieldName, fieldValue, fileName, fileContent);
+
+    std::string requestHeaders = "POST /test.html HTTP/1.1\r\n"
+                                 "Host: example.org\r\n"
+                                 "Content-Type: multipart/form-data; boundary=\"boundary\"\r\n"
+                                 "Content-Length: " + std::to_string(multipartBodyRequest.length()) + "\r\n"
+                                 "\r\n";
+
+    std::string completeRequest = requestHeaders + multipartBodyRequest;
+
 	std::vector<char> httpReqeustBuffer;
-	httpReqeustBuffer.assign(multipartBodyRequest.begin(), multipartBodyRequest.end());
+	httpReqeustBuffer.assign(completeRequest.begin(), completeRequest.end());
 	HttpRequestParser httpRequestParser;
 	httpRequestParser.parseRequest(httpReqeustBuffer, 1000000);
 	ft::shared_ptr <HttpRequest> httpRequest = httpRequestParser.getHttpRequest();

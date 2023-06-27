@@ -3,6 +3,7 @@
 MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary)
     : RequestBodyHandler(0), _targetIdx(0), _state(M_HEADER)
 {
+    boundary = std::string(boundary.begin() + 1, boundary.end() - 1);
     this->_boundaryStart = "--" + boundary;
     this->_boundaryEnd =  "--" + boundary + "--";
 }
@@ -24,6 +25,8 @@ bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::s
         if (this->_state == M_BODY)
             result = parsePartOfBody(reqBuffer, req);
     }
+    if(result)
+        FileUploader::fileUpload(req->getMultipartRequests());
     return result;
 }
 
