@@ -90,6 +90,7 @@ void MultipartRequestBodyHandler::writeInFile(std::vector<char> &reqBuffer, ft::
     if (multipartRequest.getBodyDataFilename().empty())
         multipartRequest.setBodyDataFilename(FileNameGenerator::generateUniqueFileName());
     std::string fileName = multipartRequest.getBodyDataFilename();
+    std::ifstream file2(fileName.c_str());
     std::ofstream file(fileName.c_str(), std::ios::app);
     if (!file.is_open())
         throw std::runtime_error("Error: can't open file");

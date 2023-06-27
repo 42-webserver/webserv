@@ -10,7 +10,7 @@ std::string createMultipartRequestBody(const std::string& fieldName, const std::
     requestBody += fieldValue + "\r\n";
 
     requestBody += "--" + boundary + "\r\n";
-    requestBody += "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "5" + "\"\r\n";
+    requestBody += "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "6" + "\"\r\n";
     requestBody += "\r\n";
     requestBody += fileContent + "\r\n";
 
@@ -20,10 +20,10 @@ std::string createMultipartRequestBody(const std::string& fieldName, const std::
 }
 
 int main(){
-	 std::string fieldName = "field1";
-    std::string fieldValue = "value1";
+	std::string fieldName = "field1";
+    std::string fieldValue = "value1lskdajlksajdflkjsdaf";
     std::string fileName = "example1.txt";
-    std::string fileContent = "value2";
+    std::string fileContent = "value2psadouf;asdjflsadkjhflksdajflks";
 
     std::string multipartBodyRequest = createMultipartRequestBody(fieldName, fieldValue, fileName, fileContent);
 

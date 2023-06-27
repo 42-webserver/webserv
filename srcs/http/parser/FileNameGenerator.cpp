@@ -14,7 +14,7 @@ std::string FileNameGenerator::generateUniqueFileName()
     filenameStream << "file_" << currentTime << ".txt";
     
     std::string filename = filenameStream.str();
-    while (isFileExists(filename))
+    while (isFileExists(FILE_LOCATION + filename))
     {
         currentTime++;
         filenameStream.str("");

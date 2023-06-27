@@ -27,11 +27,11 @@ void FileUploader::fileUpload(std::vector<MultipartRequest> &multipartRequests) 
 }
 
 void FileUploader::uploadStart(std::string &filepath, std::vector<char> &memoryBody, std::string &bodyDataFilename) throw(FileUploadException){
+    checkFileExists(filepath);
     if (memoryBody.empty()){
         if (std::rename(bodyDataFilename.c_str(), filepath.c_str()) != 0)
             throw std::runtime_error("Error: can't rename file on FileUploader::uploadStart");
     }else if (!memoryBody.empty()){
-        checkFileExists(filepath);
         std::ofstream file(filepath.c_str(), std::ios::out | std::ios::binary);
         if (!file.is_open()) {
             throw std::runtime_error("Error: can't open file");
