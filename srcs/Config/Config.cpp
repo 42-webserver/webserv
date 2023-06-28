@@ -272,6 +272,11 @@ bool	Config::handleLocationDir(map &config_map, std::ifstream &infile) throw(std
 	}
 
 	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::DIR]].push_back(token);
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ROOT]].push_back("");
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ALIAS]].push_back("");
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::AUTO_INDEX]].push_back("");
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_STATUS]].push_back("");
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_URL]].push_back("");
 	return (true);
 }
 bool	Config::handleLocationRoot(map &config_map, std::ifstream &infile) throw(std::exception) {
@@ -281,7 +286,7 @@ bool	Config::handleLocationRoot(map &config_map, std::ifstream &infile) throw(st
 		throw (InvalidSyntaxException());
 	}
 
-	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ROOT]].push_back(token.substr(0, token.length() - 1));
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ROOT]].back() = token.substr(0, token.length() - 1);
 	return (true);
 }
 bool	Config::handleLocationAlias(map &config_map, std::ifstream &infile) throw(std::exception) {
@@ -291,7 +296,7 @@ bool	Config::handleLocationAlias(map &config_map, std::ifstream &infile) throw(s
 		throw (InvalidSyntaxException());
 	}
 
-	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ALIAS]].push_back(token.substr(0, token.length() - 1));
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ALIAS]].back() = token.substr(0, token.length() - 1);
 	return (true);
 }
 bool	Config::handleLocationAutoIndex(map &config_map, std::ifstream &infile) throw(std::exception) {
@@ -301,7 +306,7 @@ bool	Config::handleLocationAutoIndex(map &config_map, std::ifstream &infile) thr
 		throw (InvalidSyntaxException());
 	}
 
-	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::AUTO_INDEX]].push_back(token.substr(0, token.length() - 1));
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::AUTO_INDEX]].back() = token.substr(0, token.length() - 1);
 	return (true);
 }
 bool	Config::handleLocationReturnStatus(map &config_map, std::ifstream &infile) throw(std::exception) {
@@ -311,7 +316,7 @@ bool	Config::handleLocationReturnStatus(map &config_map, std::ifstream &infile) 
 		throw (InvalidSyntaxException());
 	}
 
-	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_STATUS]].push_back(token.substr(0, token.length() - 1));
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_STATUS]].back() = token.substr(0, token.length() - 1);
 	return (true);
 }
 bool	Config::handleLocationReturnUrl(map &config_map, std::ifstream &infile) throw(std::exception) {
@@ -321,7 +326,7 @@ bool	Config::handleLocationReturnUrl(map &config_map, std::ifstream &infile) thr
 		throw (InvalidSyntaxException());
 	}
 
-	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_URL]].push_back(token.substr(0, token.length() - 1));
+	config_map[std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_URL]].back() = token.substr(0, token.length() - 1);
 	return (true);
 }
 

@@ -5,19 +5,18 @@
 # include "../Config/Config.hpp"
 # include "VirtualServer.hpp"
 # include <string>
-# include <vector>
 # include <map>
 
 class VirtualServerManager {
 	public:
-		typedef std::string														Ip;
-		typedef std::vector< std::pair< Ip, ft::shared_ptr< VirtualServer > > >	VirtualServerVector;
-		typedef std::string														ServerName;
-		typedef std::map<ServerName, ft::shared_ptr<VirtualServer> >			ServerNameMap;
+		typedef std::string												Ip;
+		typedef std::string												ServerName;
+		typedef std::map< Ip, ft::shared_ptr< VirtualServer > >			IpMap;
+		typedef std::map<ServerName, ft::shared_ptr<VirtualServer> >	ServerNameMap;
 
 	private:
-		VirtualServerVector		_virtual_server_vector;
-		ServerNameMap 			_server_name_map;
+		IpMap			_ip_map;
+		ServerNameMap 	_server_name_map;
 
 	public:
 		VirtualServerManager(void);
@@ -52,7 +51,8 @@ class VirtualServerManager {
 			public:
 				virtual const char* what() const throw();
 		};
-};
 
+	friend std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager);
+};
 
 #endif

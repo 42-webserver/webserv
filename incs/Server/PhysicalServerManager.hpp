@@ -30,7 +30,7 @@ class PhysicalServerManager {
 		ft::shared_ptr<PhysicalServer>	findPhysicalServer(const Port &port, const Ip &ip) const;
 	
 	private:
-		ft::shared_ptr<PhysicalServer>	_findPhysicalServerByIp(const Ip &ip) const;
+		ft::shared_ptr<PhysicalServer>	_findPhysicalServerByIp(const PortMap::const_iterator &it, const Ip &ip) const;
 	
 	private:
 		Port	_parsePort(const std::string &listen) throw(std::exception);
@@ -67,6 +67,8 @@ class PhysicalServerManager {
 			public:
 				virtual const char* what() const throw();
 		};
+	
+	friend std::ostream	&operator<<(std::ostream &os, const PhysicalServerManager &physical_server_manager);
 };
 
 #endif

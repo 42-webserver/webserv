@@ -45,3 +45,10 @@ ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServerByName(const Serv
 const char	*PhysicalServer::FailToBuildException::what() const throw() { return "PhysicalServer: Fail to build"; }
 const char	*PhysicalServer::FailToRunException::what() const throw() { return "PhysicalServer: Fail to run"; }
 const char	*PhysicalServer::FailToMergeAllVirtualServerException::what() const throw() { return "PhysicalServer: Fail to merge all virtual server"; }
+
+std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server) {
+	os << "\t\t\t" << "PhysicalServer:" << '\n';
+	os << "\t\t\t\t" << "Socket: " << physical_server._socket << '\n';
+	os << physical_server._virtual_server_manager;
+	return (os);
+}

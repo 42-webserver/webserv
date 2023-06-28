@@ -44,6 +44,8 @@ class Socket {
 			public:
 				virtual const char *what() const throw();
 		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const Socket &socket);
 };
 
 #endif

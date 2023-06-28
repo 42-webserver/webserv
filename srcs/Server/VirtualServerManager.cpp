@@ -9,7 +9,7 @@ VirtualServerManager::VirtualServerManager(void) {
 	//parseHostsFile();
 }
 VirtualServerManager::~VirtualServerManager(void) {}
-VirtualServerManager::VirtualServerManager(const VirtualServerManager &ref): _virtual_server_vector(ref._virtual_server_vector), _server_name_map(ref._server_name_map) {}
+VirtualServerManager::VirtualServerManager(const VirtualServerManager &ref): _ip_map(ref._ip_map), _server_name_map(ref._server_name_map) {}
 VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager &rhs) {
 	if (this != &rhs) {
 		this->~VirtualServerManager();
@@ -23,7 +23,9 @@ bool	VirtualServerManager::build(const Ip &ip, const Config::map &config_map) th
 		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(config_map));
 		std::vector<ServerName>			server_names = config_map.at(Config::KEYS[Config::KEY::SERVER_NAME]);
 
-		this->_virtual_server_vector.push_back(std::make_pair(ip, virtual_server));
+		if (this->_ip_map.find(ip) == this->_ip_map.end()) {
+			this->_ip_map.insert(std::make_pair(ip, virtual_server));
+		}
 		for (size_t i=0; i<server_names.size(); i++) {
 			if (this->_server_name_map.find(server_names[i]) != this->_server_name_map.end()) {
 				throw (DuplicatedServerNameException());
@@ -48,16 +50,19 @@ bool	VirtualServerManager::run(void) throw(std::exception) {
 	return (true);
 }
 bool	VirtualServerManager::hasServerWithWildCardIp(void) const {
-	for (size_t i=0; i<this->_virtual_server_vector.size(); ++i) {
-		if (this->_virtual_server_vector[i].first == "0.0.0.0") {
+	for (IpMap::const_iterator it=this->_ip_map.begin(); it!=this->_ip_map.end(); ++it) {
+		if (it->first == "0.0.0.0") {
 			return (true);
 		}
 	}
 	return (false);
 }
 bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception) {
-	for (size_t i=0; i<other->_virtual_server_vector.size(); ++i) {
-		this->_virtual_server_vector.push_back(other->_virtual_server_vector[i]);
+	for (IpMap::const_iterator it=other->_ip_map.begin(); it!=other->_ip_map.end(); ++it) {
+		if (this->_ip_map.find(it->first) != this->_ip_map.end()) {
+			continue;
+		}
+		this->_ip_map.insert(std::make_pair(it->first, it->second));
 	}
 	for (ServerNameMap::const_iterator it=other->_server_name_map.begin(); it!=other->_server_name_map.end(); ++it) {
 		if (this->_server_name_map.find(it->first) != this->_server_name_map.end()) {
@@ -69,17 +74,17 @@ bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualSer
 }
 
 ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByIp(const Ip &ip) const {
-	for (size_t i=0; i<this->_virtual_server_vector.size(); ++i) {
-		if (this->_virtual_server_vector[i].first == ip) {
-			return (this->_virtual_server_vector[i].second);
-		}
+	IpMap::const_iterator	it = this->_ip_map.find(ip);
+
+	if (it == this->_ip_map.end()) {
+		return (ft::shared_ptr<VirtualServer>(NULL));
 	}
-	return (ft::shared_ptr<VirtualServer>(NULL));
+	return (it->second);
 }
 ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByName(const ServerName &server_name) const {
-	ServerNameMap::const_iterator	it;
+	ServerNameMap::const_iterator	it = this->_server_name_map.find(server_name);
 
-	if ((it = this->_server_name_map.find(server_name)) == this->_server_name_map.end()) {
+	if (it== this->_server_name_map.end()) {
 		return (ft::shared_ptr<VirtualServer>(NULL));
 	}
 	return (it->second);
@@ -128,3 +133,18 @@ const char	*VirtualServerManager::FailToBuildException::what() const throw() { r
 const char	*VirtualServerManager::FailToRunException::what() const throw() { return ("VirtualServerManager: Fail to run"); }
 const char	*VirtualServerManager::DuplicatedServerNameException::what() const throw() { return ("VirtualServerManager: Duplicated server name"); }
 const char	*VirtualServerManager::FailToMergeAllVirtualServerException::what() const throw() { return ("VirtualServerManager: Fail to merge all virtual server"); }
+
+std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager) {
+	os << "\t\t\t\t\t" << "VirtualServerManager:" << '\n';
+	os << "\t\t\t\t\t\t" << "IpMap:" << '\n';
+	for (VirtualServerManager::IpMap::const_iterator it = virtual_server_manager._ip_map.begin(); it != virtual_server_manager._ip_map.end(); ++it) {
+		os << "\t\t\t\t\t\t\t" << it->first << ":" << '\n';
+		os << *(it->second);
+	}
+	os << "\t\t\t\t\t\t" << "server_name_map:" << '\n';
+	for (VirtualServerManager::ServerNameMap::const_iterator it = virtual_server_manager._server_name_map.begin(); it != virtual_server_manager._server_name_map.end(); ++it) {
+		os << "\t\t\t\t\t\t\t" << it->first << ":" << '\n';
+		os << *(it->second);
+	}
+	return (os);
+}

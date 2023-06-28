@@ -30,9 +30,10 @@ class Webserv {
 			public:
 				virtual const char* what() const throw();
 		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
 };
 
-// Todo:
-// std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
+//std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
 
 #endif

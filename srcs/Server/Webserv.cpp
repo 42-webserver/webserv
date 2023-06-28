@@ -18,6 +18,8 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_build(config);
+		std::cout << *this << '\n';
+		std::cout << "Hi" << '\n';
 		//this->_physical_server_manager.run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
@@ -58,13 +60,8 @@ bool	Webserv::_build(const Config &config) throw(std::exception) {
 const char	*Webserv::FailToRunException::what() const throw() { return ("Webserv: Fail to run"); }
 const char	*Webserv::FailToBuildException::what() const throw() { return ("Webserv: Fail to construct"); }
 
-// getter 사라져서 다시 구현 필요
-// std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {
-// 	const Webserv::PhysicalServerMap	&physical_server_map = webserv.getPhysicalServerMap();
-
-// 	for (Webserv::PhysicalServerMap::const_iterator it=physical_server_map.begin(); it!=physical_server_map.end(); ++it) {
-// 		os << "Physical Server: " << it->first.first << " " << it->first.second << '\n';
-// 		os << *(it->second) << '\n';
-// 	}	
-// 	return (os);
-// }
+std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {
+	os << "Webserv:\n";
+	os << webserv._physical_server_manager;
+	return (os);
+}

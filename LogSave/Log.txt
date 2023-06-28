@@ -25,3 +25,24 @@
 [2023-06-20 16:07:29] [ERROR] PhysicalServerManager: Fail to build
 [2023-06-20 16:07:29] [ERROR] Webserv: Fail to construct
 [2023-06-20 16:07:29] [ERROR] Webserv: Fail to run
+[2023-06-28 20:17:26] [ERROR] Location: Invalid root
+[2023-06-28 20:17:26] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-28 20:17:26] [ERROR] VirtualServerManager: Fail to build
+[2023-06-28 20:17:26] [ERROR] PhysicalServer: Fail to build
+[2023-06-28 20:17:26] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-28 20:17:26] [ERROR] Webserv: Fail to construct
+[2023-06-28 20:17:26] [ERROR] Webserv: Fail to run
+[2023-06-28 20:37:32] [ERROR] Location: Invalid root
+[2023-06-28 20:37:32] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-28 20:37:32] [ERROR] VirtualServerManager: Fail to build
+[2023-06-28 20:37:32] [ERROR] PhysicalServer: Fail to build
+[2023-06-28 20:37:32] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-28 20:37:32] [ERROR] Webserv: Fail to construct
+[2023-06-28 20:37:32] [ERROR] Webserv: Fail to run
+[2023-06-28 20:37:58] [ERROR] Location: Invalid root
+[2023-06-28 20:37:58] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-28 20:37:58] [ERROR] VirtualServerManager: Fail to build
+[2023-06-28 20:37:58] [ERROR] PhysicalServer: Fail to build
+[2023-06-28 20:37:58] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-28 20:37:58] [ERROR] Webserv: Fail to construct
+[2023-06-28 20:37:58] [ERROR] Webserv: Fail to run

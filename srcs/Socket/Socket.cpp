@@ -62,3 +62,8 @@ int		Socket::getFd(void) const { return (this->_fd); }
 const char	*Socket::FailToCreateException::what(void) const throw() { return ("Socket: Fail to create"); }
 const char	*Socket::FailToBindException::what(void) const throw() { return ("Socket: Fail to bind"); }
 const char	*Socket::FailToListenException::what(void) const throw() { return ("Socket: Fail to listen"); }
+
+std::ostream	&operator<<(std::ostream &os, const Socket &socket) {
+	os << "Fd: " << socket._fd;
+	return (os);
+}

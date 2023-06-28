@@ -16,12 +16,18 @@ class Location {
 		const std::string	_return_url;
 	
 	private:
-		std::string	parseDir(const Config::map &config_map, size_t idx) throw(std::exception);
-		std::string	parseRoot(const Config::map &config_map, size_t idx) throw(std::exception);
-		std::string	parseAlias(const Config::map &config_map, size_t idx) throw(std::exception);
-		std::string	parseAutoIndex(const Config::map &config_map, size_t idx) throw(std::exception);
-		std::string	parseReturnStatus(const Config::map &config_map, size_t idx) throw(std::exception);
-		std::string	parseReturnUrl(const Config::map &config_map, size_t idx) throw(std::exception);
+		static std::string	_parseDir(const Config::map &config_map, size_t idx) throw(std::exception);
+		static std::string	_parseRoot(const Config::map &config_map, size_t idx) throw(std::exception);
+		static std::string	_parseAlias(const Config::map &config_map, size_t idx) throw(std::exception);
+		static std::string	_parseAutoIndex(const Config::map &config_map, size_t idx) throw(std::exception);
+		static std::string	_parseReturnStatus(const Config::map &config_map, size_t idx) throw(std::exception);
+		static std::string	_parseReturnUrl(const Config::map &config_map, size_t idx) throw(std::exception);
+		static bool			_dirIsValid(const std::string &dir);
+		static bool			_rootIsValid(const std::string &root);
+		static bool			_aliasIsValid(const std::string &alias);
+		static bool			_autoIndexIsValid(const std::string &autoindex);
+		static bool			_returnStatusIsValid(const std::string &return_status);
+		static bool			_returnUrlIsValid(const std::string &return_url);
 
 	public:
 		Location(void);
@@ -43,12 +49,32 @@ class Location {
 			public:
 				virtual const char *what() const throw();
 		};
-		class InvalidAutoIndexValueException: public std::exception {
+		class InvalidDirException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
-};
+		class InvalidRootException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+		class InvalidAliasException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+		class InvalidAutoIndexException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+		class InvalidReturnStatusException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
+		class InvalidReturnUrlException: public std::exception {
+			public:
+				virtual const char *what() const throw();
+		};
 
-std::ostream &operator<<(std::ostream &os, const Location &location);
+		friend std::ostream &operator<<(std::ostream &os, const Location &location);
+};
 
 #endif

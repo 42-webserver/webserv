@@ -23,16 +23,16 @@ bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 			const std::string				listen = config_map.find("listen")->second[0];
 			const Port						port = _parsePort(listen);
 			const Ip						ip = _parseIp(listen);
-			PortMap::iterator				map_it;
+			PortMap::iterator				it;
 			ft::shared_ptr<PhysicalServer>	physical_server;
 
-			if ((map_it = this->_port_map.find(port)) == this->_port_map.end()) {
+			if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
 				this->_port_map.insert(std::make_pair(port, PhysicalServerVector()));
-				map_it = this->_port_map.find(port);
+				it = this->_port_map.find(port);
 			}
-			if ((physical_server = _findPhysicalServerByIp(ip)).get() == NULL) {
+			if ((physical_server = _findPhysicalServerByIp(it, ip)).get() == NULL) {
 				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
-				map_it->second.push_back(physical_server);
+				it->second.push_back(physical_server);
 			}
 			physical_server->build(ip, config_map);
 		}
@@ -79,16 +79,14 @@ ft::shared_ptr<PhysicalServer>	PhysicalServerManager::findPhysicalServer(const P
 	}
 	return (ft::shared_ptr<PhysicalServer>(NULL));
 }
-ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServerByIp(const Ip &ip) const {
-	for (PortMap::const_iterator it=this->_port_map.begin(); it!=this->_port_map.end(); it++) {
-		PhysicalServerVector			physical_server_vector = it->second;
-		ft::shared_ptr<VirtualServer>	virtual_server;
+ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServerByIp(const PortMap::const_iterator &it, const Ip &ip) const {
+	PhysicalServerVector			physical_server_vector = it->second;
+	ft::shared_ptr<VirtualServer>	virtual_server;
 
-		for (size_t i=0; i<physical_server_vector.size(); i++) {
-			virtual_server = physical_server_vector[i]->findVirtualServerByIp(ip);
-			if (virtual_server.get() != NULL) {
-				return (physical_server_vector[i]);
-			}
+	for (size_t i=0; i<physical_server_vector.size(); i++) {
+		virtual_server = physical_server_vector[i]->findVirtualServerByIp(ip);
+		if (virtual_server.get() != NULL) {
+			return (physical_server_vector[i]);
 		}
 	}
 	return (ft::shared_ptr<PhysicalServer>(NULL));
@@ -165,3 +163,17 @@ const char	*PhysicalServerManager::InvalidPortException::what() const throw() { 
 const char	*PhysicalServerManager::InvalidIpException::what() const throw() { return "PhysicalServerManager: Invalid ip"; }
 const char	*PhysicalServerManager::TooManyServerException::what() const throw() { return ("PhysicalServerManager: Too many servers"); }
 const char	*PhysicalServerManager::FailToMergeAllPhysicalServerException::what() const throw() { return ("PhysicalServerManager: Fail to merge all physical server"); }
+
+std::ostream	&operator<<(std::ostream &os, const PhysicalServerManager &physical_server_manager) {
+	os << "\t" << "PhysicalServerManager:\n";
+	for (PhysicalServerManager::PortMap::const_iterator it=physical_server_manager._port_map.begin(); it!=physical_server_manager._port_map.end(); it++) {
+		os << "\t\t" << "Port: " << it->first << '\n';
+		for (size_t i=0; i<it->second.size(); i++) {
+			os << *(it->second[i]);
+			if (i + 1 < it->second.size()) {
+				os << '\n';
+			}
+		}
+	}
+	return (os);
+}

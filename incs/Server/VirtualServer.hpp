@@ -68,8 +68,8 @@ class VirtualServer {
 			public:
 				virtual const char *what() const throw();
 		};
-};
 
-std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs);
+		friend std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs);
+};
 
 #endif
