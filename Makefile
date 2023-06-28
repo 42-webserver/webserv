@@ -43,6 +43,7 @@ SRCS =	main.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
 		Server/Location.cpp \
+		Server/PhysicalServer.cpp \
 		Server/PhysicalServerManager.cpp \
 		Server/VirtualServer.cpp \
 		Server/VirtualServerManager.cpp \

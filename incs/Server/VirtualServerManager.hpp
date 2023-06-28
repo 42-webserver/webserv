@@ -22,6 +22,8 @@ class VirtualServerManager {
 	public:
 		VirtualServerManager(void);
 		~VirtualServerManager(void);
+		VirtualServerManager(const VirtualServerManager &ref);
+		VirtualServerManager	&operator=(const VirtualServerManager &rhs);
 
 	public:
 		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
@@ -30,8 +32,8 @@ class VirtualServerManager {
 		bool	mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception);
 	
 	public:
-		ft::shared_ptr<VirtualServer>	findVirtualServerByIp(const Ip &ip) const throw(std::exception);
-		ft::shared_ptr<VirtualServer>	findVirtualServerByName(const ServerName &server_name) const throw(std::exception);
+		ft::shared_ptr<VirtualServer>	findVirtualServerByIp(const Ip &ip) const;
+		ft::shared_ptr<VirtualServer>	findVirtualServerByName(const ServerName &server_name) const;
 	
 	public:
 		class FailToBuildException: public std::exception {

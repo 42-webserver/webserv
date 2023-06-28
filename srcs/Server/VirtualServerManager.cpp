@@ -9,6 +9,14 @@ VirtualServerManager::VirtualServerManager(void) {
 	//parseHostsFile();
 }
 VirtualServerManager::~VirtualServerManager(void) {}
+VirtualServerManager::VirtualServerManager(const VirtualServerManager &ref): _virtual_server_vector(ref._virtual_server_vector), _server_name_map(ref._server_name_map) {}
+VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager &rhs) {
+	if (this != &rhs) {
+		this->~VirtualServerManager();
+		new(this) VirtualServerManager(rhs);
+	}
+	return (*this);
+}
 
 bool	VirtualServerManager::build(const Ip &ip, const Config::map &config_map) throw(std::exception) {
 	try {

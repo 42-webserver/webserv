@@ -22,8 +22,7 @@ std::string		Location::parseDir(const Config::map &config_map, size_t idx) throw
 	return (ret);
 }
 std::string		Location::parseRoot(const Config::map &config_map, size_t idx) throw(std::exception) {
-	std::vector<std::string>	location_root = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ROOT]);
-	std::string					ret = ()
+	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::ROOT])[idx];
 
 	if (ret != "" && ret[0] != '/') {
 		throw (InvalidSyntaxException());

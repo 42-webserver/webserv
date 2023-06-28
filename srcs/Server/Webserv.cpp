@@ -6,6 +6,7 @@
 
 Webserv::Webserv(void): _physical_server_manager() {}
 Webserv::~Webserv(void) {}
+Webserv::Webserv(const Webserv &ref): _physical_server_manager(ref._physical_server_manager) {}
 Webserv	&Webserv::operator=(const Webserv &rhs) {
 	if (this != &rhs) {
 		this->~Webserv();
@@ -17,7 +18,7 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_build(config);
-		this->_physical_server_manager.run();
+		//this->_physical_server_manager.run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
@@ -54,8 +55,8 @@ bool	Webserv::_build(const Config &config) throw(std::exception) {
 	return (true);
 }
 
-const char	*Webserv::FailToBuildException::what() const throw() { return ("Webserv: Fail to construct"); }
 const char	*Webserv::FailToRunException::what() const throw() { return ("Webserv: Fail to run"); }
+const char	*Webserv::FailToBuildException::what() const throw() { return ("Webserv: Fail to construct"); }
 
 // getter 사라져서 다시 구현 필요
 // std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {

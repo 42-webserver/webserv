@@ -1,6 +1,7 @@
 #ifndef TRIE_HPP
 # define TRIE_HPP
 
+# include "../shared_ptr/shared_ptr.hpp"
 # include <map>
 # include <string>
 # include <iostream>
@@ -10,8 +11,8 @@ namespace ft {
 template <typename T>
 class Trie {
 	public:
-		typedef std::map< char, ft::shared_ptr < Trie<T> > >::iterator			iterator;
-		typedef std::map< char, ft::shared_ptr < Trie<T> > >::const_iterator	const_iterator;
+		typedef typename std::map< char, ft::shared_ptr < Trie<T> > >::iterator			iterator;
+		typedef typename std::map< char, ft::shared_ptr < Trie<T> > >::const_iterator	const_iterator;
 
 	protected:
 		bool 										_is_end;

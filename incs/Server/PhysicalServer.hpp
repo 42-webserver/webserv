@@ -10,6 +10,7 @@ class PhysicalServer {
 	public:
 		typedef int								Port;
 		typedef std::string						Ip;
+		typedef std::string						ServerName;
 
 	private:
 		ft::shared_ptr<Socket>					_socket;
@@ -18,8 +19,6 @@ class PhysicalServer {
 	public:
 		PhysicalServer(void);
 		~PhysicalServer(void);
-	
-	private:
 		PhysicalServer(const PhysicalServer &ref);
 		PhysicalServer	&operator=(const PhysicalServer &rhs);
 	
@@ -28,6 +27,10 @@ class PhysicalServer {
 		bool	run(void) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
 		bool	mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> &other) throw(std::exception);
+	
+	public:
+		ft::shared_ptr<VirtualServer>	findVirtualServerByIp(const Ip &ip) const;
+		ft::shared_ptr<VirtualServer>	findVirtualServerByName(const ServerName &server_name) const;
 	
 	public:
 		class FailToBuildException: public std::exception {

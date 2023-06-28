@@ -2,16 +2,17 @@
 # define WEBSERV_HPP
 
 # include "../Config/Config.hpp"
-# include "PortManager.hpp"
+# include "PhysicalServerManager.hpp"
 # include <iostream>
 
 class Webserv {
 	private:
-		PortManager	_port_manager;
+		PhysicalServerManager	_physical_server_manager;
 
 	public:
 		Webserv(void);
 		~Webserv(void);
+		Webserv(const Webserv &ref);
 		Webserv	&operator=(const Webserv &rhs);
 
 	private:

@@ -13,7 +13,7 @@ bool	PhysicalServer::build(const Ip &ip, const Config::map &config_map) throw(st
 	}
 	return (true);
 }
-bool	PhysicalServer::run(void) {
+bool	PhysicalServer::run(void) throw(std::exception) {
 	try {
 		// TODO
 	} catch (const std::exception &e) {
@@ -33,6 +33,13 @@ bool	PhysicalServer::mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> 
 		throw (FailToMergeAllVirtualServerException());
 	}
 	return (true);
+}
+
+ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServerByIp(const Ip &ip) const {
+	return (this->_virtual_server_manager->findVirtualServerByIp(ip));
+}
+ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServerByName(const ServerName &server_name) const {
+	return (this->_virtual_server_manager->findVirtualServerByName(server_name));
 }
 
 const char	*PhysicalServer::FailToBuildException::what() const throw() { return "PhysicalServer: Fail to build"; }

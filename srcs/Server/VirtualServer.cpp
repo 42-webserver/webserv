@@ -12,6 +12,20 @@ VirtualServer::VirtualServer(const Config::map &config_map) throw(std::exception
 	_locations(_parseLocations(config_map))
 	{}
 VirtualServer::~VirtualServer(void) {}
+VirtualServer::VirtualServer(const VirtualServer &ref):
+	_root(ref._root),
+	_indexes(ref._indexes),
+	_default_error_page(ref._default_error_page),
+	_client_max_body_size(ref._client_max_body_size),
+	_locations(ref._locations)
+	{}
+VirtualServer	&VirtualServer::operator=(const VirtualServer &rhs) {
+	if (this != &rhs) {
+		this->~VirtualServer();
+		new (this) VirtualServer(rhs);
+	}
+	return (*this);
+}
 
 std::string					VirtualServer::_parseRoot(const Config::map &config_map) {
 	std::string	ret = config_map.at(Config::KEYS[Config::KEY::ROOT])[0];
@@ -62,11 +76,11 @@ std::vector<Location>		VirtualServer::_parseLocations(const Config::map &config_
 }
 
 // Custom For use!!
-bool						VirtualServer::_rootIsValid(const std::string &root) { return (true); }
-bool						VirtualServer::_indexesIsValid(const std::vector<std::string> &indexes) { return (true); }
-bool						VirtualServer::_defaultErrorPageIsValid(const std::string &default_error_page) { return (true); }
-bool						VirtualServer::_clientMaxBodySizeIsValid(const int client_max_body_size) { return (true); }
-bool						VirtualServer::_locationsIsValid(const std::vector<Location> &locations) { return (true); }
+bool						VirtualServer::_rootIsValid(const std::string &root) { return (true); (void) root; }
+bool						VirtualServer::_indexesIsValid(const std::vector<std::string> &indexes) { return (true); (void) indexes; }
+bool						VirtualServer::_defaultErrorPageIsValid(const std::string &default_error_page) { return (true); (void) default_error_page; }
+bool						VirtualServer::_clientMaxBodySizeIsValid(const int client_max_body_size) { return (true); (void) client_max_body_size; }
+bool						VirtualServer::_locationsIsValid(const std::vector<Location> &locations) { return (true); (void) locations; }
 // Custom For use!!
 
 // Getters
