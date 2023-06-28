@@ -46,7 +46,6 @@ std::string		Location::_parseAutoIndex(const Config::map &config_map, size_t idx
 	return (ret);
 }
 std::string		Location::_parseReturnStatus(const Config::map &config_map, size_t idx) throw(std::exception) {
-	return ("301");
 	std::string	ret = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::RETURN_STATUS])[idx];
 
 	if (_returnStatusIsValid(ret) == false) {

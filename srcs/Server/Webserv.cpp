@@ -3,6 +3,7 @@
 #include "../../incs/Server/Webserv.hpp"
 #include "../../incs/Log/Logger.hpp"
 #include <unistd.h>
+#include <stdlib.h>
 
 Webserv::Webserv(void): _physical_server_manager() {}
 Webserv::~Webserv(void) {}
@@ -19,7 +20,7 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_build(config);
 		std::cout << *this << '\n';
-		std::cout << "Hi" << '\n';
+		exit(0);
 		//this->_physical_server_manager.run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());

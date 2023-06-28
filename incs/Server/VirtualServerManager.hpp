@@ -12,7 +12,7 @@ class VirtualServerManager {
 		typedef std::string												Ip;
 		typedef std::string												ServerName;
 		typedef std::map< Ip, ft::shared_ptr< VirtualServer > >			IpMap;
-		typedef std::map<ServerName, ft::shared_ptr<VirtualServer> >	ServerNameMap;
+		typedef std::map< ServerName, ft::shared_ptr< VirtualServer > >	ServerNameMap;
 
 	private:
 		IpMap			_ip_map;

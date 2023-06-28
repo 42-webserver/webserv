@@ -5,7 +5,7 @@
 
 //VirtualServerManager::hostsMap VirtualServerManager::hostsFromFile = VirtualServerManager::hostsMap();
 
-VirtualServerManager::VirtualServerManager(void) {
+VirtualServerManager::VirtualServerManager(void): _ip_map(IpMap()), _server_name_map(ServerNameMap()) {
 	//parseHostsFile();
 }
 VirtualServerManager::~VirtualServerManager(void) {}

@@ -312,7 +312,7 @@ bool	Config::handleLocationAutoIndex(map &config_map, std::ifstream &infile) thr
 bool	Config::handleLocationReturnStatus(map &config_map, std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) || !(infile >> token) || token.back() != ';') {
+	if (!(infile >> token) || token.back() != ';') {
 		throw (InvalidSyntaxException());
 	}
 
@@ -322,7 +322,7 @@ bool	Config::handleLocationReturnStatus(map &config_map, std::ifstream &infile) 
 bool	Config::handleLocationReturnUrl(map &config_map, std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) || !(infile >> token) || token.back() != ';') {
+	if (!(infile >> token) || token.back() != ';') {
 		throw (InvalidSyntaxException());
 	}
 

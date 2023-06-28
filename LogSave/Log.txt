@@ -46,3 +46,22 @@
 [2023-06-28 20:37:58] [ERROR] PhysicalServerManager: Fail to build
 [2023-06-28 20:37:58] [ERROR] Webserv: Fail to construct
 [2023-06-28 20:37:58] [ERROR] Webserv: Fail to run
+[2023-06-28 21:17:27] [ERROR] Location: Invalid return status
+[2023-06-28 21:17:27] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-28 21:17:27] [ERROR] VirtualServerManager: Fail to build
+[2023-06-28 21:17:27] [ERROR] PhysicalServer: Fail to build
+[2023-06-28 21:17:27] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-28 21:17:27] [ERROR] Webserv: Fail to construct
+[2023-06-28 21:17:27] [ERROR] Webserv: Fail to run
+[2023-06-28 21:18:11] [ERROR] Location: Invalid return status
+[2023-06-28 21:18:11] [ERROR] VirtualServer: Fail to initialize location
+[2023-06-28 21:18:11] [ERROR] VirtualServerManager: Fail to build
+[2023-06-28 21:18:11] [ERROR] PhysicalServer: Fail to build
+[2023-06-28 21:18:11] [ERROR] PhysicalServerManager: Fail to build
+[2023-06-28 21:18:11] [ERROR] Webserv: Fail to construct
+[2023-06-28 21:18:11] [ERROR] Webserv: Fail to run
+[2023-06-28 21:18:55] [ERROR] Config: Invalid syntax
+[2023-06-28 21:18:55] [ERROR] Config: Fail to configurate location
+[2023-06-28 21:18:55] [ERROR] Config: Fail to configurate server
+[2023-06-28 21:18:55] [ERROR] Config: Fail to configurate
+[2023-06-28 21:18:55] [ERROR] Config: Fail to construct

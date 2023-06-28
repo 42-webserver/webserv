@@ -104,8 +104,9 @@ std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs) {
 	os << "\t\t\t\t\t\t\t\t" << "root: " << rhs.getRoot() << '\n';
 	os << "\t\t\t\t\t\t\t\t" << "indexes: ";
 	for (size_t i=0; i<rhs.getIndexes().size(); i++) {
-		os << "\t\t\t\t\t\t\t\t\t" << rhs.getIndexes()[i] << ' ';
+		os << rhs.getIndexes()[i] << ' ';
 	}
+	os << '\n';
 	os << "\t\t\t\t\t\t\t\t" << "default_error_page: " << rhs.getDefaultErrorPage() << '\n';
 	os << "\t\t\t\t\t\t\t\t" << "client_max_body_size: " << rhs.getClientMaxBodySize() << '\n';
 	os << "\t\t\t\t\t\t\t\t" << "locations: " << '\n';
