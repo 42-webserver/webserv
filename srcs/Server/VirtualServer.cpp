@@ -16,37 +16,41 @@ VirtualServer::~VirtualServer(void) {}
 std::string					VirtualServer::_parseRoot(const Config::map &config_map) {
 	std::string	ret = config_map.at(Config::KEYS[Config::KEY::ROOT])[0];
 
-	// if (_rootIsValid(ret) == false) {
-	// 	throw (FailToInitializeLocationException());
-	// }
+	if (_rootIsValid(ret) == false) {
+		throw (InvalidRootException());
+	}
 
 	return (ret);
 }
 std::vector<std::string>	VirtualServer::_parseIndexes(const Config::map &config_map) {
 	std::vector<std::string>	ret = config_map.at(Config::KEYS[Config::KEY::INDEX]);
 
+	if (_indexesIsValid(ret) == false) {
+		throw (InvalidIndexesException());
+	}
 	return (ret);
 }
 std::string					VirtualServer::_parseDefaultErrorPage(const Config::map &config_map) {
 	std::string	ret = config_map.at(Config::KEYS[Config::KEY::ERROR_PAGE])[0];
 
-
+	if (_defaultErrorPageIsValid(ret) == false) {
+		throw (InvalidDefaultErrorPageException());
+	}
 	return (ret);
 }
 int							VirtualServer::_parseClientMaxBodySize(const Config::map &config_map) {
 	int	ret = std::atoi(config_map.at(Config::KEYS[Config::KEY::CLIENT_MAX_BODY_SIZE])[0].c_str());
 
-	// if (_clientMaxBodySizeIsValid(ret) == false) {
-	// 	throw (FailToInitializeLocationException());
-	// }
+	if (_clientMaxBodySizeIsValid(ret) == false) {
+		throw (InvalidClientMaxBodySizeException());
+	}
 
 	return (ret);
 }
 std::vector<Location>		VirtualServer::_parseLocations(const Config::map &config_map) {
 	std::vector<Location>	ret;
 
-	for (size_t i=0; i<config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::DIR]).size();
-	 i++) {
+	for (size_t i=0; i<config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::DIR]).size(); i++) {
 		try {
 			ret.push_back(Location(config_map, i));
 		} catch (const std::exception &e) {
@@ -58,11 +62,11 @@ std::vector<Location>		VirtualServer::_parseLocations(const Config::map &config_
 }
 
 // Custom For use!!
-// bool						VirtualServer::_rootIsValid(const std::string &root) { return (true); }
-// bool						VirtualServer::_indexesIsValid(const std::vector<std::string> &indexes) { return (true); }
-// bool						VirtualServer::_defaultErrorPageIsValid(const std::string &default_error_page) { return (true); }
-// bool						VirtualServer::_clientMaxBodySizeIsValid(const int client_max_body_size) { return (true); }
-// bool						VirtualServer::_locationsIsValid(const std::vector<Location> &locations) { return (true); }
+bool						VirtualServer::_rootIsValid(const std::string &root) { return (true); }
+bool						VirtualServer::_indexesIsValid(const std::vector<std::string> &indexes) { return (true); }
+bool						VirtualServer::_defaultErrorPageIsValid(const std::string &default_error_page) { return (true); }
+bool						VirtualServer::_clientMaxBodySizeIsValid(const int client_max_body_size) { return (true); }
+bool						VirtualServer::_locationsIsValid(const std::vector<Location> &locations) { return (true); }
 // Custom For use!!
 
 // Getters
@@ -79,7 +83,6 @@ const char	*VirtualServer::InvalidDefaultErrorPageException::what(void) const th
 const char	*VirtualServer::InvalidClientMaxBodySizeException::what(void) const throw() { return ("VirtualServer: Invalid client_max_body_size"); }
 const char	*VirtualServer::FailToInitializeLocationException::what(void) const throw() { return ("VirtualServer: Fail to initialize location"); }
 const char	*VirtualServer::InvalidLocationException::what(void) const throw() { return ("VirtualServer: Invalid location"); }
-const char	*VirtualServer::FailToRunException::what(void) const throw() { return ("VirtualServer: Fail to run"); }
 
 // Operator overload
 std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs) {

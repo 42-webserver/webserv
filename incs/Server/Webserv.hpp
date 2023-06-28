@@ -2,16 +2,12 @@
 # define WEBSERV_HPP
 
 # include "../Config/Config.hpp"
-# include "PhysicalServerManager.hpp"
+# include "PortManager.hpp"
 # include <iostream>
 
 class Webserv {
-
 	private:
-		static const int	MAX_SERVERS = 8;
-
-	private:
-		PhysicalServerManager	_physical_server_manager;
+		PortManager	_port_manager;
 
 	public:
 		Webserv(void);
@@ -25,10 +21,6 @@ class Webserv {
 		bool	run(const Config &config) throw(std::exception);
 
 	public:
-		class TooManyServersException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
 		class FailToBuildException: public std::exception {
 			public:
 				virtual const char* what() const throw();

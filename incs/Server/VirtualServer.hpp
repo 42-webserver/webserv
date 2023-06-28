@@ -6,7 +6,6 @@
 # include <iostream>
 # include <string>
 # include <vector>
-# include <map>
 
 class VirtualServer {
 	private:
@@ -24,11 +23,11 @@ class VirtualServer {
 		static std::vector<Location>	_parseLocations(const Config::map &config_map);
 
 	//Custom will be added
-		// static bool						_rootIsValid(const std::string &root);
-		// static bool						_indexesIsValid(const std::vector<std::string> &indexes);
-		// static bool						_defaultErrorPageIsValid(const std::string &default_error_page);
-		// static bool						_clientMaxBodySizeIsValid(const int client_max_body_size);
-		// static bool						_locationsIsValid(const std::vector<Location> &locations);
+		static bool						_rootIsValid(const std::string &root);
+		static bool						_indexesIsValid(const std::vector<std::string> &indexes);
+		static bool						_defaultErrorPageIsValid(const std::string &default_error_page);
+		static bool						_clientMaxBodySizeIsValid(const int client_max_body_size);
+		static bool						_locationsIsValid(const std::vector<Location> &locations);
 	//Custom will be added
 
 	public:
@@ -64,10 +63,6 @@ class VirtualServer {
 				virtual const char *what() const throw();
 		};
 		class InvalidLocationException: public std::exception {
-			public:
-				virtual const char *what() const throw();
-		};
-		class FailToRunException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};
