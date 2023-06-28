@@ -129,6 +129,9 @@ bool	PhysicalServerManager::_mergeAllPhysicalServer(const PortMap::iterator &it)
 		for (size_t i=1; i<physical_server_vector.size(); i++) {
 			physical_server->mergeAllVirtualServer(physical_server_vector[i]);
 		}
+		physical_server_vector.clear();
+		physical_server_vector.push_back(physical_server);
+		it->second = physical_server_vector;
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToMergeAllPhysicalServerException());

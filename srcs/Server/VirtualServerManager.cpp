@@ -135,15 +135,15 @@ const char	*VirtualServerManager::DuplicatedServerNameException::what() const th
 const char	*VirtualServerManager::FailToMergeAllVirtualServerException::what() const throw() { return ("VirtualServerManager: Fail to merge all virtual server"); }
 
 std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager) {
-	os << "\t\t\t\t\t" << "VirtualServerManager:" << '\n';
-	os << "\t\t\t\t\t\t" << "IpMap:" << '\n';
+	os << "\t\t\t\t" << "VirtualServerManager:" << '\n';
+	os << "\t\t\t\t\t" << "IpMap:" << '\n';
 	for (VirtualServerManager::IpMap::const_iterator it = virtual_server_manager._ip_map.begin(); it != virtual_server_manager._ip_map.end(); ++it) {
-		os << "\t\t\t\t\t\t\t" << it->first << ":" << '\n';
+		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
 	}
-	os << "\t\t\t\t\t\t" << "server_name_map:" << '\n';
+	os << "\t\t\t\t\t" << "server_name_map:" << '\n';
 	for (VirtualServerManager::ServerNameMap::const_iterator it = virtual_server_manager._server_name_map.begin(); it != virtual_server_manager._server_name_map.end(); ++it) {
-		os << "\t\t\t\t\t\t\t" << it->first << ":" << '\n';
+		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
 	}
 	return (os);

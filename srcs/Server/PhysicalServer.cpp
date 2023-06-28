@@ -6,7 +6,9 @@ PhysicalServer::~PhysicalServer(void) {}
 
 bool	PhysicalServer::build(const Ip &ip, const Config::map &config_map) throw(std::exception) {
 	try {
-		this->_virtual_server_manager = ft::shared_ptr<VirtualServerManager>(new VirtualServerManager());
+		if (this->_virtual_server_manager.get() == NULL) {
+			this->_virtual_server_manager = ft::shared_ptr<VirtualServerManager>(new VirtualServerManager());
+		}
 		this->_virtual_server_manager->build(ip, config_map);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
