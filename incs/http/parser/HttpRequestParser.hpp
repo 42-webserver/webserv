@@ -2,6 +2,7 @@
 #define HTTP_REQUEST_PARSER_HPP
 
 #include "../request/HttpRequest.hpp"
+#include "../exception/BadRequestException.hpp"
 #include "../../Config/Config.hpp"
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
 #include "../../../libs/unique_ptr/unique_ptr.hpp"
@@ -28,7 +29,7 @@ typedef enum State{
 class HttpRequestParser{
 
 public:
-class ClientBodySizeInvalidException : public std::exception {
+class ClientBodySizeInvalidException : public BadRequestException {
 	public:
 			virtual const char* what() const throw();
 };

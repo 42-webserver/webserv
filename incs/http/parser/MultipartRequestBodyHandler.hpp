@@ -4,6 +4,7 @@
 #include "RequestBodyHandler.hpp"
 #include <algorithm>
 #include "ParsePatternMatcher.hpp"
+#include "../utils/FileUploader.hpp"
 
 typedef enum MultipartState{
     M_HEADER,

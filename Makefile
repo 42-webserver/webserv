@@ -34,6 +34,7 @@ SRCS =	main.cpp \
 		http/parser/MultipartRequestBodyHandler.cpp \
 		http/parser/NormalBodyHandler.cpp \
 		http/parser/RequestBodyHandler.cpp \
+		http/utils/FileUploader.cpp \
 		http/request/HttpRequest.cpp \
 		http/request/MultipartRequest.cpp \
 		http/response/HttpResponse.cpp \

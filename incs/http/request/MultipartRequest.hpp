@@ -20,7 +20,6 @@ public:
     void setBodyDataFilename(std::string filename);
     std::multimap<std::string, std::string> &getHeaders();
     std::vector<char> &getMemoryBody();
-
 private:
     void handleMultipleValueHeader(std::string & value, std::string & key);
 };
