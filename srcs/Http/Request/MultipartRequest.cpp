@@ -1,17 +1,11 @@
 #include "../../../incs/Http/Request/MultipartRequest.hpp"
 
-MultipartRequest::MultipartRequest(void)
-{
-}
+MultipartRequest::MultipartRequest(void) {}
 
-MultipartRequest::~MultipartRequest(void)
-{
-}
+MultipartRequest::~MultipartRequest(void) {}
 
 
-std::string & MultipartRequest::getBodyDataFilename(){
-	return this->_bodyDataFilename;
-}
+std::string & MultipartRequest::getBodyDataFilename(){ return (this->_bodyDataFilename); }
 
 
 void MultipartRequest::addHeader(const std::string & header)
@@ -39,19 +33,12 @@ void MultipartRequest::handleMultipleValueHeader(std::string & value, std::strin
 	this->_headers.insert(std::pair<std::string, std::string>(key, value));
 }
 
-void MultipartRequest::insertBody(std::vector<char> &buffer)
-{
+void MultipartRequest::insertBody(std::vector<char> &buffer) {
 	this->_memoryBody.insert(this->_memoryBody.end(), buffer.begin(), buffer.end());
 }
 
-void MultipartRequest::setBodyDataFilename(std::string filename){
-	this->_bodyDataFilename = filename;
-}
+void MultipartRequest::setBodyDataFilename(std::string filename){ this->_bodyDataFilename = filename; }
 
-std::multimap<std::string, std::string> &MultipartRequest::getHeaders(){
-	return this->_headers;
-}
+std::multimap<std::string, std::string> &MultipartRequest::getHeaders(){ return (this->_headers); }
 
-std::vector<char> &MultipartRequest::getMemoryBody(){
-	return this->_memoryBody;
-}
+std::vector<char> &MultipartRequest::getMemoryBody(){ return (this->_memoryBody); }
