@@ -13,6 +13,7 @@ class PhysicalServer {
 		typedef std::string						ServerName;
 
 	private:
+		Ip										_ip;
 		ft::shared_ptr<Socket>					_socket;
 		ft::shared_ptr<VirtualServerManager>	_virtual_server_manager;
 	
@@ -24,6 +25,7 @@ class PhysicalServer {
 	
 	public:
 		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
+		bool	buildSocket(const Port &port) throw(std::exception);
 		bool	run(void) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
 		bool	mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> &other) throw(std::exception);
@@ -42,6 +44,10 @@ class PhysicalServer {
 				virtual const char* what() const throw();
 		};
 		class FailToMergeAllVirtualServerException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToBuildSocketException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};

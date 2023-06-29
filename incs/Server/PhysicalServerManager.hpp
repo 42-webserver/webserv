@@ -23,7 +23,7 @@ class PhysicalServerManager {
 		PhysicalServerManager	&operator=(const PhysicalServerManager &rhs);
 	
 	public:
-		bool	build(const Config &config_map) throw(std::exception);
+		bool	build(const Config &config) throw(std::exception);
 		bool	run(void) throw(std::exception);
 	
 	public:
@@ -33,12 +33,14 @@ class PhysicalServerManager {
 		ft::shared_ptr<PhysicalServer>	_findPhysicalServerByIp(const PortMap::const_iterator &it, const Ip &ip) const;
 	
 	private:
-		Port	_parsePort(const std::string &listen) throw(std::exception);
-		Ip		_parseIp(const std::string &listen) throw(std::exception);
+		bool	_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception);
+		bool	_buildSocket(void) throw(std::exception);
 		bool	_hasServerWithWildCardIp(const PortMap::const_iterator &it) const;
 		bool	_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception);
 
 	private:
+		static Port	_parsePort(const std::string &listen) throw(std::exception);
+		static Ip	_parseIp(const std::string &listen) throw(std::exception);
 		static bool	_portIsValid(const Port &port);
 		static bool	_ipIsValid(const Ip &ip);
 	
@@ -67,7 +69,15 @@ class PhysicalServerManager {
 			public:
 				virtual const char* what() const throw();
 		};
-	
+		class FailToBuildPhysicalServerVectorException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToBuildSocketException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+
 	friend std::ostream	&operator<<(std::ostream &os, const PhysicalServerManager &physical_server_manager);
 };
 

@@ -17,18 +17,18 @@ class Socket {
 	// Constructor & Destructor
 	public:
 		Socket(void);
+		~Socket(void);
 		Socket(const Socket &ref);
-		virtual	~Socket(void);
 		Socket	&operator=(const Socket &rhs);
-	
-	private:
-		static uint32_t	stringToNetworkByteOrder(const std::string &ip);
 
 	// Utils
 	public:
 		bool	build(const int port, const std::string &ip) throw(std::exception);
 		bool	run(void) throw(std::exception);
 		int		getFd(void) const;
+	
+	private:
+		static uint32_t	stringToNetworkByteOrder(const std::string &ip);
 
 	// Exception
 	public:

@@ -7,6 +7,7 @@ PhysicalServer::~PhysicalServer(void) {}
 bool	PhysicalServer::build(const Ip &ip, const Config::map &config_map) throw(std::exception) {
 	try {
 		if (this->_virtual_server_manager.get() == NULL) {
+			this->_ip = ip;
 			this->_virtual_server_manager = ft::shared_ptr<VirtualServerManager>(new VirtualServerManager());
 		}
 		this->_virtual_server_manager->build(ip, config_map);
@@ -16,9 +17,19 @@ bool	PhysicalServer::build(const Ip &ip, const Config::map &config_map) throw(st
 	}
 	return (true);
 }
+bool	PhysicalServer::buildSocket(const Port &port) throw(std::exception) {
+	try {
+		this->_socket = ft::shared_ptr<Socket>(new Socket());
+		this->_socket->build(port, this->_ip);
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildSocketException());
+	}
+	return (true);
+}
 bool	PhysicalServer::run(void) throw(std::exception) {
 	try {
-		// TODO
+		this->_socket->run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
@@ -30,6 +41,7 @@ bool	PhysicalServer::hasServerWithWildCardIp(void) const {
 }
 bool	PhysicalServer::mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> &other) throw(std::exception) {
 	try {
+		this->_ip = "0.0.0.0";
 		this->_virtual_server_manager->mergeAllVirtualServer(other->_virtual_server_manager);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
@@ -48,10 +60,11 @@ ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServerByName(const Serv
 const char	*PhysicalServer::FailToBuildException::what() const throw() { return "PhysicalServer: Fail to build"; }
 const char	*PhysicalServer::FailToRunException::what() const throw() { return "PhysicalServer: Fail to run"; }
 const char	*PhysicalServer::FailToMergeAllVirtualServerException::what() const throw() { return "PhysicalServer: Fail to merge all virtual server"; }
+const char	*PhysicalServer::FailToBuildSocketException::what() const throw() { return "PhysicalServer: Fail to build socket"; }
 
 std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server) {
 	os << "\t\t\t" << "PhysicalServer:" << '\n';
-	os << "\t\t\t\t" << "Socket: " << physical_server._socket << '\n';
+	os << *physical_server._socket << '\n';
 	os << *physical_server._virtual_server_manager;
 	return (os);
 }

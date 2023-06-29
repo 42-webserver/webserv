@@ -26,7 +26,6 @@ class VirtualServerManager {
 
 	public:
 		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
-		bool	run(void) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
 		bool	mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception);
 	
@@ -36,10 +35,6 @@ class VirtualServerManager {
 	
 	public:
 		class FailToBuildException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
-		class FailToRunException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};

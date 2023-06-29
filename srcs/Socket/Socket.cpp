@@ -15,22 +15,6 @@ Socket	&Socket::operator=(const Socket &rhs) {
 	return (*this);
 }
 
-uint32_t	Socket::stringToNetworkByteOrder(const std::string &ip) {
-    std::istringstream	iss(ip);
-    std::string 		segment;
-    uint32_t 			result = 0;
-    uint32_t 			shift = 24;
-	uint32_t			value;
-
-    while (std::getline(iss, segment, '.')) {
-        value = atoi(segment.c_str());
-        result |= (value << shift);
-        shift -= 8;
-    }
-
-    return (result);
-}
-
 // Utils
 bool	Socket::build(const int port, const std::string &ip) throw(std::exception) {
 	if ((this->_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -50,13 +34,28 @@ bool	Socket::run(void) throw(std::exception) {
 	if (bind(this->_fd, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1) {
 		throw (FailToBindException());
 	}
-	if (listen(this->_fd, 10) == -1) {
+	if (listen(this->_fd, MAX_SIZE) == -1) {
 		throw (FailToListenException());
 	}
-
 	return (true);
 }
 int		Socket::getFd(void) const { return (this->_fd); }
+
+uint32_t	Socket::stringToNetworkByteOrder(const std::string &ip) {
+    std::istringstream	iss(ip);
+    std::string 		segment;
+    uint32_t 			result = 0;
+    uint32_t 			shift = 24;
+	uint32_t			value;
+
+    while (std::getline(iss, segment, '.')) {
+        value = atoi(segment.c_str());
+        result |= (value << shift);
+        shift -= 8;
+    }
+
+    return (result);
+}
 
 // Exception
 const char	*Socket::FailToCreateException::what(void) const throw() { return ("Socket: Fail to create"); }
@@ -64,6 +63,7 @@ const char	*Socket::FailToBindException::what(void) const throw() { return ("Soc
 const char	*Socket::FailToListenException::what(void) const throw() { return ("Socket: Fail to listen"); }
 
 std::ostream	&operator<<(std::ostream &os, const Socket &socket) {
-	os << "Fd: " << socket._fd;
+	os << "\t\t\t\tSocket:" << '\n';
+	os << "\t\t\t\t\t" << "fd: " << socket._fd;
 	return (os);
 }

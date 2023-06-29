@@ -39,16 +39,6 @@ bool	VirtualServerManager::build(const Ip &ip, const Config::map &config_map) th
 
 	return (true);
 }
-bool	VirtualServerManager::run(void) throw(std::exception) {
-	try {
-		// TODO
-	} catch (std::exception &e) {
-		Logger::getInstance().error(e.what());
-		throw (FailToRunException());
-	}
-
-	return (true);
-}
 bool	VirtualServerManager::hasServerWithWildCardIp(void) const {
 	for (IpMap::const_iterator it=this->_ip_map.begin(); it!=this->_ip_map.end(); ++it) {
 		if (it->first == "0.0.0.0") {
@@ -130,7 +120,6 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByName(cons
 //}
 
 const char	*VirtualServerManager::FailToBuildException::what() const throw() { return ("VirtualServerManager: Fail to build"); }
-const char	*VirtualServerManager::FailToRunException::what() const throw() { return ("VirtualServerManager: Fail to run"); }
 const char	*VirtualServerManager::DuplicatedServerNameException::what() const throw() { return ("VirtualServerManager: Duplicated server name"); }
 const char	*VirtualServerManager::FailToMergeAllVirtualServerException::what() const throw() { return ("VirtualServerManager: Fail to merge all virtual server"); }
 

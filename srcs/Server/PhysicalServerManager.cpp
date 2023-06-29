@@ -19,29 +19,14 @@ bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 		const std::vector<Config::map>	config_maps = config.getConfigMaps();
 
 		for (size_t i=0; i<config_maps.size(); i++) {
-			const Config::map				config_map = config_maps[i];
-			const std::string				listen = config_map.find("listen")->second[0];
-			const Port						port = _parsePort(listen);
-			const Ip						ip = _parseIp(listen);
-			PortMap::iterator				it;
-			ft::shared_ptr<PhysicalServer>	physical_server;
-
-			if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
-				this->_port_map.insert(std::make_pair(port, PhysicalServerVector()));
-				it = this->_port_map.find(port);
-			}
-			if ((physical_server = _findPhysicalServerByIp(it, ip)).get() == NULL) {
-				physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
-				it->second.push_back(physical_server);
-			}
-			physical_server->build(ip, config_map);
+			this->_buildPhysicalServerVector(config_maps[i]);
 		}
-
 		for (PortMap::iterator it=this->_port_map.begin(); it!=this->_port_map.end(); it++) {
-			if (_hasServerWithWildCardIp(it) == true) {
-				_mergeAllPhysicalServer(it);
+			if (this->_hasServerWithWildCardIp(it) == true) {
+				this->_mergeAllPhysicalServer(it);
 			}
 		}
+		this->_buildSocket();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToBuildException());
@@ -50,10 +35,13 @@ bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 }
 bool	PhysicalServerManager::run(void) throw(std::exception) {
 	try {
-		for (PortMap::iterator it=this->_port_map.begin(); it!=this->_port_map.end(); it++) {
-			// initSocket
-			// initEventQueue
-			// initListenEvent
+		for (PortMap::iterator port_it=this->_port_map.begin(); port_it!=this->_port_map.end(); port_it++) {
+			for (PhysicalServerVector::iterator ps_it=port_it->second.begin(); ps_it!=port_it->second.end(); ps_it++) {
+				// runSocket
+				(*ps_it)->run();
+				// initEventQueue
+				// initListenEvent
+			}
 		}
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
@@ -92,24 +80,41 @@ ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServerByIp(co
 	return (ft::shared_ptr<PhysicalServer>(NULL));
 }
 
-PhysicalServerManager::Port	PhysicalServerManager::_parsePort(const std::string &listen) throw(std::exception) {											
-	std::string::size_type	pos = listen.find(':');
-	int						ret = (pos != std::string::npos) ? std::atoi(listen.substr(pos + 1).c_str()) : std::atoi(listen.c_str());
+bool	PhysicalServerManager::_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception) {
+	const std::string				listen = config_map.find("listen")->second[0];
+	const Port						port = _parsePort(listen);
+	const Ip						ip = _parseIp(listen);
+	PortMap::iterator				it;
+	ft::shared_ptr<PhysicalServer>	physical_server;
 
-	if (_portIsValid(ret) == false) {
-		throw (InvalidPortException());
+	if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
+		this->_port_map.insert(std::make_pair(port, PhysicalServerVector()));
+		it = this->_port_map.find(port);
 	}
-	return (ret);
+	if ((physical_server = this->_findPhysicalServerByIp(it, ip)).get() == NULL) {
+		physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
+		it->second.push_back(physical_server);
+	}
+	try {
+		physical_server->build(ip, config_map);
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildPhysicalServerVectorException());
+	}
+	return (true);
 }
-PhysicalServerManager::Ip	PhysicalServerManager::_parseIp(const std::string &listen) throw(std::exception) {
-	std::string::size_type	pos = listen.find(':');
-	std::string				ret = (pos != std::string::npos) ? listen.substr(0, pos) : "";
-
-	ret = (ret == "" || ret == "*") ? "0.0.0.0" : ret;
-	if (_ipIsValid(ret) == false) {
-		throw (InvalidIpException());
+bool	PhysicalServerManager::_buildSocket(void) throw(std::exception) {
+	try {
+		for (PortMap::iterator map_it=this->_port_map.begin(); map_it!=this->_port_map.end(); map_it++) {
+			for (PhysicalServerVector::iterator ps_it=map_it->second.begin(); ps_it!=map_it->second.end(); ps_it++) {
+				(*ps_it)->buildSocket(map_it->first);
+			}
+		}
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildSocketException());
 	}
-	return (ret);
+	return (true);
 }
 bool	PhysicalServerManager::_hasServerWithWildCardIp(const PortMap::const_iterator &it) const {
 	PhysicalServerVector	physical_server_vector = it->second;
@@ -129,16 +134,35 @@ bool	PhysicalServerManager::_mergeAllPhysicalServer(const PortMap::iterator &it)
 		for (size_t i=1; i<physical_server_vector.size(); i++) {
 			physical_server->mergeAllVirtualServer(physical_server_vector[i]);
 		}
-		physical_server_vector.clear();
-		physical_server_vector.push_back(physical_server);
-		it->second = physical_server_vector;
+		it->second = PhysicalServerVector(1, physical_server);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToMergeAllPhysicalServerException());
 	}
 	return (true);
 }
-bool	PhysicalServerManager::_ipIsValid(const Ip &ip) {
+
+PhysicalServerManager::Port	PhysicalServerManager::_parsePort(const std::string &listen) throw(std::exception) {											
+	std::string::size_type	pos = listen.find(':');
+	int						ret = (pos != std::string::npos) ? std::atoi(listen.substr(pos + 1).c_str()) : std::atoi(listen.c_str());
+
+	if (PhysicalServerManager::_portIsValid(ret) == false) {
+		throw (InvalidPortException());
+	}
+	return (ret);
+}
+PhysicalServerManager::Ip	PhysicalServerManager::_parseIp(const std::string &listen) throw(std::exception) {
+	std::string::size_type	pos = listen.find(':');
+	std::string				ret = (pos != std::string::npos) ? listen.substr(0, pos) : "";
+
+	ret = (ret == "" || ret == "*") ? "0.0.0.0" : ret;
+	if (PhysicalServerManager::_ipIsValid(ret) == false) {
+		throw (InvalidIpException());
+	}
+	return (ret);
+}
+bool						PhysicalServerManager::_portIsValid(const Port &port) { return (0 < port && port < 65536); }
+bool						PhysicalServerManager::_ipIsValid(const Ip &ip) {
 	std::string::size_type	prev_pos = 0, cur_pos;
 	size_t					num;
 
@@ -158,7 +182,6 @@ bool	PhysicalServerManager::_ipIsValid(const Ip &ip) {
 
 	return (true);
 }
-bool	PhysicalServerManager::_portIsValid(const Port &port) { return (0 < port && port < 65536); }
 
 const char	*PhysicalServerManager::FailToBuildException::what() const throw() { return "PhysicalServerManager: Fail to build"; }
 const char	*PhysicalServerManager::FailToRunException::what() const throw() { return "PhysicalServerManager: Fail to run"; }
@@ -166,6 +189,8 @@ const char	*PhysicalServerManager::InvalidPortException::what() const throw() { 
 const char	*PhysicalServerManager::InvalidIpException::what() const throw() { return "PhysicalServerManager: Invalid ip"; }
 const char	*PhysicalServerManager::TooManyServerException::what() const throw() { return ("PhysicalServerManager: Too many servers"); }
 const char	*PhysicalServerManager::FailToMergeAllPhysicalServerException::what() const throw() { return ("PhysicalServerManager: Fail to merge all physical server"); }
+const char	*PhysicalServerManager::FailToBuildPhysicalServerVectorException::what() const throw() { return ("PhysicalServerManager: Fail to build physical server vector"); }
+const char	*PhysicalServerManager::FailToBuildSocketException::what() const throw() { return ("PhysicalServerManager: Fail to build socket"); }
 
 std::ostream	&operator<<(std::ostream &os, const PhysicalServerManager &physical_server_manager) {
 	os << "\t" << "PhysicalServerManager:\n";

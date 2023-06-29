@@ -18,48 +18,35 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 
 bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
-		this->_build(config);
+		this->_physical_server_manager.build(config);
+		this->_physical_server_manager.run();
 		std::cout << *this << '\n';
 		exit(0);
-		//this->_physical_server_manager.run();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
 	}
 
-	EventQueue	&event_queue = EventQueue::getInstance();
-	int			event_length;
-	Event		*event_data;
-
 	while (true) {
+		int		event_length;
+		Event	*event_data;
+
 		try {
-			event_length = event_queue.pullEvents();
+			event_length = EventQueue::getInstance().pullEvents();
 		} catch (const std::exception &e) {
 			Logger::getInstance().error(e.what());
 			throw (FailToRunException());
 		}
 
 		for (int i=0; i<event_length; i++) {
-			event_data = event_queue.getEventData(i);
+			event_data = EventQueue::getInstance().getEventData(i);
 			event_data->callEventHandler();
 		}
 	}
 	return (true);
 }
 
-bool	Webserv::_build(const Config &config) throw(std::exception) {
-	try {
-		this->_physical_server_manager.build(config);
-	} catch (const std::exception &e) {
-		Logger::getInstance().error(e.what());
-		throw (FailToBuildException());
-	}
-
-	return (true);
-}
-
 const char	*Webserv::FailToRunException::what() const throw() { return ("Webserv: Fail to run"); }
-const char	*Webserv::FailToBuildException::what() const throw() { return ("Webserv: Fail to construct"); }
 
 std::ostream	&operator<<(std::ostream &os, const Webserv &webserv) {
 	os << "Webserv:\n";
