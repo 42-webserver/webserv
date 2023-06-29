@@ -6,31 +6,32 @@
 # include <vector>
 # include <map>
 
-namespace ConfigKey {
-enum {
-	LISTEN,
-	SERVER_NAME,
-	ROOT,
-	INDEX,
-	ERROR_PAGE,
-	CLIENT_MAX_BODY_SIZE,
-	LOCATION,
-	NUM_OF_SERVER_KEYS
-};
-}
-namespace LocationKey {
-enum {
-	DIR,
-	ROOT,
-	ALIAS,
-	AUTO_INDEX,
-	RETURN,
-	NUM_OF_LOCATION_KEYS
-};
-}
 class Config {
 	public:
 		typedef std::map< std::string, std::vector<std::string> >	map;
+
+	public:
+		struct KEY {
+			enum e_key {
+				LISTEN,
+				SERVER_NAME,
+				ROOT,
+				INDEX,
+				ERROR_PAGE,
+				CLIENT_MAX_BODY_SIZE,
+				LOCATION
+			};
+		};
+		struct LOCATION_KEY {
+			enum e_location_key {
+				DIR,
+				ROOT,
+				ALIAS,
+				AUTO_INDEX,
+				RETURN_STATUS,
+				RETURN_URL
+			};
+		};
 
 	public:
 		const static std::vector<std::string>	KEYS;
@@ -43,6 +44,9 @@ class Config {
 	private:
 		std::string			_file_name;
 		std::vector<map>	_config_maps;
+	
+	private:
+		bool	_init(void) throw(std::exception);
 
 	private:
 		static bool	invalidFileName(const std::string &file_name);
@@ -59,12 +63,12 @@ class Config {
 		static bool	handleLocation(map &config_map, std::ifstream &infile) throw(std::exception);
 	
 	private:
-		static bool	initLocationVector(map &config_map);
 		static bool	handleLocationDir(map &config_map, std::ifstream &infile) throw(std::exception);
 		static bool	handleLocationRoot(map &config_map, std::ifstream &infile) throw(std::exception);
 		static bool	handleLocationAlias(map &config_map, std::ifstream &infile) throw(std::exception);
 		static bool	handleLocationAutoIndex(map &config_map, std::ifstream &infile) throw(std::exception);
-		static bool	handleLocationReturn(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocationReturnStatus(map &config_map, std::ifstream &infile) throw(std::exception);
+		static bool	handleLocationReturnUrl(map &config_map, std::ifstream &infile) throw(std::exception);
 
 	public:
 		Config(void);
@@ -75,7 +79,6 @@ class Config {
 
 	public:
 		const std::vector<map>	&getConfigMaps(void) const;
-		void startParse(void) throw(std::exception);
 
 	public:
 		class InvalidFileNameException: public std::exception {
@@ -107,6 +110,10 @@ class Config {
 				virtual const char* what() const throw();
 		};
 		class FailToConfigurateException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToConstructException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};

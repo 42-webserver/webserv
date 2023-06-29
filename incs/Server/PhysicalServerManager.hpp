@@ -1,54 +1,84 @@
 #ifndef PHYSICALSERVERMANAGER_HPP
 # define PHYSICALSERVERMANAGER_HPP
 
-# include "./VirtualServer.hpp"
-# include <sstream>
-# include "VirtualServerManager.hpp"
+# include "../../libs/shared_ptr/shared_ptr.hpp"
+# include "PhysicalServer.hpp"
+# include <vector>
+# include <map>
 
 class PhysicalServerManager {
-public:
-    typedef int port;
-    typedef std::string ip;
-    typedef std::string serverName;
-    typedef std::map<ip, ft::shared_ptr<VirtualServer> >::iterator ip_iterator;
+	public:
+		typedef int												Port;
+		typedef std::string										Ip;
+		typedef std::vector< ft::shared_ptr< PhysicalServer > >	PhysicalServerVector;
+		typedef std::map< Port, PhysicalServerVector >			PortMap;
 
-private:
-		static const int	MAX_SERVERS = 8;
-private:
-    std::map<port, std::multimap<ip, ft::shared_ptr<VirtualServer> > > _portMap;
-    std::map<serverName, ft::shared_ptr<VirtualServer> > _domainMap;
-    std::vector<VirtualServerManager> _VirtualServerManagers;
-    std::vector<VirtualServerManager>::iterator _vsmit;
+	private:
+		PortMap	_port_map;
 
-public:
-    PhysicalServerManager();
-    VirtualServerManager getCurrentVirtualServerManager();
-    int getVirtualServerManagerCount();
-    void run(const Config& config_map) throw(std::exception);
-private:
-    std::string _initHost(const std::string& listen);
-    int _initPort(const std::string& listen);
-    void insertVirtualServer(port, ip, const Config::map& config_map, const std::vector<std::string>& server_names);
-    void buildAllVirtualServerManagers();
-    void insertAllVirtualServers(const Config& config_map);
-    bool checkWildcardIP(const std::multimap<ip, ft::shared_ptr<VirtualServer> >& ipMultimap);
-    std::map<ip, ft::shared_ptr<VirtualServer> > buildIPMap(const std::multimap<ip, ft::shared_ptr<VirtualServer> >& ipMultimap, bool isWildcard, ip targetIP);
-    std::map<serverName, ft::shared_ptr<VirtualServer> > buildDomainMap(const std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap);
-    void createAndStoreVirtualServerManager(std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap, std::map<serverName, 
-    ft::shared_ptr<VirtualServer> >& domainMap, int port);
-public:
-    class FailToConstructException: public std::exception {
-        public:
-            virtual const char* what() const throw();
-    };
-    class DuplicateServerException: public std::exception {
-        public:
-            virtual const char* what() const throw();
-    };
+	public:
+		PhysicalServerManager(void);
+		~PhysicalServerManager(void);
+		PhysicalServerManager(const PhysicalServerManager &ref);
+		PhysicalServerManager	&operator=(const PhysicalServerManager &rhs);
+	
+	public:
+		bool	build(const Config &config) throw(std::exception);
+		bool	run(void) throw(std::exception);
+	
+	public:
+		ft::shared_ptr<PhysicalServer>	findPhysicalServer(const Port &port, const Ip &ip) const;
+	
+	private:
+		ft::shared_ptr<PhysicalServer>	_findPhysicalServerByIp(const PortMap::const_iterator &it, const Ip &ip) const;
+	
+	private:
+		bool	_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception);
+		bool	_buildSocket(void) throw(std::exception);
+		bool	_hasServerWithWildCardIp(const PortMap::const_iterator &it) const;
+		bool	_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception);
+
+	private:
+		static Port	_parsePort(const std::string &listen) throw(std::exception);
+		static Ip	_parseIp(const std::string &listen) throw(std::exception);
+		static bool	_portIsValid(const Port &port);
+		static bool	_ipIsValid(const Ip &ip);
+	
+	public:
+		class FailToBuildException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToRunException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class InvalidPortException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class InvalidIpException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class TooManyServerException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToMergeAllPhysicalServerException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToBuildPhysicalServerVectorException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToBuildSocketException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const PhysicalServerManager &physical_server_manager);
 };
-
-
-
-
 
 #endif

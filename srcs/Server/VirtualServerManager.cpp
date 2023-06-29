@@ -1,156 +1,139 @@
 #include "../../incs/Server/VirtualServerManager.hpp"
+#include "../../incs/Log/Logger.hpp"
 #include <fstream>
 #include <sstream>
 
-VirtualServerManager::hostsMap VirtualServerManager::hostsFromFile = VirtualServerManager::hostsMap();
+//VirtualServerManager::hostsMap VirtualServerManager::hostsFromFile = VirtualServerManager::hostsMap();
 
-VirtualServerManager::VirtualServerManager(int port) : _port(port){ 
-    parseHostsFile();
+VirtualServerManager::VirtualServerManager(void): _ip_map(IpMap()), _server_name_map(ServerNameMap()) {
+	//parseHostsFile();
 }
-VirtualServerManager::~VirtualServerManager() {}
-// VirtualServerManager.cpp
-void VirtualServerManager::buildFromPhysicalServerManager(const serverMap& servers, const domainMap& domainMap) {
-    _servers = servers;
-    _domainMap = domainMap;
-}
-
-
-VirtualServerManager::ip VirtualServerManager::getListenIP() const {
-    if (_servers.find("0.0.0.0") != _servers.end()) {
-        return "0.0.0.0";
-    } else {   
-        return _servers.begin()->first;
-    }
-}
-
-int VirtualServerManager::getListenPort() const {
-    return _port;
-}
-ft::shared_ptr<VirtualServer> VirtualServerManager::find(const std::string& hostheader ) {
-    std::string host = hostheader.substr(0, hostheader.find(':'));
-    // local host <-here .
-	if (isInEtcHosts(host)) {
-		return _servers[hostsFromFile[host]];
+VirtualServerManager::~VirtualServerManager(void) {}
+VirtualServerManager::VirtualServerManager(const VirtualServerManager &ref): _ip_map(ref._ip_map), _server_name_map(ref._server_name_map) {}
+VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager &rhs) {
+	if (this != &rhs) {
+		this->~VirtualServerManager();
+		new(this) VirtualServerManager(rhs);
 	}
-    else if (isDomainFormat(host)) {
-        if (_domainMap.count(host) > 0) {
-            return _domainMap[host];
-        }
-    } else if (isIPFormat(host)) {
-        if (_servers.count(host) > 0) {
-            return _servers[host];
-        } else {
-            std::map<VirtualServerManager::ip, 
-			ft::shared_ptr<VirtualServer> >::const_iterator it = _servers.find("0.0.0.0");
-            if (it != _servers.end()) {
-                return it->second;
-            }
-        }
-    } 
-
-    return NULL;
+	return (*this);
 }
 
-       
-bool VirtualServerManager::isDomainFormat(const std::string& host) {
-    if (host.empty()) return false;
-    
-    // Check each character
-    for (std::string::const_iterator it = host.begin(); it != host.end(); ++it) {
-        if (!std::isalnum(*it) && *it != '-' && *it != '.') {
-            return false; // invalid character found
-        }
-    }
-    
-    std::vector<std::string> parts;
-    std::string::size_type pos = 0;
-    std::string::size_type dotPos;
-    // separate host by '.'
-    while ((dotPos = host.find('.', pos)) != std::string::npos) {
-        std::string part = host.substr(pos, dotPos - pos);
-        if (part.empty() || !std::isalnum(part[0]) || !std::isalnum(part[part.size() - 1])) {
-            return false; // each part must not be empty and must start/end with an alphanumeric character
-        }
-        parts.push_back(part);
-        pos = dotPos + 1;
-    }
-    
-    std::string lastPart = host.substr(pos);
-    if (lastPart.empty() || !std::isalpha(lastPart[0]) || !std::isalnum(lastPart[lastPart.size() - 1])) {
-        return false; // the last part (TLD) must not be empty, must start with an alphabetic character and end with an alphanumeric character
-    }
-    parts.push_back(lastPart);
+bool	VirtualServerManager::build(const Ip &ip, const Config::map &config_map) throw(std::exception) {
+	try {
+		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(config_map));
+		std::vector<ServerName>			server_names = config_map.at(Config::KEYS[Config::KEY::SERVER_NAME]);
 
-    return true;
+		if (this->_ip_map.find(ip) == this->_ip_map.end()) {
+			this->_ip_map.insert(std::make_pair(ip, virtual_server));
+		}
+		for (size_t i=0; i<server_names.size(); i++) {
+			if (this->_server_name_map.find(server_names[i]) != this->_server_name_map.end()) {
+				throw (DuplicatedServerNameException());
+			}
+			this->_server_name_map.insert(std::make_pair(server_names[i], virtual_server));
+		}
+	} catch (std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildException());
+	}
+
+	return (true);
+}
+bool	VirtualServerManager::hasServerWithWildCardIp(void) const {
+	for (IpMap::const_iterator it=this->_ip_map.begin(); it!=this->_ip_map.end(); ++it) {
+		if (it->first == "0.0.0.0") {
+			return (true);
+		}
+	}
+	return (false);
+}
+bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception) {
+	for (IpMap::const_iterator it=other->_ip_map.begin(); it!=other->_ip_map.end(); ++it) {
+		if (this->_ip_map.find(it->first) != this->_ip_map.end()) {
+			continue;
+		}
+		this->_ip_map.insert(std::make_pair(it->first, it->second));
+	}
+	for (ServerNameMap::const_iterator it=other->_server_name_map.begin(); it!=other->_server_name_map.end(); ++it) {
+		if (this->_server_name_map.find(it->first) != this->_server_name_map.end()) {
+			throw (DuplicatedServerNameException());
+		}
+		this->_server_name_map.insert(std::make_pair(it->first, it->second));
+	}
+	return (true);
 }
 
-bool VirtualServerManager::isIPFormat(const std::string& host) {
-    // Check if the host is in IP format
-    std::vector<std::string> parts;
-    std::string::size_type pos = 0;
-    std::string::size_type dotPos;
-    while ((dotPos = host.find('.', pos)) != std::string::npos) {
-        parts.push_back(host.substr(pos, dotPos - pos));
-        pos = dotPos + 1;
-    }
-    parts.push_back(host.substr(pos));
+ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByIp(const Ip &ip) const {
+	IpMap::const_iterator	it = this->_ip_map.find(ip);
 
-    if (parts.size() != 4) {
-        return false;
-    }
+	if (it == this->_ip_map.end()) {
+		return (ft::shared_ptr<VirtualServer>(NULL));
+	}
+	return (it->second);
+}
+ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByName(const ServerName &server_name) const {
+	ServerNameMap::const_iterator	it = this->_server_name_map.find(server_name);
 
-    for (std::vector<std::string>::const_iterator it = parts.begin(); it != parts.end(); ++it) {
-        const std::string& part = *it;
-        if (part.empty() || part.size() > 3) {
-            return false;
-        }
-        // Reject parts that start with '0' but have more than one digit
-        if (part[0] == '0' && part.size() > 1) {
-            return false;
-        }
-        for (std::string::size_type i = 0; i < part.size(); ++i) {
-            if (!std::isdigit(part[i])) {
-                return false;
-            }
-        }
-        int num = std::atoi(part.c_str());
-        if (num < 0 || num > 255) {
-            return false;
-        }
-    }
-
-    return true;
+	if (it== this->_server_name_map.end()) {
+		return (ft::shared_ptr<VirtualServer>(NULL));
+	}
+	return (it->second);
 }
 
-void VirtualServerManager::parseHostsFile() {
-    if (!hostsFromFile.empty()) {
-        return;
-    }
+//bool	registerListeningEvent() {
+//	EventQueue		&eventQueue = EventQueue::getInstance();
+//	EventFactory	&eventFactory = ListeningEventFactory::getInstance();
 
-    std::ifstream hostsFile("/etc/hosts");
-    if (!hostsFile.is_open()) {
-        return;
-    }
+//	eventQueue.pushEvent(eventFactory.createEvent(EventDto()));
+//}
 
-    std::string line;
-    while (std::getline(hostsFile, line)) {
-        if (line[0] == '#') {
-            continue;
-        }
+//void VirtualServerManager::parseHostsFile() {
+//	if (!hostsFromFile.empty()) {
+//		return;
+//	}
 
-        std::istringstream iss(line);
-        std::string ip, host;
-        
-        if (!(iss >> ip >> host)) {
-            break;
-        }
-        hostsFromFile[host] = ip;
-    }
+//	std::ifstream hostsFile("/etc/hosts");
+//	if (!hostsFile.is_open()) {
+//		return;
+//	}
 
-    hostsFile.close();
+//	std::string line;
+//	while (std::getline(hostsFile, line)) {
+//		if (line[0] == '#') {
+//			continue;
+//		}
+
+//		std::istringstream iss(line);
+//		std::string ip, host;
+		
+//		if (!(iss >> ip >> host)) {
+//			break;
+//		}
+//		hostsFromFile[host] = ip;
+//	}
+
+//	hostsFile.close();
+//}
+
+//bool VirtualServerManager::isInEtcHosts(const std::string& host) {
+//	return hostsFromFile.count(host) > 0;
+//}
+
+const char	*VirtualServerManager::FailToBuildException::what() const throw() { return ("VirtualServerManager: Fail to build"); }
+const char	*VirtualServerManager::DuplicatedServerNameException::what() const throw() { return ("VirtualServerManager: Duplicated server name"); }
+const char	*VirtualServerManager::FailToMergeAllVirtualServerException::what() const throw() { return ("VirtualServerManager: Fail to merge all virtual server"); }
+
+std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager) {
+	os << "\t\t\t\t" << "VirtualServerManager:" << '\n';
+	os << "\t\t\t\t\t" << "IpMap:" << '\n';
+	for (VirtualServerManager::IpMap::const_iterator it = virtual_server_manager._ip_map.begin(); it != virtual_server_manager._ip_map.end(); ++it) {
+		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
+		os << *(it->second);
+	}
+	os << "\t\t\t\t\t" << "ServerNameMap:" << '\n';
+	for (VirtualServerManager::ServerNameMap::const_iterator it = virtual_server_manager._server_name_map.begin(); it != virtual_server_manager._server_name_map.end(); ++it) {
+		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
+		os << *(it->second);
+	}
+	return (os);
 }
-
-bool VirtualServerManager::isInEtcHosts(const std::string& host) {
-    return hostsFromFile.count(host) > 0;
-}
-

@@ -1,5 +1,6 @@
 #include "../incs/Config/Config.hpp"
 #include "../incs/Server/Webserv.hpp"
+#include "../incs/Log/Logger.hpp"
 #include "../incs/err/err.hpp"
 #include <iostream>
 
@@ -14,12 +15,9 @@ int	main(int argc, char **argv) {
 
 	try {
 		config = Config(argv[1]);
-		config.startParse();
-		
-		webserv.build(config);
-		webserv.run();
+		webserv.run(config);
 	} catch (const std::exception &e) {
-		std::cerr << "\033[31m" << "Error: " << e.what() << "\033[0m" << '\n';
+		Logger::getInstance().error(e.what());
 		return (GENERIC_ERR);
 	}
 	return (0);

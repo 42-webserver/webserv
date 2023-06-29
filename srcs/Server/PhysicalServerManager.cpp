@@ -1,174 +1,207 @@
 #include "../../incs/Server/PhysicalServerManager.hpp"
-#include "../../incs/Server/Webserv.hpp"
+#include "../../incs/EventQueue/EventQueue.hpp"
+#include "../../incs/Event/ListenEvent.hpp"
+#include "../../incs/Log/Logger.hpp"
 
-PhysicalServerManager::PhysicalServerManager() {}
-
-void PhysicalServerManager::insertVirtualServer(port port, ip ip, const Config::map &config_map, const std::vector<std::string> &server_names) {
-    // Create a new VirtualServer instance
-    ft::shared_ptr<VirtualServer> new_virtual_server(new VirtualServer(config_map));
-
-    // Handle the port and IP
-    std::map<PhysicalServerManager::port, std::multimap<
-	PhysicalServerManager::ip, ft::shared_ptr<VirtualServer> > >::iterator port_it = _portMap.find(port);
-    if (port_it == _portMap.end()) {
-        // If the port does not exist, create a new IP map and insert it into the port map
-        // why MultiMap? because we can have multiple virtual servers with the same IP
-        std::multimap<PhysicalServerManager::ip, ft::shared_ptr<VirtualServer> > new_ip_map;
-        new_ip_map.insert(std::make_pair(ip, new_virtual_server));
-        _portMap.insert(std::make_pair(port, new_ip_map));
-    } else {
-        // If the port exists, just insert the new VirtualServer into the corresponding IP map
-        std::multimap<PhysicalServerManager::ip, ft::shared_ptr<VirtualServer> >& ip_map = port_it->second;
-        ip_map.insert(std::make_pair(ip, new_virtual_server));
-    }
-
-    // Handle the server names
-    for (std::vector<std::string>::const_iterator it = server_names.begin(); it != server_names.end(); ++it) {
-        if (_domainMap.find(*it) != _domainMap.end()) {
-            throw DuplicateServerException();
-        }
-        _domainMap.insert(std::make_pair(*it, new_virtual_server));
-    }
+PhysicalServerManager::PhysicalServerManager(void): _port_map(PortMap()) {}
+PhysicalServerManager::~PhysicalServerManager(void) {}
+PhysicalServerManager::PhysicalServerManager(const PhysicalServerManager &rhs): _port_map(rhs._port_map) {}
+PhysicalServerManager	&PhysicalServerManager::operator=(const PhysicalServerManager &rhs) {
+	if (this != &rhs) {
+		this->~PhysicalServerManager();
+		new (this) PhysicalServerManager(rhs);
+	}
+	return (*this);
 }
 
-bool PhysicalServerManager::checkWildcardIP(const std::multimap<ip, 
-ft::shared_ptr<VirtualServer> >& ipMultimap) {
-    // Check if wildcard IP exists in current port using find
-    return ipMultimap.find("0.0.0.0") != ipMultimap.end();
+bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
+	try {
+		const std::vector<Config::map>	config_maps = config.getConfigMaps();
+
+		for (size_t i=0; i<config_maps.size(); i++) {
+			this->_buildPhysicalServerVector(config_maps[i]);
+		}
+		for (PortMap::iterator it=this->_port_map.begin(); it!=this->_port_map.end(); it++) {
+			if (this->_hasServerWithWildCardIp(it) == true) {
+				this->_mergeAllPhysicalServer(it);
+			}
+		}
+		this->_buildSocket();
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildException());
+	}
+	return (true);
+}
+bool	PhysicalServerManager::run(void) throw(std::exception) {
+	try {
+		for (PortMap::iterator port_it=this->_port_map.begin(); port_it!=this->_port_map.end(); port_it++) {
+			for (PhysicalServerVector::iterator ps_it=port_it->second.begin(); ps_it!=port_it->second.end(); ps_it++) {
+				// runSocket
+				(*ps_it)->run();
+				// initEventQueue
+				// initListenEvent
+			}
+		}
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildException());
+	}
+	return (true);
 }
 
-std::map<PhysicalServerManager::ip, ft::shared_ptr<VirtualServer> > 
-PhysicalServerManager::buildIPMap(const std::multimap<ip, ft::shared_ptr<VirtualServer> >& ipMultimap, 
-bool isWildcard, ip targetIP) {
-    std::map<ip, ft::shared_ptr<VirtualServer> > ip_map;
-    if (isWildcard) {
-        // If wildcard IP exists, copy the whole map
-        for (std::multimap<ip, ft::shared_ptr<VirtualServer> >::const_iterator ip_it = ipMultimap.begin();
-        ip_it != ipMultimap.end(); ++ip_it) {
-            ip_map[ip_it->first] = ip_it->second;
-        }
-    } else {
-        // If wildcard IP does not exist, copy only target IP
-        ip_map[targetIP] = ipMultimap.find(targetIP)->second;
-    }
-    return ip_map;
+ft::shared_ptr<PhysicalServer>	PhysicalServerManager::findPhysicalServer(const Port &port, const Ip &ip) const {
+	PortMap::const_iterator			it;
+	PhysicalServerVector			physical_server_vector;
+	ft::shared_ptr<VirtualServer>	virtual_server;
+
+	if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
+		return (ft::shared_ptr<PhysicalServer>(NULL));
+	}
+	physical_server_vector = it->second;
+	for (size_t i=0; i<physical_server_vector.size(); i++) {
+		virtual_server = physical_server_vector[i]->findVirtualServerByIp(ip);
+		if (virtual_server.get() != NULL) {
+			return (physical_server_vector[i]);
+		}
+	}
+	return (ft::shared_ptr<PhysicalServer>(NULL));
+}
+ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServerByIp(const PortMap::const_iterator &it, const Ip &ip) const {
+	PhysicalServerVector			physical_server_vector = it->second;
+	ft::shared_ptr<VirtualServer>	virtual_server;
+
+	for (size_t i=0; i<physical_server_vector.size(); i++) {
+		virtual_server = physical_server_vector[i]->findVirtualServerByIp(ip);
+		if (virtual_server.get() != NULL) {
+			return (physical_server_vector[i]);
+		}
+	}
+	return (ft::shared_ptr<PhysicalServer>(NULL));
 }
 
-std::map<PhysicalServerManager::serverName, ft::shared_ptr<VirtualServer> > 
-PhysicalServerManager::buildDomainMap(const std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap) {
-    std::map<serverName, ft::shared_ptr<VirtualServer> > currentDomainMap;
-    for (std::map<serverName, ft::shared_ptr<VirtualServer> >::const_iterator it = 
-	_domainMap.begin(); it != _domainMap.end(); ++it) {
-        // Virtual Server Has ip Because Compare Domain with Ip this May be not good bb
-        if (ipMap.count(it->second->getIP()) > 0) {
-            currentDomainMap[it->first] = it->second;
-        }
-    }
-    return currentDomainMap;
+bool	PhysicalServerManager::_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception) {
+	const std::string				listen = config_map.find("listen")->second[0];
+	const Port						port = _parsePort(listen);
+	const Ip						ip = _parseIp(listen);
+	PortMap::iterator				it;
+	ft::shared_ptr<PhysicalServer>	physical_server;
+
+	if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
+		this->_port_map.insert(std::make_pair(port, PhysicalServerVector()));
+		it = this->_port_map.find(port);
+	}
+	if ((physical_server = this->_findPhysicalServerByIp(it, ip)).get() == NULL) {
+		physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
+		it->second.push_back(physical_server);
+	}
+	try {
+		physical_server->build(ip, config_map);
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildPhysicalServerVectorException());
+	}
+	return (true);
+}
+bool	PhysicalServerManager::_buildSocket(void) throw(std::exception) {
+	try {
+		for (PortMap::iterator map_it=this->_port_map.begin(); map_it!=this->_port_map.end(); map_it++) {
+			for (PhysicalServerVector::iterator ps_it=map_it->second.begin(); ps_it!=map_it->second.end(); ps_it++) {
+				(*ps_it)->buildSocket(map_it->first);
+			}
+		}
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToBuildSocketException());
+	}
+	return (true);
+}
+bool	PhysicalServerManager::_hasServerWithWildCardIp(const PortMap::const_iterator &it) const {
+	PhysicalServerVector	physical_server_vector = it->second;
+
+	for (size_t i=0; i<physical_server_vector.size(); i++) {
+		if (physical_server_vector[i]->hasServerWithWildCardIp() == true) {
+			return (true);
+		}
+	}
+	return (false);
+}
+bool	PhysicalServerManager::_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception) {
+	PhysicalServerVector			physical_server_vector = it->second;
+	ft::shared_ptr<PhysicalServer>	physical_server = physical_server_vector[0];
+
+	try {
+		for (size_t i=1; i<physical_server_vector.size(); i++) {
+			physical_server->mergeAllVirtualServer(physical_server_vector[i]);
+		}
+		it->second = PhysicalServerVector(1, physical_server);
+	} catch (const std::exception &e) {
+		Logger::getInstance().error(e.what());
+		throw (FailToMergeAllPhysicalServerException());
+	}
+	return (true);
 }
 
-void PhysicalServerManager::createAndStoreVirtualServerManager(std::map<ip, ft::shared_ptr<VirtualServer> >& ipMap, 
-std::map<serverName, ft::shared_ptr<VirtualServer> >& domainMap, int port) {
-    VirtualServerManager vsm(port);
-    vsm.buildFromPhysicalServerManager(ipMap, domainMap);
-    _VirtualServerManagers.push_back(vsm);
-}
-
-void PhysicalServerManager::buildAllVirtualServerManagers() {
-    for (std::map<port, std::multimap<ip, ft::shared_ptr<VirtualServer> > >::const_iterator port_it = _portMap.begin(); 
-	port_it != _portMap.end(); ++port_it) {
-        bool isWildcard = checkWildcardIP(port_it->second);
-
-        if (isWildcard) {
-            // If wildcard IP exists, create one VirtualServerManager
-            std::map<ip, ft::shared_ptr<VirtualServer> > ip_map = buildIPMap(port_it->second, true, "");
-            std::map<serverName, ft::shared_ptr<VirtualServer> > domainMap = buildDomainMap(ip_map);
-            
-            createAndStoreVirtualServerManager(ip_map, domainMap, port_it->first);
-        } else {
-            // If wildcard IP does not exist, create a VirtualServerManager for each IP
-            for (std::multimap<ip, ft::shared_ptr<VirtualServer> >::const_iterator ip_it = port_it->second.begin();
-            ip_it != port_it->second.end(); ++ip_it) {
-                std::map<ip, ft::shared_ptr<VirtualServer> > ip_map = buildIPMap(port_it->second, false, ip_it->first);
-                std::map<serverName, ft::shared_ptr<VirtualServer> > domainMap = buildDomainMap(ip_map);
-                createAndStoreVirtualServerManager(ip_map, domainMap, port_it->first);
-            }
-        }
-    }
-
-    if (!_VirtualServerManagers.empty()) {
-        _vsmit = _VirtualServerManagers.begin();
-    }
-}
-
-
-void PhysicalServerManager::run(const Config &config) throw(std::exception) {
-    insertAllVirtualServers(config);
-    buildAllVirtualServerManagers();
-}
-
-VirtualServerManager PhysicalServerManager::getCurrentVirtualServerManager() {
-    if (_vsmit == _VirtualServerManagers.end()) {
-        _vsmit = _VirtualServerManagers.begin();
-    }
-    if (_vsmit == _VirtualServerManagers.end()) {
-        throw std::runtime_error("No VirtualServerManager exists");
-    }
-    return *_vsmit++;
-}
-
-int PhysicalServerManager::getVirtualServerManagerCount() {
-    return _VirtualServerManagers.size();
-}
-void PhysicalServerManager::insertAllVirtualServers(const Config &config) {
-    const std::vector<Config::map> server_configs = config.getConfigMaps();
-
-    if (MAX_SERVERS <= server_configs.size()) {
-        throw ((FailToConstructException()));
-    }
-
-    for (std::vector<Config::map>::const_iterator curServerConfig = server_configs.begin(); 
-    curServerConfig != server_configs.end(); ++curServerConfig) {
-        std::string host;
-        int port;
-
-        try {
-            host = _initHost(curServerConfig->at(Config::KEYS[ConfigKey::LISTEN])[0]);
-            port = _initPort(curServerConfig->at(Config::KEYS[ConfigKey::LISTEN])[0]);
-            insertVirtualServer(port, host, *curServerConfig, curServerConfig->at(Config::KEYS[ConfigKey::SERVER_NAME]));
-        } catch (const std::exception &e) {
-            Logger::getInstance().error(e.what());
-            throw (FailToConstructException());
-        }
-    }
-
-}
-
-std::string	PhysicalServerManager::_initHost(const std::string &listen)  {
-	std::string				ret = "0.0.0.0";
+PhysicalServerManager::Port	PhysicalServerManager::_parsePort(const std::string &listen) throw(std::exception) {											
 	std::string::size_type	pos = listen.find(':');
+	int						ret = (pos != std::string::npos) ? std::atoi(listen.substr(pos + 1).c_str()) : std::atoi(listen.c_str());
 
-	if (pos != std::string::npos) {
-		ret = listen.substr(0, pos);
+	if (PhysicalServerManager::_portIsValid(ret) == false) {
+		throw (InvalidPortException());
 	}
 	return (ret);
 }
-int			PhysicalServerManager::_initPort(const std::string &listen) {
-	int						ret = 0;
+PhysicalServerManager::Ip	PhysicalServerManager::_parseIp(const std::string &listen) throw(std::exception) {
 	std::string::size_type	pos = listen.find(':');
+	std::string				ret = (pos != std::string::npos) ? listen.substr(0, pos) : "";
 
-	if (pos != std::string::npos) {
-		ret = std::atoi(listen.substr(pos + 1).c_str());
-	} else {
-		ret = std::atoi(listen.c_str());
+	ret = (ret == "" || ret == "*") ? "0.0.0.0" : ret;
+	if (PhysicalServerManager::_ipIsValid(ret) == false) {
+		throw (InvalidIpException());
 	}
 	return (ret);
 }
+bool						PhysicalServerManager::_portIsValid(const Port &port) { return (0 < port && port < 65536); }
+bool						PhysicalServerManager::_ipIsValid(const Ip &ip) {
+	std::string::size_type	prev_pos = 0, cur_pos;
+	size_t					num;
 
-const char *PhysicalServerManager::FailToConstructException::what() const throw() {
-    return "Fail to construct PhysicalServerManager";
+	for (size_t i=0; i<3; i++) {
+		cur_pos = ip.find('.', prev_pos);
+		num = std::atoi(ip.substr(prev_pos, cur_pos - prev_pos).c_str());
+		if (num < 0 || 255 < num) {
+			return (false);
+		}
+		prev_pos = cur_pos + 1;
+	}
+
+	num = std::atoi(ip.substr(prev_pos).c_str());
+	if (num < 0 || 255 < num) {
+		return (false);
+	}
+
+	return (true);
 }
 
-const char *PhysicalServerManager::DuplicateServerException::what() const throw() {
-    return "Duplicate server name";
+const char	*PhysicalServerManager::FailToBuildException::what() const throw() { return "PhysicalServerManager: Fail to build"; }
+const char	*PhysicalServerManager::FailToRunException::what() const throw() { return "PhysicalServerManager: Fail to run"; }
+const char	*PhysicalServerManager::InvalidPortException::what() const throw() { return ("PhysicalServerManager: Invalid port"); }
+const char	*PhysicalServerManager::InvalidIpException::what() const throw() { return "PhysicalServerManager: Invalid ip"; }
+const char	*PhysicalServerManager::TooManyServerException::what() const throw() { return ("PhysicalServerManager: Too many servers"); }
+const char	*PhysicalServerManager::FailToMergeAllPhysicalServerException::what() const throw() { return ("PhysicalServerManager: Fail to merge all physical server"); }
+const char	*PhysicalServerManager::FailToBuildPhysicalServerVectorException::what() const throw() { return ("PhysicalServerManager: Fail to build physical server vector"); }
+const char	*PhysicalServerManager::FailToBuildSocketException::what() const throw() { return ("PhysicalServerManager: Fail to build socket"); }
+
+std::ostream	&operator<<(std::ostream &os, const PhysicalServerManager &physical_server_manager) {
+	os << "\t" << "PhysicalServerManager:\n";
+	for (PhysicalServerManager::PortMap::const_iterator it=physical_server_manager._port_map.begin(); it!=physical_server_manager._port_map.end(); it++) {
+		os << "\t\t" << "Port: " << it->first << '\n';
+		for (size_t i=0; i<it->second.size(); i++) {
+			os << *(it->second[i]);
+			if (i + 1 < it->second.size()) {
+				os << '\n';
+			}
+		}
+	}
+	return (os);
 }

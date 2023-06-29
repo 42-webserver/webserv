@@ -1,35 +1,53 @@
 #ifndef VIRUTALSERVERMANAGER_HPP
 # define VIRUTALSERVERMANAGER_HPP
 
-# include "./VirtualServer.hpp"
-# include <sstream>
+# include "../../libs/shared_ptr/shared_ptr.hpp"
+# include "../Config/Config.hpp"
+# include "VirtualServer.hpp"
+# include <string>
+# include <map>
 
 class VirtualServerManager {
-public:
-    typedef std::string serverName;
-    typedef std::string ip;
-    typedef std::map<serverName, ft::shared_ptr<VirtualServer> > domainMap;
-    typedef std::map<ip, ft::shared_ptr<VirtualServer> > serverMap;
-    typedef std::map<std::string, std::string> hostsMap;
+	public:
+		typedef std::string												Ip;
+		typedef std::string												ServerName;
+		typedef std::map< Ip, ft::shared_ptr< VirtualServer > >			IpMap;
+		typedef std::map< ServerName, ft::shared_ptr< VirtualServer > >	ServerNameMap;
 
-private:
-    domainMap _domainMap;
-    serverMap _servers;
-    static hostsMap hostsFromFile;  // static member variable to store hosts from /etc/hosts
-    int _port;
-public:
-    VirtualServerManager(int port);
-    ~VirtualServerManager();
-    void buildFromPhysicalServerManager(const serverMap& servers, const domainMap& domainMap);
-    ft::shared_ptr<VirtualServer> find(const std::string& host);
-    void parseHostsFile();  // function to parse /etc/hosts file and populate hostsFromFile
-    int getListenPort() const;
-    std::string getListenIP() const;
-private:
-    bool isDomainFormat(const std::string& host);
-    bool isIPFormat(const std::string& host);
-    bool isInEtcHosts(const std::string& host);
+	private:
+		IpMap			_ip_map;
+		ServerNameMap 	_server_name_map;
+
+	public:
+		VirtualServerManager(void);
+		~VirtualServerManager(void);
+		VirtualServerManager(const VirtualServerManager &ref);
+		VirtualServerManager	&operator=(const VirtualServerManager &rhs);
+
+	public:
+		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
+		bool	hasServerWithWildCardIp(void) const;
+		bool	mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception);
+	
+	public:
+		ft::shared_ptr<VirtualServer>	findVirtualServerByIp(const Ip &ip) const;
+		ft::shared_ptr<VirtualServer>	findVirtualServerByName(const ServerName &server_name) const;
+	
+	public:
+		class FailToBuildException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class DuplicatedServerNameException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class FailToMergeAllVirtualServerException: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager);
 };
-
 
 #endif

@@ -25,30 +25,29 @@ SRCS =	main.cpp \
 		Event/WriteEvent.cpp \
 		EventQueue/EventQueue.cpp \
 		FileDescriptor/FileDescriptor.cpp \
-		http/handler/ErrorPageHandler.cpp \
-		http/handler/HttpRequestHandler.cpp \
-		http/parser/HttpRequestParser.cpp \
-		http/parser/HttpResponseParser.cpp \
-		http/parser/ChunkedRequestBodyHandler.cpp \
-		http/parser/FileNameGenerator.cpp \
-		http/parser/MultipartRequestBodyHandler.cpp \
-		http/parser/NormalBodyHandler.cpp \
-		http/parser/RequestBodyHandler.cpp \
-		http/utils/FileUploader.cpp \
-		http/request/HttpRequest.cpp \
-		http/request/MultipartRequest.cpp \
-		http/response/HttpResponse.cpp \
-		http/utils/HttpStatus.cpp \
-		http/utils/Cookie.cpp \
+		Http/Handler/ErrorPageHandler.cpp \
+		Http/Handler/HttpRequestHandler.cpp \
+		Http/Parser/HttpRequestParser.cpp \
+		Http/Parser/HttpResponseParser.cpp \
+		Http/Parser/ChunkedRequestBodyHandler.cpp \
+		Http/Parser/FileNameGenerator.cpp \
+		Http/Parser/MultipartRequestBodyHandler.cpp \
+		Http/Parser/NormalBodyHandler.cpp \
+		Http/Parser/RequestBodyHandler.cpp \
+		Http/Request/HttpRequest.cpp \
+		Http/Request/MultipartRequest.cpp \
+		Http/Response/HttpResponse.cpp \
+		Http/Utils/HttpStatus.cpp \
+		Http/Utils/Cookie.cpp \
 		Log/Logger.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
 		Server/Location.cpp \
-		Server/VirtualServer.cpp \
-		Server/Webserv.cpp \
 		Server/PhysicalServer.cpp \
 		Server/PhysicalServerManager.cpp \
+		Server/VirtualServer.cpp \
 		Server/VirtualServerManager.cpp \
+		Server/Webserv.cpp \
 		Socket/Socket.cpp \
 		EventDto/EventDto.cpp \
 		Event/BufReadHandler.cpp \
@@ -59,12 +58,12 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/EventQueue\
 				${OBJS_DIR}/FileDescriptor \
 				${OBJS_DIR}/http \
-				${OBJS_DIR}/http/handler \
-				${OBJS_DIR}/http/parser \
-				${OBJS_DIR}/http/request \
-				${OBJS_DIR}/http/response \
-				${OBJS_DIR}/http/utils \
-				${OBJS_DIR}/http/test \
+				${OBJS_DIR}/Http/handler \
+				${OBJS_DIR}/Http/parser \
+				${OBJS_DIR}/Http/request \
+				${OBJS_DIR}/Http/response \
+				${OBJS_DIR}/Http/utils \
+				${OBJS_DIR}/Http/test \
 				${OBJS_DIR}/Log \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \

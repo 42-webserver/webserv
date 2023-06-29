@@ -3,6 +3,7 @@
 
 # include <exception>
 # include <netinet/in.h>
+# include <string>
 
 class Socket {
 	public:
@@ -16,14 +17,18 @@ class Socket {
 	// Constructor & Destructor
 	public:
 		Socket(void);
-		Socket(int port);
+		~Socket(void);
 		Socket(const Socket &ref);
-		virtual	~Socket(void);
 		Socket	&operator=(const Socket &rhs);
 
 	// Utils
 	public:
+		bool	build(const int port, const std::string &ip) throw(std::exception);
+		bool	run(void) throw(std::exception);
 		int		getFd(void) const;
+	
+	private:
+		static uint32_t	stringToNetworkByteOrder(const std::string &ip);
 
 	// Exception
 	public:
@@ -39,6 +44,8 @@ class Socket {
 			public:
 				virtual const char *what() const throw();
 		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const Socket &socket);
 };
 
 #endif

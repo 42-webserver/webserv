@@ -5,8 +5,8 @@
 # include "../../libs/unique_ptr/unique_ptr.hpp"
 # include "../FileDescriptor/FileDescriptor.hpp"
 # include "../EventQueue/EventQueue.hpp"
-# include "../Socket/Socket.hpp"
 # include "../EventDto/EventDto.hpp"
+# include "../Socket/Socket.hpp"
 
 class EventQueue;
 class EventHandler;
@@ -28,12 +28,12 @@ class Event {
 		Event	&operator=(const Event &rhs);
 
 	public:
-		virtual void callEventHandler(void) = 0;
-		virtual void onboardQueue(void) throw (std::exception) = 0;
-		virtual void offboardQueue(void) throw (std::exception) = 0;
+		virtual void	callEventHandler(void) = 0;
+		virtual void	onboardQueue(void) throw (std::exception) = 0;
+		virtual void	offboardQueue(void) throw (std::exception) = 0;
 
 	public:
-		int	getFd(void) const;
+		int								getFd(void) const;
 		ft::shared_ptr<FileDescriptor>	getFileDescriptor(void);
 	public:
 		class FailToOnboardException: public std::exception {
@@ -56,7 +56,7 @@ class EventHandler {
 		EventHandler	&operator=(const EventHandler &rhs);
 
 	public:
-		virtual void handleEvent(Event &event) = 0;
+		virtual void	handleEvent(Event &event) = 0;
 };
 
 class EventFactory {

@@ -1,51 +1,32 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../Config/Config.hpp"
-# include "../Server/PhysicalServer.hpp"
-# include "../Event/Event.hpp"
-# include "../Event/ListenEvent.hpp"
-# include "../Event/ReadEvent.hpp"
-# include "../Event/WriteEvent.hpp"
-# include "../EventQueue/EventQueue.hpp"
+# include "PhysicalServerManager.hpp"
 # include <iostream>
-# include <map>
-# include "./PhysicalServerManager.hpp"
+
 class Webserv {
-
 	private:
-		static const int	MAX_SERVERS = 8;
-
-	private:
-		PhysicalServerManager	_physicalServerManager;
+		PhysicalServerManager	_physical_server_manager;
 
 	public:
 		Webserv(void);
 		~Webserv(void);
+		Webserv(const Webserv &ref);
 		Webserv	&operator=(const Webserv &rhs);
 
 	public:
-		void	build(const Config &config) throw(std::exception);
-	public:
-		bool	run(void) throw(std::exception);
+		bool	run(const Config &config) throw(std::exception);
 
 	public:
-		class TooManyServersException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
-		class FailToConstructException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
 		class FailToRunException: public std::exception {
 			public:
 				virtual const char* what() const throw();
 		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
 };
 
-// Todo:
-// std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
+//std::ostream	&operator<<(std::ostream &os, const Webserv &webserv);
 
 #endif

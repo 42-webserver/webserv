@@ -1,65 +1,58 @@
-#ifndef PHYSICAL_SERVER_HPP
-# define PHYSICAL_SERVER_HPP
+#ifndef PHYSICALSERVER_HPP
+# define PHYSICALSERVER_HPP
 
 # include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../Config/Config.hpp"
-# include "VirtualServer.hpp"
-# include <iostream>
-# include <string>
-# include <map>
+# include "../Socket/Socket.hpp"
+# include "VirtualServerManager.hpp"
 
 class PhysicalServer {
 	public:
-		typedef std::map<std::string, ft::shared_ptr<VirtualServer> > VirtualServerMap;
+		typedef int								Port;
+		typedef std::string						Ip;
+		typedef std::string						ServerName;
 
 	private:
-		std::string				_host;
-		int						_port;
-		ft::shared_ptr<Socket>	_socket;
-		VirtualServerMap		_virtual_server_map;
-
+		Ip										_ip;
+		ft::shared_ptr<Socket>					_socket;
+		ft::shared_ptr<VirtualServerManager>	_virtual_server_manager;
+	
 	public:
 		PhysicalServer(void);
-		PhysicalServer(const std::string &host, const int port) throw(std::exception);
 		~PhysicalServer(void);
-	
-	private:
 		PhysicalServer(const PhysicalServer &ref);
 		PhysicalServer	&operator=(const PhysicalServer &rhs);
-
-	private:
-		static ft::shared_ptr<Socket>	initSocket(int port) throw(std::exception);
-
-	private:
-		static bool						hostIsValid(const std::string &host);
-		static bool						portIsValid(int port);
 	
 	public:
-		void							addVirtualServer(const Config::map &config_map) throw(std::exception);
+		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
+		bool	buildSocket(const Port &port) throw(std::exception);
+		bool	run(void) throw(std::exception);
+		bool	hasServerWithWildCardIp(void) const;
+		bool	mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> &other) throw(std::exception);
 	
 	public:
-		ft::shared_ptr<Socket>			getSocket(void) const;
-		// const VirtualServerMap			&getVirtualServerMap(void) const;
-
+		ft::shared_ptr<VirtualServer>	findVirtualServerByIp(const Ip &ip) const;
+		ft::shared_ptr<VirtualServer>	findVirtualServerByName(const ServerName &server_name) const;
+	
 	public:
-		class InvalidHostException: public std::exception {
+		class FailToBuildException: public std::exception {
 			public:
-				virtual const char *what() const throw();
+				virtual const char* what() const throw();
 		};
-		class InvalidPortException: public std::exception {
+		class FailToRunException: public std::exception {
 			public:
-				virtual const char *what() const throw();
+				virtual const char* what() const throw();
 		};
-		class FailToCreateSocketException: public std::exception {
+		class FailToMergeAllVirtualServerException: public std::exception {
 			public:
-				virtual const char *what() const throw();
+				virtual const char* what() const throw();
 		};
-		class DuplicatedVirtualServerException: public std::exception {
+		class FailToBuildSocketException: public std::exception {
 			public:
-				virtual const char *what() const throw();
+				virtual const char* what() const throw();
 		};
+
+	friend std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server);
 };
-
-// std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server);
 
 #endif
