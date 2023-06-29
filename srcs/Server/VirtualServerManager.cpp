@@ -130,7 +130,7 @@ std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_s
 		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
 	}
-	os << "\t\t\t\t\t" << "server_name_map:" << '\n';
+	os << "\t\t\t\t\t" << "ServerNameMap:" << '\n';
 	for (VirtualServerManager::ServerNameMap::const_iterator it = virtual_server_manager._server_name_map.begin(); it != virtual_server_manager._server_name_map.end(); ++it) {
 		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
