@@ -31,8 +31,7 @@ class PhysicalServer {
 		bool	mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> &other) throw(std::exception);
 	
 	public:
-		ft::shared_ptr<VirtualServer>	findVirtualServerByIp(const Ip &ip) const;
-		ft::shared_ptr<VirtualServer>	findVirtualServerByName(const ServerName &server_name) const;
+		ft::shared_ptr<VirtualServer>	findVirtualServer(const Ip &ip) const;
 	
 	public:
 		class FailToBuildException: public std::exception {
