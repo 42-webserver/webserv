@@ -3,25 +3,30 @@
 #include <fstream>
 #include <sstream>
 
-const std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::RESERVED_SERVER_NAME_MAP = VirtualServerManager::_initReservedServerNameMap();
-const std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
-std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::_initReservedServerNameMap(void) {
+const VirtualServerManager::ReservedServerNameMap	VirtualServerManager::RESERVED_SERVER_NAME_MAP = VirtualServerManager::_initReservedServerNameMap();
+const VirtualServerManager::EtcHostsMap 			VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
+VirtualServerManager::ReservedServerNameMap 		VirtualServerManager::_initReservedServerNameMap(void) {
 	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > reserved_server_name_map;
 
-	reserved_server_name_map.insert(std::make_pair("localhost", "0.0.0.0"));
+	reserved_server_name_map.insert(std::make_pair("localhost", "127.0.0.1"));
 	return (reserved_server_name_map);
 }
-std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::_initEtcHostsMap(void) {
+VirtualServerManager::EtcHostsMap 					VirtualServerManager::_initEtcHostsMap(void) {
 	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip >	ret;
 	std::ifstream															infile("/etc/hosts");
 	std::string																line;
 
 	if (infile.is_open()) {
 		while (std::getline(infile, line)) {
-			std::istringstream	iss(line);
+			std::istringstream	iss;
 			Ip					ip;
 			ServerName			server_name;
 
+			if (line[0] == '#') {
+				continue ;
+			}
+
+			iss = std::istringstream(line);
 			iss >> ip;
 			while (iss >> server_name) {
 				ret.insert(std::make_pair(server_name, ip));
@@ -32,11 +37,7 @@ std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualSe
 	return (ret);
 }
 
-//VirtualServerManager::hostsMap VirtualServerManager::hostsFromFile = VirtualServerManager::hostsMap();
-
-VirtualServerManager::VirtualServerManager(void): _ip_map(IpMap()), _server_name_map(ServerNameMap()) {
-	//parseHostsFile();
-}
+VirtualServerManager::VirtualServerManager(void): _ip_map(IpMap()), _server_name_map(ServerNameMap()) {}
 VirtualServerManager::~VirtualServerManager(void) {}
 VirtualServerManager::VirtualServerManager(const VirtualServerManager &ref): _ip_map(ref._ip_map), _server_name_map(ref._server_name_map) {}
 VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager &rhs) {
@@ -92,7 +93,7 @@ bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualSer
 	return (true);
 }
 
-ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host &host) const {
+ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host &host) const throw(std::exception) {
 	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
 	const Host						trimmed = VirtualServerManager::_trimHost(host);
 
@@ -181,14 +182,22 @@ const char	*VirtualServerManager::InvalidHostFormatException::what() const throw
 std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager) {
 	os << "\t\t\t\t" << "VirtualServerManager:" << '\n';
 	os << "\t\t\t\t\t" << "IpMap:" << '\n';
-	for (VirtualServerManager::IpMap::const_iterator it = virtual_server_manager._ip_map.begin(); it != virtual_server_manager._ip_map.end(); ++it) {
+	for (VirtualServerManager::IpMap::const_iterator it=virtual_server_manager._ip_map.begin(); it!=virtual_server_manager._ip_map.end(); ++it) {
 		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
 	}
+	os << "\t\t\t\t\t" << "ReservedServerNameMap:" << '\n';
+	for (VirtualServerManager::ReservedServerNameMap::const_iterator it=VirtualServerManager::RESERVED_SERVER_NAME_MAP.begin(); it!=VirtualServerManager::RESERVED_SERVER_NAME_MAP.end(); ++it) {
+		os << "\t\t\t\t\t\t" << it->second << ' ' << it->first << '\n';
+	}
 	os << "\t\t\t\t\t" << "ServerNameMap:" << '\n';
-	for (VirtualServerManager::ServerNameMap::const_iterator it = virtual_server_manager._server_name_map.begin(); it != virtual_server_manager._server_name_map.end(); ++it) {
+	for (VirtualServerManager::ServerNameMap::const_iterator it=virtual_server_manager._server_name_map.begin(); it!=virtual_server_manager._server_name_map.end(); ++it) {
 		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
+	}
+	os << "\t\t\t\t\t" << "EtcHostsMap:" << '\n';
+	for (VirtualServerManager::EtcHostsMap::const_iterator it=VirtualServerManager::ETC_HOSTS_MAP.begin(); it!=VirtualServerManager::ETC_HOSTS_MAP.end(); ++it) {
+		os << "\t\t\t\t\t\t" << it->second << ' ' << it->first << '\n';
 	}
 	return (os);
 }
