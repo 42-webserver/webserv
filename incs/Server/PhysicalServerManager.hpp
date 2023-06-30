@@ -26,12 +26,6 @@ class PhysicalServerManager {
 		bool	build(const Config &config) throw(std::exception);
 		bool	run(void) throw(std::exception);
 	
-	public:
-		ft::shared_ptr<PhysicalServer>	findPhysicalServer(const Port &port, const Ip &ip) const;
-	
-	private:
-		ft::shared_ptr<PhysicalServer>	_findPhysicalServerByIp(const PortMap::const_iterator &it, const Ip &ip) const;
-	
 	private:
 		bool	_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception);
 		bool	_buildSocket(void) throw(std::exception);
@@ -43,6 +37,9 @@ class PhysicalServerManager {
 		static Ip	_parseIp(const std::string &listen) throw(std::exception);
 		static bool	_portIsValid(const Port &port);
 		static bool	_ipIsValid(const Ip &ip);
+	
+	private:
+		static ft::shared_ptr<PhysicalServer>	_findPhysicalServer(const PortMap::const_iterator &it, const Ip &ip);
 	
 	public:
 		class FailToBuildException: public std::exception {

@@ -3,6 +3,35 @@
 #include <fstream>
 #include <sstream>
 
+const std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::RESERVED_SERVER_NAME_MAP = VirtualServerManager::_initReservedServerNameMap();
+const std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
+std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::_initReservedServerNameMap(void) {
+	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > reserved_server_name_map;
+
+	reserved_server_name_map.insert(std::make_pair("localhost", "0.0.0.0"));
+	return (reserved_server_name_map);
+}
+std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > VirtualServerManager::_initEtcHostsMap(void) {
+	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip >	ret;
+	std::ifstream															infile("/etc/hosts");
+	std::string																line;
+
+	if (infile.is_open()) {
+		while (std::getline(infile, line)) {
+			std::istringstream	iss(line);
+			Ip					ip;
+			ServerName			server_name;
+
+			iss >> ip;
+			while (iss >> server_name) {
+				ret.insert(std::make_pair(server_name, ip));
+			}
+		}
+		infile.close();
+	}
+	return (ret);
+}
+
 //VirtualServerManager::hostsMap VirtualServerManager::hostsFromFile = VirtualServerManager::hostsMap();
 
 VirtualServerManager::VirtualServerManager(void): _ip_map(IpMap()), _server_name_map(ServerNameMap()) {
@@ -63,65 +92,91 @@ bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualSer
 	return (true);
 }
 
-ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByIp(const Ip &ip) const {
-	IpMap::const_iterator	it = this->_ip_map.find(ip);
+ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host &host) const {
+	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
+	const Host						trimmed = VirtualServerManager::_trimHost(host);
 
-	if (it == this->_ip_map.end()) {
-		return (ft::shared_ptr<VirtualServer>(NULL));
+	if (VirtualServerManager::_isIpFormat(trimmed)) {
+		ret = this->_findVirtualServerByIp(trimmed);
+	} else if (VirtualServerManager::_isServerNameFormat(trimmed)) {
+		ret = this->_findVirtualServerByName(trimmed);
+	} else {
+		throw (InvalidHostFormatException());
 	}
-	return (it->second);
+	return (ret);
 }
-ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServerByName(const ServerName &server_name) const {
+
+VirtualServerManager::Host		VirtualServerManager::_trimHost(const Host &host) const {
+	Host	ret = host;
+
+	if (host.find(":") != std::string::npos) {
+		ret = host.substr(0, host.find(":"));
+	}
+	return (ret);
+}
+bool							VirtualServerManager::_isIpFormat(const Host &host) const {
+	for (size_t i=0; i<host.size(); i++) {
+		if (host[i] == '.') {
+			continue;
+		}
+		if (host[i] < '0' || '9' < host[i]) {
+			return (false);
+		}
+	}
+	return (true);
+}
+bool							VirtualServerManager::_isServerNameFormat(const Host &host) const {
+	for (size_t i=0; i<host.size(); i++) {
+		if (host[i] == '.') {
+			continue;
+		}
+		if (host[i] < 'a' || 'z' < host[i]) {
+			return (false);
+		}
+	}
+	return (true);
+}
+ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const Ip &ip) const {
+	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
+	IpMap::const_iterator			it = this->_ip_map.find(ip);
+
+	if (it != this->_ip_map.end()) {
+		ret = it->second;
+	}
+	return (ret);
+}
+ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByName(const ServerName &server_name) const {
+	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
+
+	ret = VirtualServerManager::_findVirtualServerByReservedServerName(server_name);
+	if (ret.get() == NULL) {
+		ret = VirtualServerManager::_findVirtualServerByServerName(server_name);
+	}
+	if (ret.get() == NULL) {
+		ret = VirtualServerManager::_findVirtualServerByEtcHosts(server_name);
+	}
+	return (ret);
+}
+ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByReservedServerName(const ServerName &server_name) const {
+	return (this->_findVirtualServerByIp(VirtualServerManager::RESERVED_SERVER_NAME_MAP.find(server_name)->second));
+}
+ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByServerName(const ServerName &server_name) const {
+	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
 	ServerNameMap::const_iterator	it = this->_server_name_map.find(server_name);
 
-	if (it== this->_server_name_map.end()) {
-		return (ft::shared_ptr<VirtualServer>(NULL));
+	if (it != this->_server_name_map.end()) {
+		ret = it->second;
 	}
-	return (it->second);
+	return (ret);
 }
-
-//bool	registerListeningEvent() {
-//	EventQueue		&eventQueue = EventQueue::getInstance();
-//	EventFactory	&eventFactory = ListeningEventFactory::getInstance();
-
-//	eventQueue.pushEvent(eventFactory.createEvent(EventDto()));
-//}
-
-//void VirtualServerManager::parseHostsFile() {
-//	if (!hostsFromFile.empty()) {
-//		return;
-//	}
-
-//	std::ifstream hostsFile("/etc/hosts");
-//	if (!hostsFile.is_open()) {
-//		return;
-//	}
-
-//	std::string line;
-//	while (std::getline(hostsFile, line)) {
-//		if (line[0] == '#') {
-//			continue;
-//		}
-
-//		std::istringstream iss(line);
-//		std::string ip, host;
-		
-//		if (!(iss >> ip >> host)) {
-//			break;
-//		}
-//		hostsFromFile[host] = ip;
-//	}
-
-//	hostsFile.close();
-//}
-
-//bool VirtualServerManager::isInEtcHosts(const std::string& host) {
-//	return hostsFromFile.count(host) > 0;
-//}
+ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByEtcHosts(const ServerName &server_name) const {
+	return (this->_findVirtualServerByIp(VirtualServerManager::ETC_HOSTS_MAP.find(server_name)->second));
+}
 
 const char	*VirtualServerManager::FailToBuildException::what() const throw() { return ("VirtualServerManager: Fail to build"); }
 const char	*VirtualServerManager::DuplicatedServerNameException::what() const throw() { return ("VirtualServerManager: Duplicated server name"); }
 const char	*VirtualServerManager::FailToMergeAllVirtualServerException::what() const throw() { return ("VirtualServerManager: Fail to merge all virtual server"); }
+const char	*VirtualServerManager::InvalidHostFormatException::what() const throw() { return ("VirtualServerManager: Invalid host format"); }
 
 std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager) {
 	os << "\t\t\t\t" << "VirtualServerManager:" << '\n';

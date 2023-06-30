@@ -50,12 +50,7 @@ bool	PhysicalServer::mergeAllVirtualServer(const ft::shared_ptr<PhysicalServer> 
 	return (true);
 }
 
-ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServerByIp(const Ip &ip) const {
-	return (this->_virtual_server_manager->findVirtualServerByIp(ip));
-}
-ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServerByName(const ServerName &server_name) const {
-	return (this->_virtual_server_manager->findVirtualServerByName(server_name));
-}
+ft::shared_ptr<VirtualServer>	PhysicalServer::findVirtualServer(const Ip &ip) const { return (this->_virtual_server_manager->findVirtualServer(ip)); }
 
 const char	*PhysicalServer::FailToBuildException::what() const throw() { return "PhysicalServer: Fail to build"; }
 const char	*PhysicalServer::FailToRunException::what() const throw() { return "PhysicalServer: Fail to run"; }
