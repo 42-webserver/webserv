@@ -16,15 +16,8 @@ class VirtualServerManager {
 		typedef std::map< ServerName, ft::shared_ptr< VirtualServer > >	ServerNameMap;
 	
 	private:
-		typedef std::map< ServerName, Ip >	ReservedServerNameMap;
 		typedef std::map< ServerName, Ip >	EtcHostsMap;
-
-	private:
-		static const ReservedServerNameMap	RESERVED_SERVER_NAME_MAP;
 		static const EtcHostsMap			ETC_HOSTS_MAP;
-	
-	private:
-		static ReservedServerNameMap		_initReservedServerNameMap(void);
 		static EtcHostsMap					_initEtcHostsMap(void);
 	
 	private:

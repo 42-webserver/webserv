@@ -3,14 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-const VirtualServerManager::ReservedServerNameMap	VirtualServerManager::RESERVED_SERVER_NAME_MAP = VirtualServerManager::_initReservedServerNameMap();
 const VirtualServerManager::EtcHostsMap 			VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
-VirtualServerManager::ReservedServerNameMap 		VirtualServerManager::_initReservedServerNameMap(void) {
-	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip > reserved_server_name_map;
-
-	reserved_server_name_map.insert(std::make_pair("localhost", "127.0.0.1"));
-	return (reserved_server_name_map);
-}
 VirtualServerManager::EtcHostsMap 					VirtualServerManager::_initEtcHostsMap(void) {
 	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip >	ret;
 	std::ifstream															infile("/etc/hosts");
@@ -104,6 +97,9 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host
 	} else {
 		throw (InvalidHostFormatException());
 	}
+	if (ret.get() == NULL) {
+		// Set to Default Server
+	}
 	return (ret);
 }
 
@@ -149,10 +145,7 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const
 ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByName(const ServerName &server_name) const {
 	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
 
-	ret = VirtualServerManager::_findVirtualServerByReservedServerName(server_name);
-	if (ret.get() == NULL) {
-		ret = VirtualServerManager::_findVirtualServerByServerName(server_name);
-	}
+	ret = VirtualServerManager::_findVirtualServerByServerName(server_name);
 	if (ret.get() == NULL) {
 		ret = VirtualServerManager::_findVirtualServerByEtcHosts(server_name);
 	}
