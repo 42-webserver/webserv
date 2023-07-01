@@ -46,6 +46,9 @@ bool	VirtualServerManager::build(const Ip &ip, const Config::map &config_map) th
 		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(config_map));
 		std::vector<ServerName>			server_names = config_map.at(Config::KEYS[Config::KEY::SERVER_NAME]);
 
+		if (this->_default_server_ip.empty()) {
+			this->_default_server_ip = ip;
+		}
 		if (this->_ip_map.find(ip) == this->_ip_map.end()) {
 			this->_ip_map.insert(std::make_pair(ip, virtual_server));
 		}
@@ -97,9 +100,6 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host
 	} else {
 		throw (InvalidHostFormatException());
 	}
-	if (ret.get() == NULL) {
-		// Set to Default Server
-	}
 	return (ret);
 }
 
@@ -149,10 +149,10 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByName(con
 	if (ret.get() == NULL) {
 		ret = VirtualServerManager::_findVirtualServerByEtcHosts(server_name);
 	}
+	if (ret.get() == NULL) {
+		ret = VirtualServerManager::_findVirtualServerByIp(this->_default_server_ip);
+	}
 	return (ret);
-}
-ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByReservedServerName(const ServerName &server_name) const {
-	return (this->_findVirtualServerByIp(VirtualServerManager::RESERVED_SERVER_NAME_MAP.find(server_name)->second));
 }
 ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByServerName(const ServerName &server_name) const {
 	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
@@ -174,14 +174,12 @@ const char	*VirtualServerManager::InvalidHostFormatException::what() const throw
 
 std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_server_manager) {
 	os << "\t\t\t\t" << "VirtualServerManager:" << '\n';
+	os << "\t\t\t\t\t" << "DefaultServerIp:" << '\n';
+	os << "\t\t\t\t\t\t" << virtual_server_manager._default_server_ip << '\n';
 	os << "\t\t\t\t\t" << "IpMap:" << '\n';
 	for (VirtualServerManager::IpMap::const_iterator it=virtual_server_manager._ip_map.begin(); it!=virtual_server_manager._ip_map.end(); ++it) {
 		os << "\t\t\t\t\t\t" << it->first << ":" << '\n';
 		os << *(it->second);
-	}
-	os << "\t\t\t\t\t" << "ReservedServerNameMap:" << '\n';
-	for (VirtualServerManager::ReservedServerNameMap::const_iterator it=VirtualServerManager::RESERVED_SERVER_NAME_MAP.begin(); it!=VirtualServerManager::RESERVED_SERVER_NAME_MAP.end(); ++it) {
-		os << "\t\t\t\t\t\t" << it->second << ' ' << it->first << '\n';
 	}
 	os << "\t\t\t\t\t" << "ServerNameMap:" << '\n';
 	for (VirtualServerManager::ServerNameMap::const_iterator it=virtual_server_manager._server_name_map.begin(); it!=virtual_server_manager._server_name_map.end(); ++it) {
