@@ -16,18 +16,12 @@ class VirtualServerManager {
 		typedef std::map< ServerName, ft::shared_ptr< VirtualServer > >	ServerNameMap;
 	
 	private:
-		typedef std::map< ServerName, Ip >	ReservedServerNameMap;
 		typedef std::map< ServerName, Ip >	EtcHostsMap;
-
-	private:
-		static const ReservedServerNameMap	RESERVED_SERVER_NAME_MAP;
 		static const EtcHostsMap			ETC_HOSTS_MAP;
-	
-	private:
-		static ReservedServerNameMap		_initReservedServerNameMap(void);
 		static EtcHostsMap					_initEtcHostsMap(void);
 	
 	private:
+		Ip				_default_server_ip;
 		IpMap			_ip_map;
 		ServerNameMap 	_server_name_map;
 
@@ -51,7 +45,6 @@ class VirtualServerManager {
 		bool							_isServerNameFormat(const Host &host) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByIp(const Ip &ip) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByName(const ServerName &server_name) const;
-		ft::shared_ptr<VirtualServer>	_findVirtualServerByReservedServerName(const ServerName &server_name) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByServerName(const ServerName &server_name) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByEtcHosts(const ServerName &server_name) const;
 	
