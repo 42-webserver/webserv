@@ -137,8 +137,13 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const
 	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
 	IpMap::const_iterator			it = this->_ip_map.find(ip);
 
+	if (it == this->_ip_map.end()) {
+		it = this->_ip_map.find("0.0.0.0");
+	}
 	if (it != this->_ip_map.end()) {
 		ret = it->second;
+	} else { // Never reach here maybe
+		Logger::getInstance().error("Error: VirtualServerManager: No virtual server for ip: " + ip);
 	}
 	return (ret);
 }
