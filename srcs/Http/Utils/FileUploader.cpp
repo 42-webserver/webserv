@@ -2,7 +2,7 @@
 
 const char* FileUploader::FileUploadException::what() const throw() { return ("File upload failed"); }
 
-void FileUploader::fileUpload(std::vector<MultipartRequest> &multipartRequests) throw(FileUploader::FileUploadException){
+void FileUploader::fileUpload(std::vector<MultipartRequest> &multipartRequests, std::string path) throw(FileUploader::FileUploadException){
     for (std::vector<MultipartRequest>::iterator it = multipartRequests.begin(); it != multipartRequests.end(); it++){
         std::multimap<std::string, std::string> _headers = it->getHeaders();
         std::multimap<std::string, std::string>::iterator mapIt = _headers.find("Content-Disposition");
@@ -17,7 +17,7 @@ void FileUploader::fileUpload(std::vector<MultipartRequest> &multipartRequests) 
             filename = std::string(filename.begin() + 1, filename.end() - 1);
             if (filename.empty())
                 throw FileUploader::FileUploadException();
-            std::string filepath = _FILE_UPLOAD_DIR + filename;
+            std::string filepath = path + filename;
             uploadStart(filepath, it->getMemoryBody(), it->getBodyDataFilename());
             break;
         }

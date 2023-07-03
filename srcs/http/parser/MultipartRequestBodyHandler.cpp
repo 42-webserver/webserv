@@ -17,14 +17,16 @@ bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::s
 		reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
 		this->_buffer.clear();
 	}
-	bool result = false;
-	while (!reqBuffer.empty()){
-		if (this->_state == M_HEADER)
-			handleMultipartHeader(reqBuffer, req);
-		if (this->_state == M_BODY)
-			result = parsePartOfBody(reqBuffer, req);
-	}
-	return result;
+    bool result = false;
+    while (!reqBuffer.empty()){
+        if (this->_state == M_HEADER)
+            handleMultipartHeader(reqBuffer, req);
+        if (this->_state == M_BODY)
+            result = parsePartOfBody(reqBuffer, req);
+    }
+    if(result)
+        FileUploader::fileUpload(req->getMultipartRequests(), req->getUri());
+    return result;
 }
 
 void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
