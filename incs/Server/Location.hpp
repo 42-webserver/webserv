@@ -8,7 +8,6 @@
 
 class Location {
 	private:
-		const std::string	_dir;
 		const std::string	_root;
 		const std::string	_alias;
 		const std::string	_autoindex;
@@ -16,13 +15,11 @@ class Location {
 		const std::string	_return_url;
 	
 	private:
-		static std::string	_parseDir(const Config::map &config_map, size_t idx) throw(std::exception);
 		static std::string	_parseRoot(const Config::map &config_map, size_t idx) throw(std::exception);
 		static std::string	_parseAlias(const Config::map &config_map, size_t idx) throw(std::exception);
 		static std::string	_parseAutoIndex(const Config::map &config_map, size_t idx) throw(std::exception);
 		static std::string	_parseReturnStatus(const Config::map &config_map, size_t idx) throw(std::exception);
 		static std::string	_parseReturnUrl(const Config::map &config_map, size_t idx) throw(std::exception);
-		static bool			_dirIsValid(const std::string &dir);
 		static bool			_rootIsValid(const std::string &root);
 		static bool			_aliasIsValid(const std::string &alias);
 		static bool			_autoIndexIsValid(const std::string &autoindex);
@@ -37,7 +34,6 @@ class Location {
 		Location &operator=(const Location &rhs);
 
 	public:
-		const std::string	&getDir(void) const;
 		const std::string	&getRoot(void) const;
 		const std::string	&getAlias(void) const;
 		const std::string	&getAutoIndex(void) const;
@@ -46,10 +42,6 @@ class Location {
 	
 	public:
 		class InvalidSyntaxException: public std::exception {
-			public:
-				virtual const char *what() const throw();
-		};
-		class InvalidDirException: public std::exception {
 			public:
 				virtual const char *what() const throw();
 		};

@@ -61,12 +61,15 @@ int							VirtualServer::_parseClientMaxBodySize(const Config::map &config_map) 
 
 	return (ret);
 }
-std::vector<Location>		VirtualServer::_parseLocations(const Config::map &config_map) {
-	std::vector<Location>	ret;
+ft::Trie<Location>		VirtualServer::_parseLocations(const Config::map &config_map) {
+	ft::Trie<Location>	ret;
+	std::string			dir;
 
 	for (size_t i=0; i<config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::DIR]).size(); i++) {
 		try {
-			ret.push_back(Location(config_map, i));
+			dir = config_map.at(std::string("location_") + Config::LOCATION_KEYS[Config::LOCATION_KEY::DIR])[i];
+			dir = (dir.back() != '/') ? dir + '/' : dir;
+			ret.insert(dir, Location(config_map, i));
 		} catch (const std::exception &e) {
 			Logger::getInstance().error(e.what());
 			throw (FailToInitializeLocationException());
@@ -80,7 +83,7 @@ bool						VirtualServer::_rootIsValid(const std::string &root) { return (true); 
 bool						VirtualServer::_indexesIsValid(const std::vector<std::string> &indexes) { return (true); (void) indexes; }
 bool						VirtualServer::_defaultErrorPageIsValid(const std::string &default_error_page) { return (true); (void) default_error_page; }
 bool						VirtualServer::_clientMaxBodySizeIsValid(const int client_max_body_size) { return (true); (void) client_max_body_size; }
-bool						VirtualServer::_locationsIsValid(const std::vector<Location> &locations) { return (true); (void) locations; }
+bool						VirtualServer::_locationsIsValid(const ft::Trie<Location> &locations) { return (true); (void) locations; }
 // Custom For use!!
 
 // Getters
@@ -88,7 +91,7 @@ const std::string				&VirtualServer::getDefaultErrorPage(void) const { return (t
 int								VirtualServer::getClientMaxBodySize(void) const { return (this->_client_max_body_size); }
 const std::string				&VirtualServer::getRoot(void) const { return (this->_root); }
 const std::vector<std::string>	&VirtualServer::getIndexes(void) const { return (this->_indexes); }
-const std::vector<Location>		&VirtualServer::getLocations(void) const { return (this->_locations); }
+const ft::Trie<Location>		&VirtualServer::getLocations(void) const { return (this->_locations); }
 
 // Exception
 const char	*VirtualServer::InvalidRootException::what(void) const throw() { return ("VirtualServer: Invalid root"); }
@@ -109,9 +112,5 @@ std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs) {
 	os << '\n';
 	os << "\t\t\t\t\t\t\t\t" << "default_error_page: " << rhs.getDefaultErrorPage() << '\n';
 	os << "\t\t\t\t\t\t\t\t" << "client_max_body_size: " << rhs.getClientMaxBodySize() << '\n';
-	os << "\t\t\t\t\t\t\t\t" << "locations: " << '\n';
-	for (size_t i=0; i<rhs.getLocations().size(); i++) {
-		os << rhs.getLocations()[i] << '\n';
-	}
 	return (os);
 }
