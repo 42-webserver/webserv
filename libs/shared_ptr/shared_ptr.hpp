@@ -18,7 +18,7 @@ class shared_ptr {
 	
 	public:
 		shared_ptr(void);
-		shared_ptr(T *ptr);
+		shared_ptr(T *const ptr);
 		shared_ptr(const shared_ptr<T> &ref);
 		~shared_ptr(void);
 		shared_ptr<T> &operator=(const shared_ptr<T> &ref);
@@ -40,7 +40,7 @@ template <typename T>
 shared_ptr<T>::shared_ptr(void): _ptr(NULL), _count(NULL) {}
 
 template <typename T>
-shared_ptr<T>::shared_ptr(T *ptr): _ptr(ptr), _count(NULL) { this->add_ref(); }
+shared_ptr<T>::shared_ptr(T *const ptr): _ptr(ptr), _count(NULL) { this->add_ref(); }
 
 template <typename T>
 shared_ptr<T>::shared_ptr(const shared_ptr<T> &ref): _ptr(ref._ptr), _count(ref._count) { this->add_ref(); }

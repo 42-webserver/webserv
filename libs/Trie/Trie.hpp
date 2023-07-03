@@ -11,46 +11,54 @@ namespace ft {
 template <typename T>
 class Trie {
 	public:
-		typedef typename std::map< char, ft::shared_ptr < Trie<T> > >::iterator			iterator;
-		typedef typename std::map< char, ft::shared_ptr < Trie<T> > >::const_iterator	const_iterator;
+		typedef typename std::map< char, Trie<T> * >::iterator			iterator;
+		typedef typename std::map< char, Trie<T> * >::const_iterator	const_iterator;
 
 	protected:
-		bool 										_is_end;
-		T 											_data;
-		std::map< char, ft::shared_ptr< Trie<T> > >	_next;
+		bool 						_is_end;
+		T 							_data;
+		std::map< char, Trie<T> * >	_next;
 
 	public:
 		Trie(void): _is_end(false), _data(), _next() {}
-		~Trie(void) {}
+		~Trie(void) {
+			for (iterator it=this->_next.begin(); it!=this->_next.end(); it++) {
+				delete it->second;
+			}
+		}
 
 		bool	insert(const std::string &str, const T &data) {
-			ft::shared_ptr< Trie<T> >	cur = ft::shared_ptr< Trie<T> >(this);
-			iterator					it;
+			Trie<T>		*cur = this;
+			iterator	it;
 
 			for (size_t	i=0; i<str.size(); i++) {
 				if ((it = cur->_next.find(str[i])) == cur->_next.end()) {
-					cur->_next[str[i]] = ft::shared_ptr< Trie<T> >(new Trie<T>());
+					cur->_next[str[i]] = new Trie<T>();
 					it = cur->_next.find(str[i]);
 				}
 				cur = it->second;
 			}
 			cur->_is_end = true;
 			cur->_data = data;
-
 			return (true);
 		}
 
-		ft::shared_ptr< Trie<T> >	search(const std::string &str) const {
-			ft::shared_ptr< Trie<T> >	cur = ft::shared_ptr< Trie<T> >(this);
-			const_iterator				it;
+		T	search(const std::string &str) const {
+			T				ret;
+			const Trie<T>	*cur;
+			const_iterator	it;
 
+			cur = this;
 			for (size_t	i=0; i<str.size(); i++) {
 				if ((it = cur->_next.find(str[i])) == cur->_next.end()) {
-					return (ft::shared_ptr< Trie<T> >(NULL));
+					break;
 				}
 				cur = it->second;
+				if (cur->_is_end) {
+					ret = cur->_data;
+				}
 			}
-			return (cur);
+			return (ret);
 		}
 };
 

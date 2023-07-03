@@ -142,8 +142,6 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const
 	}
 	if (it != this->_ip_map.end()) {
 		ret = it->second;
-	} else { // Never reach here maybe
-		Logger::getInstance().error("Error: VirtualServerManager: No virtual server for ip: " + ip);
 	}
 	return (ret);
 }
