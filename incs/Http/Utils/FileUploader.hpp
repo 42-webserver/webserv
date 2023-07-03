@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <fstream>
 #include <cstdio>
-#include "../request/MultipartRequest.hpp"
-#include "../exception/BadRequestException.hpp"
+#include "../Request/MultipartRequest.hpp"
+#include "../Exception/BadRequestException.hpp"
 
 static const std::string        _FILE_UPLOAD_DIR = "/Users/leehyunkyu/Desktop/webserv/uploads/";
 
@@ -18,7 +18,7 @@ class FileUploadException : public BadRequestException {
             virtual const char* what() const throw();
 };
 
-static void fileUpload(std::vector<MultipartRequest> &multipartRequests) throw(FileUploader::FileUploadException);
+static void fileUpload(std::vector<MultipartRequest> &multipartRequests, std::string path) throw(FileUploader::FileUploadException);
 static void uploadStart(std::string &filepath, std::vector<char> &memoryBody, std::string &bodyDataFilename) throw(FileUploadException);
 static void checkFileExists(const std::string& filepath) throw(FileUploader::FileUploadException);
 };
