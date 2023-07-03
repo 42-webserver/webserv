@@ -25,8 +25,8 @@ bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::s
         if (this->_state == M_BODY)
             result = parsePartOfBody(reqBuffer, req);
     }
-    // if(result)
-    //     FileUploader::fileUpload(req->getMultipartRequests());
+    if(result)
+        FileUploader::fileUpload(req->getMultipartRequests(), req->getUri());
     return result;
 }
 
