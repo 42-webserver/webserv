@@ -1,13 +1,14 @@
 #include "../../incs/Server/VirtualServerManager.hpp"
+#include "../../incs/Config/ServerNameElement.hpp"
 #include "../../incs/Log/Logger.hpp"
 #include <fstream>
 #include <sstream>
 
 const VirtualServerManager::EtcHostsMap 			VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
 VirtualServerManager::EtcHostsMap 					VirtualServerManager::_initEtcHostsMap(void) {
-	std::map< VirtualServerManager::ServerName, VirtualServerManager::Ip >	ret;
-	std::ifstream															infile("/etc/hosts");
-	std::string																line;
+	std::map< ServerName, Ip >	ret;
+	std::ifstream				infile("/etc/hosts");
+	std::string					line;
 
 	if (infile.is_open()) {
 		while (std::getline(infile, line)) {
@@ -41,10 +42,11 @@ VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager
 	return (*this);
 }
 
-bool	VirtualServerManager::build(const Ip &ip, const Config::map &config_map) throw(std::exception) {
+bool	VirtualServerManager::build(const Ip &ip, const ServerElement *element) throw(std::exception) {
 	try {
-		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(config_map));
-		std::vector<ServerName>			server_names = config_map.at(Config::KEYS[Config::KEY::SERVER_NAME]);
+		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(element));
+		const ServerNameElement			*server_name_element = (const ServerNameElement *) element->find(ServerElement::KEY::SERVER_NAME)->second;
+		const std::vector<ServerName>	&server_names = server_name_element->getServerNames();
 
 		if (this->_default_server_ip.empty()) {
 			this->_default_server_ip = ip;
@@ -91,7 +93,7 @@ bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualSer
 
 ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host &host) const throw(std::exception) {
 	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
-	const Host						trimmed = VirtualServerManager::_trimHost(host);
+	const Host						&trimmed = VirtualServerManager::_trimHost(host);
 
 	if (VirtualServerManager::_isIpFormat(trimmed)) {
 		ret = this->_findVirtualServerByIp(trimmed);
@@ -103,36 +105,6 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host
 	return (ret);
 }
 
-VirtualServerManager::Host		VirtualServerManager::_trimHost(const Host &host) const {
-	Host	ret = host;
-
-	if (host.find(":") != std::string::npos) {
-		ret = host.substr(0, host.find(":"));
-	}
-	return (ret);
-}
-bool							VirtualServerManager::_isIpFormat(const Host &host) const {
-	for (size_t i=0; i<host.size(); i++) {
-		if (host[i] == '.') {
-			continue;
-		}
-		if (host[i] < '0' || '9' < host[i]) {
-			return (false);
-		}
-	}
-	return (true);
-}
-bool							VirtualServerManager::_isServerNameFormat(const Host &host) const {
-	for (size_t i=0; i<host.size(); i++) {
-		if (host[i] == '.') {
-			continue;
-		}
-		if (host[i] < 'a' || 'z' < host[i]) {
-			return (false);
-		}
-	}
-	return (true);
-}
 ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const Ip &ip) const {
 	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
 	IpMap::const_iterator			it = this->_ip_map.find(ip);
@@ -168,6 +140,37 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByServerNa
 }
 ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByEtcHosts(const ServerName &server_name) const {
 	return (this->_findVirtualServerByIp(VirtualServerManager::ETC_HOSTS_MAP.find(server_name)->second));
+}
+
+VirtualServerManager::Host		VirtualServerManager::_trimHost(const Host &host) {
+	Host	ret = host;
+
+	if (host.find(":") != std::string::npos) {
+		ret = host.substr(0, host.find(":"));
+	}
+	return (ret);
+}
+bool							VirtualServerManager::_isIpFormat(const Host &host) {
+	for (size_t i=0; i<host.size(); i++) {
+		if (host[i] == '.') {
+			continue;
+		}
+		if (host[i] < '0' || '9' < host[i]) {
+			return (false);
+		}
+	}
+	return (true);
+}
+bool							VirtualServerManager::_isServerNameFormat(const Host &host) {
+	for (size_t i=0; i<host.size(); i++) {
+		if (host[i] == '.') {
+			continue;
+		}
+		if (host[i] < 'a' || 'z' < host[i]) {
+			return (false);
+		}
+	}
+	return (true);
 }
 
 const char	*VirtualServerManager::FailToBuildException::what() const throw() { return ("VirtualServerManager: Fail to build"); }

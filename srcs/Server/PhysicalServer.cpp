@@ -4,13 +4,13 @@
 PhysicalServer::PhysicalServer(void): _socket(ft::shared_ptr<Socket>(NULL)), _virtual_server_manager(ft::shared_ptr<VirtualServerManager>(NULL)) {}
 PhysicalServer::~PhysicalServer(void) {}
 
-bool	PhysicalServer::build(const Ip &ip, const Config::map &config_map) throw(std::exception) {
+bool	PhysicalServer::build(const Ip &ip, const ServerElement *element) throw(std::exception) {
 	try {
 		if (this->_virtual_server_manager.get() == NULL) {
 			this->_ip = ip;
 			this->_virtual_server_manager = ft::shared_ptr<VirtualServerManager>(new VirtualServerManager());
 		}
-		this->_virtual_server_manager->build(ip, config_map);
+		this->_virtual_server_manager->build(ip, element);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToBuildException());

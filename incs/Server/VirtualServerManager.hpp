@@ -2,7 +2,7 @@
 # define VIRUTALSERVERMANAGER_HPP
 
 # include "../../libs/shared_ptr/shared_ptr.hpp"
-# include "../Config/Config.hpp"
+# include "../Config/ServerElement.hpp"
 # include "VirtualServer.hpp"
 # include <string>
 # include <map>
@@ -32,7 +32,7 @@ class VirtualServerManager {
 		VirtualServerManager	&operator=(const VirtualServerManager &rhs);
 
 	public:
-		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
+		bool	build(const Ip &ip, const ServerElement *element) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
 		bool	mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception);
 	
@@ -40,13 +40,15 @@ class VirtualServerManager {
 		ft::shared_ptr<VirtualServer>	findVirtualServer(const Host &host) const throw(std::exception);
 	
 	private:
-		Host							_trimHost(const Host &host) const;
-		bool							_isIpFormat(const Host &host) const;
-		bool							_isServerNameFormat(const Host &host) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByIp(const Ip &ip) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByName(const ServerName &server_name) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByServerName(const ServerName &server_name) const;
 		ft::shared_ptr<VirtualServer>	_findVirtualServerByEtcHosts(const ServerName &server_name) const;
+	
+	private:
+		static Host						_trimHost(const Host &host);
+		static bool						_isIpFormat(const Host &host);
+		static bool						_isServerNameFormat(const Host &host);
 	
 	public:
 		class FailToBuildException: public std::exception {

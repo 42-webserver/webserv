@@ -2,7 +2,7 @@
 # define PHYSICALSERVER_HPP
 
 # include "../../libs/shared_ptr/shared_ptr.hpp"
-# include "../Config/Config.hpp"
+# include "../Config/ServerElement.hpp"
 # include "../Socket/Socket.hpp"
 # include "VirtualServerManager.hpp"
 
@@ -24,7 +24,7 @@ class PhysicalServer {
 		PhysicalServer	&operator=(const PhysicalServer &rhs);
 	
 	public:
-		bool	build(const Ip &ip, const Config::map &config_map) throw(std::exception);
+		bool	build(const Ip &ip, const ServerElement *element) throw(std::exception);
 		bool	buildSocket(const Port &port) throw(std::exception);
 		bool	run(void) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
