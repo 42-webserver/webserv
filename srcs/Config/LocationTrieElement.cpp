@@ -29,7 +29,7 @@ bool	LocationTrieElement::insert(std::ifstream &infile) throw(std::exception) {
 		throw (InvalidArgumentException());
 	}
 	token = (token.back() != '/') ? token + "/" : token;
-	if (this->_trie.find(token)) {
+	if (this->_trie.find(token) != this->_trie.end()) {
 		throw (DuplicatedDirectoryException());
 	}
 	try {
@@ -41,7 +41,7 @@ bool	LocationTrieElement::insert(std::ifstream &infile) throw(std::exception) {
 	return (true);
 }
 
-const LocationElement	*LocationTrieElement::longestPrefixSearch(const std::string &path) const { this->_trie.longestPrefixSearch(path); }
+const LocationElement	*LocationTrieElement::longestPrefixSearch(const std::string &path) const { return (this->_trie.longestPrefixSearch(path)); }
 
 bool	LocationTrieElement::_parse(std::ifstream &infile) throw(std::exception) {
 	try {

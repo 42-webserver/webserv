@@ -24,9 +24,21 @@ class Trie {
 		Trie(void);
 		~Trie(void);
 
-		bool	insert(const std::string &key, const T &data);
-		Trie<T>	*find(const std::string &key) const;
-		T		longestPrefixSearch(const std::string &key) const;
+	public:
+		std::pair<iterator, bool>	insert(const std::string &key, const T &data);
+
+	public:
+		T	longestPrefixSearch(const std::string &key) const;
+	
+	public:
+		iterator	begin(void);
+		iterator	end(void);
+		iterator	find(const std::string &key);
+
+	public:
+		const_iterator	begin(void) const;
+		const_iterator	end(void) const;
+		const_iterator	find(const std::string &key) const;
 };
 
 template <typename T>
@@ -40,38 +52,24 @@ Trie<T>::~Trie(void) {
 }
 
 template <typename T>
-bool	Trie<T>::insert(const std::string &key, const T &data) {
+std::pair< typename Trie<T>::iterator, bool >	Trie<T>::insert(const std::string &key, const T &data) {
 	Trie		*cur = this;
 	iterator	it;
 
 	for (size_t	i=0; i<key.size(); i++) {
 		if ((it = cur->_next.find(key[i])) == cur->_next.end()) {
-			cur->_next[key[i]] = new Trie<T>();
-			it = cur->_next.find(key[i]);
+			it = cur->_next.insert(std::make_pair(key[i], new Trie<T>())).first;
 		}
 		cur = it->second;
 	}
 	cur->_is_end = true;
 	cur->_data = data;
-	return (true);
-}
-template <typename T>
-Trie<T>	*Trie<T>::find(const std::string &key) const {
-	Trie			*ret = const_cast<Trie *>(this);
-	const_iterator	it;
-
-	for (size_t	i=0; i<key.size(); i++) {
-		if ((it = ret->_next.find(key[i])) == ret->_next.end()) {
-			return (NULL);
-		}
-		ret = it->second;
-	}
-	return (ret);
+	return (make_pair(it, true));
 }
 template <typename T>
 T		Trie<T>::longestPrefixSearch(const std::string &key) const {
 	T				ret;
-	Trie			*cur = this;
+	Trie			*cur = const_cast<Trie *>(this);
 	const_iterator	it;
 
 	for (size_t	i=0; i<key.size(); i++) {
@@ -85,6 +83,42 @@ T		Trie<T>::longestPrefixSearch(const std::string &key) const {
 	}
 	if (cur->_is_end) {
 		ret = cur->_data;
+	}
+	return (ret);
+}
+
+template <typename T>
+typename Trie<T>::iterator	Trie<T>::begin(void) { return (this->_next.begin()); }
+
+template <typename T>
+typename Trie<T>::iterator	Trie<T>::end(void) { return (this->_next.end()); }
+
+template <typename T>
+typename Trie<T>::iterator	Trie<T>::find(const std::string &key) {
+	iterator	ret;
+
+	for (size_t	i=0; i<key.size(); i++) {
+		if ((ret = this->_next.find(key[i])) == this->_next.end()) {
+			return (this->_next.end());
+		}
+	}
+	return (ret);
+}
+
+template <typename T>
+typename Trie<T>::const_iterator	Trie<T>::begin(void) const { return (this->_next.begin()); }
+
+template <typename T>
+typename Trie<T>::const_iterator	Trie<T>::end(void) const { return (this->_next.end()); }
+
+template <typename T>
+typename Trie<T>::const_iterator	Trie<T>::find(const std::string &key) const {
+	const_iterator	ret;
+
+	for (size_t	i=0; i<key.size(); i++) {
+		if ((ret = this->_next.find(key[i])) == this->_next.end()) {
+			return (this->_next.end());
+		}
 	}
 	return (ret);
 }

@@ -52,7 +52,7 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 }
 
 bool	PhysicalServerManager::_buildPhysicalServerVector(const ServerElement *element) throw(std::exception) {
-	const ListenElement				*listen_element = (const ListenElement *) element->find(ServerElement::KEY::LISTEN);
+	const ListenElement				*listen_element = (const ListenElement *) element->find(ServerElement::KEY::LISTEN)->second;
 	const Port						&port = (Port &) listen_element->getPort();
 	const Ip						&ip = (Ip &) listen_element->getIp();
 	PortMap::iterator				it;

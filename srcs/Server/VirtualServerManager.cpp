@@ -45,7 +45,7 @@ VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager
 bool	VirtualServerManager::build(const Ip &ip, const ServerElement *element) throw(std::exception) {
 	try {
 		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(element));
-		const ServerNameElement			*server_name_element = (const ServerNameElement *) element->find(ServerElement::KEY::SERVER_NAME);
+		const ServerNameElement			*server_name_element = (const ServerNameElement *) element->find(ServerElement::KEY::SERVER_NAME)->second;
 		const std::vector<ServerName>	&server_names = server_name_element->getServerNames();
 
 		if (this->_default_server_ip.empty()) {
