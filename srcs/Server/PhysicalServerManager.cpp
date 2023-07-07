@@ -1,4 +1,5 @@
 #include "../../incs/Server/PhysicalServerManager.hpp"
+#include "../../incs/Config/ListenElement.hpp"
 #include "../../incs/EventQueue/EventQueue.hpp"
 #include "../../incs/Event/ListenEvent.hpp"
 #include "../../incs/Log/Logger.hpp"
@@ -16,10 +17,10 @@ PhysicalServerManager	&PhysicalServerManager::operator=(const PhysicalServerMana
 
 bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 	try {
-		const std::vector<Config::map>	config_maps = config.getConfigMaps();
+		const Config::ElementVector	&elements = config.getElementVector();
 
-		for (size_t i=0; i<config_maps.size(); i++) {
-			this->_buildPhysicalServerVector(config_maps[i]);
+		for (size_t i=0; i<elements.size(); i++) {
+			this->_buildPhysicalServerVector((const ServerElement *) elements[i]);
 		}
 		for (PortMap::iterator it=this->_port_map.begin(); it!=this->_port_map.end(); it++) {
 			if (this->_hasServerWithWildCardIp(it) == true) {
@@ -50,23 +51,22 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 	return (true);
 }
 
-bool	PhysicalServerManager::_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception) {
-	const std::string				listen = config_map.find("listen")->second[0];
-	const Port						port = _parsePort(listen);
-	const Ip						ip = _parseIp(listen);
+bool	PhysicalServerManager::_buildPhysicalServerVector(const ServerElement *element) throw(std::exception) {
+	const ListenElement				*listen_element = (const ListenElement *) element->find(ServerElement::KEY::LISTEN);
+	const Port						&port = (Port &) listen_element->getPort();
+	const Ip						&ip = (Ip &) listen_element->getIp();
 	PortMap::iterator				it;
 	ft::shared_ptr<PhysicalServer>	physical_server;
 
 	if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
-		this->_port_map.insert(std::make_pair(port, PhysicalServerVector()));
-		it = this->_port_map.find(port);
+		it = (this->_port_map.insert(std::make_pair(port, PhysicalServerVector()))).first;
 	}
 	if ((physical_server = this->_findPhysicalServer(it, ip)).get() == NULL) {
 		physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
 		it->second.push_back(physical_server);
 	}
 	try {
-		physical_server->build(ip, config_map);
+		physical_server->build(ip, element);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToBuildPhysicalServerVectorException());
@@ -87,7 +87,7 @@ bool	PhysicalServerManager::_buildSocket(void) throw(std::exception) {
 	return (true);
 }
 bool	PhysicalServerManager::_hasServerWithWildCardIp(const PortMap::const_iterator &it) const {
-	PhysicalServerVector	physical_server_vector = it->second;
+	const PhysicalServerVector	&physical_server_vector = it->second;
 
 	for (size_t i=0; i<physical_server_vector.size(); i++) {
 		if (physical_server_vector[i]->hasServerWithWildCardIp() == true) {
@@ -97,7 +97,7 @@ bool	PhysicalServerManager::_hasServerWithWildCardIp(const PortMap::const_iterat
 	return (false);
 }
 bool	PhysicalServerManager::_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception) {
-	PhysicalServerVector			physical_server_vector = it->second;
+	const PhysicalServerVector		&physical_server_vector = it->second;
 	ft::shared_ptr<PhysicalServer>	physical_server = physical_server_vector[0];
 
 	try {
@@ -154,7 +154,7 @@ bool						PhysicalServerManager::_ipIsValid(const Ip &ip) {
 }
 
 ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServer(const PortMap::const_iterator &it, const Ip &ip) {
-	PhysicalServerVector			physical_server_vector = it->second;
+	const PhysicalServerVector		&physical_server_vector = it->second;
 	ft::shared_ptr<VirtualServer>	virtual_server;
 
 	for (size_t i=0; i<physical_server_vector.size(); i++) {

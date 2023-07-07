@@ -17,7 +17,20 @@ SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
 SRCS =	main.cpp \
+		Config/AliasElement.cpp \
+		Config/AutoIndexElement.cpp \
+		Config/ClientMaxBodySizeElement.cpp \
 		Config/Config.cpp \
+		Config/ConfigElement.cpp \
+		Config/ErrorPageElement.cpp \
+		Config/IndexElement.cpp \
+		Config/ListenElement.cpp \
+		Config/LocationElement.cpp \
+		Config/LocationTrieElement.cpp \
+		Config/ReturnElement.cpp \
+		Config/RootElement.cpp \
+		Config/ServerElement.cpp \
+		Config/ServerNameElement.cpp \
 		Event/Event.cpp \
 		Event/ListenEvent.cpp \
 		Event/ReadEvent.cpp \
@@ -43,7 +56,6 @@ SRCS =	main.cpp \
 		Log/Logger.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
-		Server/Location.cpp \
 		Server/PhysicalServer.cpp \
 		Server/PhysicalServerManager.cpp \
 		Server/VirtualServer.cpp \

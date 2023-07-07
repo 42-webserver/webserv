@@ -4,7 +4,6 @@
 #include <iostream>
 #include "../../libs/Trie/Trie.hpp"
 #include "./RouteOrAliasHandler.hpp"
-#include "../Server/Location.hpp"
 
 class MatchHandler {
 private:

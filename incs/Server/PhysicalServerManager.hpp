@@ -2,6 +2,8 @@
 # define PHYSICALSERVERMANAGER_HPP
 
 # include "../../libs/shared_ptr/shared_ptr.hpp"
+# include "../Config/Config.hpp"
+# include "../Config/ServerElement.hpp"
 # include "PhysicalServer.hpp"
 # include <vector>
 # include <map>
@@ -27,7 +29,7 @@ class PhysicalServerManager {
 		bool	run(void) throw(std::exception);
 	
 	private:
-		bool	_buildPhysicalServerVector(const Config::map &config_map) throw(std::exception);
+		bool	_buildPhysicalServerVector(const ServerElement *element) throw(std::exception);
 		bool	_buildSocket(void) throw(std::exception);
 		bool	_hasServerWithWildCardIp(const PortMap::const_iterator &it) const;
 		bool	_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception);
