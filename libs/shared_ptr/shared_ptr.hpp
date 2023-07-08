@@ -110,9 +110,23 @@ bool	shared_ptr<T>::operator!=(const shared_ptr<T> &ref) const { return (this->_
 template <typename T>
 shared_ptr<T>::operator	bool(void) const { return (this->_ptr != NULL); }
 
-//잘못된 구현
-// template <typename T>
-// shared_ptr<T>	make_shared(T arg) { return (shared_ptr<T>(new T(arg))); }
+template <typename T, typename Arg1>
+shared_ptr<T>	make_shared(Arg1 arg) { return (shared_ptr<T>(new T(arg))); }
+
+template <typename T, typename Arg1, typename Arg2>
+shared_ptr<T>	make_shared(Arg1 arg1, Arg2 arg2) { return (shared_ptr<T>(new T(arg1, arg2))); }
+
+template <typename T, typename Arg1, typename Arg2, typename Arg3>
+shared_ptr<T>	make_shared(Arg1 arg1, Arg2 arg2, Arg3 arg3) { return (shared_ptr<T>(new T(arg1, arg2, arg3))); }
+
+template <typename T, typename U>
+shared_ptr<T>	static_pointer_cast(const shared_ptr<U> &ref) { return (shared_ptr<T>(static_cast<T *>(ref.get()))); }
+
+template <typename T, typename U>
+shared_ptr<T>	dynamic_pointer_cast(const shared_ptr<U> &ref) { return (shared_ptr<T>(dynamic_cast<T *>(ref.get()))); }
+
+template <typename T, typename U>
+shared_ptr<T>	const_pointer_cast(const shared_ptr<U> &ref) { return (shared_ptr<T>(const_cast<T *>(ref.get())));
 
 }
 
