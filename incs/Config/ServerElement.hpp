@@ -1,6 +1,7 @@
 #ifndef SERVERELEMENT_HPP
 # define SERVERELEMENT_HPP
 
+# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "ConfigElement.hpp"
 # include <fstream>
 # include <vector>
@@ -22,10 +23,11 @@ class ServerElement: public ConfigElement {
 				SERVER_NAME,
 			};
 		}	KEY;
-		typedef std::map<std::string, KEY::e_key>		KeyMap;
-		typedef std::map<KEY::e_key, ConfigElement *>	ElementMap;
-		typedef ElementMap::iterator					iterator;
-		typedef ElementMap::const_iterator				const_iterator;
+		typedef std::map<std::string, KEY::e_key>	KeyMap;
+		typedef ft::shared_ptr<ConfigElement>		ElementPtr;
+		typedef std::map<KEY::e_key, ElementPtr >	ElementMap;
+		typedef ElementMap::iterator				iterator;
+		typedef ElementMap::const_iterator			const_iterator;
 
 	private:
 		static const KeyMap	_key_map;
@@ -54,8 +56,8 @@ class ServerElement: public ConfigElement {
 		const_iterator		find(KEY::e_key key) const;
 	
 	public:
-		ConfigElement		*&operator[](KEY::e_key key);
-		const ConfigElement	*&operator[](KEY::e_key key) const;
+		ElementPtr			&operator[](KEY::e_key key);
+		const ElementPtr	&operator[](KEY::e_key key) const;
 	
 	private:
 		bool	_parse(std::ifstream &infile) throw(std::exception);

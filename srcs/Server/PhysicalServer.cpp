@@ -4,7 +4,7 @@
 PhysicalServer::PhysicalServer(void): _socket(ft::shared_ptr<Socket>(NULL)), _virtual_server_manager(ft::shared_ptr<VirtualServerManager>(NULL)) {}
 PhysicalServer::~PhysicalServer(void) {}
 
-bool	PhysicalServer::build(const Ip &ip, const ServerElement *element) throw(std::exception) {
+bool	PhysicalServer::build(const Ip &ip, const ft::shared_ptr<ServerElement> &element) throw(std::exception) {
 	try {
 		if (this->_virtual_server_manager.get() == NULL) {
 			this->_ip = ip;

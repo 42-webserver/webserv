@@ -12,6 +12,9 @@ class shared_ptr {
 		T	*_ptr;
 		int	*_count;
 
+		template <typename U>
+        friend class shared_ptr;
+
 	private:
 		void	add_ref(void);
 		void	release(void);
@@ -77,7 +80,6 @@ shared_ptr<T>::shared_ptr(const shared_ptr<U> &ref, T *const ptr): _ptr(ptr), _c
 
 template <typename T>
 void	shared_ptr<T>::add_ref(void) {
-	// Not exist
 	if (this->_ptr == NULL) {
 		return;
 	}
@@ -91,14 +93,13 @@ void	shared_ptr<T>::add_ref(void) {
 
 template <typename T>
 void	shared_ptr<T>::release(void) {
-	// Not exist
 	if (this->_ptr == NULL) {
 		return;
 	}
 
 	if (--(*this->_count) == 0) {
-		delete this->_ptr;
-		delete this->_count;
+		delete (this->_ptr);
+		delete (this->_count);
 		this->_ptr = NULL;
 		this->_count = NULL;
 	}

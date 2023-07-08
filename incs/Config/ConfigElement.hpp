@@ -1,6 +1,7 @@
 #ifndef CONFIGELEMENT_HPP
 # define CONFIGELEMENT_HPP
 
+# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include <exception>
 # include <fstream>
 
@@ -18,6 +19,9 @@ class ConfigElement {
 
 class ConfigElementFactory {
 	private:
+		typedef ft::shared_ptr<ConfigElement>	ElementPtr;
+
+	private:
 		ConfigElementFactory(void);
 		~ConfigElementFactory(void);
 		ConfigElementFactory(const ConfigElementFactory &ref);
@@ -27,7 +31,7 @@ class ConfigElementFactory {
 		static ConfigElementFactory	&getInstance(void);
 
 	public:
-		ConfigElement	*create(const std::string &element, std::ifstream &infile) const throw(std::exception);
+		ElementPtr	create(const std::string &element, std::ifstream &infile) const throw(std::exception);
 
 	public:
 		class InvalidElementException: public std::exception {

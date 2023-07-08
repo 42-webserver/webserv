@@ -3,8 +3,8 @@
 #include "../../incs/Log/Logger.hpp"
 #include <fstream>
 
-Config::Config(void): _file_name(""), _element_vector(ElementVector()) {}
-Config::Config(const char *file_name): _file_name(file_name), _element_vector(ElementVector()) {
+Config::Config(void): _file_name(""), _element_ptr_vector(ElementPtrVector()) {}
+Config::Config(const char *file_name): _file_name(file_name), _element_ptr_vector(ElementPtrVector()) {
 	try {
 		this->_parse();
 	} catch (const std::exception &e) {
@@ -13,7 +13,7 @@ Config::Config(const char *file_name): _file_name(file_name), _element_vector(El
 	}
 }
 
-Config::Config(const Config &ref): _file_name(ref._file_name), _element_vector(ref._element_vector) {}
+Config::Config(const Config &ref): _file_name(ref._file_name), _element_ptr_vector(ref._element_ptr_vector) {}
 Config::~Config(void) {}
 Config	&Config::operator=(const Config &rhs) {
 	if (this != &rhs) {
@@ -23,7 +23,7 @@ Config	&Config::operator=(const Config &rhs) {
 	return (*this);
 }
 
-const Config::ElementVector	&Config::getElementVector(void) const { return (this->_element_vector); }
+const Config::ElementPtrVector	&Config::getElementPtrVector(void) const { return (this->_element_ptr_vector); }
 
 bool	Config::_parse(void) throw(std::exception) {
 	std::ifstream	infile;
@@ -42,10 +42,10 @@ bool	Config::_parse(void) throw(std::exception) {
 		if (token != "server") {
 			throw (InvalidSyntaxException());
 		}
-		this->_element_vector.push_back(ConfigElementFactory::getInstance().create("server", infile));
+		this->_element_ptr_vector.push_back(ConfigElementFactory::getInstance().create("server", infile));
 	}
 
-	if (this->_element_vector.size() == 0) {
+	if (this->_element_ptr_vector.size() == 0) {
 		throw (InvalidArgumentException());
 	}
 

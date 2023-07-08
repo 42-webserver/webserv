@@ -27,13 +27,7 @@ ServerElement::ServerElement(std::ifstream &infile) throw(std::exception): _elem
 		throw (FailToParseException());
 	}
 }
-ServerElement::~ServerElement(void) {
-	for (ElementMap::iterator it = this->_element_map.begin(); it != this->_element_map.end(); ++it) {
-		if (it->second != NULL) {
-			delete (it->second);
-		}
-	}
-}
+ServerElement::~ServerElement(void) {}
 ServerElement::ServerElement(const ServerElement &ref): _element_map(ref._element_map) {}
 ServerElement	&ServerElement::operator=(const ServerElement &rhs) {
 	if (this != &rhs) {
@@ -83,13 +77,13 @@ bool	ServerElement::_parse(std::ifstream &infile) throw(std::exception) {
 		}
 		try {
 			if (key_it->second == KEY::LOCATION) {
-				if (this->_element_map[key_it->second] == NULL) {
-					this->_element_map[key_it->second] = ConfigElementFactory::getInstance().create("location_trie", infile);
+				if (this->_element_map.find(key_it->second) == this->_element_map.end()) {
+					this->_element_map[key_it->second] = ft::static_pointer_cast<ConfigElement>(ConfigElementFactory::getInstance().create("location_trie", infile));
 				} else {
-					((LocationTrieElement *) this->_element_map[key_it->second])->insert(infile);
+					ft::static_pointer_cast<LocationTrieElement>(this->_element_map[key_it->second])->insert(infile);
 				}
 			} else {
-				this->_element_map[key_it->second] = ConfigElementFactory::getInstance().create(key_it->first, infile);
+				this->_element_map[key_it->second] = ft::static_pointer_cast<ConfigElement>(ConfigElementFactory::getInstance().create(key_it->first, infile));
 			}
 		} catch (const std::exception &e) {
 			Logger::getInstance().error(e.what());
@@ -99,8 +93,8 @@ bool	ServerElement::_parse(std::ifstream &infile) throw(std::exception) {
 	return (true);
 }
 
-ConfigElement	*&ServerElement::operator[](KEY::e_key key) { return (this->_element_map[key]); }
-const ConfigElement	*&ServerElement::operator[](KEY::e_key key) const { return ((const ConfigElement *&) this->_element_map.at(key)); }
+ServerElement::ElementPtr		&ServerElement::operator[](KEY::e_key key) { return (this->_element_map[key]); }
+const ServerElement::ElementPtr	&ServerElement::operator[](KEY::e_key key) const { return (this->_element_map.at(key)); }
 
 const char	*ServerElement::FailToParseException::what(void) const throw() { return ("ServerElement: Fail to Parse"); }
 const char	*ServerElement::InvalidSyntaxException::what(void) const throw() { return ("ServerElement: Invalid Syntax"); }

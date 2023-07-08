@@ -1,18 +1,19 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
+# include "../../libs/shared_ptr/shared_ptr.hpp"
+# include "ConfigElement.hpp"
 # include <string>
 # include <vector>
 
-# include "ConfigElement.hpp"
-
 class Config {
 	public:
-		typedef std::vector<ConfigElement *> ElementVector;
+		typedef ft::shared_ptr<ConfigElement>	ElementPtr;
+		typedef std::vector<ElementPtr> 		ElementPtrVector;
 
 	private:
-		std::string		_file_name;
-		ElementVector	_element_vector;
+		std::string			_file_name;
+		ElementPtrVector	_element_ptr_vector;
 	
 	public:
 		Config(void);
@@ -22,7 +23,7 @@ class Config {
 		Config	&operator=(const Config &rhs);
 
 	public:
-		const ElementVector	&getElementVector(void) const;
+		const ElementPtrVector	&getElementPtrVector(void) const;
 
 	private:
 		bool	_parse(void) throw(std::exception);

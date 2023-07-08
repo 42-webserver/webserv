@@ -28,31 +28,31 @@ ConfigElementFactory	&ConfigElementFactory::getInstance(void) {
 	return (instance);
 }
 
-ConfigElement	*ConfigElementFactory::create(const std::string &element, std::ifstream &infile) const throw(std::exception) {
-	ConfigElement	*ret;
+ConfigElementFactory::ElementPtr	ConfigElementFactory::create(const std::string &element, std::ifstream &infile) const throw(std::exception) {
+	ElementPtr	ret;
 
 	if (element == "autoindex") {
-		ret = new AutoIndexElement(infile);
+		ret = ft::make_shared<AutoIndexElement>(infile);
 	} else if (element == "client_max_body_size") {
-		ret = new ClientMaxBodySizeElement(infile);
+		ret = ft::make_shared<ClientMaxBodySizeElement>(infile);
 	} else if (element == "error_page") {
-		ret = new ErrorPageElement(infile);
+		ret = ft::make_shared<ErrorPageElement>(infile);
 	} else if (element == "index") {
-		ret = new IndexElement(infile);
+		ret = ft::make_shared<IndexElement>(infile);
 	} else if (element == "listen") {
-		ret = new ListenElement(infile);
+		ret = ft::make_shared<ListenElement>(infile);
 	} else if (element == "location") {
-		ret = new LocationElement(infile);
+		ret = ft::make_shared<LocationElement>(infile);
 	} else if (element == "location_trie") {
-		ret = new LocationTrieElement(infile);
+		ret = ft::make_shared<LocationTrieElement>(infile);
 	} else if (element == "return") {
-		ret = new ReturnElement(infile);
+		ret = ft::make_shared<ReturnElement>(infile);
 	} else if (element == "root") {
-		ret = new RootElement(infile);
+		ret = ft::make_shared<RootElement>(infile);
 	} else if (element == "server") {
-		ret = new ServerElement(infile);
+		ret = ft::make_shared<ServerElement>(infile);
 	} else if (element == "server_name") {
-		ret = new ServerNameElement(infile);
+		ret = ft::make_shared<ServerNameElement>(infile);
 	} else {
 		throw (InvalidElementException());
 	}
