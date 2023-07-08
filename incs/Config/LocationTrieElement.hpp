@@ -1,6 +1,7 @@
 #ifndef LOCATIONTRIEELEMENT_HPP
 # define LOCATIONTRIEELEMENT_HPP
 
+# include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../../libs/Trie/Trie.hpp"
 # include "ConfigElement.hpp"
 # include "LocationElement.hpp"
@@ -8,7 +9,8 @@
 
 class LocationTrieElement: public ConfigElement {
 	public:
-		typedef ft::Trie<LocationElement *>	Trie;
+		typedef ft::shared_ptr<LocationElement>	LocationElementPtr;
+		typedef ft::Trie<LocationElementPtr>	LocationElementPtrTrie;
 
 	public:
 		LocationTrieElement(void);
@@ -18,11 +20,11 @@ class LocationTrieElement: public ConfigElement {
 		LocationTrieElement	&operator=(const LocationTrieElement &rhs);
 
 	private:
-		Trie	_trie;
+		LocationElementPtrTrie	_location_element_ptr_trie;
 	
 	public:
-		bool					insert(std::ifstream &infile) throw(std::exception);
-		const LocationElement	*longestPrefixSearch(const std::string &path) const;
+		bool				insert(std::ifstream &infile) throw(std::exception);
+		LocationElementPtr	longestPrefixSearch(const std::string &path) const;
 	
 	private:
 		bool	_parse(std::ifstream &infile) throw(std::exception);

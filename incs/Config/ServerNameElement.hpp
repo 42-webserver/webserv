@@ -6,7 +6,7 @@
 # include <vector>
 
 class ServerNameElement: public ConfigElement {
-	private:
+	public:
 		typedef std::string	ServerName;
 	
 	private:
@@ -38,5 +38,7 @@ class ServerNameElement: public ConfigElement {
 				virtual const char	*what(void) const throw();
 		};
 };
+
+std::ostream	&operator<<(std::ostream &os, const ServerNameElement &rhs);
 
 #endif

@@ -42,11 +42,11 @@ VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager
 	return (*this);
 }
 
-bool	VirtualServerManager::build(const Ip &ip, const ServerElement *element) throw(std::exception) {
+bool	VirtualServerManager::build(const Ip &ip, const ft::shared_ptr<ServerElement> &element) throw(std::exception) {
 	try {
-		ft::shared_ptr<VirtualServer>	virtual_server(new VirtualServer(element));
-		const ServerNameElement			*server_name_element = (const ServerNameElement *) element->find(ServerElement::KEY::SERVER_NAME)->second;
-		const std::vector<ServerName>	&server_names = server_name_element->getServerNames();
+		VirtualServerPtr						virtual_server = ft::make_shared<VirtualServer>(element);
+		const ft::shared_ptr<ServerNameElement>	&server_name_element = ft::static_pointer_cast<ServerNameElement>(element->find(ServerElement::KEY::SERVER_NAME)->second);
+		const std::vector<ServerName>			&server_names = server_name_element->getServerNames();
 
 		if (this->_default_server_ip.empty()) {
 			this->_default_server_ip = ip;
@@ -91,9 +91,9 @@ bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualSer
 	return (true);
 }
 
-ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host &host) const throw(std::exception) {
-	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
-	const Host						&trimmed = VirtualServerManager::_trimHost(host);
+VirtualServerManager::VirtualServerPtr	VirtualServerManager::findVirtualServer(const Host &host) const throw(std::exception) {
+	VirtualServerPtr	ret;
+	const Host			&trimmed = VirtualServerManager::_trimHost(host);
 
 	if (VirtualServerManager::_isIpFormat(trimmed)) {
 		ret = this->_findVirtualServerByIp(trimmed);
@@ -105,9 +105,9 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::findVirtualServer(const Host
 	return (ret);
 }
 
-ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const Ip &ip) const {
-	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
-	IpMap::const_iterator			it = this->_ip_map.find(ip);
+VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerByIp(const Ip &ip) const {
+	VirtualServerPtr		ret;
+	IpMap::const_iterator	it = this->_ip_map.find(ip);
 
 	if (it == this->_ip_map.end()) {
 		it = this->_ip_map.find("0.0.0.0");
@@ -117,8 +117,8 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByIp(const
 	}
 	return (ret);
 }
-ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByName(const ServerName &server_name) const {
-	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
+VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerByName(const ServerName &server_name) const {
+	VirtualServerPtr	ret;
 
 	ret = VirtualServerManager::_findVirtualServerByServerName(server_name);
 	if (ret.get() == NULL) {
@@ -129,8 +129,8 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByName(con
 	}
 	return (ret);
 }
-ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByServerName(const ServerName &server_name) const {
-	ft::shared_ptr<VirtualServer>	ret = ft::shared_ptr<VirtualServer>(NULL);
+VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerByServerName(const ServerName &server_name) const {
+	VirtualServerPtr				ret;
 	ServerNameMap::const_iterator	it = this->_server_name_map.find(server_name);
 
 	if (it != this->_server_name_map.end()) {
@@ -138,7 +138,7 @@ ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByServerNa
 	}
 	return (ret);
 }
-ft::shared_ptr<VirtualServer>	VirtualServerManager::_findVirtualServerByEtcHosts(const ServerName &server_name) const {
+VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerByEtcHosts(const ServerName &server_name) const {
 	return (this->_findVirtualServerByIp(VirtualServerManager::ETC_HOSTS_MAP.find(server_name)->second));
 }
 

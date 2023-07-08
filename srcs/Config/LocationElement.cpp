@@ -5,7 +5,8 @@ const LocationElement::KeyMap	LocationElement::_key_map = LocationElement::_init
 LocationElement::KeyMap	LocationElement::_initKeyMap(void) {
 	KeyMap	ret;
 
-	ret["auto_index"] = KEY::AUTO_INDEX;
+	ret["alias"] = KEY::ALIAS;
+	ret["autoindex"] = KEY::AUTOINDEX;
 	ret["error_page"] = KEY::ERROR_PAGE;
 	ret["index"] = KEY::INDEX;
 	ret["return"] = KEY::RETURN;
@@ -22,13 +23,7 @@ LocationElement::LocationElement(std::ifstream &infile) throw(std::exception): _
 		throw (FailToParseException());
 	}
 }
-LocationElement::~LocationElement(void) {
-	for (ElementMap::iterator it = this->_element_map.begin(); it != this->_element_map.end(); ++it) {
-		if (it->second != NULL) {
-			delete (it->second);
-		}
-	}
-}
+LocationElement::~LocationElement(void) {}
 LocationElement::LocationElement(const LocationElement &ref): _element_map(ref._element_map) {}
 LocationElement	&LocationElement::operator=(const LocationElement &rhs) {
 	if (this != &rhs) {
@@ -54,8 +49,8 @@ LocationElement::const_iterator			LocationElement::find(KEY::e_key key) const {
 	}
 	return (it);
 }
-LocationElement::ConfigElement			*&LocationElement::operator[](KEY::e_key key) { return (this->_element_map[key]); }
-const LocationElement::ConfigElement	*&LocationElement::operator[](KEY::e_key key) const { return ((const ConfigElement *&) this->_element_map.find(key)->second); }
+LocationElement::ElementPtr			&LocationElement::operator[](KEY::e_key key) { return (this->_element_map[key]); }
+const LocationElement::ElementPtr	&LocationElement::operator[](KEY::e_key key) const { return (this->_element_map.at(key)); }
 
 bool	LocationElement::_parse(std::ifstream &infile) throw(std::exception) {
 	std::string				token;
@@ -75,7 +70,7 @@ bool	LocationElement::_parse(std::ifstream &infile) throw(std::exception) {
 			throw (DuplicatedElementException());
 		}
 		try {
-			this->_element_map[key_it->second] = ConfigElementFactory::getInstance().create(key_it->first, infile);
+			this->_element_map[key_it->second] = ft::static_pointer_cast<ConfigElement>(ConfigElementFactory::getInstance().create(key_it->first, infile));
 		} catch (const std::exception &e) {
 			Logger::getInstance().error(e.what());
 			throw (FailToCreateElementException());

@@ -9,11 +9,12 @@
 
 class VirtualServerManager {
 	public:
-		typedef std::string												Host;
-		typedef std::string												Ip;
-		typedef std::string												ServerName;
-		typedef std::map< Ip, ft::shared_ptr< VirtualServer > >			IpMap;
-		typedef std::map< ServerName, ft::shared_ptr< VirtualServer > >	ServerNameMap;
+		typedef std::string									Host;
+		typedef std::string									Ip;
+		typedef std::string									ServerName;
+		typedef ft::shared_ptr<VirtualServer>				VirtualServerPtr;
+		typedef std::map< Ip, VirtualServerPtr >			IpMap;
+		typedef std::map< ServerName, VirtualServerPtr >	ServerNameMap;
 	
 	private:
 		typedef std::map< ServerName, Ip >	EtcHostsMap;
@@ -32,18 +33,18 @@ class VirtualServerManager {
 		VirtualServerManager	&operator=(const VirtualServerManager &rhs);
 
 	public:
-		bool	build(const Ip &ip, const ServerElement *element) throw(std::exception);
+		bool	build(const Ip &ip, const ft::shared_ptr<ServerElement> &element) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
 		bool	mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception);
 	
 	public:
-		ft::shared_ptr<VirtualServer>	findVirtualServer(const Host &host) const throw(std::exception);
+		VirtualServerPtr	findVirtualServer(const Host &host) const throw(std::exception);
 	
 	private:
-		ft::shared_ptr<VirtualServer>	_findVirtualServerByIp(const Ip &ip) const;
-		ft::shared_ptr<VirtualServer>	_findVirtualServerByName(const ServerName &server_name) const;
-		ft::shared_ptr<VirtualServer>	_findVirtualServerByServerName(const ServerName &server_name) const;
-		ft::shared_ptr<VirtualServer>	_findVirtualServerByEtcHosts(const ServerName &server_name) const;
+		VirtualServerPtr	_findVirtualServerByIp(const Ip &ip) const;
+		VirtualServerPtr	_findVirtualServerByName(const ServerName &server_name) const;
+		VirtualServerPtr	_findVirtualServerByServerName(const ServerName &server_name) const;
+		VirtualServerPtr	_findVirtualServerByEtcHosts(const ServerName &server_name) const;
 	
 	private:
 		static Host						_trimHost(const Host &host);

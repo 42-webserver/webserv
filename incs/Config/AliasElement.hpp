@@ -37,6 +37,9 @@ class AliasElement: public ConfigElement {
 			public:
 				virtual const char	*what(void) const throw();
 		};
+	
 };
+
+std::ostream	&operator<<(std::ostream &os, const AliasElement &rhs);
 
 #endif

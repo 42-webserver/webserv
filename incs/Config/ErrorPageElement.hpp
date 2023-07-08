@@ -41,4 +41,6 @@ class ErrorPageElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const ErrorPageElement &rhs);
+
 #endif

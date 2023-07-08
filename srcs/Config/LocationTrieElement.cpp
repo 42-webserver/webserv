@@ -2,7 +2,7 @@
 #include "../../incs/Log/Logger.hpp"
 
 LocationTrieElement::LocationTrieElement(void) {}
-LocationTrieElement::LocationTrieElement(std::ifstream &infile) throw(std::exception): _trie(Trie()) {
+LocationTrieElement::LocationTrieElement(std::ifstream &infile) throw(std::exception): _location_element_ptr_trie(LocationElementPtrTrie()) {
 	try {
 		this->_parse(infile);
 	} catch (std::exception &e) {
@@ -10,7 +10,7 @@ LocationTrieElement::LocationTrieElement(std::ifstream &infile) throw(std::excep
 	}
 }
 LocationTrieElement::~LocationTrieElement(void) {}
-LocationTrieElement::LocationTrieElement(const LocationTrieElement &ref): _trie(ref._trie) {}
+LocationTrieElement::LocationTrieElement(const LocationTrieElement &ref): _location_element_ptr_trie(ref._location_element_ptr_trie) {}
 LocationTrieElement	&LocationTrieElement::operator=(const LocationTrieElement &rhs) {
 	if (this != &rhs) {
 		this->~LocationTrieElement();
@@ -29,11 +29,11 @@ bool	LocationTrieElement::insert(std::ifstream &infile) throw(std::exception) {
 		throw (InvalidArgumentException());
 	}
 	token = (token.back() != '/') ? token + "/" : token;
-	if (this->_trie.find(token) != this->_trie.end()) {
+	if (this->_location_element_ptr_trie.find(token) != this->_location_element_ptr_trie.end()) {
 		throw (DuplicatedDirectoryException());
 	}
 	try {
-		this->_trie.insert(token, (LocationElement *) ConfigElementFactory::getInstance().create("location", infile));
+		this->_location_element_ptr_trie.insert(token, ft::static_pointer_cast<LocationElement>(ConfigElementFactory::getInstance().create("location", infile)));
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToInsertException());
@@ -41,7 +41,7 @@ bool	LocationTrieElement::insert(std::ifstream &infile) throw(std::exception) {
 	return (true);
 }
 
-const LocationElement	*LocationTrieElement::longestPrefixSearch(const std::string &path) const { return (this->_trie.longestPrefixSearch(path)); }
+LocationTrieElement::LocationElementPtr	LocationTrieElement::longestPrefixSearch(const std::string &path) const { return (this->_location_element_ptr_trie.longestPrefixSearch(path)); }
 
 bool	LocationTrieElement::_parse(std::ifstream &infile) throw(std::exception) {
 	try {

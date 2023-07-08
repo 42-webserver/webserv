@@ -12,7 +12,7 @@ class VirtualServer {
 		const ServerElement	_server_element;
 
 	public:
-		VirtualServer(const ServerElement *element) throw(std::exception);
+		VirtualServer(const ft::shared_ptr<ServerElement> &element) throw(std::exception);
 		~VirtualServer(void);
 		VirtualServer(const VirtualServer &ref);
 		VirtualServer	&operator=(const VirtualServer &rhs);
@@ -21,7 +21,7 @@ class VirtualServer {
 		const ServerElement	&getServerElement(void) const;
 
 	private:
-		static ServerElement	_parseServerElement(const ServerElement *element);
+		static ServerElement	_parseServerElement(const ft::shared_ptr<ServerElement> &element);
 
 	public:
 		friend std::ostream	&operator<<(std::ostream &os, const VirtualServer &rhs);

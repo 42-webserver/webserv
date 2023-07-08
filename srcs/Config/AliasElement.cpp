@@ -40,3 +40,8 @@ const std::string	&AliasElement::getPath(void) const { return (this->_path); }
 const char	*AliasElement::FailToParseException::what(void) const throw() { return ("AliasElement: Fail to Parse"); }
 const char	*AliasElement::InvalidSyntaxException::what(void) const throw() { return ("AliasElement: Invalid Syntax"); }
 const char	*AliasElement::InvalidArgumentException::what(void) const throw() { return ("AliasElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const AliasElement &rhs) {
+	os << rhs.getPath();
+	return (os);
+}

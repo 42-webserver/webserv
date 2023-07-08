@@ -47,3 +47,8 @@ char	ClientMaxBodySizeElement::getUnit(void) const { return (this->_unit); }
 const char	*ClientMaxBodySizeElement::FailToParseException::what(void) const throw() { return ("ClientMaxBodySizeElement: Fail to Parse"); }
 const char	*ClientMaxBodySizeElement::InvalidSyntaxException::what(void) const throw() { return ("ClientMaxBodySizeElement: Invalid Syntax"); }
 const char	*ClientMaxBodySizeElement::InvalidArgumentException::what(void) const throw() { return ("ClientMaxBodySizeElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const ClientMaxBodySizeElement &rhs) {
+	os << rhs.getNum() << rhs.getUnit();
+	return (os);
+}

@@ -39,4 +39,6 @@ class IndexElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const IndexElement &rhs);
+
 #endif
