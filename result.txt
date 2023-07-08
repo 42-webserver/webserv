@@ -1,0 +1,95 @@
+Webserv:
+	PhysicalServerManager:
+		Port: 80
+			PhysicalServer:
+				Socket:
+					fd: 3
+				VirtualServerManager:
+					DefaultServerIp:
+						127.0.0.1
+					IpMap:
+						0.0.0.0:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 402 /402.html
+								client_max_body_size: 2M
+						127.0.0.1:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 401 /401.html
+								client_max_body_size: 1M
+					ServerNameMap:
+						example.admin.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 403 /403.html
+								client_max_body_size: 4M
+						example.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 402 /402.html
+								client_max_body_size: 2M
+						example.user.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 401 /401.html
+								client_max_body_size: 1M
+						www.example.admin.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 403 /403.html
+								client_max_body_size: 4M
+						www.example.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 402 /402.html
+								client_max_body_size: 2M
+						www.example.user.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 401 /401.html
+								client_max_body_size: 1M
+					EtcHostsMap:
+						255.255.255.255 broadcasthost
+						127.0.0.1 localhost
+						127.0.0.1 younhwan.42.fr
+		Port: 8080
+			PhysicalServer:
+				Socket:
+					fd: 4
+				VirtualServerManager:
+					DefaultServerIp:
+						0.0.0.0
+					IpMap:
+						0.0.0.0:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 404 /404.html
+								client_max_body_size: 8M
+					ServerNameMap:
+						example.alt.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 404 /404.html
+								client_max_body_size: 8M
+						www.example.alt.com:
+							VirtualServer:
+								root: /var/www/html
+								index: index.html index.htm index.php 
+								error_page: 404 /404.html
+								client_max_body_size: 8M
+					EtcHostsMap:
+						255.255.255.255 broadcasthost
+						127.0.0.1 localhost
+						127.0.0.1 younhwan.42.fr
+

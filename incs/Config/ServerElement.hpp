@@ -11,12 +11,13 @@ class ServerElement: public ConfigElement {
 	public:
 		typedef struct s_key {
 			enum e_key {
-				AUTO_INDEX,
+				AUTOINDEX,
 				CLIENT_MAX_BODY_SIZE,
 				ERROR_PAGE,
 				INDEX,
 				LISTEN,
 				LOCATION,
+				LOCATION_TRIE,
 				RETURN,
 				ROOT,
 				SERVER,
@@ -84,5 +85,7 @@ class ServerElement: public ConfigElement {
 				virtual const char	*what(void) const throw();
 		};
 };
+
+std::ostream	&operator<<(std::ostream &os, const ServerElement &rhs);
 
 #endif

@@ -5,7 +5,8 @@ const LocationElement::KeyMap	LocationElement::_key_map = LocationElement::_init
 LocationElement::KeyMap	LocationElement::_initKeyMap(void) {
 	KeyMap	ret;
 
-	ret["auto_index"] = KEY::AUTO_INDEX;
+	ret["alias"] = KEY::ALIAS;
+	ret["autoindex"] = KEY::AUTOINDEX;
 	ret["error_page"] = KEY::ERROR_PAGE;
 	ret["index"] = KEY::INDEX;
 	ret["return"] = KEY::RETURN;

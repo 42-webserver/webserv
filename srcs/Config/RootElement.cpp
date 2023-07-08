@@ -40,3 +40,8 @@ const std::string	&RootElement::getPath(void) const { return (this->_path); }
 const char	*RootElement::FailToParseException::what(void) const throw() { return ("RootElement: Fail to Parse"); }
 const char	*RootElement::InvalidSyntaxException::what(void) const throw() { return ("RootElement: Invalid Syntax"); }
 const char	*RootElement::InvalidArgumentException::what(void) const throw() { return ("RootElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const RootElement &rhs) {
+	os << rhs.getPath();
+	return (os);
+}

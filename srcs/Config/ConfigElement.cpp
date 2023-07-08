@@ -1,4 +1,5 @@
 #include "../../incs/Config/ConfigElement.hpp"
+#include "../../incs/Config/AliasElement.hpp"
 #include "../../incs/Config/AutoIndexElement.hpp"
 #include "../../incs/Config/ClientMaxBodySizeElement.hpp"
 #include "../../incs/Config/ErrorPageElement.hpp"
@@ -31,7 +32,9 @@ ConfigElementFactory	&ConfigElementFactory::getInstance(void) {
 ConfigElementFactory::ElementPtr	ConfigElementFactory::create(const std::string &element, std::ifstream &infile) const throw(std::exception) {
 	ElementPtr	ret;
 
-	if (element == "autoindex") {
+	if (element == "alias") {
+		ret = ft::make_shared<AliasElement>(infile);
+	} else if (element == "autoindex") {
 		ret = ft::make_shared<AutoIndexElement>(infile);
 	} else if (element == "client_max_body_size") {
 		ret = ft::make_shared<ClientMaxBodySizeElement>(infile);

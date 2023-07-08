@@ -23,10 +23,9 @@ ReturnElement	&ReturnElement::operator=(const ReturnElement &rhs) {
 bool	ReturnElement::_parse(std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) && (token.back() != ';')) {
+	if (!(infile >> token)) {
 		throw (InvalidSyntaxException());
 	}
-	token = token.substr(0, token.length() - 1);
 	for (size_t i=0; i<token.length(); i++) {
 		if (!std::isdigit(token[i])) {
 			throw (InvalidArgumentException());
@@ -55,3 +54,8 @@ const std::string	&ReturnElement::getUri(void) const { return (this->_uri); }
 const char	*ReturnElement::FailToParseException::what(void) const throw() { return ("ReturnElement: Fail to Parse"); }
 const char	*ReturnElement::InvalidSyntaxException::what(void) const throw() { return ("ReturnElement: Invalid Syntax"); }
 const char	*ReturnElement::InvalidArgumentException::what(void) const throw() { return ("ReturnElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const ReturnElement &rhs) {
+	os << rhs.getCode() << " " << rhs.getUri();
+	return (os);
+}

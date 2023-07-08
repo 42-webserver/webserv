@@ -39,4 +39,6 @@ class RootElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const RootElement &rhs);
+
 #endif

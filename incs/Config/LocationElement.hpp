@@ -11,7 +11,8 @@ class LocationElement: public ConfigElement {
 	public:
 		typedef struct s_key {
 			enum e_key {
-				AUTO_INDEX,
+				ALIAS,
+				AUTOINDEX,
 				ERROR_PAGE,
 				INDEX,
 				RETURN,

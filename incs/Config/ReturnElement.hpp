@@ -42,4 +42,6 @@ class ReturnElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const ReturnElement &rhs);
+
 #endif

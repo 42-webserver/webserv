@@ -32,7 +32,7 @@ bool	ListenElement::_parse(std::ifstream &infile) throw(std::exception) {
 	}
 	pos = host.find(":");
 	this->_ip = (pos == std::string::npos) ? "0.0.0.0" : host.substr(0, pos);
-	this->_port = (pos == std::string::npos) ? std::atoi(host.substr(pos + 1, host.size() - pos - 2).c_str()) : std::atoi(host.substr(pos + 1, host.size() - pos - 1).c_str());
+	this->_port = (pos == std::string::npos) ? std::atoi(host.c_str()) : std::atoi(host.substr(pos + 1).c_str());
 	if (ListenElement::_ipIsNotValid(this->_ip)) {
 		throw (InvalidIpException());
 	}
@@ -63,7 +63,7 @@ bool	ListenElement::_ipIsNotValid(const Ip &ip) {
 	}
 	return (false);
 }
-bool	ListenElement::_portIsNotValid(const Port &port) { return (0 < port && port < 65536); }
+bool	ListenElement::_portIsNotValid(const Port &port) { return (port < 0 || 65536 <= port); }
 
 const ListenElement::Ip		&ListenElement::getIp(void) const { return (this->_ip); }
 const ListenElement::Port	&ListenElement::getPort(void) const { return (this->_port); }
@@ -73,3 +73,8 @@ const char	*ListenElement::InvalidArgumentException::what(void) const throw() { 
 const char	*ListenElement::InvalidSyntaxException::what(void) const throw() { return ("ListenElement: Invalid syntax"); }
 const char	*ListenElement::InvalidIpException::what(void) const throw() { return ("ListenElement: Invalid IP"); }
 const char	*ListenElement::InvalidPortException::what(void) const throw() { return ("ListenElement: Invalid Port"); }
+
+std::ostream	&operator<<(std::ostream &os, const ListenElement &rhs) {
+	os << rhs.getIp() << ":" << rhs.getPort();
+	return (os);
+}

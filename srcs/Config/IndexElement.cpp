@@ -43,10 +43,17 @@ bool	IndexElement::_parse(std::ifstream &infile) throw(std::exception) {
 	return (true);
 }
 
-bool	IndexElement::_uriIsNotValid(const std::string &uri) { return (uri[0] != '/'); }
+bool	IndexElement::_uriIsNotValid(const std::string &uri) { (void) uri; return (false); }
 
 const std::vector<std::string>	&IndexElement::getUris(void) const { return (this->_uris); }
 
 const char	*IndexElement::FailToParseException::what(void) const throw() { return ("IndexElement: Fail to Parse"); }
 const char	*IndexElement::InvalidSyntaxException::what(void) const throw() { return ("IndexElement: Invalid Syntax"); }
 const char	*IndexElement::InvalidArgumentException::what(void) const throw() { return ("IndexElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const IndexElement &rhs) {
+	for (std::vector<std::string>::const_iterator it = rhs.getUris().begin(); it != rhs.getUris().end(); ++it) {
+		os << *it << " ";
+	}
+	return (os);
+}

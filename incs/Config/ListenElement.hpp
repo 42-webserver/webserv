@@ -55,4 +55,6 @@ class ListenElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const ListenElement &rhs);
+
 #endif

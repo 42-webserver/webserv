@@ -23,10 +23,9 @@ ErrorPageElement	&ErrorPageElement::operator=(const ErrorPageElement &rhs) {
 bool	ErrorPageElement::_parse(std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) && (token.back() != ';')) {
+	if (!(infile >> token)) {
 		throw (InvalidSyntaxException());
 	}
-	token = token.substr(0, token.length() - 1);
 	for (size_t i=0; i<token.length(); i++) {
 		if (!std::isdigit(token[i])) {
 			throw (InvalidArgumentException());
@@ -46,7 +45,7 @@ bool	ErrorPageElement::_parse(std::ifstream &infile) throw(std::exception) {
 	return (true);
 }
 
-bool	ErrorPageElement::_codeIsNotValid(int code) { return (code < 500 || 600 <= code); }
+bool	ErrorPageElement::_codeIsNotValid(int code) { return (code < 100 || 600 <= code); }
 bool	ErrorPageElement::_uriIsNotValid(const std::string &uri) { return (uri[0] != '/'); }
 
 int					ErrorPageElement::getCode(void) const { return (this->_code); }
@@ -55,3 +54,8 @@ const std::string	&ErrorPageElement::getUri(void) const { return (this->_uri); }
 const char	*ErrorPageElement::FailToParseException::what(void) const throw() { return ("ErrorPageElement: Fail to Parse"); }
 const char	*ErrorPageElement::InvalidSyntaxException::what(void) const throw() { return ("ErrorPageElement: Invalid Syntax"); }
 const char	*ErrorPageElement::InvalidArgumentException::what(void) const throw() { return ("ErrorPageElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const ErrorPageElement &rhs) {
+	os << rhs.getCode() << " " << rhs.getUri();
+	return (os);
+}

@@ -59,7 +59,7 @@ const char	*PhysicalServer::FailToBuildSocketException::what() const throw() { r
 
 std::ostream	&operator<<(std::ostream &os, const PhysicalServer &physical_server) {
 	os << "\t\t\t" << "PhysicalServer:" << '\n';
-	os << *physical_server._socket << '\n';
-	os << *physical_server._virtual_server_manager;
+	os << *(physical_server._socket) << '\n';
+	os << *(physical_server._virtual_server_manager);
 	return (os);
 }

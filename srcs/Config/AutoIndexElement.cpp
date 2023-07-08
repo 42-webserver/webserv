@@ -41,3 +41,8 @@ bool	AutoIndexElement::getFlag(void) const { return (this->_flag); }
 const char	*AutoIndexElement::FailToParseException::what(void) const throw() { return ("AutoIndexElement: Fail to Parse"); }
 const char	*AutoIndexElement::InvalidSyntaxException::what(void) const throw() { return ("AutoIndexElement: Invalid Syntax"); }
 const char	*AutoIndexElement::InvalidArgumentException::what(void) const throw() { return ("AutoIndexElement: Invalid Argument"); }
+
+std::ostream	&operator<<(std::ostream &os, const AutoIndexElement &rhs) {
+	(rhs.getFlag()) ? os << "on" : os << "off";
+	return (os);
+}

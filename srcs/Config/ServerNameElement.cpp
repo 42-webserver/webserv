@@ -49,3 +49,10 @@ const std::vector<ServerNameElement::ServerName>	&ServerNameElement::getServerNa
 
 const char	*ServerNameElement::FailToParseException::what(void) const throw() { return ("ServerNameElement: Fail to parse"); }
 const char	*ServerNameElement::InvalidSyntaxException::what(void) const throw() { return ("ServerNameElement: Invalid syntax"); }
+
+std::ostream	&operator<<(std::ostream &os, const ServerNameElement &rhs) {
+	for (std::vector<ServerNameElement::ServerName>::const_iterator it = rhs.getServerNames().begin(); it != rhs.getServerNames().end(); ++it) {
+		os << *it << " ";
+	}
+	return (os);
+}

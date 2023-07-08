@@ -38,4 +38,6 @@ class AutoIndexElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const AutoIndexElement &rhs);
+
 #endif

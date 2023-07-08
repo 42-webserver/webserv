@@ -41,4 +41,6 @@ class ClientMaxBodySizeElement: public ConfigElement {
 		};
 };
 
+std::ostream	&operator<<(std::ostream &os, const ClientMaxBodySizeElement &rhs);
+
 #endif
