@@ -1,18 +1,14 @@
 #include "../../../incs/Http/Parser/MultipartRequestBodyHandler.hpp"
 
 MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary)
-	: RequestBodyHandler(0), _targetIdx(0), _state(M_HEADER)
-{
+	: RequestBodyHandler(0), _state(M_HEADER) {
 	this->_boundaryStart = "--" + boundary;
 	this->_boundaryEnd =  "--" + boundary + "--";
 }
 
-MultipartRequestBodyHandler::~MultipartRequestBodyHandler(void)
-{
-}
+MultipartRequestBodyHandler::~MultipartRequestBodyHandler(void){}
 
-bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req)
-{
+bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
 	if (!this->_buffer.empty()) {
 		reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
 		this->_buffer.clear();
@@ -22,24 +18,15 @@ bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::s
         if (this->_state == M_HEADER)
             handleMultipartHeader(reqBuffer, req);
         if (this->_state == M_BODY)
-            result = parsePartOfBody(reqBuffer, req);
+            result = parsePartOfBody(reqBuffer);
     }
-    if(result)
-        FileUploader::fileUpload(req->getMultipartRequests(), req->getUri());
     return result;
 }
 
 void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
-	try{
-		req->getMultipartRequests().at(_targetIdx);
-	} catch (std::out_of_range &e){
-		req->getMultipartRequests().push_back(MultipartRequest());
-	}
-
 	std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	std::string line;
 	while (find != reqBuffer.end()){
-		MultipartRequest & tarMultipart = req->getMultipartRequests().at(_targetIdx);
 		line = std::string(reqBuffer.begin(), find);
 		reqBuffer.erase(reqBuffer.begin(), find + _crlfPatternSize);
 		if (line == _boundaryStart){
@@ -48,25 +35,49 @@ void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBu
 		}
 		if (line.empty()){
 			this->_state = M_BODY;
+            // make full path to upload
+            req->getBody();
+            generatePath();
+            FileUploader::checkFileExists(this->_multipartRequest._filename);
 			return;
 		}
-		tarMultipart.addHeader(line);
+		addHeader(line);
 		find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	}
 	this->_buffer.insert(this->_buffer.end(), reqBuffer.begin(), reqBuffer.end());
 	reqBuffer.clear();
 }
 
-bool MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
+void MultipartRequestBodyHandler::generatePath(){
+    std::string path = "/Users/leehyunkyu/Desktop/upload/";
+    std::multimap<std::string, std::string>::iterator mapIt = this->_multipartRequest._headers.find("Content-Disposition");
+    if (mapIt == this->_multipartRequest._headers.end())
+        throw FileUploader::FileUploadException("Content-Disposition header not found");
+    while(mapIt != this->_multipartRequest._headers.end()){
+        if (mapIt->second.find("filename=") == std::string::npos){
+            mapIt++;
+            continue;
+        }
+        std::string filename = mapIt->second.substr(mapIt->second.find("filename=") + 9);
+        filename = std::string(filename.begin() + 1, filename.end() - 1);
+        if (filename.empty())
+            throw FileUploader::FileUploadException("filename is empty");
+        this->_multipartRequest._filename = path + filename;
+        break;
+    }
+}
+
+bool MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &reqBuffer){
 	std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	if (find != reqBuffer.end()){
 		std::vector<char> part(reqBuffer.begin(), find);
 		reqBuffer.erase(reqBuffer.begin(), find + _crlfPatternSize);
-		writeParts(part, req);
-		_targetIdx++;
+        FileUploader::fileUpload(part, this->_multipartRequest._filename);
 		this->_state = M_HEADER;
+        this->_multipartRequest._headers.clear();
+        this->_multipartRequest._filename.clear();
 	}else{
-		writeParts(reqBuffer, req);
+        FileUploader::fileUpload(reqBuffer, this->_multipartRequest._filename);
 		reqBuffer.clear();
 	}
 	find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
@@ -77,28 +88,27 @@ bool MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &reqBuffer, 
 	return false;
 }
 
-void MultipartRequestBodyHandler::writeParts(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
-	if (req->isBodyLong())
-		writeInFile(reqBuffer, req);
-	else
-		writeInMemory(reqBuffer, req);
+void MultipartRequestBodyHandler::addHeader(const std::string & line)
+{
+	std::string::size_type pos;
+	std::string key;
+	std::string value;
+
+	pos = line.find(": ");
+	key = line.substr(0, pos);
+	value = line.substr(pos + 2);
+	handleMultipleValueHeader(value, key);
 }
 
-void MultipartRequestBodyHandler::writeInFile(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
-	MultipartRequest &multipartRequest = req->getMultipartRequests().at(_targetIdx);
-	if (multipartRequest.getBodyDataFilename().empty())
-		multipartRequest.setBodyDataFilename(FileNameGenerator::generateUniqueFileName());
-	std::string fileName = multipartRequest.getBodyDataFilename();
-	std::ofstream file(fileName.c_str(), std::ios::app);
-	if (!file.is_open())
-		throw std::runtime_error("Error: can't open file");
-	file.write(reqBuffer.data(), reqBuffer.size());
-	file.close();
-	this->_readBodySize += reqBuffer.size();
-}
+void MultipartRequestBodyHandler::handleMultipleValueHeader(std::string & value, std::string & key)
+{
+	std::string::size_type pos = value.find(";");
 
-void MultipartRequestBodyHandler::writeInMemory(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
-	MultipartRequest &multipartRequest = req->getMultipartRequests().at(_targetIdx);
-	multipartRequest.insertBody(reqBuffer);
-	this->_readBodySize += reqBuffer.size();
+	while (pos != std::string::npos)
+	{
+		this->_multipartRequest._headers.insert(std::pair<std::string, std::string>(key, value.substr(0, pos)));
+		value.erase(0, pos + 1);
+		pos = value.find(";");
+	}
+	this->_multipartRequest._headers.insert(std::pair<std::string, std::string>(key, value));
 }
