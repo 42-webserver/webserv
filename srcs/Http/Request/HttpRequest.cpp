@@ -157,11 +157,6 @@ std::map<std::string, std::string> HttpRequest::getCookies()
 	return this->_cookies;
 }
 
-std::vector<MultipartRequest> & HttpRequest::getMultipartRequests()
-{
-	return this->_multipartRequests;
-}
-
 int HttpRequest::getContentLength()
 {
 	std::multimap<std::string, std::string>::iterator it;

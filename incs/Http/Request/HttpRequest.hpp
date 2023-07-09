@@ -5,7 +5,6 @@
 #include <map>
 #include <iostream>
 #include <vector>
-#include "MultipartRequest.hpp"
 
 typedef enum BodyType{
 		NORMAL,
@@ -30,7 +29,6 @@ private:
 	std::multimap<std::string, std::string> _headers;
 	std::map<std::string, std::string>	  	_queries;
 	std::map<std::string, std::string>	  	_cookies;
-	std::vector<MultipartRequest>		 	_multipartRequests;
 
 public:
 	HttpRequest();
@@ -52,7 +50,6 @@ public:
 	void setBodyDataFilename(std::string filename);
 	void setBodyLong(bool isBodyLong);
 	int  getContentLength();
-	std::vector<MultipartRequest> &getMultipartRequests();
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 

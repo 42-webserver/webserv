@@ -35,7 +35,6 @@ SRCS =	main.cpp \
 		Http/Parser/NormalBodyHandler.cpp \
 		Http/Parser/RequestBodyHandler.cpp \
 		Http/Request/HttpRequest.cpp \
-		Http/Request/MultipartRequest.cpp \
 		Http/Response/HttpResponse.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
