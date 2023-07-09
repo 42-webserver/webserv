@@ -12,8 +12,11 @@ class FileUploader
 {
 public:
 class FileUploadException : public BadRequestException {
+    private:
+            const char *_message;
     public:
             virtual const char* what() const throw();
+            FileUploadException(const char *message);
 };
 
 static void fileUpload(std::vector<char> &reqBuffer, std::string path) throw(FileUploader::FileUploadException);
