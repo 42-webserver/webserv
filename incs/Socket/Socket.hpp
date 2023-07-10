@@ -1,8 +1,8 @@
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
-# include <exception>
 # include <netinet/in.h>
+# include <iostream>
 # include <string>
 
 class Socket {
