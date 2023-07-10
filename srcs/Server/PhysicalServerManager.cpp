@@ -51,22 +51,22 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 	return (true);
 }
 
-bool	PhysicalServerManager::_buildPhysicalServerVector(const ft::shared_ptr<ServerElement> &element) throw(std::exception) {
-	const ft::shared_ptr<ListenElement>	&listen_element = ft::static_pointer_cast<ListenElement>(element->find(ServerElement::KEY::LISTEN)->second);
-	const Port							&port = (Port &) listen_element->getPort();
-	const Ip							&ip = (Ip &) listen_element->getIp();
-	PortMap::iterator					it;
-	ft::shared_ptr<PhysicalServer>		physical_server;
+bool	PhysicalServerManager::_buildPhysicalServerVector(const ServerElementPtr &element) throw(std::exception) {
+	const ListenElementPtr	&listen_element_ptr = ft::static_pointer_cast<ListenElement>(element->find(ServerElement::KEY::LISTEN)->second);
+	const Port				&port = (Port &) listen_element_ptr->getPort();
+	const Ip				&ip = (Ip &) listen_element_ptr->getIp();
+	PortMap::iterator		it;
+	PhysicalServerPtr		physical_server_ptr;
 
 	if ((it = this->_port_map.find(port)) == this->_port_map.end()) {
 		it = (this->_port_map.insert(std::make_pair(port, PhysicalServerPtrVector()))).first;
 	}
-	if ((physical_server = this->_findPhysicalServer(it, ip)).get() == NULL) {
-		physical_server = ft::shared_ptr<PhysicalServer>(new PhysicalServer());
-		it->second.push_back(physical_server);
+	if ((physical_server_ptr = this->_findPhysicalServer(it, ip)).get() == NULL) {
+		physical_server_ptr = ft::make_shared<PhysicalServer>();
+		it->second.push_back(physical_server_ptr);
 	}
 	try {
-		physical_server->build(ip, element);
+		physical_server_ptr->build(ip, element);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToBuildPhysicalServerVectorException());
@@ -98,13 +98,13 @@ bool	PhysicalServerManager::_hasServerWithWildCardIp(const PortMap::const_iterat
 }
 bool	PhysicalServerManager::_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception) {
 	const PhysicalServerPtrVector		&physical_server_vector = it->second;
-	ft::shared_ptr<PhysicalServer>	physical_server = physical_server_vector[0];
+	PhysicalServerPtr					physical_server_ptr = physical_server_vector[0];
 
 	try {
 		for (size_t i=1; i<physical_server_vector.size(); i++) {
-			physical_server->mergeAllVirtualServer(physical_server_vector[i]);
+			physical_server_ptr->mergeAllVirtualServer(*(physical_server_vector[i]));
 		}
-		it->second = PhysicalServerPtrVector(1, physical_server);
+		it->second = PhysicalServerPtrVector(1, physical_server_ptr);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToMergeAllPhysicalServerException());
@@ -112,9 +112,9 @@ bool	PhysicalServerManager::_mergeAllPhysicalServer(const PortMap::iterator &it)
 	return (true);
 }
 
-ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServer(const PortMap::const_iterator &it, const Ip &ip) {
+PhysicalServerManager::PhysicalServerPtr	PhysicalServerManager::_findPhysicalServer(const PortMap::const_iterator &it, const Ip &ip) {
 	const PhysicalServerPtrVector		&physical_server_vector = it->second;
-	ft::shared_ptr<VirtualServer>	virtual_server;
+	VirtualServerPtr					virtual_server;
 
 	for (size_t i=0; i<physical_server_vector.size(); i++) {
 		virtual_server = physical_server_vector[i]->findVirtualServer(ip);
@@ -122,7 +122,7 @@ ft::shared_ptr<PhysicalServer>	PhysicalServerManager::_findPhysicalServer(const 
 			return (physical_server_vector[i]);
 		}
 	}
-	return (ft::shared_ptr<PhysicalServer>(NULL));
+	return (PhysicalServerPtr());
 }
 
 const char	*PhysicalServerManager::FailToBuildException::what() const throw() { return "PhysicalServerManager: Fail to build"; }

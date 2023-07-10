@@ -4,7 +4,10 @@
 # include "../../libs/shared_ptr/shared_ptr.hpp"
 # include "../Config/Config.hpp"
 # include "../Config/ServerElement.hpp"
+# include "../Config/ListenElement.hpp"
 # include "PhysicalServer.hpp"
+# include "VirtualServer.hpp"
+# include <iostream>
 # include <vector>
 # include <map>
 
@@ -12,6 +15,9 @@ class PhysicalServerManager {
 	public:
 		typedef int										Port;
 		typedef std::string								Ip;
+		typedef ft::shared_ptr<ServerElement>			ServerElementPtr;
+		typedef ft::shared_ptr<ListenElement>			ListenElementPtr;
+		typedef ft::shared_ptr<VirtualServer>			VirtualServerPtr;
 		typedef ft::shared_ptr<PhysicalServer>			PhysicalServerPtr;
 		typedef std::vector<PhysicalServerPtr>			PhysicalServerPtrVector;
 		typedef std::map<Port, PhysicalServerPtrVector>	PortMap;
@@ -30,7 +36,7 @@ class PhysicalServerManager {
 		bool	run(void) throw(std::exception);
 	
 	private:
-		bool	_buildPhysicalServerVector(const ft::shared_ptr<ServerElement> &element) throw(std::exception);
+		bool	_buildPhysicalServerVector(const ServerElementPtr &element) throw(std::exception);
 		bool	_buildSocket(void) throw(std::exception);
 		bool	_hasServerWithWildCardIp(const PortMap::const_iterator &it) const;
 		bool	_mergeAllPhysicalServer(const PortMap::iterator &it) throw(std::exception);
