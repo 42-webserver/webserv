@@ -1,7 +1,6 @@
 #include "../../../incs/Http/Parser/HttpRequestParser.hpp"
 
 
-//check: this maybe void
 HttpRequestParser::HttpRequestParser(void)
 : _httpRequest(new HttpRequest()), _state(BEFORE), _readBodySize(0)
 {
@@ -94,9 +93,6 @@ void HttpRequestParser::injectionHandler(){
 	this->_bodyHandler = ft::shared_ptr<RequestBodyHandler>(new NormalBodyHandler());
 }
 
-//Refactory::hyunkyle CheckClientMaxBodySize ->Exception
-//Refactory::hyunkyle CheckTransfer, MultipartFormData	
-//Refactory::hyunkyle if문 내용 분리 생각
 void HttpRequestParser::handleBodyState(std::vector<char> &reqBuffer) {
 	if (reqBuffer.empty())
 		return;

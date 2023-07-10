@@ -9,10 +9,10 @@ bool FileNameGenerator::isFileExists(const std::string& filename)
 std::string FileNameGenerator::generateUniqueFileName()
 {
 	std::stringstream filenameStream;
-	
+
 	std::time_t currentTime = std::time(NULL);
 	filenameStream << "file_" << currentTime << ".txt";
-	
+
 	std::string filename = filenameStream.str();
 	while (isFileExists(filename))
 	{
@@ -21,6 +21,6 @@ std::string FileNameGenerator::generateUniqueFileName()
 		filenameStream << "file_" << currentTime << ".txt";
 		filename = filenameStream.str();
 	}
-	
+
 	return FILE_LOCATION + filename;
 }
