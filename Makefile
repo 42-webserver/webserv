@@ -51,6 +51,7 @@ SRCS =	main.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/FileUploader.cpp \
+		Http/Utils/RouterUtils.cpp \
 		Log/Logger.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \

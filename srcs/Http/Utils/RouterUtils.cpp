@@ -25,6 +25,18 @@ ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<Virtual
     return locationElement;
 }
 
+int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string uri = req->getUri();
+    std::string host = req->getHost();
+
+    VirtualServerManager::VirtualServerPtr targetServer = vsm->findVirtualServer(host);
+    ServerElement serverElement = targetServer->getServerElement();
+    ServerElement::iterator it = serverElement.find(ServerElement::KEY::CLIENT_MAX_BODY_SIZE);
+    if (it == serverElement.end())
+        return INT_MAX;
+    return ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
+}
+
 std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::string &uri){
     std::string path;
     if(root.empty() && alias.empty())

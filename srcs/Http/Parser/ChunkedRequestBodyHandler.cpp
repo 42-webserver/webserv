@@ -1,21 +1,22 @@
 #include "../../../incs/Http/Parser/ChunkedRequestBodyHandler.hpp"
 
-ChunkedRequestBodyHandler::ChunkedRequestBodyHandler(void)
-: RequestBodyHandler(0)
-{}
+ChunkedRequestBodyHandler::ChunkedRequestBodyHandler(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req)
+: RequestBodyHandler(0, req), _vsm(vsm)
+{
+	this->_filename = RouterUtils::findPath(vsm, req);
+	FileUploader::checkFileExists(this->_filename);
+}
 
 ChunkedRequestBodyHandler::~ChunkedRequestBodyHandler(void)
 {}
 
-bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req) throw(ChunkDataSizeNotMatchException)
-{
+bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer) throw(ChunkDataSizeNotMatchException){
 	if (!this->_buffer.empty())
 		reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
-	
 	//find chunk size
 	std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	while (find != reqBuffer.end()) {
-		size_t chunkSize = hexToDec(std::string(reqBuffer.begin(), find));
+		size_t chunkSize = _hexToDec(std::string(reqBuffer.begin(), find));
 		reqBuffer.erase(reqBuffer.begin(), find + _crlfPattern.size());
 		if (chunkSize == 0) {
 			reqBuffer.clear();
@@ -29,10 +30,7 @@ bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::sha
 			if (tmp.size() != chunkSize)
 				throw ChunkDataSizeNotMatchException();
 			reqBuffer.erase(reqBuffer.begin(), find + _crlfPattern.size());
-			if (req->isBodyLong())
-				writeInFile(tmp, req);
-			else
-				writeInMemory(tmp, req);
+			_uploadFile(tmp);
 		}
 		else {
 			this->_buffer.insert(this->_buffer.end(), reqBuffer.begin(), reqBuffer.end());
@@ -47,31 +45,11 @@ bool ChunkedRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::sha
 	return false;
 }
 
-void ChunkedRequestBodyHandler::writeInMemory(std::vector<char> &writeBuffer, ft::shared_ptr<HttpRequest> req)
-{
-	req->insertBody(writeBuffer);
-	this->_readBodySize += writeBuffer.size();
-	if (this->_readBodySize >= _MAX_BODY_MEMORY_SIZE){
-		std::vector<char> tmp = std::vector<char>(req->getBody().begin(), req->getBody().end());
-		writeInFile(tmp, req);
-		req->setBodyLong(true);
-		req->getBody().clear();
-	}
+void ChunkedRequestBodyHandler::_uploadFile(std::vector<char> &reqBuffer) {
+	FileUploader::fileUpload(reqBuffer, this->_filename);
 }
 
-void ChunkedRequestBodyHandler::writeInFile(std::vector<char> &writeBuffer, ft::shared_ptr<HttpRequest> req)
-{
-	if (req->getBodyDataFilename().empty())
-		req->setBodyDataFilename(FileNameGenerator::generateUniqueFileName());
-	std::string fileName = req->getBodyDataFilename();
-	std::ofstream file(fileName.c_str(), std::ios::app);
-	if (!file.is_open())
-		throw std::runtime_error("Error: can't open file");
-	file.write(writeBuffer.data(), writeBuffer.size());
-	file.close();
-}
-
-int ChunkedRequestBodyHandler::hexToDec(const std::string& hexStr) {
+int ChunkedRequestBodyHandler::_hexToDec(const std::string& hexStr) {
 	int decValue;
 	std::istringstream(hexStr) >> std::hex >> decValue;
 	return decValue;

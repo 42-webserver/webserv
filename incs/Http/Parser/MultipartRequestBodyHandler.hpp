@@ -7,6 +7,8 @@
 #include <string>
 #include "ParsePatternMatcher.hpp"
 #include "../Utils/FileUploader.hpp"
+#include "../Utils/RouterUtils.hpp"
+#include "../../Server/VirtualServerManager.hpp"
 
 typedef enum MultipartState{
 	M_HEADER,
@@ -21,19 +23,21 @@ private:
 	} MultipartRequset;
 
 private:
-	std::vector<char>		   _buffer;
-	std::string				 _boundaryStart;
-	std::string				 _boundaryEnd;
-	MultipartParseState		 _state;
-	MultipartRequset		 _multipartRequest;
+	std::vector<char>		   				_buffer;
+	std::string				 				_boundaryStart;
+	std::string				 				_boundaryEnd;
+	MultipartParseState		 				_state;
+	MultipartRequset		 				_multipartRequest;
+	ft::shared_ptr<VirtualServerManager>	_vsm;
 
 public:
-	bool handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
-	MultipartRequestBodyHandler(std::string boundary);
+	bool handleBody(std::vector<char> &reqBuffer);
+	MultipartRequestBodyHandler(std::string boundary, ft::shared_ptr<VirtualServerManager> vsm, 
+		ft::shared_ptr<HttpRequest> req);
 	~MultipartRequestBodyHandler(void);
 
 private:
-	void handleMultipartHeader(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
+	void handleMultipartHeader(std::vector<char> &reqBuffer);
 	bool parsePartOfBody(std::vector<char> &reqBuffer);
 	void writeParts(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req);
 	void addHeader(const std::string &line);
