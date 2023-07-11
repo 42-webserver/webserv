@@ -6,18 +6,15 @@ HttpResponse::HttpResponse()
 	this->_version = "1.1";
 	this->_protocol = "HTTP";
 	this->setStatusCode(OK);
-	this->_body = NULL;
 }
 
 HttpResponse::~HttpResponse()
 {
-	if(this->_body != NULL)
-		delete _body;
 }
 
-void HttpResponse::setBody(std::string * body)
+void HttpResponse::setBody(std::string & body)
 {
-	this->_body = body;
+	this->_body.insert(this->_body.end(), body.begin(), body.end());
 }
 
 void HttpResponse::addCookie(const std::string & key, const std::string & value)
@@ -41,7 +38,7 @@ std::string HttpResponse::getVersion()
 	return (std::string &)this->_version;
 }
 
-std::string *HttpResponse::getBody()
+std::vector<char> &HttpResponse::getBody()
 {
 	return this->_body;
 }
