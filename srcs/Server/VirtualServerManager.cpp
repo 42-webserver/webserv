@@ -1,15 +1,15 @@
 #include "../../incs/Server/VirtualServerManager.hpp"
-#include "../../incs/Config/ServerNameElement.hpp"
 #include "../../incs/Log/Logger.hpp"
 #include <fstream>
 #include <sstream>
 
 const VirtualServerManager::EtcHostsMap 			VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
 VirtualServerManager::EtcHostsMap 					VirtualServerManager::_initEtcHostsMap(void) {
-	std::map< ServerName, Ip >	ret;
-	std::ifstream				infile("/etc/hosts");
+	std::map<ServerName, Ip>	ret;
+	std::ifstream				infile;
 	std::string					line;
 
+	infile = std::ifstream("/etc/hosts");
 	if (infile.is_open()) {
 		while (std::getline(infile, line)) {
 			std::istringstream	iss;
@@ -31,34 +31,34 @@ VirtualServerManager::EtcHostsMap 					VirtualServerManager::_initEtcHostsMap(vo
 	return (ret);
 }
 
-VirtualServerManager::VirtualServerManager(void): _ip_map(IpMap()), _server_name_map(ServerNameMap()) {}
+VirtualServerManager::VirtualServerManager(void): _ip_map(), _server_name_map() {}
 VirtualServerManager::~VirtualServerManager(void) {}
 VirtualServerManager::VirtualServerManager(const VirtualServerManager &ref): _ip_map(ref._ip_map), _server_name_map(ref._server_name_map) {}
 VirtualServerManager	&VirtualServerManager::operator=(const VirtualServerManager &rhs) {
 	if (this != &rhs) {
 		this->~VirtualServerManager();
-		new(this) VirtualServerManager(rhs);
+		new (this) VirtualServerManager(rhs);
 	}
 	return (*this);
 }
 
-bool	VirtualServerManager::build(const Ip &ip, const ft::shared_ptr<ServerElement> &element) throw(std::exception) {
+bool	VirtualServerManager::build(const Ip &ip, const ServerElementPtr &element) throw(std::exception) {
 	try {
-		VirtualServerPtr						virtual_server = ft::make_shared<VirtualServer>(element);
-		const ft::shared_ptr<ServerNameElement>	&server_name_element = ft::static_pointer_cast<ServerNameElement>(element->find(ServerElement::KEY::SERVER_NAME)->second);
-		const std::vector<ServerName>			&server_names = server_name_element->getServerNames();
+		const VirtualServerPtr			&virtual_server_ptr = ft::make_shared<VirtualServer>(element);
+		const ServerNameElementPtr		&server_name_element = ft::static_pointer_cast<ServerNameElement>(element->find(ServerElement::KEY::SERVER_NAME)->second);
+		const std::vector<ServerName>	&server_names = server_name_element->getServerNames();
 
 		if (this->_default_server_ip.empty()) {
 			this->_default_server_ip = ip;
 		}
 		if (this->_ip_map.find(ip) == this->_ip_map.end()) {
-			this->_ip_map.insert(std::make_pair(ip, virtual_server));
+			this->_ip_map.insert(std::make_pair(ip, virtual_server_ptr));
 		}
 		for (size_t i=0; i<server_names.size(); i++) {
 			if (this->_server_name_map.find(server_names[i]) != this->_server_name_map.end()) {
 				throw (DuplicatedServerNameException());
 			}
-			this->_server_name_map.insert(std::make_pair(server_names[i], virtual_server));
+			this->_server_name_map.insert(std::make_pair(server_names[i], virtual_server_ptr));
 		}
 	} catch (std::exception &e) {
 		Logger::getInstance().error(e.what());
@@ -75,14 +75,14 @@ bool	VirtualServerManager::hasServerWithWildCardIp(void) const {
 	}
 	return (false);
 }
-bool	VirtualServerManager::mergeAllVirtualServer(const ft::shared_ptr<VirtualServerManager> &other) throw(std::exception) {
-	for (IpMap::const_iterator it=other->_ip_map.begin(); it!=other->_ip_map.end(); ++it) {
+bool	VirtualServerManager::mergeAllVirtualServer(const VirtualServerManager &other) throw(std::exception) {
+	for (IpMap::const_iterator it=other._ip_map.begin(); it!=other._ip_map.end(); ++it) {
 		if (this->_ip_map.find(it->first) != this->_ip_map.end()) {
 			continue;
 		}
 		this->_ip_map.insert(std::make_pair(it->first, it->second));
 	}
-	for (ServerNameMap::const_iterator it=other->_server_name_map.begin(); it!=other->_server_name_map.end(); ++it) {
+	for (ServerNameMap::const_iterator it=other._server_name_map.begin(); it!=other._server_name_map.end(); ++it) {
 		if (this->_server_name_map.find(it->first) != this->_server_name_map.end()) {
 			throw (DuplicatedServerNameException());
 		}
