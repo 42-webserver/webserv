@@ -3,9 +3,6 @@
 
 # include <exception>
 # include <sys/event.h>
-# include "../Event/Event.hpp"
-
-class Event;
 
 enum EventSetIndex {
 	READ_SET,

@@ -1,4 +1,4 @@
-# include "../../incs/EventDto/EventDto.hpp"
+# include "../../../incs/EventDto/EventDto.hpp"
 
 EventDto::EventDto(int fd, ft::shared_ptr<VirtualServerManager> physical_server) : _fd(fd), _physical_server(physical_server) {}
 EventDto::EventDto(int fd): _fd(fd), _physical_server(NULL) {}

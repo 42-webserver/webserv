@@ -1,7 +1,7 @@
 #ifndef EVENTDTO_HPP
 # define EVENTDTO_HPP
 
-# include "../Server/VirtualServerManager.hpp"
+# include "../../Server/VirtualServerManager.hpp"
 
 class EventDto {
 	private: 

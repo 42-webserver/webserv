@@ -1,5 +1,5 @@
 #include "../../libs/unique_ptr/unique_ptr.hpp"
-#include "../../incs/EventQueue/EventQueue.hpp"
+#include "../../incs/Event/EventQueue/EventQueue.hpp"
 #include "../../incs/Server/Webserv.hpp"
 #include "../../incs/Log/Logger.hpp"
 #include <unistd.h>

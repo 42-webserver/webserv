@@ -1,18 +1,14 @@
 #ifndef EVENT_HPP
 # define EVENT_HPP
 
-# include "../../libs/shared_ptr/shared_ptr.hpp"
-# include "../../libs/unique_ptr/unique_ptr.hpp"
-# include "../FileDescriptor/FileDescriptor.hpp"
+# include "../../../libs/shared_ptr/shared_ptr.hpp"
+# include "../../../libs/unique_ptr/unique_ptr.hpp"
+# include "../../FileDescriptor/FileDescriptor.hpp"
 # include "../EventQueue/EventQueue.hpp"
 # include "../EventDto/EventDto.hpp"
-# include "../Socket/Socket.hpp"
+# include "../../Socket/Socket.hpp"
+# include "EventHandler.hpp"
 
-class EventQueue;
-class EventHandler;
-
-//Refactoring::daegulee factory 너무 쓸대없는데 코스트쓴다 보내주자!. 연습했다
-//Refactoring::daegulee static getInstance + privateConstructor
 class Event {
 	protected:
 		ft::shared_ptr<FileDescriptor>	_fd;
@@ -44,32 +40,6 @@ class Event {
 			public:
 				virtual const char *what() const throw();
 		};
-};
-
-class EventHandler {
-	public:
-		EventHandler(void);
-		virtual ~EventHandler(void);  // Virtual destructor
-	
-	private:
-		EventHandler(const EventHandler &ref);
-		EventHandler	&operator=(const EventHandler &rhs);
-
-	public:
-		virtual void	handleEvent(Event &event) = 0;
-};
-
-class EventFactory {
-	public:
-		EventFactory(void);
-		virtual ~EventFactory(void);
-
-	private:
-		EventFactory(const EventFactory &ref);
-		EventFactory	&operator=(const EventFactory &rhs);
-	
-	public:
-		virtual Event	*createEvent(const EventDto &EventDto) const = 0;
 };
 
 #endif
