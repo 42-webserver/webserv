@@ -7,7 +7,8 @@ HttpRequestParser::HttpRequestParser(void)
 	this->_buffer.reserve(_BUFFER_SIZE);
 }
 
-const RequestParseState &HttpRequestParser::parseRequest(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm) {
+const RequestParseState &HttpRequestParser::parseRequest(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm) 
+	throw(HttpRequestParser::ClientBodySizeInvalidException){
 	if (!this->_buffer.empty()) {
 		reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
 		this->_buffer.clear();
@@ -60,11 +61,12 @@ void HttpRequestParser::handleHeaderState(std::vector<char> &reqBuffer, ft::shar
 
 void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(HttpRequestParser::ClientBodySizeInvalidException){
 	this->_state = BODY;
+	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler(vsm);
 	int contentLength = this->_httpRequest->getContentLength();
 	if (contentLength > _MAX_BODY_MEMORY_SIZE)
 		this->_httpRequest->setBodyLong(true);
-	if (contentLength > RouterUtils::findMaxBodySize(vsm, this->_httpRequest));
+	if (contentLength > clientMaxBodySize)
 		throw ClientBodySizeInvalidException();
 }
 
@@ -75,7 +77,7 @@ void HttpRequestParser::injectionHandler(ft::shared_ptr<VirtualServerManager> vs
 	if (it != _headers.end()) {
 		if (it->second.find("multipart/form-data") != std::string::npos) {
 			std::string boundary = it->second.substr(it->second.find("boundary=") + 9);
-			this->_bodyHandler = ft::make_shared<RequestBodyHandler>(new MultipartRequestBodyHandler(boundary, vsm, this->_httpRequest));
+			this->_bodyHandler = ft::make_shared<MultipartRequestBodyHandler>(boundary, vsm, this->_httpRequest);
 			this->_httpRequest->setBodyType(MULTIPART_FORM_DATA);
 			return;
 		}
@@ -84,13 +86,13 @@ void HttpRequestParser::injectionHandler(ft::shared_ptr<VirtualServerManager> vs
 	while (it != _headers.end()) {
 		if (it->second == "chunked") {
 			this->_httpRequest->setBodyType(CHUNKED);
-			this->_bodyHandler =  ft::make_shared<RequestBodyHandler>(new ChunkedRequestBodyHandler(vsm, this->_httpRequest));
+			this->_bodyHandler =  ft::make_shared<ChunkedRequestBodyHandler>(vsm, this->_httpRequest);
 			return;
 		}
 		it++;
 	}
 	this->_httpRequest->setBodyType(NORMAL);
-	this->_bodyHandler = ft::make_shared<RequestBodyHandler>(new NormalBodyHandler(this->_httpRequest));
+	this->_bodyHandler = ft::make_shared<NormalBodyHandler>(this->_httpRequest);
 }
 
 void HttpRequestParser::handleBodyState(std::vector<char> &reqBuffer) {

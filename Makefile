@@ -39,7 +39,6 @@ SRCS =	main.cpp \
 		EventQueue/EventQueue.cpp \
 		FileDescriptor/FileDescriptor.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
-		Http/Handler/HttpRequestHandler.cpp \
 		Http/Parser/HttpRequestParser.cpp \
 		Http/Parser/HttpResponseParser.cpp \
 		Http/Parser/ChunkedRequestBodyHandler.cpp \
@@ -52,6 +51,7 @@ SRCS =	main.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/FileUploader.cpp \
+		Http/Utils/RouterUtils.cpp \
 		Log/Logger.cpp \
 		route/Match.cpp \
 		route/RouteOrAliasHandler.cpp \
