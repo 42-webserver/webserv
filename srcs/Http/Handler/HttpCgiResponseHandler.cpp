@@ -8,8 +8,7 @@ HttpCgiResponseHandler::~HttpCgiResponseHandler()
 {
 }
 
-ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm)
-{
+ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<HttpResponse> response(new HttpResponse());
     std::string cgiPath = RouterUtils::findPath(vsm, req);
     int pipefd[2];
@@ -22,7 +21,7 @@ ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_pt
         throw std::runtime_error("Failed to create pipe.");
 
     if (pid == 0){
-        executeCgi(req, pipefd, cgiPath);
+        _executeCgi(req, pipefd, cgiPath);
     }
     else {
         close(pipefd[1]);
@@ -37,7 +36,7 @@ ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_pt
                 if (bytes == 0)
                     break;
                 buffer.insert(buffer.end(), buf, buf + bytes);
-                makeResponseHeader(buffer, response);
+                _makeResponseHeader(buffer, response);
             }
         }
         else
@@ -47,7 +46,7 @@ ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_pt
     return response;
 }
 
-void HttpCgiResponseHandler::makeResponseHeader(std::string &buffer, ft::shared_ptr<HttpResponse> response) throw (CgiResponseNotValidException){
+void HttpCgiResponseHandler::_makeResponseHeader(std::string &buffer, ft::shared_ptr<HttpResponse> response) throw (CgiResponseNotValidException){
     std::string::size_type pos = buffer.find("\n\n");
     while (pos != std::string::npos){
         std::string header = buffer.substr(0, pos);
@@ -60,7 +59,7 @@ void HttpCgiResponseHandler::makeResponseHeader(std::string &buffer, ft::shared_
 }
 
 
-void HttpCgiResponseHandler::executeCgi(ft::shared_ptr<HttpRequest> request, int pipefd[2], std::string &cgiPath){
+void HttpCgiResponseHandler::_executeCgi(ft::shared_ptr<HttpRequest> request, int pipefd[2], std::string &cgiPath){
     char* const scriptPath = const_cast<char*>(cgiPath.c_str());
     char* argv[] = { "/usr/bin/python3", scriptPath, NULL};
 
@@ -71,20 +70,26 @@ void HttpCgiResponseHandler::executeCgi(ft::shared_ptr<HttpRequest> request, int
 
     // 환경 변수 설정
     std::map<std::string, std::string> envMap;
-    envMap["ENV_VARIABLE_1"] = "Value1";
-    envMap["ENV_VARIABLE_2"] = "Value2";
+    _fillMapWithQuery(envMap, request);
 
     // 환경 변수 정보를 저장할 문자열 배열
     char* envp[envMap.size() + 1]; 
 
-    populateEnvp(envMap, envp);
+    _populateEnvp(envMap, envp);
 
     // CGI 스크립트 실행
     if (execve("/usr/bin/python3", argv, envp) == -1)
-        throw std::runtime_error("Failed to execute CGI script.");
+        throw FailExecuteCgiException("Failed to execute CGI script.");
 }
 
-void HttpCgiResponseHandler::populateEnvp(const std::map<std::string, std::string>& envMap, char* envp[]) {
+void HttpCgiResponseHandler::_fillMapWithQuery(std::map<std::string, std::string>& envMap, ft::shared_ptr<HttpRequest> request){
+    std::map<std::string, std::string> queryMap = request->getQueries();
+    for (std::map<std::string, std::string>::iterator it = queryMap.begin(); it != queryMap.end(); ++it) {
+        envMap[it->first] = it->second;
+    }
+}
+
+void HttpCgiResponseHandler::_populateEnvp(const std::map<std::string, std::string>& envMap, char* envp[]) {
     int i = 0;
     for (std::map<std::string, std::string>::const_iterator it = envMap.begin(); it != envMap.end(); ++it) {
         std::string envVar = it->first + "=" + it->second;
@@ -94,3 +99,9 @@ void HttpCgiResponseHandler::populateEnvp(const std::map<std::string, std::strin
     }
     envp[i] = NULL;
 }
+
+HttpCgiResponseHandler::CgiResponseNotValidException::CgiResponseNotValidException(const char *msg) : msg(msg) {}
+const char* HttpCgiResponseHandler::CgiResponseNotValidException::what() const throw() { return msg; }
+
+HttpCgiResponseHandler::FailExecuteCgiException::FailExecuteCgiException(const char *msg) : msg(msg) {}
+const char* HttpCgiResponseHandler::FailExecuteCgiException::what() const throw() { return msg; }
