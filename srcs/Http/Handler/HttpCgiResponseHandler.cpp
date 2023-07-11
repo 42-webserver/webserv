@@ -1,6 +1,6 @@
 #include "../../../incs/Http/Handler/HttpCgiResponseHandler.hpp"
 
-HttpCgiResponseHandler::HttpCgiResponseHandler()
+HttpCgiResponseHandler::HttpCgiResponseHandler(): _isHeaderState(true), _contentLength(INT_MAX)
 {
 }
 
@@ -28,33 +28,64 @@ ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_pt
         int status;
         waitpid(pid, &status, 0);
         if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-            while(true) {
-                char buf[1024];
-                ssize_t bytes = read(pipefd[0], buf, sizeof(buf));
-                if (bytes == -1)
-                    throw std::runtime_error("Failed to read from pipe.");
-                if (bytes == 0)
-                    break;
+            ssize_t bytes;
+            char buf[1024];
+            while(bytes = read(pipefd[0], buf, sizeof(buf)) > 0) {
                 buffer.insert(buffer.end(), buf, buf + bytes);
-                _makeResponseHeader(buffer, response);
+                if (_isHeaderState)
+                    _makeResponseHeader(buffer, response);
+                else{
+                    _makeResponseBody(buffer, response);
+                    if (response->getBody().size() == _contentLength)
+                        break;
+                }
             }
         }
         else
             throw std::runtime_error("CGI script exited with an error.");
     }
-    response->setBody(buffer);
+    _addTypeAndLength(response);
     return response;
 }
 
+void HttpCgiResponseHandler::_addTypeAndLength(ft::shared_ptr<HttpResponse> response){
+    std::multimap<std::string, std::string> headers = response->getHeaders();
+    if (headers.empty())
+        throw CgiResponseNotValidException("CGI response is not valid (No Header).");
+    
+    std::multimap<std::string, std::string>::iterator it = headers.find("Content-Type");
+    if (it == headers.end())
+        response->addHeader("Content-Type", "text/plain");
+
+    it = headers.find("Content-Length");
+    if (it == headers.end())
+        response->addHeader("Content-Length", std::to_string(response->getBody().size()));
+}
+
+void HttpCgiResponseHandler::_makeResponseBody(std::string &buffer, ft::shared_ptr<HttpResponse> response){
+    if (response->getBody().size() + buffer.size() > _contentLength){
+        std::string tmp = buffer.substr(0, _contentLength - response->getBody().size());
+        response->setBody(tmp);
+    }else{
+        response->setBody(buffer);
+    }
+}
+
 void HttpCgiResponseHandler::_makeResponseHeader(std::string &buffer, ft::shared_ptr<HttpResponse> response) throw (CgiResponseNotValidException){
-    std::string::size_type pos = buffer.find("\n\n");
+    std::string::size_type pos = buffer.find("\n");
     while (pos != std::string::npos){
         std::string header = buffer.substr(0, pos);
+        if (header.empty()){
+            _isHeaderState = false;
+            break;
+        }
         std::string key = header.substr(0, header.find(":"));
         std::string value = header.substr(header.find(":") + 1);
+        if (key == "Content-Length")
+            _contentLength = std::atoi(value.c_str());
         response->addHeader(key, value);
         buffer.erase(0, pos + 2);
-        pos = buffer.find("\n\n");
+        pos = buffer.find("\n");
     }
 }
 

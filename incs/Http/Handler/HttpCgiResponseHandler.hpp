@@ -9,6 +9,10 @@
 
 class HttpCgiResponseHandler : public HttpRequestHandler
 {
+private:
+    bool    _isHeaderState;
+    int     _contentLength;
+
 public:
     class CgiResponseNotValidException : public ServerErrorException {
         private:
@@ -36,6 +40,8 @@ private:
     void _populateEnvp(const std::map<std::string, std::string>& envMap, char* envp[]);
     void _makeResponseHeader(std::string &buffer, ft::shared_ptr<HttpResponse> response) throw (CgiResponseNotValidException);
     void _fillMapWithQuery(std::map<std::string, std::string> &envMap, ft::shared_ptr<HttpRequest> request);
+    void _makeResponseBody(std::string &buffer, ft::shared_ptr<HttpResponse> response);
+    void _addTypeAndLength(ft::shared_ptr<HttpResponse> response);
 };
 
 
