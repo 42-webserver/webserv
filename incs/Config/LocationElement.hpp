@@ -43,7 +43,12 @@ class LocationElement: public ConfigElement {
 	
 	public:
 		iterator		find(KEY::e_key key);
+		iterator		begin(void);
+		iterator		end(void);
+		
 		const_iterator	find(KEY::e_key key) const;
+		const_iterator	begin(void) const;
+		const_iterator	end(void) const;
 	
 	public:
 		ElementPtr			&operator[](KEY::e_key key);

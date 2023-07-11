@@ -41,6 +41,11 @@ LocationElement::iterator				LocationElement::find(KEY::e_key key) {
 	}
 	return (it);
 }
+
+LocationElement::iterator				LocationElement::begin(void) { return (this->_element_map.begin()); }
+LocationElement::iterator				LocationElement::end(void) { return (this->_element_map.end()); }
+
+
 LocationElement::const_iterator			LocationElement::find(KEY::e_key key) const {
 	ElementMap::const_iterator	it = this->_element_map.find(key);
 
@@ -49,6 +54,10 @@ LocationElement::const_iterator			LocationElement::find(KEY::e_key key) const {
 	}
 	return (it);
 }
+
+LocationElement::const_iterator			LocationElement::begin(void) const { return (this->_element_map.begin()); }
+LocationElement::const_iterator			LocationElement::end(void) const { return (this->_element_map.end()); }
+
 LocationElement::ElementPtr			&LocationElement::operator[](KEY::e_key key) { return (this->_element_map[key]); }
 const LocationElement::ElementPtr	&LocationElement::operator[](KEY::e_key key) const { return (this->_element_map.at(key)); }
 
