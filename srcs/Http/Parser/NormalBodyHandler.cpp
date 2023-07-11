@@ -1,30 +1,30 @@
 #include "../../../incs/Http/Parser/NormalBodyHandler.hpp"
 
 
-NormalBodyHandler::NormalBodyHandler(void) : RequestBodyHandler(0)
+NormalBodyHandler::NormalBodyHandler(ft::shared_ptr<HttpRequest> req) : RequestBodyHandler(0, req)
 {}
 
 NormalBodyHandler::~NormalBodyHandler(void)
 {}
 
-bool NormalBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req)
+bool NormalBodyHandler::handleBody(std::vector<char> &reqBuffer)
 {
-	if (req->isBodyLong())
-		writeInFile(reqBuffer, req);
+	if (this->_request->isBodyLong())
+		writeInFile(reqBuffer);
 	else
-		writeInMemory(reqBuffer, req);
+		writeInMemory(reqBuffer);
 	reqBuffer.clear();
 
-	if (req->getContentLength() <= this->_readBodySize)
+	if (this->_request->getContentLength() <= this->_readBodySize)
 		return true;
 	return false;
 }
 
-void  NormalBodyHandler::writeInFile(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req)
+void  NormalBodyHandler::writeInFile(std::vector<char> &reqBuffer)
 {
-	if (req->getBodyDataFilename().empty())
-		req->setBodyDataFilename(FileNameGenerator::generateUniqueFileName());
-	std::string fileName = req->getBodyDataFilename();
+	if (this->_request->getBodyDataFilename().empty())
+		this->_request->setBodyDataFilename(FileNameGenerator::generateUniqueFileName());
+	std::string fileName = this->_request->getBodyDataFilename();
 	std::ofstream file(fileName.c_str(), std::ios::app);
 	if (!file.is_open())
 		throw std::runtime_error("Error: can't open file");
@@ -33,8 +33,8 @@ void  NormalBodyHandler::writeInFile(std::vector<char> &reqBuffer, ft::shared_pt
 	this->_readBodySize += reqBuffer.size();
 }
 
-void NormalBodyHandler::writeInMemory(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req)
+void NormalBodyHandler::writeInMemory(std::vector<char> &reqBuffer)
 {
-	req->insertBody(reqBuffer);
+	this->_request->insertBody(reqBuffer);
 	this->_readBodySize += reqBuffer.size();
 }

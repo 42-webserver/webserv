@@ -1,14 +1,15 @@
 #include "../../../incs/Http/Parser/MultipartRequestBodyHandler.hpp"
 
-MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary)
-	: RequestBodyHandler(0), _state(M_HEADER) {
+MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary, ft::shared_ptr<VirtualServerManager> vsm, 
+	ft::shared_ptr<HttpRequest> req)
+	: RequestBodyHandler(0, req), _state(M_HEADER), _vsm(vsm){
 	this->_boundaryStart = "--" + boundary;
 	this->_boundaryEnd =  "--" + boundary + "--";
 }
 
 MultipartRequestBodyHandler::~MultipartRequestBodyHandler(void){}
 
-bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
+bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer){
 	if (!this->_buffer.empty()) {
 		reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
 		this->_buffer.clear();
@@ -16,14 +17,14 @@ bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer, ft::s
     bool result = false;
     while (!reqBuffer.empty()){
         if (this->_state == M_HEADER)
-            handleMultipartHeader(reqBuffer, req);
+            handleMultipartHeader(reqBuffer);
         if (this->_state == M_BODY)
             result = parsePartOfBody(reqBuffer);
     }
     return result;
 }
 
-void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req){
+void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBuffer){
 	std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	std::string line;
 	while (find != reqBuffer.end()){
@@ -36,7 +37,6 @@ void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBu
 		if (line.empty()){
 			this->_state = M_BODY;
             // make full path to upload
-            req->getBody();
             generatePath();
             FileUploader::checkFileExists(this->_multipartRequest._filename);
 			return;
@@ -49,7 +49,7 @@ void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBu
 }
 
 void MultipartRequestBodyHandler::generatePath(){
-    std::string path = "/Users/leehyunkyu/Desktop/upload/";
+    std::string path = RouterUtils::findPath(this->_vsm, this->_request) + "/";
     std::multimap<std::string, std::string>::iterator mapIt = this->_multipartRequest._headers.find("Content-Disposition");
     if (mapIt == this->_multipartRequest._headers.end())
         throw FileUploader::FileUploadException("Content-Disposition header not found");

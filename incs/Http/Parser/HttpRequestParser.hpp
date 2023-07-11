@@ -2,8 +2,10 @@
 #define HTTP_REQUEST_PARSER_HPP
 
 #include "../Request/HttpRequest.hpp"
+#include "../Utils/RouterUtils.hpp"
 #include "../Exception/BadRequestException.hpp"
 #include "../../Config/Config.hpp"
+#include "../../Server/VirtualServerManager.hpp"
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
 #include "../../../libs/unique_ptr/unique_ptr.hpp"
 #include "ParsePatternMatcher.hpp"
@@ -44,7 +46,7 @@ private:
 public:
 	//check: this maybe void
 	HttpRequestParser(void);
-	const RequestParseState &parseRequest(std::vector<char> &reqBuffer, int clientBodyMaxSize);
+	const RequestParseState &parseRequest(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm) throw(ClientBodySizeInvalidException);
 	void clearBuffer();
 	const RequestParseState &getState();
 	const int & getReadBodySize();
@@ -53,12 +55,12 @@ public:
 
 private:
 	void handleStartLineState(std::vector<char> &reqBuffer);
-	void handleHeaderState(std::vector<char> &reqBuffer, int clientBodyMaxSize);
+	void handleHeaderState(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm);
 	void handleBodyState(std::vector<char> &reqBuffer);
 	bool isFileExists(const std::string& filename);
 	std::string generateUniqueFileName();
-	void changeStateToBody(int clientBodyMaxSize) throw(ClientBodySizeInvalidException);
-	void injectionHandler();
+	void changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(ClientBodySizeInvalidException);
+	void injectionHandler(ft::shared_ptr<VirtualServerManager> vsm);
 };
 
 #endif

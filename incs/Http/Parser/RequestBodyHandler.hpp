@@ -11,15 +11,16 @@ class RequestBodyHandler
 {
 
 protected:
-int _readBodySize;
+int 						_readBodySize;
+ft::shared_ptr<HttpRequest> _request;
  
 public:
 	//true -> parse finish, false -> parse not finish
-	virtual bool handleBody(std::vector<char> &reqBuffer, ft::shared_ptr<HttpRequest> req) = 0;
+	virtual bool handleBody(std::vector<char> &reqBuffer) = 0;
 	virtual ~RequestBodyHandler(void) = 0;
 
 protected:
-	RequestBodyHandler(int readBodySize);
+	RequestBodyHandler(int readBodySize, ft::shared_ptr<HttpRequest> req);
 };
 
 #endif
