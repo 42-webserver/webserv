@@ -42,7 +42,7 @@ bool	PhysicalServer::hasServerWithWildCardIp(void) const {
 bool	PhysicalServer::mergeAllVirtualServer(const PhysicalServer &other) throw(std::exception) {
 	try {
 		this->_ip = "0.0.0.0";
-		this->_virtual_server_manager_ptr->mergeAllVirtualServer(other._virtual_server_manager_ptr);
+		this->_virtual_server_manager_ptr->mergeAllVirtualServer(*(other._virtual_server_manager_ptr));
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToMergeAllVirtualServerException());
