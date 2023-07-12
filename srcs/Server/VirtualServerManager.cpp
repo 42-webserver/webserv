@@ -105,6 +105,10 @@ VirtualServerManager::VirtualServerPtr	VirtualServerManager::findVirtualServer(c
 	return (ret);
 }
 
+VirtualServerManager::VirtualServerPtr	VirtualServerManager::getDefaultVirtualServer(void) const {
+	return (this->_ip_map.find(this->_default_server_ip)->second);
+}
+
 VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerByIp(const Ip &ip) const {
 	VirtualServerPtr		ret;
 	IpMap::const_iterator	it = this->_ip_map.find(ip);
@@ -124,9 +128,6 @@ VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerB
 	if (ret.get() == NULL) {
 		ret = VirtualServerManager::_findVirtualServerByEtcHosts(server_name);
 	}
-	if (ret.get() == NULL) {
-		ret = VirtualServerManager::_findVirtualServerByIp(this->_default_server_ip);
-	}
 	return (ret);
 }
 VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerByServerName(const ServerName &server_name) const {
@@ -143,10 +144,15 @@ VirtualServerManager::VirtualServerPtr	VirtualServerManager::_findVirtualServerB
 }
 
 VirtualServerManager::Host		VirtualServerManager::_trimHost(const Host &host) {
-	Host	ret = host;
+	Host					ret = host;
+	std::string::size_type	pos;
 
-	if (host.find(":") != std::string::npos) {
-		ret = host.substr(0, host.find(":"));
+	if (host.substr(0, 7) == "http://") {
+		ret = host.substr(7);
+	} else if (host.substr(0, 8) == "https://") {
+		ret = host.substr(8);
+	} else if ((pos = host.find(":")) != std::string::npos) {
+		ret = host.substr(0, pos);
 	}
 	return (ret);
 }

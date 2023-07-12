@@ -1,7 +1,7 @@
 #include "../../incs/FileDescriptor/FileDescriptor.hpp"
 
 FileDescriptor::FileDescriptor(int fd) : _fd(fd) {}
-FileDescriptor::~FileDescriptor(void) { ::close(this->_fd);};
+FileDescriptor::~FileDescriptor(void) { ::close(this->_fd); };
 
 
 void	FileDescriptor::setNonBlocking(void) throw (std::exception) {

@@ -20,7 +20,7 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_physical_server_manager.build(config);
 		this->_physical_server_manager.run();
-		std::cout << *this << '\n';
+		std::cout << *this << std::endl;
 		exit(0);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
