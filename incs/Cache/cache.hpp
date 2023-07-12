@@ -1,29 +1,40 @@
 #ifndef CACHE_HPP
 # define CACHE_HPP
-
-# include <iostream>
-# include <list>
-# include <map>
-# include <vector>
-
-class LruCache {
+#include "LruCache.hpp"
+#include "../Http/Exception/BadRequestException.hpp"
+#include "../Http/Exception/ServerErrorException.hpp"
+class Cache{
+public:
+	static const int	cacheBufferSize = 1024 *4;
+public:
+class BigFileException: public BadRequestException {
 	public:
-		typedef std::list< std::pair< std::string, std::vector< char> > > lru_list_t;
-		typedef std::map< std::string, lru_list_t::iterator > cache_map_t;
-
-	private:
-		int			_capacity;
-		lru_list_t	_lru_list; 
-		cache_map_t	_cache; 
-
+		virtual const char *what() const throw();
+};
+class FileAuthentificationException: public BadRequestException {
 	public:
-		LruCache(void);
-		~LruCache(void);
-		LruCache(int capacity);
-
+		virtual const char *what() const throw();
+};
+class FileNoExistException: public ServerErrorException {
 	public:
-		std::vector<char>	get(std::string uri);
-		void				put(std::string uri, std::vector<char> content);
+		virtual const char *what() const throw();
+};
+public:
+		static Cache	&getInstance(void);
+		void deleteInstance(void);
+		const std::vector<char>	&getFileContent(const std::string &uri) throw(BigFileException, FileAuthentificationException,
+		FileNoExistException);
+private:
+	Cache(void);
+	~Cache(void);
+	Cache(const Cache &ref);
+	Cache &operator=(const Cache &rhs);
+	void checkAndThrow(const std::string &uri) throw(BigFileException, FileAuthentificationException,
+		FileNoExistException);
+	bool checkAuthentification(const std::string &uri);
+private:
+	LruCache	_cache;
+	static Cache	*_instance;
 };
 
 #endif
