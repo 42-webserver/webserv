@@ -38,7 +38,6 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 	try {
 		for (PortMap::iterator port_it=this->_port_map.begin(); port_it!=this->_port_map.end(); port_it++) {
 			for (PhysicalServerPtrVector::iterator ps_it=port_it->second.begin(); ps_it!=port_it->second.end(); ps_it++) {
-				// runSocket
 				(*ps_it)->run();
 				// initEventQueue
 				// initListenEvent
