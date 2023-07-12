@@ -1,4 +1,5 @@
 #include "../../incs/Config/ServerElement.hpp"
+#include "../../incs/Config/ConfigElementFactory.hpp"
 #include "../../incs/Config/RootElement.hpp"
 #include "../../incs/Config/IndexElement.hpp"
 #include "../../incs/Config/ErrorPageElement.hpp"

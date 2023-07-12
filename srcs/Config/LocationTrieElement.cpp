@@ -1,4 +1,5 @@
 #include "../../incs/Config/LocationTrieElement.hpp"
+#include "../../incs/Config/ConfigElementFactory.hpp"
 #include "../../incs/Log/Logger.hpp"
 
 LocationTrieElement::LocationTrieElement(void) {}
