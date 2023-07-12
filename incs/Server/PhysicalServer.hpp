@@ -20,7 +20,7 @@ class PhysicalServer {
 		typedef ft::shared_ptr<VirtualServerManager>	VirtualServerManagerPtr;
 
 	private:
-		Ip						_ip;
+		Ip						_ip; // socket ip
 		SocketPtr				_socket_ptr;
 		VirtualServerManagerPtr	_virtual_server_manager_ptr;
 	

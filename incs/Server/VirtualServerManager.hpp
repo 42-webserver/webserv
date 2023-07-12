@@ -43,6 +43,7 @@ class VirtualServerManager {
 	
 	public:
 		VirtualServerPtr	findVirtualServer(const Host &host) const throw(std::exception);
+		VirtualServerPtr	getDefaultVirtualServer(void) const throw(std::exception);
 	
 	private:
 		VirtualServerPtr	_findVirtualServerByIp(const Ip &ip) const;

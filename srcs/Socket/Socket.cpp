@@ -4,7 +4,7 @@
 #include <memory.h>
 #include <sstream>
 
-Socket::Socket(void): _fd(0), _enable(0) { memset(&this->_addr, 0, sizeof(struct sockaddr_in)); }
+Socket::Socket(void): _fd(0), _enable(0), _addr(sockaddr_in()) { memset(&this->_addr, 0, sizeof(struct sockaddr_in)); }
 Socket::Socket(const Socket &ref): _fd(ref._fd), _enable(ref._enable), _addr(ref._addr) {}
 Socket::~Socket(void) {}
 Socket	&Socket::operator=(const Socket &rhs) {
