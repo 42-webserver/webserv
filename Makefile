@@ -18,10 +18,12 @@ OBJS_DIR	= objs
 
 SRCS =	main.cpp \
 		Config/AliasElement.cpp \
+		Config/AllowMethodElement.cpp \
 		Config/AutoIndexElement.cpp \
 		Config/ClientMaxBodySizeElement.cpp \
 		Config/Config.cpp \
 		Config/ConfigElement.cpp \
+		Config/ConfigElementFactory.cpp \
 		Config/ErrorPageElement.cpp \
 		Config/IndexElement.cpp \
 		Config/ListenElement.cpp \

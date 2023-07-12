@@ -1,4 +1,5 @@
 #include "../../incs/Config/LocationElement.hpp"
+#include "../../incs/Config/ConfigElementFactory.hpp"
 #include "../../incs/Log/Logger.hpp"
 
 const LocationElement::KeyMap	LocationElement::_key_map = LocationElement::_initKeyMap();
@@ -6,6 +7,7 @@ LocationElement::KeyMap	LocationElement::_initKeyMap(void) {
 	KeyMap	ret;
 
 	ret["alias"] = KEY::ALIAS;
+	ret["allow_method"] = KEY::ALLOW_METHOD;
 	ret["autoindex"] = KEY::AUTOINDEX;
 	ret["error_page"] = KEY::ERROR_PAGE;
 	ret["index"] = KEY::INDEX;
@@ -33,7 +35,9 @@ LocationElement	&LocationElement::operator=(const LocationElement &rhs) {
 	return (*this);
 }
 
-LocationElement::iterator				LocationElement::find(KEY::e_key key) {
+LocationElement::iterator			LocationElement::begin(void) { return (this->_element_map.begin()); }
+LocationElement::iterator			LocationElement::end(void) { return (this->_element_map.end()); }
+LocationElement::iterator			LocationElement::find(KEY::e_key key) {
 	ElementMap::iterator	it = this->_element_map.find(key);
 
 	if (it == this->_element_map.end()) {
@@ -42,11 +46,9 @@ LocationElement::iterator				LocationElement::find(KEY::e_key key) {
 	return (it);
 }
 
-LocationElement::iterator				LocationElement::begin(void) { return (this->_element_map.begin()); }
-LocationElement::iterator				LocationElement::end(void) { return (this->_element_map.end()); }
-
-
-LocationElement::const_iterator			LocationElement::find(KEY::e_key key) const {
+LocationElement::const_iterator		LocationElement::begin(void) const { return (this->_element_map.begin()); }
+LocationElement::const_iterator		LocationElement::end(void) const { return (this->_element_map.end()); }
+LocationElement::const_iterator		LocationElement::find(KEY::e_key key) const {
 	ElementMap::const_iterator	it = this->_element_map.find(key);
 
 	if (it == this->_element_map.end()) {
@@ -54,9 +56,6 @@ LocationElement::const_iterator			LocationElement::find(KEY::e_key key) const {
 	}
 	return (it);
 }
-
-LocationElement::const_iterator			LocationElement::begin(void) const { return (this->_element_map.begin()); }
-LocationElement::const_iterator			LocationElement::end(void) const { return (this->_element_map.end()); }
 
 LocationElement::ElementPtr			&LocationElement::operator[](KEY::e_key key) { return (this->_element_map[key]); }
 const LocationElement::ElementPtr	&LocationElement::operator[](KEY::e_key key) const { return (this->_element_map.at(key)); }

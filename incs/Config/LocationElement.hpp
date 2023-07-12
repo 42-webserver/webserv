@@ -12,6 +12,7 @@ class LocationElement: public ConfigElement {
 		typedef struct s_key {
 			enum e_key {
 				ALIAS,
+				ALLOW_METHOD,
 				AUTOINDEX,
 				ERROR_PAGE,
 				INDEX,
@@ -42,13 +43,14 @@ class LocationElement: public ConfigElement {
 		ElementMap	_element_map;
 	
 	public:
-		iterator		find(KEY::e_key key);
 		iterator		begin(void);
 		iterator		end(void);
-		
-		const_iterator	find(KEY::e_key key) const;
+		iterator		find(KEY::e_key key);
+	
+	public:
 		const_iterator	begin(void) const;
 		const_iterator	end(void) const;
+		const_iterator	find(KEY::e_key key) const;
 	
 	public:
 		ElementPtr			&operator[](KEY::e_key key);
