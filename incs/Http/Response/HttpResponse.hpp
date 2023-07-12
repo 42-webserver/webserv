@@ -13,6 +13,7 @@ private:
 	std::vector<char>	_body;
 	std::string 		_protocol;
 	HttpStatusCode 		_statusCode;
+	std::string 		_fileName;
 	
 	std::multimap<std::string, std::string> _headers;
 	std::vector<Cookie> _cookies;

@@ -17,3 +17,8 @@ void FileUploader::checkFileExists(const std::string& filepath) throw(FileUpload
     if(file.good())
         throw FileUploader::FileUploadException("Duplicate File Error");
 }
+
+bool FileUploader::isFileExists(const std::string& filename){
+    std::ifstream file(filename.c_str());
+    return file.good();
+}

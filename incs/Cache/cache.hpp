@@ -13,8 +13,8 @@ class LruCache {
 
 	private:
 		int			_capacity;
-		lru_list_t	_lru_list; 
-		cache_map_t	_cache; 
+		lru_list_t	_lru_list;
+		cache_map_t	_cache;
 
 	public:
 		LruCache(void);
