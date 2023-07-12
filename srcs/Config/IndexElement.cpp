@@ -1,5 +1,6 @@
 #include "../../incs/Config/IndexElement.hpp"
 #include "../../incs/Log/Logger.hpp"
+#include <algorithm>
 
 IndexElement::IndexElement(void) {}
 IndexElement::IndexElement(std::ifstream &infile) throw(std::exception) {
@@ -29,13 +30,17 @@ bool	IndexElement::_parse(std::ifstream &infile) throw(std::exception) {
 			if (this->_uriIsNotValid(token)) {
 				throw (InvalidArgumentException());
 			}
-			this->_uris.push_back(token);
+			if (std::find(this->_uris.begin(), this->_uris.end(), token) == this->_uris.end()) {
+				this->_uris.push_back(token);
+			}
 			break ;
 		}
 		if (this->_uriIsNotValid(token)) {
 			throw (InvalidArgumentException());
 		}
-		this->_uris.push_back(token);
+		if (std::find(this->_uris.begin(), this->_uris.end(), token) == this->_uris.end()) {
+			this->_uris.push_back(token);
+		}
 	}
 	if (this->_uris.empty()) {
 		throw (InvalidSyntaxException());

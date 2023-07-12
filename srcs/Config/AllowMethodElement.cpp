@@ -41,12 +41,15 @@ bool	AllowMethodElement::_parse(std::ifstream &infile) throw(std::exception) {
 				throw (InvalidArgumentException());
 			}
 			this->_flag |= it->second;
-			return (true);
+			break;
 		}
 		if ((it = AllowMethodElement::_method_map.find(token)) == AllowMethodElement::_method_map.end()) {
 			throw (InvalidArgumentException());
 		}
 		this->_flag |= it->second;
+	}
+	if (this->_flag == M_NONE) {
+		throw (InvalidSyntaxException());
 	}
 	return (true);
 }
