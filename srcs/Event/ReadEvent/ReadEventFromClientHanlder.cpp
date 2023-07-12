@@ -1,13 +1,14 @@
 #include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
 #include "../../../incs/Event/BufReadHandler.hpp"
 #include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
+#include "../../../incs/FtUtil/ft.hpp"
 
-ReadEventFromClientHandler::ReadEventFromClientHandler(void) : _HttpRequestParser(ft::make_unique<HttpRequestParser>()) {}
+ReadEventFromClientHandler::ReadEventFromClientHandler(void) : _HttpRequestParser(ft::make_shared<HttpRequestParser>()) {}
 ReadEventFromClientHandler::~ReadEventFromClientHandler(void) {}
-const ft::unique_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequestParser(void) { return (this->_HttpRequestParser); }
+const ft::shared_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequestParser(void) { return (this->_HttpRequestParser); }
 void ReadEventFromClientHandler::handleEvent(Event &event) {
 	std::vector<char>	buf;
-	BufReadHandler		buf_read_handler(event.getFd(),  ReadEvent::BUF_SIZE);
+	BufReadHandler		buf_read_handler(event.getFd(), ft::bufSize);
 	
 	//check Moudle
 	try {

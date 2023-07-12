@@ -7,9 +7,6 @@
 # include <vector>
 
 class ReadEvent: public Event {
-	public:
-		static const int	BUF_SIZE = (4 * 1024);
-
 	protected:
 		std::vector<char>	_buffer;
 
