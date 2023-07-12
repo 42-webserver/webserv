@@ -1,26 +1,55 @@
-#include "../../incs/Cache/Cache.hpp"
+#include "../../incs/Cache/cache.hpp"
+#include <fstream>
+Cache *Cache::_instance = NULL;
+Cache::Cache(void) {}
+Cache::~Cache(void) {}
+Cache::Cache(const Cache &ref) { (void)ref; }
+Cache &Cache::operator=(const Cache &rhs) { (void)rhs; return (*this); }
 
-LruCache::LruCache(void): _capacity(0) {}
-LruCache::~LruCache(void) {}
-LruCache::LruCache(int capacity): _capacity(capacity) {}
-
-std::vector<char>	LruCache::get(std::string uri) {
-	if (this->_cache.find(uri) == this->_cache.end()) {
-		return (std::vector<char>());
+void Cache::deleteInstance(void) {
+	if (Cache::_instance != NULL) {
+		delete Cache::_instance;
+		Cache::_instance = NULL;
 	}
-
-	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);
-	return (this->_cache[uri]->second);
 }
-void				LruCache::put(std::string uri, std::vector<char> content) {
-	if (this->_cache.size() >= this->_capacity) {
-		lru_list_t::iterator	last = this->_lru_list.end();
-
-		last--;
-		this->_cache.erase(last->first);
-		this->_lru_list.pop_back();
+Cache	&Cache::getInstance(void) {
+	if (Cache::_instance == NULL) {
+		Cache::_instance = new Cache();
 	}
+	return (*Cache::_instance);
+}
+bool Cache::checkAuthentification(const std::string &uri) {
+	(void)uri;
+	//TODO: check authentification
+	return (true);
+}
+void Cache::checkAndThrow(const std::string &uri) throw(BigFileException, FileAuthentificationException,
+	FileNoExistException) {
+ 	std::fstream file;
+    file.open("test.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+	if (!file.is_open()) {
+		throw FileNoExistException();
+	}
+	if (!checkAuthentification(uri)) {
+		throw FileAuthentificationException();
+	}
+	file.seekg(0, std::ios::end);
+	if (file.tellg() > Cache::cacheBufferSize) {
+		throw BigFileException();
+	}
+	file.close();
+}
 
-	this->_lru_list.push_front(std::make_pair(uri, content));
-	this->_cache[uri] = this->_lru_list.begin();
+const std::vector<char>	&Cache::getFileContent(const std::string &uri) {
+	checkAndThrow(uri);
+	return (this->_cache.get(uri));
+}
+const char *Cache::BigFileException::what() const throw() {
+	return ("File is too big");
+}
+const char *Cache::FileAuthentificationException::what() const throw() {
+	return ("File authentification failed");
+}
+const char *Cache::FileNoExistException::what() const throw() {
+	return ("File does not exist");
 }
