@@ -2,23 +2,26 @@
 # define EVENTDTO_HPP
 
 # include "../../Server/VirtualServerManager.hpp"
-
-class EventDto {
+# include "../../FileDescriptor/FileDescriptor.hpp"
+# include "../../Http/Request/HttpRequest.hpp"
+class  EventDto {
 	private: 
-		int 									_fd;
-		ft::shared_ptr<VirtualServerManager>	_physical_server;
+		ft::shared_ptr<FileDescriptor>				_fd;
+		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
+		ft::shared_ptr<HttpRequest>				_httpRequest;
 
 	public:
-		EventDto(void);
-		EventDto(int fd);
-		EventDto(int fd, ft::shared_ptr<VirtualServerManager> physical_server);
-		EventDto(const EventDto &ref);
+		EventDto(ft::shared_ptr<FileDescriptor> fd, ft::shared_ptr<VirtualServerManager> virtualServerManager,
+		ft::shared_ptr<HttpRequest> httpRequest);
 		~EventDto(void);
+	private:
 		EventDto &operator=(const EventDto &rhs);
-	
+		EventDto(void);
+		EventDto(const EventDto &ref);
 	public:
-		int 									getFd() const;
-		ft::shared_ptr<VirtualServerManager>	getPhysicalServer() const;
+		const ft::shared_ptr<FileDescriptor>	&getFd() const;
+		const ft::shared_ptr<VirtualServerManager>	&getVirtualServerManager() const;
+		const ft::shared_ptr<HttpRequest>	&getHttpRequest() const;
 };
 
 #endif

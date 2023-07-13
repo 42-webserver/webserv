@@ -7,7 +7,8 @@
 
 class ListenEvent: public Event {
 	public:
-		ListenEvent(int fd, EventHandler *listen_event_handler, ft::shared_ptr<VirtualServerManager> physical_server);
+		ListenEvent(ft::shared_ptr<FileDescriptor> fd,
+		ft::shared_ptr<VirtualServerManager> physical_server);
 		virtual	~ListenEvent(void);
 
 	private:
@@ -15,10 +16,10 @@ class ListenEvent: public Event {
 		ListenEvent	&operator=(const ListenEvent &rhs);
 
 	private:
-		ft::shared_ptr<VirtualServerManager>	_physical_server;
+		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
 	
 	public:
-		ft::shared_ptr<VirtualServerManager>	getPhysicalServer(void) const;
+		ft::shared_ptr<VirtualServerManager>	getVirtualServerManager(void) const;
 
 	public:
 		virtual void	callEventHandler(void);

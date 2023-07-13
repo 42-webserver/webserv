@@ -31,12 +31,22 @@ SRCS =	main.cpp \
 		Config/RootElement.cpp \
 		Config/ServerElement.cpp \
 		Config/ServerNameElement.cpp \
-		Event/Event.cpp \
-		Event/ListenEvent.cpp \
-		Event/ReadEvent.cpp \
-		Event/TimeEvent.cpp \
-		Event/WriteEvent.cpp \
-		EventQueue/EventQueue.cpp \
+		Event/BufReadHandler.cpp \
+		Event/EventBase/Event.cpp \
+		Event/EventBase/EventFactory.cpp \
+		Event/EventBase/EventHandler.cpp \
+		Event/EventDto/EventDto.cpp \
+		Event/EventQueue/EventQueue.cpp \
+		Event/ListenEvent/ListenEvent.cpp \
+		Event/ListenEvent/ListenEventHandler.cpp \
+		Event/ReadEvent/ReadEvent.cpp \
+		Event/ReadEvent/ReadEventFromClient.cpp \
+		Event/ReadEvent/ReadEventFromClientHandler.cpp \
+		Event/ReadEvent/ReadEventHandler.cpp \
+		Event/WriteEvent/WriteEvent.cpp \
+		Event/WriteEvent/WriteEventHandler.cpp \
+		Event/WriteEvent/WriteEventToClient.cpp \
+		Event/WriteEvent/WriteEventToClientHandler.cpp \
 		FileDescriptor/FileDescriptor.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
 		Http/Parser/HttpRequestParser.cpp \
@@ -61,13 +71,17 @@ SRCS =	main.cpp \
 		Server/VirtualServerManager.cpp \
 		Server/Webserv.cpp \
 		Socket/Socket.cpp \
-		EventDto/EventDto.cpp \
-		Event/BufReadHandler.cpp \
+
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
 				${OBJS_DIR}/Event \
-				${OBJS_DIR}/EventQueue\
+				${OBJS_DIR}/Event/EventBase \
+				${OBJS_DIR}/Event/EventDto \
+				${OBJS_DIR}/Event/EventQueue \
+				${OBJS_DIR}/Event/ListenEvent \
+				${OBJS_DIR}/Event/ReadEvent \
+				${OBJS_DIR}/Event/WriteEvent \
 				${OBJS_DIR}/FileDescriptor \
 				${OBJS_DIR}/http \
 				${OBJS_DIR}/Http/handler \
@@ -80,7 +94,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \
 				${OBJS_DIR}/Socket \
-				${OBJS_DIR}/EventDto \
+
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}

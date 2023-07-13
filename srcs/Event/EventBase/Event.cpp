@@ -1,7 +1,7 @@
 #include "../../../incs/Event/EventBase/Event.hpp"
 
-Event::Event(void): _fd(ft::shared_ptr<FileDescriptor>(NULL)), _event_handler(NULL) {}
-Event::Event(int fd, EventHandler *event_handler): _fd(ft::shared_ptr<FileDescriptor>(new FileDescriptor(fd))), _event_handler(event_handler) {}
+Event::Event(ft::shared_ptr<FileDescriptor> fd, 
+EventHandler* eventHandler): _fd(fd), _event_handler(ft::shared_ptr<EventHandler>(eventHandler)) {}
 Event::~Event(void) {}
 
 ft::shared_ptr<FileDescriptor>	Event::getFileDescriptor(void) { return (this->_fd); }

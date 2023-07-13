@@ -1,10 +1,12 @@
 #include "../../../incs/Event/ReadEvent/ReadEventFromClient.hpp"
+#include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
-ReadEventFromClient::ReadEventFromClient(int fd, EventHandler *readEventFromClientHandler, ft::shared_ptr<VirtualServerManager> physical_server):
-	ReadEvent(fd, readEventFromClientHandler),
-	_physical_server(physical_server)
+ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<FileDescriptor> fd, 
+	ft::shared_ptr<VirtualServerManager> virtualServerManager):
+	ReadEvent(fd, new ReadEventFromClientHandler()),
+	_virtualServerManager(virtualServerManager)
 	{}
-
 ReadEventFromClient::~ReadEventFromClient(void) {}
 void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
 void	ReadEventFromClient::onboardQueue() throw (std::exception) {
@@ -22,7 +24,7 @@ void	ReadEventFromClient::onboardQueue() throw (std::exception) {
 	}
 
 	EV_SET(
-		event_queue.getEventSetElementPtr(READ_SET),
+		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
 		fd,
 		EVFILT_READ,
 		EV_ADD | EV_ENABLE,
@@ -42,7 +44,7 @@ void	ReadEventFromClient::offboardQueue() throw (std::exception) {
 
 	Logger::getInstance().info("Remove Read Event");
 	EV_SET(
-		event_queue.getEventSetElementPtr(READ_SET),
+		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
 		this->getFd(),
 		EVFILT_READ,
 		EV_DELETE,
@@ -58,4 +60,5 @@ void	ReadEventFromClient::offboardQueue() throw (std::exception) {
 	}
 }
 
-ft::shared_ptr<VirtualServerManager>	ReadEventFromClient::getPhysicalServer(void) const { return (this->_physical_server); }
+const ft::shared_ptr<VirtualServerManager>	
+&ReadEventFromClient::getVirtualServerManger(void) const { return (this->_virtualServerManager); }

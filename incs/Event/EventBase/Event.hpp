@@ -2,20 +2,18 @@
 # define EVENT_HPP
 
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
-# include "../../../libs/unique_ptr/unique_ptr.hpp"
 # include "../../FileDescriptor/FileDescriptor.hpp"
-# include "../EventQueue/EventQueue.hpp"
 # include "../EventDto/EventDto.hpp"
 # include "../../Socket/Socket.hpp"
 # include "EventHandler.hpp"
 
+class EventHandler;
 class Event {
 	protected:
 		ft::shared_ptr<FileDescriptor>	_fd;
-		ft::unique_ptr<EventHandler>	_event_handler;
-
+		ft::shared_ptr<EventHandler>	_event_handler;
+		Event(ft::shared_ptr<FileDescriptor> fd, EventHandler* event_handler);
 	public:
-		Event(int fd, EventHandler *event_handler);
 		virtual ~Event(void); // Virtual destructor
 	
 	private:

@@ -7,7 +7,6 @@
 #include "../../Config/Config.hpp"
 #include "../../Server/VirtualServerManager.hpp"
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
-#include "../../../libs/unique_ptr/unique_ptr.hpp"
 #include "ParsePatternMatcher.hpp"
 #include "MultipartRequestBodyHandler.hpp"
 #include "RequestBodyHandler.hpp"

@@ -1,12 +1,12 @@
 #include "../../../incs/Event/ListenEvent/ListenEvent.hpp"
-#include <new>
 #include <unistd.h>
 #include <fcntl.h>
 #include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
+#include "../../../incs/Event/ListenEvent/ListenEventHandler.hpp"
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
-ListenEvent::ListenEvent(int fd, EventHandler *listen_event_handler, ft::shared_ptr<VirtualServerManager> physical_server):
-	Event(fd, listen_event_handler),
-	_physical_server(physical_server)
+ListenEvent::ListenEvent(ft::shared_ptr<FileDescriptor> fd, ft::shared_ptr<VirtualServerManager> virtual_server_manager):
+Event(fd, new ListenEventHandler()), _virtualServerManager(virtual_server_manager)
 	{}
 
 ListenEvent::~ListenEvent(void) {}
@@ -29,7 +29,7 @@ void	ListenEvent::onboardQueue(void) throw (std::exception) {
 	}
 
 	EV_SET(
-		event_queue.getEventSetElementPtr(READ_SET),
+		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
 		fd,
 		EVFILT_READ,
 		EV_ADD | EV_ENABLE,
@@ -48,7 +48,7 @@ void	ListenEvent::offboardQueue(void) throw (std::exception) {
 
 	Logger::getInstance().info("Remove Listen Event");
 	EV_SET(
-		event_queue.getEventSetElementPtr(READ_SET),
+		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
 		this->getFd(),
 		EVFILT_READ,
 		EV_DELETE,
@@ -64,7 +64,7 @@ void	ListenEvent::offboardQueue(void) throw (std::exception) {
 	}
 }
 
-ft::shared_ptr<VirtualServerManager>	ListenEvent::getPhysicalServer(void) const { return (this->_physical_server); }
+ft::shared_ptr<VirtualServerManager>	ListenEvent::getVirtualServerManager(void) const { return (this->_virtualServerManager); }
 // Exception
 const char	*ListenEvent::FailToAcceptException::what(void) const throw() { return ("ListenEvent: Fail to accept"); }
 const char	*ListenEvent::FailToControlException::what(void) const throw() { return ("ListenEvent: Fail to control"); }

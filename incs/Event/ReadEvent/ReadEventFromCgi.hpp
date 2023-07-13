@@ -3,10 +3,10 @@
 
 # include "ReadEvent.hpp"
 
-class ReadEventCgi: public ReadEvent {
+class ReadEventFromCgi: public ReadEvent {
 	public:
-		ReadEventCgi(void);
-		virtual	~ReadEventCgi(void);
+		ReadEventFromCgi(void);
+		virtual	~ReadEventFromCgi(void);
 
 	public:
 		virtual void	callEventHandler(void);

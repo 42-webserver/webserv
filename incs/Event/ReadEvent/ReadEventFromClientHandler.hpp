@@ -3,7 +3,7 @@
 
 #include "ReadEventHandler.hpp"
 #include "../../Http/Parser/HttpRequestParser.hpp"
-class ReadEventFromClientHandler: public ReadEventHandler {
+class ReadEventFromClientHandler : public ReadEventHandler {
 	public:
 		ReadEventFromClientHandler(void);
 		virtual	~ReadEventFromClientHandler(void);

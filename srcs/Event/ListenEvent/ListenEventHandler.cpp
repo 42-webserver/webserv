@@ -25,7 +25,7 @@ void	ListenEventHandler::handleEvent(Event &event) throw (std::exception) {
 		log.error(e.what());
 		return ;
 	}
-
+	(void)client_fd;
 	// EventFactory &factory = ReadEventClientFactory::getInstance();
 	// try {
 	// 	EventQueue &event_queue = EventQueue::getInstance();

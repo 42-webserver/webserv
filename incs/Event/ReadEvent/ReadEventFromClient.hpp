@@ -5,11 +5,12 @@
 
 class ReadEventFromClient: public ReadEvent {
 	public:
-		ReadEventFromClient(int fd, EventHandler *readEventFromClientHandler, ft::shared_ptr<VirtualServerManager> physicalServer);
+		ReadEventFromClient(ft::shared_ptr<FileDescriptor> fd, 
+			ft::shared_ptr<VirtualServerManager> virtualServerManager);
 		virtual	~ReadEventFromClient(void);
 
 	public:
-		ft::shared_ptr<VirtualServerManager>	getPhysicalServer(void) const;
+		const ft::shared_ptr<VirtualServerManager>	&getVirtualServerManger(void) const;
 
 	public:
 		virtual void	callEventHandler(void);
@@ -17,7 +18,7 @@ class ReadEventFromClient: public ReadEvent {
 		virtual void	offboardQueue(void) throw (std::exception);
 	
 	private:
-		ft::shared_ptr<VirtualServerManager>	_physical_server;
+		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
 
 };
 #endif

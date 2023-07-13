@@ -1,10 +1,10 @@
-#include "../../incs/EventQueue/EventQueue.hpp"
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
 #include <new>
 #include <stddef.h>
 #include <unistd.h>
 #include <iostream>
 #include <errno.h>
-#include "../../incs/Log/Logger.hpp"
+#include "../../../incs/Log/Logger.hpp"
 #include <fcntl.h>
 
 

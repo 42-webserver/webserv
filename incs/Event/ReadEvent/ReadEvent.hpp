@@ -5,13 +5,14 @@
 # include "../EventDto/EventDto.hpp"
 # include "../../Log/Logger.hpp"
 # include <vector>
-
+# include "./ReadEventHandler.hpp"
 class ReadEvent: public Event {
-	protected:
+	private:
 		std::vector<char>	_buffer;
 
-	public:
-		ReadEvent(int fd, EventHandler *read_event_handler);
+	protected:
+		ReadEvent(ft::shared_ptr<FileDescriptor> fd, ReadEventHandler* readEventHandler);
+	public:	
 		virtual	~ReadEvent(void);
 
 	private:
@@ -23,8 +24,9 @@ class ReadEvent: public Event {
 		virtual void	onboardQueue(void) throw (std::exception) = 0;
 		virtual void	offboardQueue(void) throw (std::exception) = 0;
 
-	//public:
-		//const std::vector<char>	&getBuffer(void);
+	protected:
+		const std::vector<char>	&getBuffer(void);
+		std::vector<char>	&getBufferRef(void);
 };
 
 

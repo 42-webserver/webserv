@@ -1,7 +1,7 @@
 #include "../../incs/Server/PhysicalServerManager.hpp"
 #include "../../incs/Config/ListenElement.hpp"
-#include "../../incs/EventQueue/EventQueue.hpp"
-#include "../../incs/Event/ListenEvent.hpp"
+#include "../../incs/Event/EventQueue/EventQueue.hpp"
+#include "../../incs/Event/ListenEvent/ListenEvent.hpp"
 #include "../../incs/Log/Logger.hpp"
 
 PhysicalServerManager::PhysicalServerManager(void): _port_map(PortMap()) {}

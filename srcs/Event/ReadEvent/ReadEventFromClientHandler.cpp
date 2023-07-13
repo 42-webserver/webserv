@@ -3,7 +3,7 @@
 #include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
 #include "../../../incs/FtUtil/ft.hpp"
 
-ReadEventFromClientHandler::ReadEventFromClientHandler(void) : _HttpRequestParser(ft::make_shared<HttpRequestParser>()) {}
+ReadEventFromClientHandler::ReadEventFromClientHandler(void) : ReadEventHandler(), _HttpRequestParser(ft::make_shared<HttpRequestParser>()) {}
 ReadEventFromClientHandler::~ReadEventFromClientHandler(void) {}
 const ft::shared_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequestParser(void) { return (this->_HttpRequestParser); }
 void ReadEventFromClientHandler::handleEvent(Event &event) {
