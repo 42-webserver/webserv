@@ -182,6 +182,14 @@ BodyType HttpRequest::getBodyType()
 	return this->_bodyType;
 }
 
+std::string HttpRequest::getHeader(const std::string & key)
+{
+	std::multimap<std::string, std::string>::iterator it = this->_headers.find(key);
+	if (it != this->_headers.end())
+		return it->second;
+	return "";
+}
+
 void HttpRequest::setBodyType(BodyType bodyType)
 {
 	this->_bodyType = bodyType;

@@ -21,16 +21,20 @@ private:
 public:
 	HttpResponse();
 	~HttpResponse();
+	void setBody(std::vector<char> & body);
 	void setBody(std::string & body);
+	void setFileName(std::string & fileName);
 	void addHeader(const std::string & key, const std::string & value);
 	void setStatusCode(HttpStatusCode code);
 	void addCookie(const std::string & key, const std::string & value);
 	std::string getVersion();
+	std::string getFileName();
 	std::vector<char> &getBody();
 	std::string getProtocol();
 	std::string getReasonPhrase();
 	int getStatusCode();
 	const std::multimap<std::string, std::string> &getHeaders() const;
+	std::string getHeader(const std::string & key);
 	const std::vector<Cookie> &getCookies() const;
 };
 

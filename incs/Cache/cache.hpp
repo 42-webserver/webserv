@@ -7,15 +7,18 @@ class Cache{
 public:
 	static const int	cacheBufferSize = 1024 *4;
 public:
-class BigFileException: public BadRequestException {
+class BigFileException {
 	public:
 		virtual const char *what() const throw();
 };
 class FileAuthentificationException: public BadRequestException {
 	public:
+		FileAuthentificationException(void) : BadRequestException(FORBIDDEN){};
 		virtual const char *what() const throw();
 };
 class FileNoExistException: public ServerErrorException {
+	public:
+		FileNoExistException(void) : ServerErrorException(INTERNAL_SERVER_ERROR){};
 	public:
 		virtual const char *what() const throw();
 };

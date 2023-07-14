@@ -22,12 +22,12 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
     std::string alias = _findAlias(locationElement);
     std::string path = _makePath(root, alias, uri);
 
-    if (path[path.size() - 1] != '/')
-        return path;
-
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::INDEX);
-    if (it == locationElement->end())
-        return path;
+    if (it == locationElement->end() || path[path.size() - 1] != '/'){
+       if (FileUploader::isFileExists(path))
+            return path;
+        throw NotFoundException();
+    }
     ft::shared_ptr<ConfigElement> indexConfElem = it->second;
     ft::shared_ptr<IndexElement> indexElem = ft::static_pointer_cast<IndexElement>(indexConfElem);
     std::vector<std::string> indexList = indexElem->getUris();

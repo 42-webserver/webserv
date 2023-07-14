@@ -4,8 +4,11 @@
 # include "BadRequestException.hpp"
 
 class NotFoundException : public BadRequestException {
-    public:
-        virtual const char* what() const throw();
+public:
+    NotFoundException(): BadRequestException(NOT_FOUND) {}
+    const char* what() const throw(){
+        return "404 Not Found";
+    }
 };
 
 #endif

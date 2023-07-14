@@ -8,7 +8,8 @@ HttpCgiResponseHandler::~HttpCgiResponseHandler()
 {
 }
 
-ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm){
+ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm)
+throw(ServerErrorException){
     ft::shared_ptr<HttpResponse> response(new HttpResponse());
     std::string cgiPath = RouterUtils::findPath(vsm, req);
     int pipefd[2];
@@ -28,17 +29,18 @@ ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_pt
         int status;
         waitpid(pid, &status, 0);
         if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-            ssize_t bytes;
             char buf[1024];
-            while(bytes = read(pipefd[0], buf, sizeof(buf)) > 0) {
+            ssize_t bytes = read(pipefd[0], buf, sizeof(buf));
+            while(bytes > 0) {
                 buffer.insert(buffer.end(), buf, buf + bytes);
                 if (_isHeaderState)
                     _makeResponseHeader(buffer, response);
                 else{
                     _makeResponseBody(buffer, response);
-                    if (response->getBody().size() == _contentLength)
+                    if (response->getBody().size() == static_cast<size_t>(_contentLength))
                         break;
                 }
+                bytes = read(pipefd[0], buf, sizeof(buf));
             }
         }
         else
@@ -51,19 +53,24 @@ ft::shared_ptr<HttpResponse> HttpCgiResponseHandler::handleRequest(ft::shared_pt
 void HttpCgiResponseHandler::_addTypeAndLength(ft::shared_ptr<HttpResponse> response){
     std::multimap<std::string, std::string> headers = response->getHeaders();
     if (headers.empty())
-        throw CgiResponseNotValidException("CGI response is not valid (No Header).");
+        throw CgiResponseNotValidException();
     
     std::multimap<std::string, std::string>::iterator it = headers.find("Content-Type");
     if (it == headers.end())
         response->addHeader("Content-Type", "text/plain");
 
     it = headers.find("Content-Length");
-    if (it == headers.end())
-        response->addHeader("Content-Length", std::to_string(response->getBody().size()));
+    if (it == headers.end()){
+        long long length = response->getBody().size();
+        std::stringstream ss;
+        ss << length;
+        std::string contentLength = ss.str();
+        response->addHeader("Content-Length", contentLength);
+    }
 }
 
 void HttpCgiResponseHandler::_makeResponseBody(std::string &buffer, ft::shared_ptr<HttpResponse> response){
-    if (response->getBody().size() + buffer.size() > _contentLength){
+    if (response->getBody().size() + buffer.size() > static_cast<size_t>(_contentLength)){
         std::string tmp = buffer.substr(0, _contentLength - response->getBody().size());
         response->setBody(tmp);
     }else{
@@ -92,7 +99,8 @@ void HttpCgiResponseHandler::_makeResponseHeader(std::string &buffer, ft::shared
 
 void HttpCgiResponseHandler::_executeCgi(ft::shared_ptr<HttpRequest> request, int pipefd[2], std::string &cgiPath){
     char* const scriptPath = const_cast<char*>(cgiPath.c_str());
-    char* argv[] = { "/usr/bin/python3", scriptPath, NULL};
+    char* const  pythonPath =  const_cast<char*>("/usr/bin/python3");
+    char* argv[] = { pythonPath, scriptPath, NULL};
 
     close(pipefd[0]);
     if (dup2(pipefd[1], STDOUT_FILENO) == -1)
@@ -110,7 +118,7 @@ void HttpCgiResponseHandler::_executeCgi(ft::shared_ptr<HttpRequest> request, in
 
     // CGI 스크립트 실행
     if (execve("/usr/bin/python3", argv, envp) == -1)
-        throw FailExecuteCgiException("Failed to execute CGI script.");
+        throw FailExecuteCgiException();
 }
 
 void HttpCgiResponseHandler::_fillMapWithQuery(std::map<std::string, std::string>& envMap, ft::shared_ptr<HttpRequest> request){
@@ -131,8 +139,3 @@ void HttpCgiResponseHandler::_populateEnvp(const std::map<std::string, std::stri
     envp[i] = NULL;
 }
 
-HttpCgiResponseHandler::CgiResponseNotValidException::CgiResponseNotValidException(const char *msg) : msg(msg) {}
-const char* HttpCgiResponseHandler::CgiResponseNotValidException::what() const throw() { return msg; }
-
-HttpCgiResponseHandler::FailExecuteCgiException::FailExecuteCgiException(const char *msg) : msg(msg) {}
-const char* HttpCgiResponseHandler::FailExecuteCgiException::what() const throw() { return msg; }

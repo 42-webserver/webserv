@@ -6,6 +6,7 @@
 #include "../../Server/VirtualServerManager.hpp"
 #include "../Exception/ServerErrorException.hpp"
 #include "../Utils/RouterUtils.hpp"
+#include <sstream>
 
 class HttpCgiResponseHandler : public HttpRequestHandler
 {
@@ -15,19 +16,19 @@ private:
 
 public:
     class CgiResponseNotValidException : public ServerErrorException {
-        private:
-            const char *msg;
         public:
-            CgiResponseNotValidException(const char *msg);
-            virtual const char* what() const throw();
+            CgiResponseNotValidException() : ServerErrorException(INTERNAL_SERVER_ERROR) {}
+            virtual const char* what() const throw(){
+                return "Cgi response is not valid";
+            }
     };
 
     class FailExecuteCgiException : public ServerErrorException {
-         private:
-            const char *msg;
         public:
-            FailExecuteCgiException(const char *msg);
-            virtual const char* what() const throw();
+            FailExecuteCgiException() : ServerErrorException(INTERNAL_SERVER_ERROR) {}
+            virtual const char* what() const throw(){
+                return "Fail to execute cgi";
+            }
     };
 
 public:
