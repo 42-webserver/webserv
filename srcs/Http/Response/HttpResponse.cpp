@@ -12,11 +12,20 @@ HttpResponse::~HttpResponse()
 {
 }
 
+void HttpResponse::setBody(std::vector<char> & body)
+{
+	this->_body.insert(this->_body.end(), body.begin(), body.end());
+}
+
 void HttpResponse::setBody(std::string & body)
 {
 	this->_body.insert(this->_body.end(), body.begin(), body.end());
 }
 
+void HttpResponse::setFileName(std::string & fileName)
+{
+	this->_fileName = fileName;
+}
 void HttpResponse::addCookie(const std::string & key, const std::string & value)
 {
 	Cookie cookie(key, value);
@@ -36,6 +45,11 @@ void HttpResponse::setStatusCode(HttpStatusCode code)
 std::string HttpResponse::getVersion()
 {
 	return (std::string &)this->_version;
+}
+
+std::string HttpResponse::getFileName()
+{
+	return this->_fileName;
 }
 
 std::vector<char> &HttpResponse::getBody()
@@ -61,6 +75,14 @@ std::string HttpResponse::getReasonPhrase()
 int HttpResponse::getStatusCode()
 {
 	return HttpStatus::getStatusCode(this->_statusCode);
+}
+
+std::string HttpResponse::getHeader(const std::string & key)
+{
+	std::multimap<std::string, std::string>::iterator it = this->_headers.find(key);
+	if (it != this->_headers.end())
+		return it->second;
+	return "";
 }
 
 const std::multimap<std::string, std::string> &HttpResponse::getHeaders() const

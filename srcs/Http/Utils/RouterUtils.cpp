@@ -11,6 +11,34 @@ std::string RouterUtils::findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::
     return _makePath(root, alias, uri);
 }
 
+std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerManager> vsm, 
+        ft::shared_ptr<HttpRequest> req)throw (NotFoundException){
+    std::string uri = req->getUri();
+    std::string host = req->getHost();
+
+    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+
+    std::string root = _findRoot(locationElement);
+    std::string alias = _findAlias(locationElement);
+    std::string path = _makePath(root, alias, uri);
+
+    LocationElement::iterator it = locationElement->find(LocationElement::KEY::INDEX);
+    if (it == locationElement->end() || path[path.size() - 1] != '/'){
+       if (FileUploader::isFileExists(path))
+            return path;
+        throw NotFoundException();
+    }
+    ft::shared_ptr<ConfigElement> indexConfElem = it->second;
+    ft::shared_ptr<IndexElement> indexElem = ft::static_pointer_cast<IndexElement>(indexConfElem);
+    std::vector<std::string> indexList = indexElem->getUris();
+    for (std::vector<std::string>::iterator it = indexList.begin(); it != indexList.end(); it++){
+        std::string indexPath = path + *it;
+        if (FileUploader::isFileExists(indexPath))
+            return indexPath;
+    }
+    throw NotFoundException();
+}
+
 ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
     std::string host = req->getHost();

@@ -30,8 +30,12 @@ class HttpRequestParser{
 
 public:
 class ClientBodySizeInvalidException : public BadRequestException {
-	public:
-			virtual const char* what() const throw();
+public:
+	ClientBodySizeInvalidException() : BadRequestException(BAD_REQUEST) {}
+
+	const char* what() const throw(){
+		return "Client Body Size Invalid";
+	}
 };
 
 private:

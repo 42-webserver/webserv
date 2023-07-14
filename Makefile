@@ -51,6 +51,8 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToClientHandler.cpp \
 		FileDescriptor/FileDescriptor.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
+		Http/Handler/HttpCgiResponseHandler.cpp \
+		Http/Handler/HttpGetResponseHandler.cpp \
 		Http/Parser/HttpRequestParser.cpp \
 		Http/Parser/HttpResponseParser.cpp \
 		Http/Parser/ChunkedRequestBodyHandler.cpp \

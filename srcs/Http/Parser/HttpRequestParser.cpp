@@ -120,7 +120,3 @@ const ft::shared_ptr<HttpRequest> HttpRequestParser::getHttpRequest() {
 const std::vector<char> &HttpRequestParser::getBuffer() {
 	return this->_buffer;
 }
-
-const char * HttpRequestParser::ClientBodySizeInvalidException::what() const throw() { 
-	return ("HttpRequestParse: client max body size is invalid");
-}
