@@ -21,11 +21,11 @@ void EventFactory::DeleteInstance(void) {
 Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto) throw (FailToEventCreateException) {
 	switch (eventType) {
 		case ft::READ_EVENT_FROM_CLIENT:
-			return (new ReadEventFromClient(eventDto.getFd(),
+			return (new ReadEventFromClient(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager())
 			);
 		case ft::WRITE_EVENT_TO_CLIENT:
-			return (new WriteEventToClient(eventDto.getFd(),
+			return (new WriteEventToClient(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager(),
 			 eventDto.getHttpRequest())
 			);
@@ -34,7 +34,7 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto) th
 		// case ft::WRITE_EVENT_TO_CGI:
 		// 	return (new WriteEventToCgi(eventDto));
 		case ft::LISTEN_EVENT:
-			return (new ListenEvent(eventDto.getFd(),
+			return (new ListenEvent(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager())
 			);
 		default:

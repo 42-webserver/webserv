@@ -5,7 +5,7 @@
 
 class ReadEventFromClient: public ReadEvent {
 	public:
-		ReadEventFromClient(ft::shared_ptr<FileDescriptor> fd, 
+		ReadEventFromClient(ft::shared_ptr<Channel> channel, 
 			ft::shared_ptr<VirtualServerManager> virtualServerManager);
 		virtual	~ReadEventFromClient(void);
 

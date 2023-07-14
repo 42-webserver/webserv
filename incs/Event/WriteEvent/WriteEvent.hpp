@@ -10,7 +10,7 @@ class WriteEvent: public Event {
 		std::vector<char>	_buffer;
 
 	protected:
-		WriteEvent(ft::shared_ptr<FileDescriptor> fd, WriteEventHandler* writeEventHandler);
+		WriteEvent(ft::shared_ptr<Channel> channel, WriteEventHandler* writeEventHandler);
 
 	public:	
 		virtual	~WriteEvent(void);

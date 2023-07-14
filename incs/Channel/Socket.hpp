@@ -4,33 +4,31 @@
 # include <netinet/in.h>
 # include <iostream>
 # include <string>
+# include "Channel.hpp"
 
-class Socket {
+class Socket : public Channel {
 	public:
 		static const int	MAX_SIZE = 1024;
 
 	private:
-		int					_fd;
 		int					_enable;
 		struct sockaddr_in	_addr;
 	
-	// Constructor & Destructor
 	public:
 		Socket(void);
-		~Socket(void);
+		virtual ~Socket(void);
+	private:
 		Socket(const Socket &ref);
 		Socket	&operator=(const Socket &rhs);
-
-	// Utils
+	private:
+		virtual void	inJectChannelFd(int fd);
 	public:
 		bool	build(const int port, const std::string &ip) throw(std::exception);
 		bool	run(void) throw(std::exception);
-		int		getFd(void) const;
 	
 	private:
 		static uint32_t	stringToNetworkByteOrder(const std::string &ip);
 
-	// Exception
 	public:
 		class FailToCreateException: public std::exception {
 			public:

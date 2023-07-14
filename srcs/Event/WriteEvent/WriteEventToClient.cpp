@@ -2,10 +2,10 @@
 #include "../../../incs/Event/WriteEvent/WriteEventToClientHandler.hpp"
 #include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
-WriteEventToClient::WriteEventToClient(ft::shared_ptr<FileDescriptor> fd,
+WriteEventToClient::WriteEventToClient(ft::shared_ptr<Channel> channel,
  ft::shared_ptr<VirtualServerManager> virtualServerManager
  , ft::shared_ptr<HttpRequest> httpRequest):
-WriteEvent(fd, new WriteEventToClientHandler()),
+WriteEvent(channel, new WriteEventToClientHandler()),
  _virtualServerManager(virtualServerManager),
  _httpRequest(httpRequest) {}
 WriteEventToClient::~WriteEventToClient(void) {}
