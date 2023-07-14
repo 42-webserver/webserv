@@ -4,9 +4,9 @@
 
 // ReadEvent::ReadEvent(int fd, EventHandler *read_event_handler): 
 // Event(fd, read_event_handler), _buffer(ft::bufSize) {}
-ReadEvent::ReadEvent(ft::shared_ptr<FileDescriptor> fd, 
+ReadEvent::ReadEvent(ft::shared_ptr<Channel> Channel, 
 ReadEventHandler *readEventHandler): 
-Event(fd, readEventHandler), _buffer(ft::bufSize) {}
+Event(Channel, readEventHandler), _buffer(ft::bufSize) {}
 ReadEvent::~ReadEvent(void) {}
 
 const std::vector<char>	&ReadEvent::getBuffer(void) { return (this->_buffer); }

@@ -2,17 +2,17 @@
 # define EVENT_HPP
 
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
-# include "../../FileDescriptor/FileDescriptor.hpp"
+# include "../../Channel/Channel.hpp"
 # include "../EventDto/EventDto.hpp"
-# include "../../Socket/Socket.hpp"
+# include "../../Channel/Socket.hpp"
 # include "EventHandler.hpp"
 
 class EventHandler;
 class Event {
 	protected:
-		ft::shared_ptr<FileDescriptor>	_fd;
+		ft::shared_ptr<Channel>	_channel;
 		ft::shared_ptr<EventHandler>	_event_handler;
-		Event(ft::shared_ptr<FileDescriptor> fd, EventHandler* event_handler);
+		Event(ft::shared_ptr<Channel> fd, EventHandler* event_handler);
 	public:
 		virtual ~Event(void); // Virtual destructor
 	
@@ -28,7 +28,7 @@ class Event {
 
 	public:
 		int								getFd(void) const;
-		ft::shared_ptr<FileDescriptor>	getFileDescriptor(void);
+		const ft::shared_ptr<Channel>	&getChannel(void);
 	public:
 		class FailToOnboardException: public std::exception {
 			public:

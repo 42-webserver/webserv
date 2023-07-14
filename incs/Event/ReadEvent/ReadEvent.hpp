@@ -11,7 +11,7 @@ class ReadEvent: public Event {
 		std::vector<char>	_buffer;
 
 	protected:
-		ReadEvent(ft::shared_ptr<FileDescriptor> fd, ReadEventHandler* readEventHandler);
+		ReadEvent(ft::shared_ptr<Channel> channel, ReadEventHandler* readEventHandler);
 	public:	
 		virtual	~ReadEvent(void);
 

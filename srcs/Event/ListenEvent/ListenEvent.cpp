@@ -5,8 +5,8 @@
 #include "../../../incs/Event/ListenEvent/ListenEventHandler.hpp"
 #include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
-ListenEvent::ListenEvent(ft::shared_ptr<FileDescriptor> fd, ft::shared_ptr<VirtualServerManager> virtual_server_manager):
-Event(fd, new ListenEventHandler()), _virtualServerManager(virtual_server_manager)
+ListenEvent::ListenEvent(ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> virtual_server_manager):
+Event(channel, new ListenEventHandler()), _virtualServerManager(virtual_server_manager)
 	{}
 
 ListenEvent::~ListenEvent(void) {}
@@ -20,7 +20,7 @@ void	ListenEvent::onboardQueue(void) throw (std::exception) {
 	Logger::getInstance().info("onboard Listen Event");
 	
 	try {
-		event->getFileDescriptor()->setNonBlocking();
+		(event->getChannel()).get()->setNonBlocking();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		Logger::getInstance().error("Fail to accept client");

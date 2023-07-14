@@ -1,11 +1,11 @@
 #include "../../../incs/Event/EventBase/Event.hpp"
 
-Event::Event(ft::shared_ptr<FileDescriptor> fd, 
-EventHandler* eventHandler): _fd(fd), _event_handler(ft::shared_ptr<EventHandler>(eventHandler)) {}
+Event::Event(ft::shared_ptr<Channel> channel, 
+EventHandler* eventHandler): _channel(channel), _event_handler(ft::shared_ptr<EventHandler>(eventHandler)) {}
 Event::~Event(void) {}
 
-ft::shared_ptr<FileDescriptor>	Event::getFileDescriptor(void) { return (this->_fd); }
-int	Event::getFd(void) const { return (this->_fd->getFd()); }
+const ft::shared_ptr<Channel>	&Event::getChannel(void) { return (this->_channel); }
+int	Event::getFd(void) const { return (this->_channel->getFd()); }
 
 //Exception
 const char	*Event::FailToOnboardException::what(void) const throw() { return ("Fail to onboard"); }

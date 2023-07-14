@@ -7,20 +7,23 @@
 # include <fcntl.h>
 # include "../Log/Logger.hpp"
 // file class
-class FileDescriptor{
+class Channel {
 	private:
-		int _fd;
+		int _ChannelFd;
+
 
 	public:
-		FileDescriptor(int fd);
-		~FileDescriptor(void);
 		void setNonBlocking(void) throw (std::exception);
-
+	protected:
+		Channel(void);
+		virtual void inJectChannelFd(int fd) = 0;
+		void setChannelFd(int fd);
+		void destroyChannelFd(void);
 	private:
-		FileDescriptor(const FileDescriptor&);
-		FileDescriptor& operator=(const FileDescriptor&);
-
+		Channel(const Channel &ref);
+		Channel	&operator=(const Channel &rhs);
 	public:
+		virtual ~Channel(void);
 		int	getFd() const;
 	public:
 		class FailToNonBlockException: public std::exception {

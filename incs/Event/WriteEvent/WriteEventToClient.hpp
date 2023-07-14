@@ -6,7 +6,7 @@
 
 class WriteEventToClient: public WriteEvent {
 	public:
-		WriteEventToClient(ft::shared_ptr<FileDescriptor> fd, 
+		WriteEventToClient(ft::shared_ptr<Channel> fd, 
 		ft::shared_ptr<VirtualServerManager> virtualServerManager,
 		ft::shared_ptr<HttpRequest> httpRequest);
 		virtual	~WriteEventToClient(void);

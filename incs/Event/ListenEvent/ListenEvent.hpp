@@ -7,7 +7,7 @@
 
 class ListenEvent: public Event {
 	public:
-		ListenEvent(ft::shared_ptr<FileDescriptor> fd,
+		ListenEvent(ft::shared_ptr<Channel> channel,
 		ft::shared_ptr<VirtualServerManager> physical_server);
 		virtual	~ListenEvent(void);
 

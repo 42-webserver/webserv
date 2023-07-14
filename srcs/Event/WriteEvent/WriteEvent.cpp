@@ -3,8 +3,8 @@
 
 // To do: implement WriteEvent
 
-WriteEvent::WriteEvent(ft::shared_ptr<FileDescriptor> fd,
-WriteEventHandler* writeEventHandler): Event(fd, writeEventHandler),
+WriteEvent::WriteEvent(ft::shared_ptr<Channel> channel,
+WriteEventHandler* writeEventHandler): Event(channel, writeEventHandler),
  _buffer(ft::bufSize) {}
 WriteEvent::~WriteEvent(void) {}
 

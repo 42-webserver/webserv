@@ -2,9 +2,9 @@
 #include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
 #include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
-ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<FileDescriptor> fd, 
+ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel, 
 	ft::shared_ptr<VirtualServerManager> virtualServerManager):
-	ReadEvent(fd, new ReadEventFromClientHandler()),
+	ReadEvent(channel, new ReadEventFromClientHandler()),
 	_virtualServerManager(virtualServerManager)
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
@@ -16,7 +16,7 @@ void	ReadEventFromClient::onboardQueue() throw (std::exception) {
 
 	Logger::getInstance().info("onboard Read Event");
 	try {
-		event->getFileDescriptor()->setNonBlocking();
+		event->getChannel()->setNonBlocking();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (FailToOnboardException());

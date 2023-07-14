@@ -49,7 +49,6 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \
 		Event/WriteEvent/WriteEventToClientHandler.cpp \
-		FileDescriptor/FileDescriptor.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
 		Http/Handler/HttpCgiResponseHandler.cpp \
 		Http/Handler/HttpGetResponseHandler.cpp \
@@ -74,8 +73,9 @@ SRCS =	main.cpp \
 		Server/VirtualServer.cpp \
 		Server/VirtualServerManager.cpp \
 		Server/Webserv.cpp \
-		Socket/Socket.cpp \
-
+		Channel/Channel.cpp \
+		Channel/Socket.cpp \
+		Channel/Pipe.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -86,7 +86,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Event/ListenEvent \
 				${OBJS_DIR}/Event/ReadEvent \
 				${OBJS_DIR}/Event/WriteEvent \
-				${OBJS_DIR}/FileDescriptor \
+				${OBJS_DIR}/Channel \
 				${OBJS_DIR}/http \
 				${OBJS_DIR}/Http/handler \
 				${OBJS_DIR}/Http/parser \
