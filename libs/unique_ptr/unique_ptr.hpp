@@ -60,7 +60,17 @@ void unique_ptr<T>::reset(T* p) {
 		ptr = p;
 	}
 }
+template <typename T>
+unique_ptr<T>	make_unique(void) { return (unique_ptr<T>(new T())); }
 
+template <typename T, typename Arg1>
+unique_ptr<T>	make_unique(const Arg1 &arg) { return (unique_ptr<T>(new T(const_cast<Arg1 &>(arg)))); }
+
+template <typename T, typename Arg1, typename Arg2>
+unique_ptr<T>	make_unique(const Arg1 &arg1, const Arg2 &arg2) { return (unique_ptr<T>(new T(const_cast<Arg1 &>(arg1), const_cast<Arg2 &>(arg2)))); }
+
+template <typename T, typename Arg1, typename Arg2, typename Arg3>
+unique_ptr<T>	make_unique(const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3) { return (unique_ptr<T>(new T(const_cast<Arg1 &>(arg1), const_cast<Arg2 &>(arg2), const_cast<Arg3 &>(arg3)))); }
 } // namespace ft
 
 #endif

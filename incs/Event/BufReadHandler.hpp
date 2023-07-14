@@ -1,7 +1,7 @@
 #ifndef BUFREADHANDLER_HPP
 # define BUFREADHANDLER_HPP
 
-# include "./ReadEvent.hpp"
+# include "ReadEvent/ReadEvent.hpp"
 
 class BufReadHandler {
 	public:

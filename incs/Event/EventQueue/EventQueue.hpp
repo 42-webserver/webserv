@@ -3,16 +3,16 @@
 
 # include <exception>
 # include <sys/event.h>
-# include "../Event/Event.hpp"
+# include "../EventBase/Event.hpp"
 
-class Event;
 
-enum EventSetIndex {
-	READ_SET,
-	WRITE_SET
-};
 
 class EventQueue {
+	public:
+		enum EventSetIndex {
+		READ_SET,
+		WRITE_SET
+	};
 	private:
 		static const int	MAX_EVENTS = 16;
 		static EventQueue	*_instance;
