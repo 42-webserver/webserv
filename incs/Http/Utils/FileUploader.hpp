@@ -12,11 +12,6 @@
 
 class FileUploader
 {
-typedef enum FileType{
-        DIRECTORY,
-        EXISTING_FILE,
-        NOT_EXISTING_FILE
-} FileType;
 
 public:
 class FileUploadException : public BadRequestException {
