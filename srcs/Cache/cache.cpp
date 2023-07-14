@@ -40,8 +40,10 @@ void Cache::checkAndThrow(const std::string &uri) throw(BigFileException, FileAu
 	file.close();
 }
 
-const std::vector<char>	&Cache::getFileContent(const std::string &uri) {
+const std::vector<char>	&Cache::getFileContent(const std::string &uri) throw (BigFileException,
+	FileAuthentificationException, FileNoExistException) {
 	checkAndThrow(uri);
+	// this->_cache.get(uri)
 	return (this->_cache.get(uri));
 }
 const char *Cache::BigFileException::what() const throw() {

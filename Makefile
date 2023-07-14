@@ -76,6 +76,8 @@ SRCS =	main.cpp \
 		Channel/Channel.cpp \
 		Channel/Socket.cpp \
 		Channel/Pipe.cpp \
+		Cache/cache.cpp \
+		Cache/LruCache.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -97,7 +99,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Log \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \
-				${OBJS_DIR}/Socket \
+				${OBJS_DIR}/Cache \
 
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
