@@ -42,7 +42,7 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 		for (PortMap::iterator port_it=this->_port_map.begin(); port_it!=this->_port_map.end(); port_it++) {
 			for (PhysicalServerPtrVector::iterator ps_it=port_it->second.begin(); ps_it!=port_it->second.end(); ps_it++) {
 				(*ps_it)->run();
-				//Fix daegulee
+				//Fix daegulee May be this will be Method : Register ListenEv
 				EventDto event_dto(ft::static_pointer_cast<Channel>((*ps_it)->getSocket()), 
 				ft::static_pointer_cast<VirtualServerManager>((*ps_it)->getVirtualServerManager()));
 				Event*listen_event = event_factory.createEvent(ft::LISTEN_EVENT, event_dto);
