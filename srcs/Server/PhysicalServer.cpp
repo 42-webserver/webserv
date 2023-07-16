@@ -51,7 +51,8 @@ bool	PhysicalServer::mergeAllVirtualServer(const PhysicalServer &other) throw(st
 }
 
 PhysicalServer::VirtualServerPtr	PhysicalServer::findVirtualServer(const Ip &ip) const { return (this->_virtual_server_manager_ptr->findVirtualServer(ip)); }
-
+//fix Daegulee
+PhysicalServer::SocketPtr			PhysicalServer::getSocket(void) const { return (this->_socket_ptr); }
 const char	*PhysicalServer::FailToBuildException::what() const throw() { return "PhysicalServer: Fail to build"; }
 const char	*PhysicalServer::FailToRunException::what() const throw() { return "PhysicalServer: Fail to run"; }
 const char	*PhysicalServer::FailToMergeAllVirtualServerException::what() const throw() { return "PhysicalServer: Fail to merge all virtual server"; }

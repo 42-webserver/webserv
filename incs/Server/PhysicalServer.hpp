@@ -36,10 +36,10 @@ class PhysicalServer {
 		bool	run(void) throw(std::exception);
 		bool	hasServerWithWildCardIp(void) const;
 		bool	mergeAllVirtualServer(const PhysicalServer &other) throw(std::exception);
-	
 	public:
 		VirtualServerPtr	findVirtualServer(const Ip &ip) const;
-	
+		//Fix daegulee
+		SocketPtr			getSocket(void) const;
 	public:
 		class FailToBuildException: public std::exception {
 			public:

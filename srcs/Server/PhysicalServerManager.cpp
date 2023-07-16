@@ -3,6 +3,7 @@
 #include "../../incs/Event/EventQueue/EventQueue.hpp"
 #include "../../incs/Event/ListenEvent/ListenEvent.hpp"
 #include "../../incs/Log/Logger.hpp"
+#include "../../incs/Event/EventBase/EventFactory.hpp"
 
 PhysicalServerManager::PhysicalServerManager(void): _port_map(PortMap()) {}
 PhysicalServerManager::~PhysicalServerManager(void) {}
@@ -36,11 +37,17 @@ bool	PhysicalServerManager::build(const Config &config) throw(std::exception) {
 }
 bool	PhysicalServerManager::run(void) throw(std::exception) {
 	try {
+		EventQueue &event_queue = EventQueue::getInstance();
+		EventFactory &event_factory = EventFactory::getInstance();
 		for (PortMap::iterator port_it=this->_port_map.begin(); port_it!=this->_port_map.end(); port_it++) {
 			for (PhysicalServerPtrVector::iterator ps_it=port_it->second.begin(); ps_it!=port_it->second.end(); ps_it++) {
 				(*ps_it)->run();
-				// initEventQueue
-				// initListenEvent
+				//Fix daegulee
+				EventDto event_dto(ft::static_pointer_cast<Channel>((*ps_it)->getSocket()), 
+				ft::static_pointer_cast<VirtualServerManager>((*ps_it)->getVirtualServerManager()));
+				Event*listen_event = event_factory.createEvent(ft::LISTEN_EVENT, event_dto);
+				listen_event->onboardQueue();
+				//Fix daegulee
 			}
 		}
 	} catch (const std::exception &e) {
