@@ -6,6 +6,8 @@
 #include <vector>
 #include "../Utils/HttpStatus.hpp"
 #include "../Utils/Cookie.hpp"
+#include <iostream>
+
 class HttpResponse
 {
 private:
@@ -36,6 +38,7 @@ public:
 	const std::multimap<std::string, std::string> &getHeaders() const;
 	std::string getHeader(const std::string & key);
 	const std::vector<Cookie> &getCookies() const;
+	std::ostream &operator<<(std::ostream & os);
 };
 
 #endif
