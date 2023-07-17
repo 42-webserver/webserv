@@ -1,41 +1,59 @@
 #include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
+#include "../../../incs/Event/ReadEvent/ReadEventFromClient.hpp"
 #include "../../../incs/Event/BufReadHandler.hpp"
 #include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
 #include "../../../incs/FtUtil/ft.hpp"
-
+#include "../../../incs/Server/VirtualServerManager.hpp"
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
+#include "../../../incs/Event/EventDto/EventDto.hpp"
+#include "../../../incs/Event/EventBase/EventFactory.hpp"
+#include "../../../incs/Log/Logger.hpp"
 ReadEventFromClientHandler::ReadEventFromClientHandler(void) : ReadEventHandler(), _HttpRequestParser(ft::make_shared<HttpRequestParser>()) {}
 ReadEventFromClientHandler::~ReadEventFromClientHandler(void) {}
 const ft::shared_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequestParser(void) { return (this->_HttpRequestParser); }
 void ReadEventFromClientHandler::handleEvent(Event &event) {
 	std::vector<char>	buf;
 	BufReadHandler		buf_read_handler(event.getFd(), ft::bufSize);
-	
+	RequestParseState state;
 	//check Moudle
 	try {
 		buf = buf_read_handler.readBuf();
+		// std::string str(buf.begin(), buf.end());
+		// std::cerr << "buf size : " << buf.size() << " buf : " << str << std::endl;
 	} catch (const std::exception &e) {
 		Logger::getInstance().info("e.what()");
 		return ;
 	}
 	if (buf.empty()) {
+		Logger::getInstance().info("Client Send Eof");
 		event.offboardQueue();
 		return ;
 	}
+	try {
+		state = this->getHttpRequestParser()->
+		parseRequest(buf, static_cast<ReadEventFromClient*>(&event)->getVirtualServerManger());
+	}
+	catch (const std::exception &e) {
+		//To do : get on Good Control Flow.
+		Logger::getInstance().info("e.what()");
+		return ;
+	}
 
-	// const RequestParseState state = this->getHttpRequestParser()->parseRequest(buf);
 
-
-	// if (state == FINISH) {
-		// // To do : check Host and Select virtual server
-		// findHandler 
-		// ReadEventClient *readEventClient = dynamic_cast<ReadEventClient*>(&event);
-		// std::string host =  this->getHttpRequestParser()->getHttpRequest().getHost();
-		// readEventClient->getPhysicalServer()->findVirtualServer(host);
-		//
-		// // To do : prepareResponse->cgi, client 
-
-		// //
-		// // To do : Add Appropriate Event
-	// }
+	if (state == FINISH) {
+		//fix daegulee :
+		Logger::getInstance().info("FIN ISH Parse");
+		// std::cerr << *(this->getHttpRequestParser()->getHttpRequest().get())
+		// << std::endl;
+		// std::cerr << this->getHttpRequestParser()->getHttpRequest()->getHeader("Host") << std::endl;
+		ReadEventFromClient *readEventClient = static_cast<ReadEventFromClient*>(&event);
+		ft::shared_ptr<VirtualServerManager> virtualServerManager = readEventClient->getVirtualServerManger();
+		// std::cerr << readEventClient->getChannel()->getFd() << std::endl;
+		EventDto eventDto(readEventClient->getChannel(), virtualServerManager, this->getHttpRequestParser()->getHttpRequest());
+		Event* writeEvent = EventFactory::getInstance().createEvent(ft::WRITE_EVENT_TO_CLIENT,
+		eventDto);
+		event.offboardQueue();
+		writeEvent->onboardQueue();
+	}
 }
 

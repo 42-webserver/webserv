@@ -29,7 +29,7 @@ void	ListenEvent::onboardQueue(void) throw (std::exception) {
 	}
 
 	EV_SET(
-		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
+		event_queue.getEventSetElementPtr(),
 		fd,
 		EVFILT_READ,
 		EV_ADD | EV_ENABLE,
@@ -48,7 +48,7 @@ void	ListenEvent::offboardQueue(void) throw (std::exception) {
 
 	Logger::getInstance().info("Remove Listen Event");
 	EV_SET(
-		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
+		event_queue.getEventSetElementPtr(),
 		this->getFd(),
 		EVFILT_READ,
 		EV_DELETE,

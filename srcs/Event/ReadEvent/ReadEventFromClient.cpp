@@ -14,7 +14,6 @@ void	ReadEventFromClient::onboardQueue() throw (std::exception) {
 	int			fd = this->getFd();
 	Event		*event = this;
 
-	Logger::getInstance().info("onboard Read Event");
 	try {
 		event->getChannel()->setNonBlocking();
 	} catch (const std::exception &e) {
@@ -24,7 +23,7 @@ void	ReadEventFromClient::onboardQueue() throw (std::exception) {
 	}
 
 	EV_SET(
-		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
+		event_queue.getEventSetElementPtr(),
 		fd,
 		EVFILT_READ,
 		EV_ADD | EV_ENABLE,
@@ -44,7 +43,7 @@ void	ReadEventFromClient::offboardQueue() throw (std::exception) {
 
 	Logger::getInstance().info("Remove Read Event");
 	EV_SET(
-		event_queue.getEventSetElementPtr(EventQueue::READ_SET),
+		event_queue.getEventSetElementPtr(),
 		this->getFd(),
 		EVFILT_READ,
 		EV_DELETE,
@@ -53,11 +52,12 @@ void	ReadEventFromClient::offboardQueue() throw (std::exception) {
 		this
 	);
 
-	delete this;
 
 	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 1, NULL, 0, NULL) == -1) {
 		throw (Event::FailToOffboardException());
 	}
+		delete this;
+
 }
 
 const ft::shared_ptr<VirtualServerManager>	

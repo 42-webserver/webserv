@@ -9,10 +9,8 @@ int	main(int argc, char **argv) {
 		std::cerr << "\033[31m" << "Usage: " << argv[0] << " <config_file>" << "\033[0m" << '\n';
 		return (INVALID_ARG);
 	}
-
 	Config	config;
 	Webserv	webserv;
-
 	try {
 		config = Config(argv[1]);
 		webserv.run(config);

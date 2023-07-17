@@ -11,8 +11,9 @@ class  EventDto {
 		ft::shared_ptr<HttpRequest>				_httpRequest;
 
 	public:
-		EventDto(ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> virtualServerManager,
-		ft::shared_ptr<HttpRequest> httpRequest);
+		EventDto(ft::shared_ptr<Channel> channel, 
+		ft::shared_ptr<VirtualServerManager> virtualServerManager = ft::shared_ptr<VirtualServerManager>(),
+		ft::shared_ptr<HttpRequest> httpRequest = ft::shared_ptr<HttpRequest>());
 		~EventDto(void);
 	private:
 		EventDto &operator=(const EventDto &rhs);

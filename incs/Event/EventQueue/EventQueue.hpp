@@ -19,7 +19,7 @@ class EventQueue {
 
 	private:
 		int				_fd;
-		struct kevent	_ev_set[2];
+		struct kevent	_ev_set;
 		struct kevent	_ev_list[MAX_EVENTS];
 
 	private:
@@ -42,7 +42,7 @@ class EventQueue {
 		Event			*getEventData(int idx) const;
 		struct kevent	*getEventList(void);
 		struct kevent 	*getEventSet(void);
-		struct kevent	*getEventSetElementPtr(EventSetIndex index);
+		struct kevent	*getEventSetElementPtr();
 
 	public:
 		class FailToCreateException: public std::exception {

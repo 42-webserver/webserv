@@ -2,8 +2,8 @@
 
 EventDto::EventDto(void): _channel(ft::shared_ptr<Channel>(NULL)), _virtualServerManager(ft::shared_ptr<VirtualServerManager>(NULL)) {}
 EventDto::EventDto(ft::shared_ptr<Channel> channel, 
-ft::shared_ptr<VirtualServerManager> virtualServerManager = ft::shared_ptr<VirtualServerManager>(),
-ft::shared_ptr<HttpRequest> httpRequest = ft::shared_ptr<HttpRequest>()): 
+ft::shared_ptr<VirtualServerManager> virtualServerManager,
+ft::shared_ptr<HttpRequest> httpRequest): 
 _channel(channel), _virtualServerManager(virtualServerManager), _httpRequest(httpRequest) {}
 
 EventDto::~EventDto(void) {}

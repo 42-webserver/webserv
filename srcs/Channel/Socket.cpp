@@ -3,10 +3,12 @@
 #include <sys/_endian.h>
 #include <memory.h>
 #include <sstream>
-
+#include "../../incs/Log/Logger.hpp"
 Socket::Socket(void): Channel(), _enable(0), _addr(sockaddr_in()) { memset(&this->_addr, 0, sizeof(struct sockaddr_in)); }
+Socket::Socket(int fd): Channel(fd), _enable(1), _addr(sockaddr_in()) { }
 Socket::Socket(const Socket &ref): Channel(),_enable(ref._enable), _addr(ref._addr) {}
 Socket::~Socket(void) {
+	Logger::getInstance().info("Socket is destroyed");
 	this->destroyChannelFd();
 }
 Socket	&Socket::operator=(const Socket &rhs) {
@@ -39,6 +41,7 @@ bool	Socket::build(const int port, const std::string &ip) throw(std::exception) 
 }
 bool	Socket::run(void) throw(std::exception) {
 	if (bind(this->getFd(), (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1) {
+		Logger::getInstance().error(strerror(errno));
 		throw (FailToBindException());
 	}
 	if (listen(this->getFd(), MAX_SIZE) == -1) {

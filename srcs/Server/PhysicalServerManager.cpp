@@ -1,8 +1,7 @@
 #include "../../incs/Server/PhysicalServerManager.hpp"
 #include "../../incs/Config/ListenElement.hpp"
-#include "../../incs/Event/EventQueue/EventQueue.hpp"
-#include "../../incs/Event/ListenEvent/ListenEvent.hpp"
 #include "../../incs/Log/Logger.hpp"
+
 
 PhysicalServerManager::PhysicalServerManager(void): _port_map(PortMap()) {}
 PhysicalServerManager::~PhysicalServerManager(void) {}
@@ -39,8 +38,13 @@ bool	PhysicalServerManager::run(void) throw(std::exception) {
 		for (PortMap::iterator port_it=this->_port_map.begin(); port_it!=this->_port_map.end(); port_it++) {
 			for (PhysicalServerPtrVector::iterator ps_it=port_it->second.begin(); ps_it!=port_it->second.end(); ps_it++) {
 				(*ps_it)->run();
-				// initEventQueue
-				// initListenEvent
+				// //Fix daegulee May be this will be Method : Register ListenEv
+				// ft::shared_ptr<Channel> channel = ft::static_pointer_cast<Channel>((*ps_it)->getSocket());
+				// ft::shared_ptr<VirtualServerManager> virtual_server_manager = (*ps_it)->getVirtualServerManager();
+				// EventDto event_dto(channel, virtual_server_manager);
+				// Event*listen_event = event_factory.createEvent(ft::LISTEN_EVENT, event_dto);
+				// listen_event->onboardQueue();
+				// //Fix daegulee
 			}
 		}
 	} catch (const std::exception &e) {

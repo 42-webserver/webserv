@@ -14,13 +14,12 @@ void	WriteEventToClient::callEventHandler(void) {
 }
 void	WriteEventToClient::onboardQueue(void) throw (std::exception) {
 	EventQueue &event_queue = EventQueue::getInstance();
-	int fd = this->getFd();
 	Event *event = this;
 
 	Logger::getInstance().info("onboard Write Event");
 	EV_SET(
-		event_queue.getEventSetElementPtr(EventQueue::WRITE_SET),
-		fd,
+		event_queue.getEventSetElementPtr(),
+		this->getFd(),
 		EVFILT_WRITE,
 		EV_ADD | EV_ENABLE,
 		0,
@@ -32,15 +31,19 @@ void	WriteEventToClient::onboardQueue(void) throw (std::exception) {
 		Logger::getInstance().error("{} {}", 
 		2, 
 		"WriteEventClient : kevents", strerror(errno));
+		std::cerr << "WriteEventClient : kevents" << strerror(errno) << std::endl;
+		std::cerr << event_queue.getEventQueueFd() << std::endl;
+		std::cerr << event_queue.getEventSet() << std::endl;
 		throw (FailToOnboardException());
-	}}
+	}
+}
 
 void	WriteEventToClient::offboardQueue(void) throw (std::exception) {
 	EventQueue &event_queue = EventQueue::getInstance();
 
 	Logger::getInstance().info("Remove Write Event");
 	EV_SET(
-		event_queue.getEventSetElementPtr(EventQueue::WRITE_SET),
+		event_queue.getEventSetElementPtr(),
 		this->getFd(),
 		EVFILT_WRITE,
 		EV_DELETE,

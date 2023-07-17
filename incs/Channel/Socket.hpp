@@ -16,6 +16,8 @@ class Socket : public Channel {
 	
 	public:
 		Socket(void);
+		//fix daeguleee
+		Socket(int fd);
 		virtual ~Socket(void);
 	private:
 		Socket(const Socket &ref);

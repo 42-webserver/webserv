@@ -1,5 +1,7 @@
 #include "../../../incs/Http/Handler/HttpGetResponseHandler.hpp"
 
+//fix daegulee: may be this logic in Write Event.
+
 std::map<std::string, std::string> HttpGetResponseHandler::_contentTypeMap = HttpGetResponseHandler::_initializeContentTypeMap();
 
 HttpGetResponseHandler::HttpGetResponseHandler()

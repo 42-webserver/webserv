@@ -16,7 +16,6 @@ const std::string	Logger::_log_color[] = {
 
 Logger::Logger(void) {
 	this->_file_stream.open(DEFAULT_LOG_FILE_NAME.c_str(), std::ofstream::out | std::ofstream::app);
-	
 	if (!this->_file_stream) {
 		std::cerr << "Error: Logger: Fail to open file" << '\n';
 		this->_output_stream = &std::cout;
@@ -100,13 +99,13 @@ void	Logger::debug(const std::string& format, int count, ...) {
 
 void	Logger::log(LogLevel level, const std::string& message) {
 	this->_formatted_message = formatMessage(level, message);
-
 	if (this->_log_to_stdout) {
 		std::cout << Logger::_log_color[level] << this->_formatted_message << "\033[0m";
 	}
 
 	if (this->_output_stream && this->_output_stream != &std::cout) {
 		(*this->_output_stream) << this->_formatted_message;
+		(*this->_output_stream).flush();
 	}
 }
 

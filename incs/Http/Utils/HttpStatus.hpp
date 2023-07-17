@@ -49,6 +49,7 @@ typedef enum HttpStatusCode{
 } HttpStatusCode;
 
 class HttpStatus{
+
 public:
 	static int getStatusCode(HttpStatusCode code);
 	static std::string getReasonPhrase(HttpStatusCode code);
