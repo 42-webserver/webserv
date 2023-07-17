@@ -38,7 +38,6 @@ class PhysicalServer {
 		bool	mergeAllVirtualServer(const PhysicalServer &other) throw(std::exception);
 	public:
 		VirtualServerPtr	findVirtualServer(const Ip &ip) const;
-		//Fix daegulee
 		ft::shared_ptr<VirtualServerManager>	getVirtualServerManager(void) const;
 		SocketPtr			getSocket(void) const;
 	public:

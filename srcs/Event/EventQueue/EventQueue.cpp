@@ -12,6 +12,7 @@
 EventQueue	*EventQueue::_instance = NULL;
 
 EventQueue::EventQueue(void) {
+	std::cerr << "EventQueue::EventQueue" << std::endl;
 	if ((this->_fd = kqueue()) == -1) {
 		throw (FailToCreateException());
 	}
@@ -37,8 +38,9 @@ int				EventQueue::getEventFd(int idx) const { return (this->_ev_list[idx].ident
 int				EventQueue::getEventQueueFd(void) const { return (this->_fd); }
 Event			*EventQueue::getEventData(int idx) const {  return static_cast<Event *>(this->_ev_list[idx].udata); }
 struct kevent	*EventQueue::getEventList(void) { return (this->_ev_list); }
-struct kevent 	*EventQueue::getEventSet(void) { return (this->_ev_set); }
-struct kevent	*EventQueue::getEventSetElementPtr(EventSetIndex index) {  return (&this->_ev_set[index]); }
+struct kevent 	*EventQueue::getEventSet(void) { return (&this->_ev_set); }
+struct kevent	*EventQueue::getEventSetElementPtr() {  
+	return (&this->_ev_set); }
 
 int		EventQueue::pullEvents(void) {
 	int	ret;

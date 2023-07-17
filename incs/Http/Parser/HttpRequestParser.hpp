@@ -55,6 +55,7 @@ public:
 	const int & getReadBodySize();
 	const ft::shared_ptr<HttpRequest>	 getHttpRequest();
 	const std::vector<char> & getBuffer();
+	friend std::ostream &operator<<(std::ostream & os, const HttpRequestParser & parser);
 
 private:
 	void handleStartLineState(std::vector<char> &reqBuffer);

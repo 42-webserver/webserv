@@ -1,50 +1,92 @@
-
-[2023-07-17 14:21:31] [INFO] onboard Listen Event
-[2023-07-17 14:21:31] [INFO] Enter Pull Event
-[2023-07-17 14:21:33] [INFO] Pull Event
-[2023-07-17 14:21:33] [INFO] Client connected
-[2023-07-17 14:21:33] [INFO] onboard Read Event
-[2023-07-17 14:21:33] [INFO] Enter Pull Event
-[2023-07-17 14:21:33] [INFO] Pull Event
-[2023-07-17 14:21:33] [INFO] Client connected
-[2023-07-17 14:21:33] [INFO] onboard Read Event
-[2023-07-17 14:21:33] [INFO] Enter Pull Event
-[2023-07-17 14:21:33] [INFO] Pull Event
-[2023-07-17 14:21:33] [INFO] FINISH Parse
-[2023-07-17 14:21:33] [INFO] onboard Write Event
-[2023-07-17 14:21:33] [INFO] Remove Read Event
-[2023-07-17 14:21:33] [INFO] Enter Pull Event
-[2023-07-17 14:21:33] [INFO] Pull Event
-[2023-07-17 14:21:33] [INFO] FINISH Parse
-[2023-07-17 14:21:33] [INFO] onboard Write Event
-[2023-07-17 14:21:33] [ERROR] WriteEventClient : kevents No such file or directory
-[2023-07-17 14:21:33] [ERROR] Fail to onboard
-[2023-07-17 14:24:29] [INFO] onboard Listen Event
-[2023-07-17 14:24:29] [INFO] Enter Pull Event
-[2023-07-17 14:24:34] [INFO] Pull Event
-[2023-07-17 14:24:34] [INFO] Client connected
-[2023-07-17 14:24:34] [INFO] onboard Read Event
-[2023-07-17 14:24:34] [INFO] Enter Pull Event
-[2023-07-17 14:24:34] [INFO] Pull Event
-[2023-07-17 14:24:34] [INFO] Client connected
-[2023-07-17 14:24:34] [INFO] onboard Read Event
-[2023-07-17 14:24:34] [INFO] Enter Pull Event
-[2023-07-17 14:24:34] [INFO] Pull Event
-[2023-07-17 14:24:34] [INFO] FINISH Parse
-[2023-07-17 14:24:34] [INFO] onboard Write Event
-[2023-07-17 14:24:34] [INFO] Remove Read Event
-[2023-07-17 14:24:34] [INFO] Enter Pull Event
-[2023-07-17 14:24:35] [INFO] Pull Event
-[2023-07-17 14:24:35] [INFO] Client connected
-[2023-07-17 14:24:35] [INFO] onboard Read Event
-[2023-07-17 14:24:35] [INFO] Enter Pull Event
-[2023-07-17 14:24:35] [INFO] Pull Event
-[2023-07-17 14:24:35] [INFO] FINISH Parse
-[2023-07-17 14:24:35] [INFO] onboard Write Event
-[2023-07-17 14:24:35] [INFO] Remove Read Event
-[2023-07-17 14:24:35] [INFO] Enter Pull Event
-[2023-07-17 14:24:35] [INFO] Pull Event
-[2023-07-17 14:24:35] [INFO] FINISH Parse
-[2023-07-17 14:24:35] [INFO] onboard Write Event
-[2023-07-17 14:24:35] [ERROR] WriteEventClient : kevents No such file or directory
-[2023-07-17 14:24:35] [ERROR] Fail to onboard
+[2023-07-18 01:03:16] [INFO] onboard Listen Event
+[2023-07-18 01:03:16] [INFO] Enter Pull Event
+[2023-07-18 01:03:19] [INFO] Pull Event
+[2023-07-18 01:03:19] [INFO] Client connected
+[2023-07-18 01:03:19] [INFO] Enter Pull Event
+[2023-07-18 01:03:19] [INFO] Pull Event
+[2023-07-18 01:03:19] [INFO] Client connected
+[2023-07-18 01:03:19] [INFO] Enter Pull Event
+[2023-07-18 01:03:19] [INFO] Pull Event
+[2023-07-18 01:03:19] [INFO] FIN ISH Parse
+[2023-07-18 01:03:19] [INFO] Remove Read Event
+[2023-07-18 01:03:19] [INFO] onboard Write Event
+[2023-07-18 01:03:19] [INFO] Enter Pull Event
+[2023-07-18 01:03:19] [INFO] Pull Event
+[2023-07-18 01:03:19] [INFO] WriteEventToClientHandler::handleEvent
+[2023-07-18 01:03:19] [INFO] Remove Write Event
+[2023-07-18 01:03:19] [INFO] Enter Pull Event
+[2023-07-18 01:03:19] [INFO] Pull Event
+[2023-07-18 01:03:19] [INFO] Remove Read Event
+[2023-07-18 01:03:19] [INFO] Socket is destroyed
+[2023-07-18 01:03:19] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] FIN ISH Parse
+[2023-07-18 01:03:24] [INFO] Remove Read Event
+[2023-07-18 01:03:24] [INFO] onboard Write Event
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] WriteEventToClientHandler::handleEvent
+[2023-07-18 01:03:24] [INFO] Remove Write Event
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] Remove Read Event
+[2023-07-18 01:03:24] [INFO] Socket is destroyed
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] Client connected
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] Client connected
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] FIN ISH Parse
+[2023-07-18 01:03:24] [INFO] Remove Read Event
+[2023-07-18 01:03:24] [INFO] onboard Write Event
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] WriteEventToClientHandler::handleEvent
+[2023-07-18 01:03:24] [INFO] Remove Write Event
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 01:03:24] [INFO] Pull Event
+[2023-07-18 01:03:24] [INFO] Remove Read Event
+[2023-07-18 01:03:24] [INFO] Socket is destroyed
+[2023-07-18 01:03:24] [INFO] Enter Pull Event
+[2023-07-18 02:49:45] [INFO] onboard Listen Event
+[2023-07-18 02:49:45] [INFO] Enter Pull Event
+[2023-07-18 02:49:47] [INFO] Pull Event
+[2023-07-18 02:49:47] [INFO] Client connected
+[2023-07-18 02:49:47] [INFO] Enter Pull Event
+[2023-07-18 02:49:47] [INFO] Pull Event
+[2023-07-18 02:49:47] [INFO] Client connected
+[2023-07-18 02:49:47] [INFO] Enter Pull Event
+[2023-07-18 02:49:47] [INFO] Pull Event
+[2023-07-18 02:49:47] [INFO] FIN ISH Parse
+[2023-07-18 02:49:47] [INFO] Remove Read Event
+[2023-07-18 02:49:47] [INFO] onboard Write Event
+[2023-07-18 02:49:47] [INFO] Enter Pull Event
+[2023-07-18 02:49:47] [INFO] Pull Event
+[2023-07-18 02:49:47] [INFO] WriteEventToClientHandler::handleEvent
+[2023-07-18 02:49:47] [INFO] Remove Write Event
+[2023-07-18 02:49:47] [INFO] Enter Pull Event
+[2023-07-18 02:49:47] [INFO] Pull Event
+[2023-07-18 02:49:47] [INFO] Client Send Eof
+[2023-07-18 02:49:47] [INFO] Remove Read Event
+[2023-07-18 02:49:47] [INFO] Socket is destroyed
+[2023-07-18 02:49:47] [INFO] Enter Pull Event
+[2023-07-18 02:49:57] [INFO] Pull Event
+[2023-07-18 02:49:57] [INFO] Client connected
+[2023-07-18 02:49:57] [INFO] Enter Pull Event
+[2023-07-18 02:49:57] [INFO] Pull Event
+[2023-07-18 02:49:57] [INFO] FIN ISH Parse
+[2023-07-18 02:49:57] [INFO] Remove Read Event
+[2023-07-18 02:49:57] [INFO] onboard Write Event
+[2023-07-18 02:49:57] [INFO] Enter Pull Event
+[2023-07-18 02:49:57] [INFO] Pull Event
+[2023-07-18 02:49:57] [INFO] WriteEventToClientHandler::handleEvent
+[2023-07-18 02:49:57] [INFO] Remove Write Event
+[2023-07-18 02:49:57] [INFO] Enter Pull Event
+[2023-07-18 02:49:57] [INFO] Pull Event
+[2023-07-18 02:49:57] [INFO] Client Send Eof
+[2023-07-18 02:49:57] [INFO] Remove Read Event
+[2023-07-18 02:49:57] [INFO] Socket is destroyed
+[2023-07-18 02:49:57] [INFO] Enter Pull Event

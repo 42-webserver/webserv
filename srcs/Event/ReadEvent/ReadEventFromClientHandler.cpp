@@ -18,11 +18,14 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	//check Moudle
 	try {
 		buf = buf_read_handler.readBuf();
+		// std::string str(buf.begin(), buf.end());
+		// std::cerr << "buf size : " << buf.size() << " buf : " << str << std::endl;
 	} catch (const std::exception &e) {
 		Logger::getInstance().info("e.what()");
 		return ;
 	}
 	if (buf.empty()) {
+		Logger::getInstance().info("Client Send Eof");
 		event.offboardQueue();
 		return ;
 	}
@@ -39,17 +42,18 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 
 	if (state == FINISH) {
 		//fix daegulee :
-		Logger::getInstance().info("FINISH Parse");
+		Logger::getInstance().info("FIN ISH Parse");
 		// std::cerr << *(this->getHttpRequestParser()->getHttpRequest().get())
 		// << std::endl;
+		// std::cerr << this->getHttpRequestParser()->getHttpRequest()->getHeader("Host") << std::endl;
 		ReadEventFromClient *readEventClient = static_cast<ReadEventFromClient*>(&event);
 		ft::shared_ptr<VirtualServerManager> virtualServerManager = readEventClient->getVirtualServerManger();
-		std::cerr << readEventClient->getChannel()->getFd() << std::endl;
+		// std::cerr << readEventClient->getChannel()->getFd() << std::endl;
 		EventDto eventDto(readEventClient->getChannel(), virtualServerManager, this->getHttpRequestParser()->getHttpRequest());
-		ft::shared_ptr<Event> writeEvent = EventFactory::getInstance().createEvent(ft::WRITE_EVENT_TO_CLIENT,
+		Event* writeEvent = EventFactory::getInstance().createEvent(ft::WRITE_EVENT_TO_CLIENT,
 		eventDto);
-		writeEvent->onboardQueue();
 		event.offboardQueue();
+		writeEvent->onboardQueue();
 	}
 }
 

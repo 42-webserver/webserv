@@ -53,7 +53,7 @@ public:
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 	std::string getHeader(const std::string & key);
-	std::ostream &operator<<(std::ostream & os);
+	friend std::ostream &operator<<(std::ostream & os, const HttpRequest & request);
 
 private:
 	void setQuery(std::string & uri);

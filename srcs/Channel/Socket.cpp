@@ -8,6 +8,7 @@ Socket::Socket(void): Channel(), _enable(0), _addr(sockaddr_in()) { memset(&this
 Socket::Socket(int fd): Channel(fd), _enable(1), _addr(sockaddr_in()) { }
 Socket::Socket(const Socket &ref): Channel(),_enable(ref._enable), _addr(ref._addr) {}
 Socket::~Socket(void) {
+	Logger::getInstance().info("Socket is destroyed");
 	this->destroyChannelFd();
 }
 Socket	&Socket::operator=(const Socket &rhs) {
