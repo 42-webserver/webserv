@@ -40,12 +40,15 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	if (state == FINISH) {
 		//fix daegulee :
 		Logger::getInstance().info("FINISH Parse");
+		// std::cerr << *(this->getHttpRequestParser()->getHttpRequest().get())
+		// << std::endl;
 		ReadEventFromClient *readEventClient = static_cast<ReadEventFromClient*>(&event);
 		ft::shared_ptr<VirtualServerManager> virtualServerManager = readEventClient->getVirtualServerManger();
+		std::cerr << readEventClient->getChannel()->getFd() << std::endl;
 		EventDto eventDto(readEventClient->getChannel(), virtualServerManager, this->getHttpRequestParser()->getHttpRequest());
-		ft::shared_ptr<Event> readEvent = EventFactory::getInstance().createEvent(ft::WRITE_EVENT_TO_CLIENT,
+		ft::shared_ptr<Event> writeEvent = EventFactory::getInstance().createEvent(ft::WRITE_EVENT_TO_CLIENT,
 		eventDto);
-		readEvent->onboardQueue();
+		writeEvent->onboardQueue();
 		event.offboardQueue();
 	}
 }

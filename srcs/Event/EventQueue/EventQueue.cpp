@@ -18,12 +18,12 @@ EventQueue::EventQueue(void) {
 }
 
 EventQueue::~EventQueue(void) {
-	if (this->_fd) {
-		close(this->_fd);
-	}
+	// if (this->_fd) {
+	// 	close(this->_fd);
+	// }
 
-	delete EventQueue::_instance;
-	EventQueue::_instance = NULL;
+	// delete EventQueue::_instance;
+	// EventQueue::_instance = NULL;
 }
 
 EventQueue		&EventQueue::getInstance(void) {

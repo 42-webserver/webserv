@@ -53,6 +53,7 @@ public:
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 	std::string getHeader(const std::string & key);
+	std::ostream &operator<<(std::ostream & os);
 
 private:
 	void setQuery(std::string & uri);

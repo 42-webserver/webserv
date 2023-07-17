@@ -1,5 +1,10 @@
 #include "../../incs/Server/PhysicalServer.hpp"
 #include "../../incs/Log/Logger.hpp"
+#include "../../incs/Event/EventQueue/EventQueue.hpp"
+#include "../../incs/Event/ListenEvent/ListenEvent.hpp"
+#include "../../incs/Log/Logger.hpp"
+#include "../../incs/Event/EventBase/EventFactory.hpp"
+#include "../../incs/Event/EventDto/EventDto.hpp"
 
 PhysicalServer::PhysicalServer(void): _socket_ptr(), _virtual_server_manager_ptr() {}
 PhysicalServer::~PhysicalServer(void) {}
@@ -29,7 +34,12 @@ bool	PhysicalServer::buildSocket(const Port &port) throw(std::exception) {
 }
 bool	PhysicalServer::run(void) throw(std::exception) {
 	try {
+		EventFactory &event_factory = EventFactory::getInstance();
 		this->_socket_ptr->run();
+		ft::shared_ptr<Channel> channel = ft::static_pointer_cast<Channel>(this->_socket_ptr);
+		EventDto event_dto(channel, this->_virtual_server_manager_ptr);
+		Event*listen_event = event_factory.createEvent(ft::LISTEN_EVENT, event_dto);
+		listen_event->onboardQueue();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
