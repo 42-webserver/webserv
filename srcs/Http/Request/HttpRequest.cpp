@@ -147,41 +147,6 @@ std::multimap<std::string, std::string> & HttpRequest::getHeaders()
 	return this->_headers;
 }
 
-std::ostream & HttpRequest::operator<<(std::ostream & os)
-{
-	os << "Method: " << this->_method << std::endl;
-	os << "Uri: " << this->_uri << std::endl;
-	os << "Version: " << this->_version << std::endl;
-	os << "Protocol: " << this->_protocol << std::endl;
-	
-	if (this->_bodyType == NORMAL)
-		os << "BodyType: NORMAL" << std::endl;
-	else if (this->_bodyType == CHUNKED)
-		os << "BodyType: CHUNKED" << std::endl;
-	else if (this->_bodyType == MULTIPART_FORM_DATA)
-		os << "BodyType: MULTIPART_FORM_DATA" << std::endl;
-	else
-		os << "BodyType: UNKNOWN" << std::endl;
-	os << "Body: " << std::endl;
-	if (!this->_isBodyLong){
-		for (std::vector<char>::iterator it = this->_body.begin(); it != this->_body.end(); it++)
-			os << *it;
-	}else{
-		os << "BodyDataFilename: " << this->_bodyDataFilename << std::endl;
-	}
-	os << std::endl;
-	os << "Headers: " << std::endl;
-	for (std::multimap<std::string, std::string>::iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
-		os << it->first << ": " << it->second << std::endl;
-	os << "Queries: " << std::endl;
-	for (std::map<std::string, std::string>::iterator it = this->_queries.begin(); it != this->_queries.end(); it++)
-		os << it->first << ": " << it->second << std::endl;
-	os << "Cookies: " << std::endl;
-	for (std::map<std::string, std::string>::iterator it = this->_cookies.begin(); it != this->_cookies.end(); it++)
-		os << it->first << ": " << it->second << std::endl;
-	return os;
-}
-
 std::map<std::string, std::string> HttpRequest::getQueries()
 {
 	return this->_queries;
@@ -223,6 +188,41 @@ std::string HttpRequest::getHeader(const std::string & key)
 	if (it != this->_headers.end())
 		return it->second;
 	return "";
+}
+
+std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
+{
+		os << "Method: " << request._method << std::endl;
+		os << "Uri: " << request._uri << std::endl;
+		os << "Version: " << request._version << std::endl;
+		os << "Protocol: " << request._protocol << std::endl;
+		
+		if (request._bodyType == NORMAL)
+			os << "BodyType: NORMAL" << std::endl;
+		else if (request._bodyType == CHUNKED)
+			os << "BodyType: CHUNKED" << std::endl;
+		else if (request._bodyType == MULTIPART_FORM_DATA)
+			os << "BodyType: MULTIPART_FORM_DATA" << std::endl;
+		else
+			os << "BodyType: UNKNOWN" << std::endl;
+		os << "Body: " << std::endl;
+		if (!request._isBodyLong){
+			for (std::vector<char>::const_iterator it = request._body.begin(); it != request._body.end(); it++)
+				os << *it;
+		}else{
+			os << "BodyDataFilename: " << request._bodyDataFilename << std::endl;
+		}
+		os << std::endl;
+		os << "Headers: " << std::endl;
+		for (std::multimap<std::string, std::string>::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
+			os << it->first << ": " << it->second << std::endl;
+		os << "Queries: " << std::endl;
+		for (std::map<std::string, std::string>::const_iterator it = request._queries.begin(); it != request._queries.end(); it++)
+			os << it->first << ": " << it->second << std::endl;
+		os << "Cookies: " << std::endl;
+		for (std::map<std::string, std::string>::const_iterator it = request._cookies.begin(); it != request._cookies.end(); it++)
+			os << it->first << ": " << it->second << std::endl;
+		return os;
 }
 
 void HttpRequest::setBodyType(BodyType bodyType)

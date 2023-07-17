@@ -1,7 +1,7 @@
 #ifndef COOKIE_HPP
 #define COOKIE_HPP
 #include <string>
-
+#include <iostream>
 class Cookie{
 private:
 	std::string _key;
@@ -14,6 +14,12 @@ public:
 	std::string getKey();
 	std::string getValue();
 	std::string getMaxAge();
+	friend std::ostream &operator<<(std::ostream & os, const Cookie & cookie){
+		os << cookie._key << "=" << cookie._value;
+		if (cookie._maxAge != "")
+			os << "; Max-Age=" << cookie._maxAge;
+		return os;
+	}
 };
 
 #endif
