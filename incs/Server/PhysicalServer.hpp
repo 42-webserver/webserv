@@ -39,6 +39,7 @@ class PhysicalServer {
 	public:
 		VirtualServerPtr	findVirtualServer(const Ip &ip) const;
 		//Fix daegulee
+		ft::shared_ptr<VirtualServerManager>	getVirtualServerManager(void) const;
 		SocketPtr			getSocket(void) const;
 	public:
 		class FailToBuildException: public std::exception {

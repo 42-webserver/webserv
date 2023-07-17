@@ -16,6 +16,7 @@ class Channel {
 		void setNonBlocking(void) throw (std::exception);
 	protected:
 		Channel(void);
+		Channel(int fd);
 		virtual void inJectChannelFd(int fd) = 0;
 		void setChannelFd(int fd);
 		void destroyChannelFd(void);

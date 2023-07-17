@@ -1,5 +1,8 @@
 #include "../../../incs/Event/ListenEvent/ListenEventHandler.hpp"
-
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
+#include "../../../incs/Event/EventBase/EventFactory.hpp"
+#include "../../../incs/Event/ListenEvent/ListenEvent.hpp"
+#include "../../../incs/Event/EventDto/EventDto.hpp"
 ListenEventHandler::ListenEventHandler() {};
 ListenEventHandler::~ListenEventHandler() {};
 
@@ -10,7 +13,6 @@ int		ListenEventHandler::connectClient(int server_fd) const throw(std::exception
 		Logger::getInstance().error("Fail to accept client");
 		throw (FailToAcceptException());
 	}
-
 	return (client_fd);
 }
 
@@ -25,18 +27,16 @@ void	ListenEventHandler::handleEvent(Event &event) throw (std::exception) {
 		log.error(e.what());
 		return ;
 	}
-	(void)client_fd;
-	// EventFactory &factory = ReadEventClientFactory::getInstance();
-	// try {
-	// 	EventQueue &event_queue = EventQueue::getInstance();
-	// 	ListenEvent *listenEvent = static_cast<ListenEvent *>(&event);
-
-	// 	EventDto event_dto(client_fd, listenEvent->getPhysicalServer());
-	// 	event_queue.pushEvent(factory.createEvent(event_dto));
-	// } catch (const std::exception &e) {
-	// 	log.error(e.what());
-	// 	//check: 이렇게 하는게 맞을지 생각
-	// }
+	EventFactory &factory = EventFactory::getInstance();
+	try {
+		ListenEvent *listenEvent =static_cast<ListenEvent *>(&event);
+		EventDto event_dto(ft::static_pointer_cast<Channel>(ft::make_shared<Socket>(client_fd)), 
+		listenEvent->getVirtualServerManager());
+		Event *readEventFromClient = factory.createEvent(ft::READ_EVENT_FROM_CLIENT, event_dto);
+		readEventFromClient->onboardQueue();
+	} catch (const std::exception &e) {
+		log.error(e.what());
+	}
 }
 const char	*ListenEventHandler::FailToAcceptException::what(void) const throw() { return ("ListenEventHandler: Fail to accept"); }
 const char	*ListenEventHandler::FailToControlException::what(void) const throw() { return ("ListenEventHandler: Fail to control"); }

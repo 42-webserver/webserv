@@ -1,0 +1,52 @@
+[2023-07-17 11:32:57] [ERROR] Socket: Fail to bind
+[2023-07-17 11:32:57] [ERROR] PhysicalServer: Fail to run
+[2023-07-17 11:32:57] [ERROR] PhysicalServerManager: Fail to build
+[2023-07-17 11:32:57] [ERROR] Webserv: Fail to run
+[2023-07-17 11:33:33] [ERROR] Socket: Fail to bind
+[2023-07-17 11:33:33] [ERROR] PhysicalServer: Fail to run
+[2023-07-17 11:33:33] [ERROR] PhysicalServerManager: Fail to build
+[2023-07-17 11:33:33] [ERROR] Webserv: Fail to run
+[2023-07-17 11:37:21] [ERROR] Permission denied
+[2023-07-17 11:37:21] [ERROR] Socket: Fail to bind
+[2023-07-17 11:37:21] [ERROR] PhysicalServer: Fail to run
+[2023-07-17 11:37:21] [ERROR] PhysicalServerManager: Fail to build
+[2023-07-17 11:37:21] [ERROR] Webserv: Fail to run
+[2023-07-17 11:37:43] [ERROR] Permission denied
+[2023-07-17 11:37:43] [ERROR] Socket: Fail to bind
+[2023-07-17 11:37:43] [ERROR] PhysicalServer: Fail to run
+[2023-07-17 11:37:43] [ERROR] PhysicalServerManager: Fail to build
+[2023-07-17 11:37:43] [ERROR] Webserv: Fail to run
+[2023-07-17 11:38:04] [ERROR] Address already in use
+[2023-07-17 11:38:04] [ERROR] Socket: Fail to bind
+[2023-07-17 11:38:04] [ERROR] PhysicalServer: Fail to run
+[2023-07-17 11:38:04] [ERROR] PhysicalServerManager: Fail to build
+[2023-07-17 11:38:04] [ERROR] Webserv: Fail to run
+[2023-07-17 13:54:03] [INFO] onboard Listen Event
+[2023-07-17 13:54:03] [INFO] Enter Pull Event
+[2023-07-17 13:54:06] [INFO] Pull Event
+[2023-07-17 13:54:06] [INFO] Client connected
+[2023-07-17 13:54:06] [INFO] onboard Read Event
+[2023-07-17 13:54:06] [INFO] Enter Pull Event
+[2023-07-17 13:54:06] [INFO] Pull Event
+[2023-07-17 13:54:06] [INFO] Client connected
+[2023-07-17 13:54:06] [INFO] onboard Read Event
+[2023-07-17 13:54:06] [INFO] Enter Pull Event
+[2023-07-17 13:54:06] [INFO] Pull Event
+[2023-07-17 13:54:06] [INFO] FINISH Parse
+[2023-07-17 13:54:06] [INFO] onboard Write Event
+[2023-07-17 13:54:06] [INFO] Remove Read Event
+[2023-07-17 13:54:06] [INFO] Enter Pull Event
+[2023-07-17 13:54:07] [INFO] Pull Event
+[2023-07-17 13:54:07] [INFO] Client connected
+[2023-07-17 13:54:07] [INFO] onboard Read Event
+[2023-07-17 13:54:07] [INFO] Enter Pull Event
+[2023-07-17 13:54:07] [INFO] Pull Event
+[2023-07-17 13:54:07] [INFO] FINISH Parse
+[2023-07-17 13:54:07] [INFO] onboard Write Event
+[2023-07-17 13:54:07] [INFO] Remove Read Event
+[2023-07-17 13:54:07] [INFO] Enter Pull Event
+[2023-07-17 13:54:07] [INFO] Pull Event
+[2023-07-17 13:54:07] [INFO] FINISH Parse
+[2023-07-17 13:54:07] [INFO] onboard Write Event
+[2023-07-17 13:54:07] [ERROR] WriteEventClient : kevents No such file or directory
+[2023-07-17 13:54:07] [ERROR] Fail to onboard

@@ -1,6 +1,7 @@
 #include "../../incs/Channel/Channel.hpp"
 
 Channel::Channel(void) : _ChannelFd(-1) {}
+Channel::Channel(int fd) : _ChannelFd(fd) {}
 Channel::~Channel(void) {}
 Channel::Channel(const Channel &ref) { *this = ref; }
 Channel	&Channel::operator=(const Channel &rhs) {

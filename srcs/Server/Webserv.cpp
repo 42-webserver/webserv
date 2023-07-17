@@ -21,8 +21,9 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_physical_server_manager.build(config);
 		this->_physical_server_manager.run();
-		std::cout << *this << std::endl;
-		exit(0);
+		std::cerr << "Webserv is running..." << std::endl;
+		// std::cout << *this << std::endl;
+		// exit(0);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
@@ -31,7 +32,6 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 	while (true) {
 		int		event_length;
 		Event	*event_data;
-
 		try {
 			event_length = EventQueue::getInstance().pullEvents();
 		} catch (const std::exception &e) {
@@ -41,6 +41,7 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 
 		for (int i=0; i<event_length; i++) {
 			event_data = EventQueue::getInstance().getEventData(i);
+			std::cerr << "Event is called : " << event_data << std::endl;
 			event_data->callEventHandler();
 		}
 	}
