@@ -120,3 +120,27 @@ const ft::shared_ptr<HttpRequest> HttpRequestParser::getHttpRequest() {
 const std::vector<char> &HttpRequestParser::getBuffer() {
 	return this->_buffer;
 }
+
+std::ostream &operator<<(std::ostream &os, const HttpRequestParser &parser) {
+	os << "State: ";
+	if (parser._state == BEFORE)
+		os << "BEFORE" << std::endl;
+	else if (parser._state == START_LINE)
+		os << "START_LINE" << std::endl;
+	else if (parser._state == HEADERS)
+		os << "HEADERS" << std::endl;
+	else if (parser._state == BODY)
+		os << "BODY" << std::endl;
+	else if (parser._state == FINISH)
+		os << "FINISH" << std::endl;
+	else
+		os << "UNKNOWN" << std::endl;
+	os << "ReadBodySize: " << parser._readBodySize << std::endl;
+	os << "Buffer: " << std::endl;
+	for (std::vector<char>::const_iterator it = parser._buffer.begin(); it != parser._buffer.end(); it++)
+		os << *it;
+	os << std::endl;
+	os << "HttpRequest: " << std::endl;
+	os << *(parser._httpRequest);
+	return os;
+}

@@ -90,20 +90,25 @@ const std::multimap<std::string, std::string> &HttpResponse::getHeaders() const
 	return (std::multimap<std::string, std::string> &)this->_headers;
 }
 
-std::ostream &HttpResponse::operator<<(std::ostream & os)
-{
-	os << this->_protocol << "/" << this->_version << " " << this->getStatusCode() << " " << this->getReasonPhrase() << std::endl;
-	for (std::multimap<std::string, std::string>::iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
+
+std::ostream &operator<<(std::ostream & os,const HttpResponse & response){
+	os << "Version: " << response._version << std::endl;
+	os << "Protocol: " << response._protocol << std::endl;
+	os << "StatusCode: " << response._statusCode << std::endl;
+
+	os << "Headers: " << std::endl;
+	for (std::multimap<std::string, std::string>::const_iterator it = response._headers.begin(); it != response._headers.end(); it++)
 		os << it->first << ": " << it->second << std::endl;
-	for (std::vector<Cookie>::iterator it = this->_cookies.begin(); it != this->_cookies.end(); it++)
-		os << "Set-Cookie: " << it->getKey() << "=" << it->getValue() << std::endl;
-	os << std::endl;
-	if (this->_body.size() > 0){
+	os << "Cookies: " << std::endl;
+	for (std::vector<Cookie>::const_iterator it = response._cookies.begin(); it != response._cookies.end(); it++)
+		os << *it << std::endl;
+	if (response._body.size() > 0){
 		os << "Body: " << std::endl;
-		for (std::vector<char>::iterator it = this->_body.begin(); it != this->_body.end(); it++)
+		for (std::vector<char>::const_iterator it = response._body.begin(); it != response._body.end(); it++)
 			os << *it;
+		os << std::endl;
 	}else{
-		os << "BodyDataFilename: " << this->_fileName << std::endl;
+		os << "BodyFilename: " << response._fileName << std::endl;
 	}
 	return os;
 }

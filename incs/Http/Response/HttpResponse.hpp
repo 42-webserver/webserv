@@ -38,7 +38,9 @@ public:
 	const std::multimap<std::string, std::string> &getHeaders() const;
 	std::string getHeader(const std::string & key);
 	const std::vector<Cookie> &getCookies() const;
-	std::ostream &operator<<(std::ostream & os);
+
+	friend	std::ostream &operator<<(std::ostream & os, const HttpResponse & response);
+
 };
 
 #endif
