@@ -89,3 +89,21 @@ const std::multimap<std::string, std::string> &HttpResponse::getHeaders() const
 {
 	return (std::multimap<std::string, std::string> &)this->_headers;
 }
+
+std::ostream &HttpResponse::operator<<(std::ostream & os)
+{
+	os << this->_protocol << "/" << this->_version << " " << this->getStatusCode() << " " << this->getReasonPhrase() << std::endl;
+	for (std::multimap<std::string, std::string>::iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
+		os << it->first << ": " << it->second << std::endl;
+	for (std::vector<Cookie>::iterator it = this->_cookies.begin(); it != this->_cookies.end(); it++)
+		os << "Set-Cookie: " << it->getKey() << "=" << it->getValue() << std::endl;
+	os << std::endl;
+	if (this->_body.size() > 0){
+		os << "Body: " << std::endl;
+		for (std::vector<char>::iterator it = this->_body.begin(); it != this->_body.end(); it++)
+			os << *it;
+	}else{
+		os << "BodyDataFilename: " << this->_fileName << std::endl;
+	}
+	return os;
+}
