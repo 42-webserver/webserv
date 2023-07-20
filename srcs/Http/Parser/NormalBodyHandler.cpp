@@ -7,16 +7,20 @@ NormalBodyHandler::NormalBodyHandler(ft::shared_ptr<HttpRequest> req) : RequestB
 NormalBodyHandler::~NormalBodyHandler(void)
 {}
 
-bool NormalBodyHandler::handleBody(std::vector<char> &reqBuffer)
+bool NormalBodyHandler::handleBody(std::vector<char> &buffer)
 {
-	writeInMemory(reqBuffer);
-	if (this->_request->getContentLength() <= this->_readBodySize)
+	int contentLength = this->_request->getContentLength();
+	int writeSize = contentLength - this->_readBodySize;
+	writeInMemory(buffer, writeSize);
+	if (contentLength <= this->_readBodySize)
 		return true;
 	return false;
 }
 
-void NormalBodyHandler::writeInMemory(std::vector<char> &reqBuffer)
+void NormalBodyHandler::writeInMemory(std::vector<char> &buffer, int writeSize)
 {
-	this->_request->insertBody(reqBuffer);
-	this->_readBodySize += reqBuffer.size();
+	std::vector<char> tmp(buffer.begin(), buffer.begin() + writeSize);
+	this->_request->insertBody(tmp);
+	this->_readBodySize += tmp.size();
+	buffer.erase(buffer.begin(), buffer.begin() + tmp.size());
 }

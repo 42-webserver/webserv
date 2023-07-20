@@ -16,7 +16,7 @@ ft::shared_ptr<HttpRequest> _request;
  
 public:
 	//true -> parse finish, false -> parse not finish
-	virtual bool handleBody(std::vector<char> &reqBuffer) = 0;
+	virtual bool handleBody(std::vector<char> &buffer) = 0;
 	virtual ~RequestBodyHandler(void) = 0;
 
 protected:

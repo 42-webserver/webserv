@@ -145,7 +145,7 @@ int HttpRequest::getContentLength()
 
 	it = this->_headers.find("Content-Length");
 	if (it == this->_headers.end())
-		return -1;
+		throw BadRequestException(BAD_REQUEST);
 	return std::stoi(it->second);
 }
 

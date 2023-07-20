@@ -5,6 +5,7 @@
 #include <map>
 #include <iostream>
 #include <vector>
+#include "../Exception/BadRequestException.hpp"
 
 typedef enum BodyType{
 		NORMAL,
