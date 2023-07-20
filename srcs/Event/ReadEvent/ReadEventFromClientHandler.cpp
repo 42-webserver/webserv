@@ -16,6 +16,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	BufReadHandler		buf_read_handler(event.getFd(), ft::bufSize);
 	RequestParseState state;
 	//check Moudle
+	// TotalReadBuffer -> assign-> copy
 	try {
 		buf = buf_read_handler.readBuf();
 		// std::string str(buf.begin(), buf.end());
@@ -30,8 +31,20 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		return ;
 	}
 	try {
+		// while bufBlocksize 
+		// 1 - 2 - 3 - 4 - 5 -6 -7 -8 <-Total
+		// Read 1  char*- 2 - 3 - 4 - 5 -6 -7 -8 copy
+		// list<vector char> 
+		/// 1 -> vecor<char>
+
+		//ft:shred<request > tmp = this->getHttpRequestParser()->getHttpRequest();
+		// this->_httpReauest = new shared();
+		// return tmp;
+		// vector <char>  [ req 1 re2 req3]
 		state = this->getHttpRequestParser()->
 		parseRequest(buf, static_cast<ReadEventFromClient*>(&event)->getVirtualServerManger());
+		//header -> body  memory
+
 	}
 	catch (const std::exception &e) {
 		//To do : get on Good Control Flow.
