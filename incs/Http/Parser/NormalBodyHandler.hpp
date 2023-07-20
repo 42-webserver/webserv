@@ -11,7 +11,6 @@ public:
 	~NormalBodyHandler(void);
 
 private:
-	void writeInFile(std::vector<char> &reqBuffer);
 	void writeInMemory(std::vector<char> &reqBuffer);
 };
 

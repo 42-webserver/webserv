@@ -19,7 +19,12 @@ const RequestParseState &HttpRequestParser::parseRequest(std::vector<char> &reqB
 		handleHeaderState(reqBuffer, vsm);
 	if (_state == BODY) 
 		handleBodyState(reqBuffer);
-	return this->_state;
+	if (_state == FINISH){
+		_state = BEFORE;
+		_readBodySize = 0;
+		return FINISH;
+	}else
+		return _state;
 }
 
 void HttpRequestParser::handleStartLineState(std::vector<char> &reqBuffer) {
@@ -64,8 +69,6 @@ void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> v
 	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler(vsm);
 	int contentLength = this->_httpRequest->getContentLength();
-	if (contentLength > _MAX_BODY_MEMORY_SIZE)
-		this->_httpRequest->setBodyLong(true);
 	if (contentLength > clientMaxBodySize)
 		throw ClientBodySizeInvalidException();
 }
