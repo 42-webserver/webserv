@@ -2,8 +2,9 @@
 
 
 HttpRequestParser::HttpRequestParser(void)
-: _httpRequest(new HttpRequest()), _state(BEFORE)
+: _state(BEFORE)
 {
+	this->_httpRequest = ft::make_shared<HttpRequest>();
 	this->_buffer.reserve(_BUFFER_SIZE);
 }
 
@@ -16,11 +17,7 @@ const RequestParseState &HttpRequestParser::parseRequest(std::vector<char> &reqB
 		handleHeaderState(vsm);
 	if (_state == BODY) 
 		handleBodyState();
-	if (_state == FINISH){
-		_state = BEFORE;
-		return FINISH;
-	}else
-		return _state;
+	return _state;
 }
 
 void HttpRequestParser::handleStartLineState() {
@@ -60,20 +57,20 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
 void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(HttpRequestParser::ClientBodySizeInvalidException){
 	this->_state = BODY;
 	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
-	injectionHandler(vsm);
+	injectionHandler();
 	int contentLength = this->_httpRequest->getContentLength();
 	if (contentLength > clientMaxBodySize)
 		throw ClientBodySizeInvalidException();
 }
 
-void HttpRequestParser::injectionHandler(ft::shared_ptr<VirtualServerManager> vsm){
+void HttpRequestParser::injectionHandler(){
 	std::multimap<std::string, std::string>::iterator it;
 	std::multimap<std::string, std::string> _headers = this->_httpRequest->getHeaders();
 	it = _headers.find("Content-Type");
 	if (it != _headers.end()) {
 		if (it->second.find("multipart/form-data") != std::string::npos) {
 			std::string boundary = it->second.substr(it->second.find("boundary=") + 9);
-			this->_bodyHandler = ft::make_shared<MultipartRequestBodyHandler>(boundary, vsm, this->_httpRequest);
+			this->_bodyHandler = ft::make_shared<MultipartRequestBodyHandler>(boundary, this->_httpRequest);
 			this->_httpRequest->setBodyType(MULTIPART_FORM_DATA);
 			return;
 		}
@@ -106,7 +103,10 @@ const RequestParseState &HttpRequestParser::getState() {
 }
 
 const ft::shared_ptr<HttpRequest> HttpRequestParser::getHttpRequest() {
-	return this->_httpRequest;
+	ft::shared_ptr<HttpRequest> tmp = this->_httpRequest;
+	this->_httpRequest = ft::make_shared<HttpRequest>();
+	this->_state = BEFORE;
+	return tmp;
 }
 
 const std::vector<char> &HttpRequestParser::getBuffer() {

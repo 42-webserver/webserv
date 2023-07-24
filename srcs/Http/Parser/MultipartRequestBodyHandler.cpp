@@ -1,114 +1,96 @@
 #include "../../../incs/Http/Parser/MultipartRequestBodyHandler.hpp"
 
-MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary, ft::shared_ptr<VirtualServerManager> vsm, 
-	ft::shared_ptr<HttpRequest> req)
-	: RequestBodyHandler(0, req), _state(M_HEADER), _vsm(vsm){
+MultipartRequestBodyHandler::MultipartRequestBodyHandler(std::string boundary, ft::shared_ptr<HttpRequest> req)
+	: RequestBodyHandler(0, req), _state(M_HEADER), _index(0){
 	this->_boundaryStart = "--" + boundary;
 	this->_boundaryEnd =  "--" + boundary + "--";
 }
 
 MultipartRequestBodyHandler::~MultipartRequestBodyHandler(void){}
 
-bool MultipartRequestBodyHandler::handleBody(std::vector<char> &reqBuffer){
-	if (!this->_buffer.empty()) {
-		reqBuffer.insert(reqBuffer.begin(), this->_buffer.begin(), this->_buffer.end());
-		this->_buffer.clear();
-	}
+bool MultipartRequestBodyHandler::handleBody(std::vector<char> &buffer){
     bool result = false;
-    while (!reqBuffer.empty()){
-        if (this->_state == M_HEADER)
-            handleMultipartHeader(reqBuffer);
-        if (this->_state == M_BODY)
-            result = parsePartOfBody(reqBuffer);
-    }
+	int contentLength = this->_request->getContentLength();
+    if (buffer.size() >= static_cast<size_t>(contentLength)){
+		std::vector<char> tmp(buffer.begin(), buffer.begin() + contentLength);
+		buffer.erase(buffer.begin(), buffer.begin() + contentLength);
+		parseParts(tmp);
+		result = true;
+	}
     return result;
 }
 
-void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &reqBuffer){
-	std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+void MultipartRequestBodyHandler::parseParts(std::vector<char> &partBody){
+	allocateMultiparts(countPartSize(partBody));
+	while (_state != M_END){
+		if (_state == M_HEADER)
+			handleMultipartHeader(partBody);
+		if (_state == M_BODY){
+			parsePartOfBody(partBody);
+		}
+	}
+}
+
+void MultipartRequestBodyHandler::allocateMultiparts(int count){
+	std::vector<MultipartRequest> multiparts = this->_request->getMultipartRequests();
+	for (int i = 0; i < count; i++){
+		multiparts.push_back(MultipartRequest());
+	}
+}
+
+int MultipartRequestBodyHandler::countPartSize(std::vector<char> &partBody){
+	int count = 0;
+	std::vector<char>::iterator find = std::search(partBody.begin(), partBody.end(), _boundaryStart.begin(), _boundaryStart.end());
+	while (find != partBody.end()){
+		count++;
+		find = std::search(find + _boundaryStart.size(), partBody.end(), _boundaryStart.begin(), _boundaryStart.end());
+	}
+	return count;
+}
+
+void MultipartRequestBodyHandler::handleMultipartHeader(std::vector<char> &partBody){
+	std::vector<char>::iterator find = std::search(partBody.begin(), partBody.end(), _crlfPattern.begin(), _crlfPattern.end());
 	std::string line;
-	while (find != reqBuffer.end()){
-		line = std::string(reqBuffer.begin(), find);
-		reqBuffer.erase(reqBuffer.begin(), find + _crlfPatternSize);
+	while (find != partBody.end()){
+		line = std::string(partBody.begin(), find);
+		partBody.erase(partBody.begin(), find + _crlfPatternSize);
 		if (line == _boundaryStart){
-			find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+			find = std::search(partBody.begin(), partBody.end(), _crlfPattern.begin(), _crlfPattern.end());
 			continue;
 		}
 		if (line.empty()){
-			this->_state = M_BODY;
-            // make full path to upload
-            generatePath();
-            FileUploader::checkFileExists(this->_multipartRequest._filename);
+			_state = M_BODY;
 			return;
 		}
 		addHeader(line);
-		find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+		find = std::search(partBody.begin(), partBody.end(), _crlfPattern.begin(), _crlfPattern.end());
 	}
-	this->_buffer.insert(this->_buffer.end(), reqBuffer.begin(), reqBuffer.end());
-	reqBuffer.clear();
 }
 
-void MultipartRequestBodyHandler::generatePath(){
-    std::string path = RouterUtils::findPath(this->_vsm, this->_request) + "/";
-    std::multimap<std::string, std::string>::iterator mapIt = this->_multipartRequest._headers.find("Content-Disposition");
-    if (mapIt == this->_multipartRequest._headers.end())
-        throw FileUploader::FileUploadException("Content-Disposition header not found");
-    while(mapIt != this->_multipartRequest._headers.end()){
-        if (mapIt->second.find("filename=") == std::string::npos){
-            mapIt++;
-            continue;
-        }
-        std::string filename = mapIt->second.substr(mapIt->second.find("filename=") + 9);
-        filename = std::string(filename.begin() + 1, filename.end() - 1);
-        if (filename.empty())
-            throw FileUploader::FileUploadException("filename is empty");
-        this->_multipartRequest._filename = path + filename;
-        break;
-    }
-}
 
-bool MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &reqBuffer){
-	std::vector<char>::iterator find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
-	if (find != reqBuffer.end()){
-		std::vector<char> part(reqBuffer.begin(), find);
-		reqBuffer.erase(reqBuffer.begin(), find + _crlfPatternSize);
-        FileUploader::fileUpload(part, this->_multipartRequest._filename);
+void MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &partBody){
+	std::vector<char>::iterator find = std::search(partBody.begin(), partBody.end(), _crlfPattern.begin(), _crlfPattern.end());
+	if (find != partBody.end()){
+		std::vector<char> part(partBody.begin(), find);
+		partBody.erase(partBody.begin(), find + _crlfPatternSize);
+		addBody(part);
+		this->_index++;
 		this->_state = M_HEADER;
-        this->_multipartRequest._headers.clear();
-        this->_multipartRequest._filename.clear();
-	}else{
-        FileUploader::fileUpload(reqBuffer, this->_multipartRequest._filename);
-		reqBuffer.clear();
 	}
-	find = std::search(reqBuffer.begin(), reqBuffer.end(), _crlfPattern.begin(), _crlfPattern.end());
-	if (find != reqBuffer.end() && std::string(reqBuffer.begin(), find) == _boundaryEnd){
-		reqBuffer.clear();
-		return true;
+	find = std::search(partBody.begin(), partBody.end(), _crlfPattern.begin(), _crlfPattern.end());
+	if (find != partBody.end() && std::string(partBody.begin(), find) == _boundaryEnd){
+		partBody.erase(partBody.begin(), find + _crlfPatternSize);
+		_state = M_END;
 	}
-	return false;
+}
+
+void MultipartRequestBodyHandler::addBody(std::vector<char> &body){
+	MultipartRequest multipartRequest = this->_request->getMultipartRequests()[this->_index];
+	multipartRequest.insertBody(body);
 }
 
 void MultipartRequestBodyHandler::addHeader(const std::string & line)
 {
-	std::string::size_type pos;
-	std::string key;
-	std::string value;
-
-	pos = line.find(": ");
-	key = line.substr(0, pos);
-	value = line.substr(pos + 2);
-	handleMultipleValueHeader(value, key);
-}
-
-void MultipartRequestBodyHandler::handleMultipleValueHeader(std::string & value, std::string & key)
-{
-	std::string::size_type pos = value.find(";");
-
-	while (pos != std::string::npos)
-	{
-		this->_multipartRequest._headers.insert(std::pair<std::string, std::string>(key, value.substr(0, pos)));
-		value.erase(0, pos + 1);
-		pos = value.find(";");
-	}
-	this->_multipartRequest._headers.insert(std::pair<std::string, std::string>(key, value));
+	MultipartRequest multipartRequest = this->_request->getMultipartRequests()[this->_index];
+	multipartRequest.addHeader(line);
 }

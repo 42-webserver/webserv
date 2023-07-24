@@ -63,7 +63,7 @@ private:
 	bool isFileExists(const std::string& filename);
 	std::string generateUniqueFileName();
 	void changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(ClientBodySizeInvalidException);
-	void injectionHandler(ft::shared_ptr<VirtualServerManager> vsm);
+	void injectionHandler();
 };
 
 #endif

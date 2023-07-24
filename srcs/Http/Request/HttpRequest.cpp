@@ -149,6 +149,11 @@ int HttpRequest::getContentLength()
 	return std::stoi(it->second);
 }
 
+std::vector<MultipartRequest> & HttpRequest::getMultipartRequests()
+{
+	return this->_multipartRequests;
+}
+
 std::string HttpRequest::getHost()
 {
 	std::multimap<std::string, std::string>::iterator it;

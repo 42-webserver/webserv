@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include "../Exception/BadRequestException.hpp"
+#include "MultipartRequest.hpp"
 
 typedef enum BodyType{
 		NORMAL,
@@ -28,6 +29,7 @@ private:
 	std::multimap<std::string, std::string> _headers;
 	std::map<std::string, std::string>	  	_queries;
 	std::map<std::string, std::string>	  	_cookies;
+	std::vector<MultipartRequest>		 	_multipartRequests;
 
 public:
 	HttpRequest();
@@ -41,6 +43,7 @@ public:
 	std::string getProtocol();
 	std::string getHost();
 	std::vector<char> &getBody();
+	std::vector<MultipartRequest> &getMultipartRequests();
 	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();
 	std::map<std::string, std::string> getCookies();
