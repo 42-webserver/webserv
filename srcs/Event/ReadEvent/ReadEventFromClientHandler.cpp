@@ -55,7 +55,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 
 	if (state == FINISH) {
 		//fix daegulee :
-		Logger::getInstance().info("FIN ISH Parse");
+		Logger::getInstance().info("FINISH Parse");
 		// std::cerr << *(this->getHttpRequestParser()->getHttpRequest().get())
 		// << std::endl;
 		// std::cerr << this->getHttpRequestParser()->getHttpRequest()->getHeader("Host") << std::endl;
