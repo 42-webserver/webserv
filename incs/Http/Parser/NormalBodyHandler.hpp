@@ -6,13 +6,12 @@
 class NormalBodyHandler : public RequestBodyHandler
 {
 public:
-	bool handleBody(std::vector<char> &reqBuffer);
+	bool handleBody(std::vector<char> &buffer);
 	NormalBodyHandler(ft::shared_ptr<HttpRequest> req);
 	~NormalBodyHandler(void);
 
 private:
-	void writeInFile(std::vector<char> &reqBuffer);
-	void writeInMemory(std::vector<char> &reqBuffer);
+	void writeInMemory(std::vector<char> &buffer, int writeSize);
 };
 
 #endif

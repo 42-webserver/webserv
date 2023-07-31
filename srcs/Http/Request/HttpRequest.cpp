@@ -1,8 +1,7 @@
 #include "../../../incs/Http/Request/HttpRequest.hpp"
 
 
-HttpRequest::HttpRequest()
-:_isBodyLong(false), _bodyType(NORMAL)
+HttpRequest::HttpRequest():_bodyType(NORMAL)
 {
 	this->_body.reserve(_MEMORY_BODY_SIZE);
 }
@@ -14,23 +13,6 @@ HttpRequest::~HttpRequest()
 void HttpRequest::insertBody(std::vector<char> &buffer)
 {
 	this->_body.insert(this->_body.end(), buffer.begin(), buffer.end());
-}
-
-bool HttpRequest::isBodyLong() const
-{
-	return this->_isBodyLong;
-}
-
-std::string & HttpRequest::getBodyDataFilename(){
-	return this->_bodyDataFilename;
-}
-
-void HttpRequest::setBodyDataFilename(std::string filename){
-	this->_bodyDataFilename = filename;
-}
-
-void HttpRequest::setBodyLong(bool isBodyLong){
-	this->_isBodyLong = isBodyLong;
 }
 
 void HttpRequest::addHeader(const std::string & header)
@@ -163,8 +145,13 @@ int HttpRequest::getContentLength()
 
 	it = this->_headers.find("Content-Length");
 	if (it == this->_headers.end())
-		return -1;
+		throw BadRequestException(BAD_REQUEST);
 	return std::stoi(it->second);
+}
+
+std::vector<MultipartRequest> & HttpRequest::getMultipartRequests()
+{
+	return this->_multipartRequests;
 }
 
 std::string HttpRequest::getHost()
@@ -206,12 +193,8 @@ std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
 		else
 			os << "BodyType: UNKNOWN" << std::endl;
 		os << "Body: " << std::endl;
-		if (!request._isBodyLong){
-			for (std::vector<char>::const_iterator it = request._body.begin(); it != request._body.end(); it++)
-				os << *it;
-		}else{
-			os << "BodyDataFilename: " << request._bodyDataFilename << std::endl;
-		}
+		for (std::vector<char>::const_iterator it = request._body.begin(); it != request._body.end(); it++)
+			os << *it;
 		os << std::endl;
 		os << "Headers: " << std::endl;
 		for (std::multimap<std::string, std::string>::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)

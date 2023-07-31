@@ -42,7 +42,6 @@ private:
 	ft::shared_ptr<HttpRequest>			_httpRequest;
 	RequestParseState					_state;
 	std::vector<char>					_buffer;
-	int				 					_readBodySize;
 	ft::shared_ptr<RequestBodyHandler>	_bodyHandler;
 
 
@@ -58,13 +57,13 @@ public:
 	friend std::ostream &operator<<(std::ostream & os, const HttpRequestParser & parser);
 
 private:
-	void handleStartLineState(std::vector<char> &reqBuffer);
-	void handleHeaderState(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm);
-	void handleBodyState(std::vector<char> &reqBuffer);
+	void handleStartLineState();
+	void handleHeaderState(ft::shared_ptr<VirtualServerManager> vsm);
+	void handleBodyState();
 	bool isFileExists(const std::string& filename);
 	std::string generateUniqueFileName();
 	void changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(ClientBodySizeInvalidException);
-	void injectionHandler(ft::shared_ptr<VirtualServerManager> vsm);
+	void injectionHandler();
 };
 
 #endif
