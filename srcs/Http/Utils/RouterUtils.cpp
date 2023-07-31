@@ -19,7 +19,7 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
     std::string root = _findRoot(vsm, req);
     std::string alias = _findAlias(vsm, req);
     std::string path = _makePath(root, alias, uri);
-    path = _findIndex(vsm, req, path);
+    return _findIndex(vsm, req, path);
 }
 
 ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
@@ -59,11 +59,7 @@ std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::s
     return path;
 }
 
-std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path){
-    if (!FileUploader::isDirectory(path))
-        return path;
-    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
-    //if location is exist
+std::string RouterUtils::_findIndexInLocation(std::string path, ft::shared_ptr<LocationElement> locationElement){
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::INDEX);
     if (it == locationElement->end()){
        if (FileUploader::isFileExists(path))
@@ -79,8 +75,9 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
             return indexPath;
     }
     throw NotFoundException();
+}
 
-    //if location not exist
+std::string RouterUtils::_findIndexInServer(std::string path, ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     ft::shared_ptr<VirtualServer> targetServer;
     try{
         targetServer = vsm->findVirtualServer(req->getHost());
@@ -103,6 +100,16 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
             return indexPath;
     }
     throw NotFoundException();
+}
+
+std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path){
+    if (!FileUploader::isDirectory(path))
+        return path;
+    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    if (locationElement.get() != NULL)
+        return _findIndexInLocation(path, locationElement);
+    else
+        return _findIndexInServer(path, vsm, req);
 }
 
 std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){

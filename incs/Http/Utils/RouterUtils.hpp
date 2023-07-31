@@ -25,6 +25,8 @@ private:
     static std::string	_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string  _makePath(std::string &root, std::string &alias, std::string &uri);
     static std::string _findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path);
+    static std::string _findIndexInLocation(std::string path, ft::shared_ptr<LocationElement> locationElement);
+    static std::string _findIndexInServer(std::string path, ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
 };  
 
 #endif
