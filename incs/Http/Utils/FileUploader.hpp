@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <vector>
 #include "../Exception/BadRequestException.hpp"
+#include "../Exception/NotFoundException.hpp"
 #include "../Exception/ServerErrorException.hpp"
 #include <sys/stat.h>
 

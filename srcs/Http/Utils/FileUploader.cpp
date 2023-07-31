@@ -29,7 +29,7 @@ bool FileUploader::isDirectory(const std::string& filename) {
     if (stat(filename.c_str(), &fileStat) == 0) {
         return S_ISDIR(fileStat.st_mode);
     }
-    throw ServerErrorException(INTERNAL_SERVER_ERROR);
+    throw NotFoundException();
 }
 
 long FileUploader::getFileSize(const std::string& filename) {

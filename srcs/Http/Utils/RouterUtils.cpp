@@ -54,16 +54,19 @@ std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::s
         path = uri;
     else if(!root.empty())
         path = root + uri;
-    else if(!alias.empty())
-        path = alias + uri;
+    else if(!alias.empty()){
+        path =  alias + uri.substr(uri.find_last_of('/') + 1);
+    }
     return path;
 }
 
 std::string RouterUtils::_findIndexInLocation(std::string path, ft::shared_ptr<LocationElement> locationElement){
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::INDEX);
     if (it == locationElement->end()){
-       if (FileUploader::isFileExists(path))
+        if (FileUploader::isFileExists(path))
             return path;
+        else if (FileUploader::isFileExists(path + "/index.html"))
+            return path + "/index.html";
         throw NotFoundException();
     }
     ft::shared_ptr<ConfigElement> indexConfElem = it->second;
@@ -89,6 +92,8 @@ std::string RouterUtils::_findIndexInServer(std::string path, ft::shared_ptr<Vir
     if (it2 == server_element.end()){
         if (FileUploader::isFileExists(path))
             return path;
+        else if (FileUploader::isFileExists(path + "/index.html"))
+            return path + "/index.html";
         throw NotFoundException();
     }
     ft::shared_ptr<ConfigElement> indexConfElem2 = it2->second;
@@ -104,7 +109,7 @@ std::string RouterUtils::_findIndexInServer(std::string path, ft::shared_ptr<Vir
 
 std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path){
     if (!FileUploader::isDirectory(path))
-        return path;
+            return path;
     ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
     if (locationElement.get() != NULL)
         return _findIndexInLocation(path, locationElement);
@@ -128,9 +133,10 @@ std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft:
     }
 
     ft::shared_ptr<LocationElement>  locationElement = findLocation(vsm, req);
+    if(locationElement.get() == NULL)
+        return root;
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::ROOT);
-    if(it2 != locationElement->end())
-    {
+    if(it2 != locationElement->end()){
         ft::shared_ptr<ConfigElement> rootConfElem = it2->second;
         root = ft::static_pointer_cast<RootElement>(rootConfElem)->getPath();
     }
@@ -140,9 +146,10 @@ std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft:
 std::string RouterUtils::_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string alias;
     ft::shared_ptr<LocationElement>  locationElement = findLocation(vsm, req);
+    if(locationElement.get() == NULL)
+        return alias;
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::ALIAS);
-    if(it2 != locationElement->end())
-    {
+    if(it2 != locationElement->end()){
         ft::shared_ptr<ConfigElement> rootConfElem = it2->second;
         alias = ft::static_pointer_cast<RootElement>(rootConfElem)->getPath();
     }
