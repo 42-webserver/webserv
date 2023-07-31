@@ -24,6 +24,14 @@ bool FileUploader::isFileExists(const std::string& filename){
     return file.good();
 }
 
+bool FileUploader::isDirectory(const std::string& filename) {
+    struct stat fileStat;
+    if (stat(filename.c_str(), &fileStat) == 0) {
+        return S_ISDIR(fileStat.st_mode);
+    }
+    throw ServerErrorException(INTERNAL_SERVER_ERROR);
+}
+
 long FileUploader::getFileSize(const std::string& filename) {
     struct stat fileStat;
     if (stat(filename.c_str(), &fileStat) == 0) {

@@ -25,6 +25,7 @@ class FileUploadException : public BadRequestException {
 static void fileUpload(std::vector<char> &reqBuffer, std::string path) throw(FileUploader::FileUploadException);
 static void checkFileExists(const std::string& filepath) throw(FileUploader::FileUploadException);
 static bool isFileExists(const std::string& filename);
+static bool isDirectory(const std::string& filename);
 static long getFileSize(const std::string& filename);
 };
 
