@@ -51,5 +51,4 @@ int main(){
 	std::cout << httpRequest->getMethod() << std::endl;
 	std::cout << httpRequest->getVersion() << std::endl;
 	std::cout << httpRequestParser.getState() << std::endl;
-	std::cout << httpRequest->isBodyLong() << std::endl;
 }

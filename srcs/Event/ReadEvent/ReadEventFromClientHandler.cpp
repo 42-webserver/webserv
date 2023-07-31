@@ -31,7 +31,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		return ;
 	}
 	try {
-		// while bufBlocksize 
+		// while bufBlocksize end
 		// 1 - 2 - 3 - 4 - 5 -6 -7 -8 <-Total
 		// Read 1  char*- 2 - 3 - 4 - 5 -6 -7 -8 copy
 		// list<vector char> 
