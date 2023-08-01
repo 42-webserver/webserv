@@ -53,9 +53,9 @@ std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::s
     if(root.empty() && alias.empty())
         path = uri;
     else if(!root.empty())
-        path = root + uri;
+        path = root + "/" + uri;
     else if(!alias.empty()){
-        path =  alias + uri.substr(uri.find_last_of('/') + 1);
+        path =  alias + "/" + uri.substr(uri.find_last_of('/') + 1);
     }
     return path;
 }
