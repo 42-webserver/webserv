@@ -35,7 +35,7 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto) th
 		// 	return (new WriteEventToCgi(eventDto));
 		case ft::LISTEN_EVENT:
 			return (new ListenEvent(eventDto.getChannel(),
-			 eventDto.getVirtualServerManager())
+			 eventDto.getVirtualServerManager())g
 			);
 		default:
 			throw (FailToEventCreateException());
