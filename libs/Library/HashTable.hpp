@@ -13,7 +13,6 @@
 
 namespace ft{
 
-
 class cachePrime {
 private:
     static const size_t _size;
@@ -94,8 +93,8 @@ private:
 	}	
 private:
 	void	_checkTrait() {
-		ft::Assert::current_level = ft::Assert::COMPILE;
-		ASSERT(ft::type::is_integral<KeyType>::value 
+		// ft::Assert::current_level = ft::Assert::COMPILE;
+		STATIC_ASSERT(ft::type::is_integral<KeyType>::value 
 		||  ft::type::is_std_string<KeyType>::value
 		|| ft::type::hasHashFunction<KeyType>::value,
 		"No Hash Function or No integral");
@@ -125,8 +124,8 @@ public:
 public:
 	class iterator : public std::iterator<std::forward_iterator_tag, std::pair<KeyType, ValueType> >{
 		private:
-			typedef std::pair<KeyType, ValueType> value_type;
-			typedef typename std::vector<ft::Optional<value_type> >::iterator Iter;
+			typedef ft::Optional<std::pair<KeyType, ValueType> > value_type;
+			typedef typename std::vector<value_type >::iterator Iter;
 			Iter _it;
 			Iter _endIt;
 		public:
@@ -135,8 +134,8 @@ public:
 					++_it;
 				}
 			}
-			value_type& operator*() { return *(_it->operator->());}
-			value_type* operator->() { return _it->operator();}
+			value_type& operator*() { return *_it;}
+			value_type* operator->() { return &(*_it);}
 
 			iterator& operator++() {
 				do {
@@ -312,8 +311,8 @@ private:
 	//
 
 	void	_checkTrait() {
-		ft::Assert::current_level = ft::Assert::COMPILE;
-		ASSERT(
+		// ft::Assert::current_level = ft::Assert::COMPILE;
+		STATIC_ASSERT(
 		ft::type::is_std_string<key_type>::value
 		,"No Hash Function or No integral");
 	}
@@ -345,8 +344,8 @@ public:
 public:
 	class iterator : public std::iterator<std::forward_iterator_tag, std::pair<key_type, ValueType> >{
 		private:
-			typedef std::pair<key_type, ValueType> value_type;
-			typedef typename std::vector<ft::Optional<value_type> >::iterator Iter;
+			typedef ft::Optional<std::pair<key_type, ValueType> > value_type;
+			typedef typename std::vector<value_type >::iterator Iter;
 			Iter _it;
 			Iter _endIt;
 		public:
@@ -355,8 +354,8 @@ public:
 					++_it;
 				}
 			}
-			value_type& operator*() { return *(_it->operator->());}
-			value_type* operator->() { return _it->operator();}
+			value_type& operator*() { return *_it;}
+			value_type* operator->() { return &(*_it);}
 
 			iterator& operator++() {
 				do {
@@ -364,7 +363,11 @@ public:
 				} while (_it != _endIt && !(*_it).has_value());
 				return *this;
 			}
-
+			iterator operator++(int) {
+			    iterator tmp(*this);
+			    ++(*this);
+			    return tmp;
+			}
 			bool operator!=(const iterator& other) const {
 				return _it != other._it;
 			}
