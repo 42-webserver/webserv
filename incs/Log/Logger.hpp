@@ -10,7 +10,12 @@
 // Refactoring::daegulee  access, error Expand!
 // Todo:1. Loger must be event
 // 2. Loger using buf 
-
+// 3. Logger -> 4 state -> Info (Access info write -> Log.txt)
+// 						-> Warining (Assertion : function Behavior Broken);
+						// -> DeBug (LogDebug.txt)
+						// -> Error (LogError.txt)
+						// Logger Behavior a) buffer 4개- warning, info, error, debug
+// 4. 만약에 디렉토리 없으면 만드는 코드 필요
 const std::string DEFAULT_LOG_FILE_NAME = "LogSave/Log.txt";
 
 enum LogLevel {
