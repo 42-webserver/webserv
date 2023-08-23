@@ -26,7 +26,7 @@ size_t BaseNode::insert(std::vector<char>::iterator start, std::vector<char>::it
 	if (start == end)
 		return 0;
 	size_t n = end - start;
-	if (_capacity - _size - _partialPoint < n) {
+	if (_capacity < n + _size + _partialPoint) {
 		n = _capacity - _size - _partialPoint;
 	}
 	for (size_t i = 0; i < n; i++) {
