@@ -19,6 +19,7 @@ namespace ft {
 
         static Level current_level;
 
+        //To do: 수정해야됨 
         static void RuntimeAssert(bool condition, const char* message) {
             if (!condition) {
                 std::cerr << "Runtime assertion failed: " << message << std::endl;
