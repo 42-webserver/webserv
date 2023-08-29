@@ -9,14 +9,24 @@
 #define STATIC_ASSERT(condition, message) typedef char LINE_VAR(STATIC_ASSERT_)[(condition) ? 1 : -1]
 
 namespace ft {
-
+    enum Level {
+            RUNTIME,
+            Debug,
+        };
     class Assert {
     public:
-        enum Level {
-            RUNTIME,
-            DEBUG,
-        };
-
+        class ScopedAssertChange{
+        private:
+            Level _tmp;
+        public:
+            ScopedAssertChange(Level change) {
+                _tmp = Assert::current_level;
+                Assert::current_level = change;
+            }
+            ~ScopedAssertChange(){
+                Assert::current_level = _tmp;
+            }
+         };
         static Level current_level;
 
         //To do: 수정해야됨 
@@ -39,8 +49,12 @@ namespace ft {
                 DebugAssert(condtion, msg);
         }
     };
-
-    Assert::Level Assert::current_level = Assert::RUNTIME;
+    #ifdef DEBUG
+    Level Assert::current_level = Debug;
+    #endif
+    #ifndef DEBUG
+    Level Assert::current_level = RUNTIME;
+    #endif
 }
 // #define COMPILE_ASSERT(condition, message) static_check(condition, message)
 
