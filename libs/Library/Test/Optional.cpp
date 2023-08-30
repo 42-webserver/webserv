@@ -1,8 +1,15 @@
-#include "../optional.hpp"
+#include "../Optional.hpp"
 #include <string>
 #include <iostream>
+#include "../unique_ptr.hpp"
+#include "../../shared_ptr/shared_ptr.hpp"
+class a{
 
-int main() {
+};
+class b : public a{
+
+};
+void foo() {
     ft::Optional<int> op1; // 기본 생성
     ft::Optional<int> op2(5); // 값으로 초기화
 
@@ -29,6 +36,27 @@ int main() {
 	std::string hello3 = opStr.value_or("hi?\n");
 
 	std::cout <<  hello3 << '\n';
+    ft::Optional<ft::unique_ptr<int> > rx;
+    if (!rx.has_value())
+        std::cout << "no value\n";
+    ft::unique_ptr<int> uptr(new int(42));
+    rx = uptr;
+    std::cout << *(rx.value()) << '\n';
+    // std::cout << *uptr << '\n';
 
-    return 0;
+}
+
+void foo1(){
+    ft::Optional<ft::unique_ptr<a> > rx;
+    ft::unique_ptr<a> k(new b());
+    rx = k;
+}
+
+// void foo2(){
+//     ft::Optional<ft::shared_ptr<a> > rx;
+//     rx = ft::shared_ptr<b>();
+// }
+int main(void){
+    foo1();
+    system("leaks a.out");
 }

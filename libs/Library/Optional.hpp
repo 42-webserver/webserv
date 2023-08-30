@@ -44,11 +44,25 @@ namespace ft {
         }
 
         Optional(const Optional& other) : _hasValue(other._hasValue) {
-            if (_hasValue) {
-                new (_storage) T(*other.pointer());
-            }
+             if (other._hasValue) {
+                 new (_storage) T(*other.pointer());
+                 _hasValue = true;
+             } else {
+                 _hasValue = false;
+             }
+        }
+       Optional(T& data) : _hasValue(true) {
+            new (_storage) T(data);
         }
 
+        Optional(Optional& other) : _hasValue(other._hasValue) {
+             if (other._hasValue) {
+                 new (_storage) T(*other.pointer());
+                 _hasValue = true;
+             } else {
+                 _hasValue = false;
+             }
+        }
         ~Optional() {
             reset();
         }
@@ -57,10 +71,26 @@ namespace ft {
             reset();
             return *this;
         }
-		Optional& operator=(Optional other) {
+		Optional& operator=(const Optional&other) {
 		    other.swap(*this);
 		    return *this;
 		}
+        Optional& operator=(const T& value) {
+            reset();
+            _hasValue = true;
+            new (_storage) T(value);
+            return *this;
+        }
+		Optional& operator=(Optional&other) {
+		    other.swap(*this);
+		    return *this;
+		}
+        Optional& operator=(T& value) {
+            reset();
+            _hasValue = true;
+            new (_storage) T(value);
+            return *this;
+        }
         void reset() {
             if (_hasValue) {
                 pointer()->~T();
@@ -103,6 +133,30 @@ namespace ft {
 
         operator bool() const {
             return _hasValue;
+        }
+
+       void emplace() {
+           reset();
+           _hasValue = true;
+           new (_storage) T();
+       }
+       template<typename Arg1>
+       void emplace(const Arg1& arg1) {
+            reset();
+            _hasValue = true;
+            new (_storage) T(arg1);
+       }
+        template<typename Arg1, typename Arg2>
+        void emplace(const Arg1& arg1, const Arg2& arg2) {
+            reset();
+            _hasValue = true;
+            new (_storage) T(arg1, arg2);
+        }
+        template<typename Arg1, typename Arg2, typename Arg3>
+        void emplace(const Arg1& arg1, const Arg2& arg2,const Arg3& arg3 ) {
+            reset();
+            _hasValue = true;
+            new (_storage) T(arg1, arg2, arg3);
         }
     };
 }
