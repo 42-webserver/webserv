@@ -166,6 +166,8 @@ public:
 
         for (size_t i = 0; i < _capacity; ++i) {
             size_t pos = (hash1 + i * hash2) % _capacity;
+
+			//check !
             if (!_table[pos].has_value() || _table[pos]->first == key) {
                 if (!_table[pos].has_value()) {
                     _itemCount++;
