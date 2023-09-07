@@ -54,7 +54,7 @@ size_t	SocketIoOnlyReadBuffer::ioRead(int fd) {
 
     return _head.value()->ioRead(fd);
 }
-std::vector<int> _getPartialMatch(const std::string &N) {
+std::vector<int> SocketIoOnlyReadBuffer::_getPartialMatch(const std::string &N) {
 	int m = N.size();
 	int begin = 1;
 	int matched = 0;
@@ -76,15 +76,14 @@ std::vector<int> _getPartialMatch(const std::string &N) {
 	return pi;
 }
 
-std::vector<SocketIoOnlyReadBuffer::iterator> find(const std::string& str) {
+std::vector<SocketIoOnlyReadBuffer::iterator> SocketIoOnlyReadBuffer::find(const std::string& str) {
     if (str.empty()) return {};
     
     std::vector<int> pi = _getPartialMatch(str);
     std::vector<SocketIoOnlyReadBuffer::iterator> result;
 
-    SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
-    SocketIoOnlyReadBuffer::iterator haystack_begin = buf.begin();
-    SocketIoOnlyReadBuffer::iterator haystack_end = buf.end();
+    SocketIoOnlyReadBuffer::iterator haystack_begin = this->begin();
+    SocketIoOnlyReadBuffer::iterator haystack_end = this->end();
     int m = str.size();
     int begin = 0, matched = 0;
 
@@ -106,16 +105,13 @@ std::vector<SocketIoOnlyReadBuffer::iterator> find(const std::string& str) {
     return result;
 }
 
-SocketIoOnlyReadBuffer::iterator findFirst(const std::string& str) {
-    SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
-
-    if (str.empty()) return buf.end(); // 빈 문자열이 주어지면 end() 이터레이터 반환
+typename SocketIoOnlyReadBuffer::iterator SocketIoOnlyReadBuffer::findFirst(const std::string& str) {
+    if (str.empty()) return this->end(); // 빈 문자열이 주어지면 end() 이터레이터 반환
     
     std::vector<int> pi = _getPartialMatch(str);
 
-    SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
-    SocketIoOnlyReadBuffer::iterator haystack_begin = buf.begin();
-    SocketIoOnlyReadBuffer::iterator haystack_end = buf.end();
+    SocketIoOnlyReadBuffer::iterator haystack_begin = this->begin();
+    SocketIoOnlyReadBuffer::iterator haystack_end = this->end();
     int m = str.size();
     int begin = 0, matched = 0;
 
@@ -136,11 +132,25 @@ SocketIoOnlyReadBuffer::iterator findFirst(const std::string& str) {
     }
     return haystack_end; // 일치하는 항목을 찾지 못하면 end() 이터레이터 반환
 }
-void copyToVector(std::vector<char>& dest) {
+size_t SocketIoOnlyReadBuffer::copyToVectorBack(std::vector<char>& dest) const {
     SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
     std::vector<char> source = buf.getHead().has_value() ? buf.getHead().value()->getBuffer() : std::vector<char>();
 
-    dest.reserve(source.size()); 
+    size_t oldSize = dest.size();
+    dest.reserve(source.size() + oldSize); 
 
-    std::copy(source.begin(), source.end(), std::back_inserter(dest));  
+    std::copy(source.begin(), source.end(), std::back_inserter(dest));
+    return dest.size() - oldSize;
+}
+
+size_t SocketBufferCopyToVectorBack(std::vector<char>& dest, 
+SocketIoOnlyReadBuffer::iterator start, SocketIoOnlyReadBuffer::iterator end)  {
+    SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
+    std::vector<char> source = buf.getHead().has_value() ? buf.getHead().value()->getBuffer() : std::vector<char>();
+
+    size_t oldSize = dest.size();
+    dest.reserve(source.size() + oldSize); 
+
+    std::copy(start, end, std::back_inserter(dest)); 
+    return dest.size() - oldSize;
 }

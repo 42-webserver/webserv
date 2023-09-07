@@ -105,9 +105,10 @@ public:
 public:
 	std::vector<SocketIoOnlyReadBuffer::iterator> find(const std::string& str);
 	SocketIoOnlyReadBuffer::iterator findFirst(const std::string& str);
-	void copyToVector(std::vector<char>& dest);
+	size_t copyToVectorBack(std::vector<char>& dest) const ;
 private:
 	std::vector<int> _getPartialMatch(const std::string &N);
 };
+size_t SocketBufferCopyToVectorBack(std::vector<char>& dest, SocketIoOnlyReadBuffer::iterator begin, SocketIoOnlyReadBuffer::iterator end);
 
 #endif
