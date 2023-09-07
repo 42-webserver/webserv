@@ -16,9 +16,7 @@ SocketIoOnlyReadBuffer& SocketIoOnlyReadBuffer::getInstance() {
     }
     return *_instance;
 }
-ft::Optional<ft::shared_ptr<LargeNode> > SocketIoOnlyReadBuffer::getHead() {
-    return _head;
-}
+
 SocketIoOnlyReadBuffer::~SocketIoOnlyReadBuffer(){}
 size_t SocketIoOnlyReadBuffer::size(){
 	ft::Assert::_assert((!_head.has_value()),
@@ -77,6 +75,8 @@ std::vector<int> SocketIoOnlyReadBuffer::_getPartialMatch(const std::string &N) 
 }
 
 std::vector<SocketIoOnlyReadBuffer::iterator> SocketIoOnlyReadBuffer::find(const std::string& str) {
+    ft::Assert::_assert((!_head.has_value()),
+    "SocketIoOnlyReadBuffer:: find Invarint Error");
     if (str.empty()) return {};
     
     std::vector<int> pi = _getPartialMatch(str);
@@ -106,6 +106,8 @@ std::vector<SocketIoOnlyReadBuffer::iterator> SocketIoOnlyReadBuffer::find(const
 }
 
 typename SocketIoOnlyReadBuffer::iterator SocketIoOnlyReadBuffer::findFirst(const std::string& str) {
+    ft::Assert::_assert((!_head.has_value()),
+    "SocketIoOnlyReadBuffer:: findFirst Invarint Error");
     if (str.empty()) return this->end(); // 빈 문자열이 주어지면 end() 이터레이터 반환
     
     std::vector<int> pi = _getPartialMatch(str);
@@ -133,8 +135,9 @@ typename SocketIoOnlyReadBuffer::iterator SocketIoOnlyReadBuffer::findFirst(cons
     return haystack_end; // 일치하는 항목을 찾지 못하면 end() 이터레이터 반환
 }
 size_t SocketIoOnlyReadBuffer::copyToVectorBack(std::vector<char>& dest) const {
-    SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
-    std::vector<char> source = buf.getHead().has_value() ? buf.getHead().value()->getBuffer() : std::vector<char>();
+    ft::Assert::_assert((!this->_head.has_value()),
+    "SocketIoOnlyReadBuffer:: copyToVectorBack Invarint Error");
+    std::vector<char> source = this->_head.has_value() ? this->_head.value()->getBuffer() : std::vector<char>();
 
     size_t oldSize = dest.size();
     dest.reserve(source.size() + oldSize); 
@@ -146,7 +149,9 @@ size_t SocketIoOnlyReadBuffer::copyToVectorBack(std::vector<char>& dest) const {
 size_t SocketBufferCopyToVectorBack(std::vector<char>& dest, 
 SocketIoOnlyReadBuffer::iterator start, SocketIoOnlyReadBuffer::iterator end)  {
     SocketIoOnlyReadBuffer& buf = SocketIoOnlyReadBuffer::getInstance();
-    std::vector<char> source = buf.getHead().has_value() ? buf.getHead().value()->getBuffer() : std::vector<char>();
+    ft::Assert::_assert((!buf._head.has_value()),
+    "SocketIoOnlyReadBuffer:: copyToVectorBack Invarint Error");
+    std::vector<char> source = buf._head.has_value() ? buf._head.value()->getBuffer() : std::vector<char>();
 
     size_t oldSize = dest.size();
     dest.reserve(source.size() + oldSize); 

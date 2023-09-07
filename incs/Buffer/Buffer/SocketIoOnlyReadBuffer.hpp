@@ -14,14 +14,15 @@
 //Todo: 2)memory Exception
 //Todo: 3)iterator
 class SocketIoOnlyReadBuffer : public BaseBuffer, IoReadable {
+
 protected:
 	ft::Optional<ft::shared_ptr<LargeNode> >_head;
 private:
 	static SocketIoOnlyReadBuffer* _instance;
+
 //IoReadable interface
 public:
 	virtual size_t	ioRead(int fd);
-	ft::Optional<ft::shared_ptr<LargeNode> >	getHead();
 //debug
 public:
 	size_t	_debugPrint(int fd = 0);
@@ -108,7 +109,7 @@ public:
 	size_t copyToVectorBack(std::vector<char>& dest) const ;
 private:
 	std::vector<int> _getPartialMatch(const std::string &N);
+    friend size_t SocketBufferCopyToVectorBack(std::vector<char>& dest, SocketIoOnlyReadBuffer::iterator begin, SocketIoOnlyReadBuffer::iterator end);
 };
-size_t SocketBufferCopyToVectorBack(std::vector<char>& dest, SocketIoOnlyReadBuffer::iterator begin, SocketIoOnlyReadBuffer::iterator end);
 
 #endif
