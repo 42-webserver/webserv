@@ -12,6 +12,16 @@
 class Mode {
 public:
     Mode();
+
+	/**
+	 * @brief Constructs a Mode object with the specified properties.
+	 *
+	 * @param read Specifies whether the mode allows reading. True to allow reading, false otherwise.
+	 * @param write Specifies whether the mode allows writing. True to allow writing, false otherwise.
+	 * @param insert Specifies whether the mode allows inserting. True to allow inserting, false otherwise.
+	 * @param erase Specifies whether the mode allows erasing. True to allow erasing, false otherwise.
+	 * @param canDelete Specifies whether the mode allows deletion. True to allow deletion, false otherwise.
+	 */
 	Mode(bool read, bool write, bool insert, bool erase, bool canDelete);
     inline void setMode(bool read, bool write, bool insert, bool erase, bool canDelete);
     inline void setMode(unsigned char newMode);
@@ -43,7 +53,6 @@ private:
 	size_t _size;
 	size_t _capacity;
 	std::vector<char> _buffer;
-	friend class SocketIoOnlyReadBuffer::iterator;
 public:
 	const std::vector<char>& getBuffer() const;
 	std::vector<char>& getBuffer();

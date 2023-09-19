@@ -14,4 +14,9 @@ public:
 	virtual size_t ioWrite(int fd) = 0;
 };
 
+class IoAble : public IoReadable, public IoWritable{
+public:
+	virtual size_t ioRead(int fd) = 0;
+	virtual size_t ioWrite(int fd) = 0;
+};
 #endif
