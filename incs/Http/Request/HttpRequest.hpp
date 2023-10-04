@@ -25,6 +25,7 @@ private:
 	std::vector<char>   _body;
 	std::string		 	_protocol;
 	BodyType			_bodyType;
+	bool				_pending;
 
 	std::multimap<std::string, std::string> _headers;
 	std::map<std::string, std::string>	  	_queries;
@@ -51,6 +52,8 @@ public:
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 	std::string getHeader(const std::string & key);
+	bool isPending();
+	void setFinished();
 	friend std::ostream &operator<<(std::ostream & os, const HttpRequest & request);
 
 private:

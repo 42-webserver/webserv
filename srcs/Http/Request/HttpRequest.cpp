@@ -1,7 +1,7 @@
 #include "../../../incs/Http/Request/HttpRequest.hpp"
 
 
-HttpRequest::HttpRequest():_bodyType(NORMAL)
+HttpRequest::HttpRequest():_bodyType(NORMAL), _pending(true)
 {
 	this->_body.reserve(_MEMORY_BODY_SIZE);
 }
@@ -66,9 +66,11 @@ void HttpRequest::setCookie(std::string & cookie)
 void HttpRequest::setStartLine(std::string line)
 {
 	std::string::size_type pos;
-
+	std::string method;
 	pos = line.find(" ");
-	this->_method = line.substr(0, pos);
+	method = line.substr(0, pos);
+	std::transform(method.begin(), method.end(),method.begin(), ::toupper);
+	this->_method = method;
 	line.erase(0, pos + 1);
 	pos = line.find(" ");
 	this->_uri = line.substr(0, pos);
@@ -175,6 +177,16 @@ std::string HttpRequest::getHeader(const std::string & key)
 	if (it != this->_headers.end())
 		return it->second;
 	return "";
+}
+
+bool HttpRequest::isPending()
+{
+	return this->_pending;
+}
+
+void HttpRequest::setFinished()
+{
+	this->_pending = false;
 }
 
 std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
