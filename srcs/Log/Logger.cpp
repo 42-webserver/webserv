@@ -75,6 +75,7 @@ void	Logger::warning(const std::string& format, int count, ...) {
 	va_start(args, count);
 	log(WARNING, converformatMessage(format, count, args));
 	va_end(args);
+	//
 }
 
 void	Logger::error(const std::string& message) { log(ERROR, message); }

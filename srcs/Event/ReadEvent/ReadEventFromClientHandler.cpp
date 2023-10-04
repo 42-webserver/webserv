@@ -31,7 +31,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		return ;
 	}
 	try {
-		// while bufBlocksize 
+		// while bufBlocksize end
 		// 1 - 2 - 3 - 4 - 5 -6 -7 -8 <-Total
 		// Read 1  char*- 2 - 3 - 4 - 5 -6 -7 -8 copy
 		// list<vector char> 
@@ -55,7 +55,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 
 	if (state == FINISH) {
 		//fix daegulee :
-		Logger::getInstance().info("FIN ISH Parse");
+		Logger::getInstance().info("FINISH Parse");
 		// std::cerr << *(this->getHttpRequestParser()->getHttpRequest().get())
 		// << std::endl;
 		// std::cerr << this->getHttpRequestParser()->getHttpRequest()->getHeader("Host") << std::endl;
