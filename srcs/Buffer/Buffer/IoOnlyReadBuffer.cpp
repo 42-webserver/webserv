@@ -8,7 +8,7 @@ IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
         _instance = new IoOnlyReadBuffer();
         }
         catch (const std::bad_alloc& e) {
-            throw AllocationException();
+            throw ;
         }
         catch (const std::exception& e) {
             throw;
@@ -33,10 +33,7 @@ void	IoOnlyReadBuffer::_allocate() {
     try {
         _head = ft::shared_ptr<LargeNode>(new LargeNode());
     }
-    catch (const std::bad_alloc& e) {
-        throw AllocationException();
-    }
-    catch (const std::exception& e) {
+    catch (...) {
         throw;
     }
 }

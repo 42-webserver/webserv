@@ -39,6 +39,8 @@ uninitialized_copy(_InputIterator __f, _InputIterator __l, _ForwardIterator __r)
     return __r;
 }
 
+//a - > b - >c ->d 
+//
 template <class _ForwardIterator, class _Size, class _Tp>
 _ForwardIterator
 uninitialized_fill_n(_ForwardIterator __f, _Size __n, const _Tp& __x)

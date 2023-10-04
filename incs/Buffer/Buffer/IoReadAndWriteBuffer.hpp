@@ -16,6 +16,11 @@ class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable {
 private:
     ft::Optional<ft::shared_ptr<NormalNode> >_head;
     std::list<ft::Optional<ft::shared_ptr<LargeNode> > > _lst;
+public:
+    enum {
+        NORMAL_STATE,
+        LARGE_STATE
+    };
 //Buffer Inteface
 public:
     virtual size_t size();

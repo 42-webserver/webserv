@@ -10,11 +10,21 @@
 #include <vector>
 #include "../Exception/AllocationException.hpp"
 #include "IoAble.hpp"
+#include "../../../libs/Library/Container/_iterator.hpp"
+//Todo : Refactoring iterator
 //Todo: 1)check RequestParser Pattern(어떤 매서드 지원해야되는지)
 //Todo: 2)memory Exception
 //Todo: 3)iterator
 class IoOnlyReadBuffer : public BaseBuffer, IoReadable {
-
+public: 
+    typedef char value_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef size_t size_type;
+    typedef std::random_access_iterator_tag iterator_category;
 private:
 	ft::Optional<ft::shared_ptr<LargeNode> >_head;
 	static IoOnlyReadBuffer* _instance;
@@ -36,14 +46,16 @@ public:
 	static IoOnlyReadBuffer& getInstance();
 
 //Iterator
-class iterator {
+class iterator{
 public:
     typedef char value_type;
     typedef std::ptrdiff_t difference_type;
-    typedef char* pointer;
-    typedef char& reference;
+    typedef value_type* pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef size_t size_type;
     typedef std::random_access_iterator_tag iterator_category;
-
 private:
     IoOnlyReadBuffer& _buffer; // 버퍼 참조를 유지
     size_t _index; // 현재 위치를 나타내는 인덱스
