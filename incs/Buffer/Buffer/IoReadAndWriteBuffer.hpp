@@ -12,13 +12,11 @@
 #include "../Exception/AllocationException.hpp"
 #include "IoAble.hpp"
 #include "Modifiable.hpp"
-class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable<IoReadAndWriteBuffer> {
+class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable{
 public:
     typedef enum{
         InitState,
-        NormalState,
-        LargeState,
-        StateSize
+        RunState,
     }   State;
 private:
     State _state;
@@ -35,72 +33,22 @@ private:
 //Buffer Inteface
 public:
     virtual size_t size();
-//Size
-private:
-    size_t _initSize();
-    size_t _normalSize();
-    size_t _largeSize();
-    typedef size_t (IoReadAndWriteBuffer::*_sizeFunc)();
-    static _sizeFunc _sizeFuncs[StateSize];
-
 //IoAble interface
 
 public:
     virtual size_t	ioRead(int fd);
-    //IoRead
-private:
-    size_t _ioReadInit(int fd);
-    size_t _ioReadNormal(int fd);
-    size_t _ioReadLarge(int fd);
-    typedef size_t (IoReadAndWriteBuffer::*_ioReadFunc)(int fd);
-    static _ioReadFunc _ioReadFuncs[StateSize];
-
-public:
-    virtual size_t	ioWrite(int fd);
-    //IoWrite
-private:
-    size_t _ioWriteInit(int fd);
-    size_t _ioWriteNormal(int fd);
-    size_t _ioWriteLarge(int fd);
-    typedef size_t (IoReadAndWriteBuffer::*_ioWriteFunc)(int fd);
-    static _ioWriteFunc _ioWriteFuncs[StateSize];   
-
-
+    virtual size_t	ioWrite(int fd); 
 //Modifiable interface
-
 public:
-    size_t appendImpl(const char* data, size_t size);
-private:
-    size_t _appendInit(const char* data, size_t size);
-    size_t _appendNormal(const char* data, size_t size);
-    size_t _appendLarge(const char* data, size_t size);
-    typedef size_t (IoReadAndWriteBuffer::*_appendFunc)(const char* data, size_t size);
-    static _appendFunc _appendFuncs[StateSize];
-
-public:
-    size_t popFrontImpl(size_t size);
-private:
-    size_t _popFrontInit(size_t size);
-    size_t _popFrontNormal(size_t size);
-    size_t _popFrontLarge(size_t size);
-    typedef size_t (IoReadAndWriteBuffer::*_popFrontFunc)(size_t size);
-    static _popFrontFunc _popFrontFuncs[StateSize];
+    virtual size_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);
+    virtual size_t append(std::vector<char>::iterator begin, size_t size);
+    virtual size_t append(IoOnlyReadBuffer::iterator begin, IoOnlyReadBuffer::iterator end);
+    virtual size_t append(IoOnlyReadBuffer::iterator begin, size_t size);
+    virtual size_t eraseFront(size_t size);
 //IoReadAndWriteBuffer interface
 public:
     void	_allocate();
     void	_deallocate();
-private:
-    void _allocateInit();
-    void _allocateNormal();
-    void _allocateLarge();
-    typedef void (IoReadAndWriteBuffer::*_allocateFunc)();
-    static _allocateFunc _allocateFuncs[StateSize];
-
-    void _deallocateInit();
-    void _deallocateNormal();
-    void _deallocateLarge();
-    typedef void (IoReadAndWriteBuffer::*_deallocateFunc)();
-    static _deallocateFunc _deallocateFuncs[StateSize];
 };
 
 #endif
