@@ -18,6 +18,7 @@ public:
         InitState,
         NormalState,
         LargeState,
+        EraseState,
         StateSize
     }   State;
 private:
@@ -39,6 +40,7 @@ private:
     size_t _initSize();
     size_t _normalSize();
     size_t _largeSize();
+    size_t _eraseSize();
     typedef size_t (IoReadAndWriteBuffer::*_sizeFunc)();
     static _sizeFunc _sizeFuncs[StateSize];
 //IoAble interface

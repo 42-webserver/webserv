@@ -5,7 +5,8 @@
 IoReadAndWriteBuffer::_sizeFunc IoReadAndWriteBuffer::_sizeFuncs[StateSize] = {
     &IoReadAndWriteBuffer::_initSize,
     &IoReadAndWriteBuffer::_normalSize,
-    &IoReadAndWriteBuffer::_largeSize
+    &IoReadAndWriteBuffer::_largeSize,
+    &IoReadAndWriteBuffer::_eraseSize
 };
 
 IoReadAndWriteBuffer::IoReadAndWriteBuffer() : 
@@ -16,8 +17,20 @@ _lst(std::list<ft::shared_ptr<LargeNode> >()) {}
 IoReadAndWriteBuffer::~IoReadAndWriteBuffer() {
 }
 
+size_t IoReadAndWriteBuffer::size() {
+    return (this->*_sizeFuncs[_state])();
+}
 
+size_t IoReadAndWriteBuffer::_initSize() {
+    return 0;
+}
 
+size_t IoReadAndWriteBuffer::_normalSize() {
+    return (*_head)->size();
+}
 
+size_t IoReadAndWriteBuffer::_largeSize() {
+    size_t size = 
+}
 
 
