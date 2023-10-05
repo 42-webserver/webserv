@@ -16,7 +16,7 @@ INCS_DIR	= incs
 SRCS_DIR	= srcs
 OBJS_DIR	= objs
 
-SRCS =	main.cpp \
+SRCS =	Buffer/Test/optional_list.cpp \
 		Config/AliasElement.cpp \
 		Config/AllowMethodElement.cpp \
 		Config/AutoIndexElement.cpp \
@@ -101,6 +101,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \
 				${OBJS_DIR}/Cache \
+				${OBJS_DIR}/Buffer/Test \
 
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}

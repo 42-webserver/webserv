@@ -16,6 +16,7 @@
 //Todo: 2)memory Exception
 //Todo: 3)iterator
 class IoOnlyReadBuffer : public BaseBuffer, IoReadable {
+//for iterator
 public: 
     typedef char value_type;
     typedef std::ptrdiff_t difference_type;
@@ -25,6 +26,17 @@ public:
     typedef const value_type& const_reference;
     typedef size_t size_type;
     typedef std::random_access_iterator_tag iterator_category;
+
+//Constructor
+public:
+    IoOnlyReadBuffer();
+//Copy, Assign => delete
+//Destructor => singleton
+private:
+    virtual ~IoOnlyReadBuffer();
+    IoOnlyReadBuffer(const IoOnlyReadBuffer& other);
+    IoOnlyReadBuffer& operator=(const IoOnlyReadBuffer& other);
+
 private:
 	ft::Optional<ft::shared_ptr<LargeNode> >_head;
 	static IoOnlyReadBuffer* _instance;
@@ -35,7 +47,6 @@ public:
 //Buffer Inteface
 public:
 	virtual size_t size();
-	virtual ~IoOnlyReadBuffer();
 //IoOnlyReadBuffer interface
 public:	
 	void	_allocate();

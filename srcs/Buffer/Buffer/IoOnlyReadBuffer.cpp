@@ -1,7 +1,8 @@
 #include "../../../incs/Buffer/Buffer/IoOnlyReadBuffer.hpp"
 IoOnlyReadBuffer* IoOnlyReadBuffer::_instance = NULL;
-IoOnlyReadBuffer::IoOnlyReadBuffer() :
-_head(ft::Optional<ft::shared_ptr<LargeNode> >()) {}
+IoOnlyReadBuffer::IoOnlyReadBuffer() : BaseBuffer(), IoReadable(), _head(ft::Optional<ft::shared_ptr<LargeNode> >()) {}
+IoOnlyReadBuffer::~IoOnlyReadBuffer() {
+}
 IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
     if (_instance == NULL) {
         try {

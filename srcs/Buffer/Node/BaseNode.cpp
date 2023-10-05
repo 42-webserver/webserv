@@ -8,7 +8,7 @@ BaseNode::BaseNode(size_t capacity) : _size(0), _buffer(capacity),
 _capacity(capacity), _mode(), _deleteCount(0) {}
 
 size_t BaseNode::erase(size_t n) {
-	static Mode _assertEraseMode(false, false, true, false, true);
+	static Mode _assertEraseMode(false, false, false, false, true);
 	
 	ft::Assert::_assert(!_mode.checkMode(_assertEraseMode), "Buffer Node Invariant is destroyed (erase is assertion)");
 	_mode.setEraseMode();
