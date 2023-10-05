@@ -16,7 +16,9 @@ class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable{
 public:
     typedef enum{
         InitState,
-        RunState,
+        NormalState,
+        LargeState,
+        StateSize
     }   State;
 private:
     State _state;
@@ -33,6 +35,12 @@ private:
 //Buffer Inteface
 public:
     virtual size_t size();
+private:
+    size_t _initSize();
+    size_t _normalSize();
+    size_t _largeSize();
+    typedef size_t (IoReadAndWriteBuffer::*_sizeFunc)();
+    static _sizeFunc _sizeFuncs[StateSize];
 //IoAble interface
 
 public:
