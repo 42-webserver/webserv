@@ -7,6 +7,12 @@
 #define CONCATENATE(x, y) x##y
 #define LINE_VAR(x) CONCATENATE(x, __LINE__)
 #define STATIC_ASSERT(condition, message) typedef char LINE_VAR(STATIC_ASSERT_)[(condition) ? 1 : -1]
+#include <iostream>
+#include <cstdlib>
+
+#define CONCATENATE(x, y) x##y
+#define LINE_VAR(x) CONCATENATE(x, __LINE__)
+#define STATIC_ASSERT(condition, message) typedef char LINE_VAR(STATIC_ASSERT_)[(condition) ? 1 : -1]
 
 namespace ft {
     enum Level {
@@ -20,16 +26,25 @@ namespace ft {
             Level _tmp;
         public:
             ScopedAssertChange(Level change) {
-                _tmp = Assert::current_level;
-                Assert::current_level = change;
+                _tmp = current_level();
+                current_level() = change;
             }
             ~ScopedAssertChange(){
-                Assert::current_level = _tmp;
+                current_level() = _tmp;
             }
          };
-        static Level current_level;
 
-        //To do: 수정해야됨 
+        // inline function for current_level
+        static Level& current_level() {
+            static Level level; // this is where the static member is now stored
+            #ifdef DEBUG
+            level = Debug;
+            #else
+            level = RUNTIME;
+            #endif
+            return level;
+        }
+        // Todo 수정해야됨
         static void RuntimeAssert(bool condition, const char* message) {
             if (!condition) {
                 std::cerr << "Runtime assertion failed: " << message << std::endl;
@@ -42,24 +57,19 @@ namespace ft {
                 std::abort();
             }
         }
-        static void _assert(bool condtion, const char *msg){
-            if (current_level == RUNTIME)
-                RuntimeAssert(condtion, msg);
+        
+        static void _assert(bool condition, const char *msg){
+            if (current_level() == RUNTIME)
+                RuntimeAssert(condition, msg);
             else   
-                DebugAssert(condtion, msg);
+                DebugAssert(condition, msg);
         }
     };
-    #ifdef DEBUG
-    Level Assert::current_level = Debug;
-    #endif
-    #ifndef DEBUG
-    Level Assert::current_level = RUNTIME;
-    #endif
-}
+} 
 // #define COMPILE_ASSERT(condition, message) static_check(condition, message)
 
 // #define ASSERT(condition, message) do { \
-//     if (ft::Assert::current_level == ft::Assert::COMPILE) { \
+//     if ( == ft::Assert::COMPILE) { \
 //         static_check(condition, message); \
 //     } else if (ft::Assert::current_level == ft::Assert::DEBUG) { \
 //         if (!(condition)) { \

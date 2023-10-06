@@ -6,11 +6,8 @@
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
 #include "../../../libs/Library/Optional.hpp"
 #include "../../Channel/Socket.hpp"
-#include "../../../libs/Library/Assert.hpp"
 #include <vector>
-#include "../Exception/AllocationException.hpp"
 #include "IoAble.hpp"
-#include "../../../libs/Library/Container/_iterator.hpp"
 //Todo : Refactoring iterator
 //Todo: 1)check RequestParser Pattern(어떤 매서드 지원해야되는지)
 //Todo: 2)memory Exception
@@ -20,8 +17,8 @@ class IoOnlyReadBuffer : public BaseBuffer, IoReadable {
 public: 
     typedef std::vector<char>::iterator iterator;
     typedef std::vector<char>::const_iterator const_iterator;
-//Constructor
-public:
+//Constructor => singleton
+private:
     IoOnlyReadBuffer();
 //Copy, Assign => delete
 //Destructor => singleton
@@ -44,8 +41,6 @@ public:
 public:	
 	void	_allocate();
 	void	recycleInstance();
-private:
-	IoOnlyReadBuffer();
 public:
 	static IoOnlyReadBuffer& getInstance();
 

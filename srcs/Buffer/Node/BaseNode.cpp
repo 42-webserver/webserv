@@ -1,14 +1,69 @@
 #include "../../../incs/Buffer/Node/BaseNode.hpp"
-#include "../../../incs/Buffer/Exception/DisconnectionException.hpp"
-#include <algorithm>
-#include "../../../libs/Library/Assert.hpp"
-#include <unistd.h>
 
+
+//Mode
+Mode::Mode() : mode(0) {}
+Mode::Mode(bool read, bool write, bool insert, bool erase, bool canDelete) {
+	setMode(read, write, insert, erase, canDelete);
+}
+inline void Mode::setMode(bool read, bool write, bool insert, bool erase, bool canDelete) {
+    mode = (read ? 1 : 0) | (write ? 1 : 0) << 1 | (insert ? 1 : 0) << 2 | (erase ? 1 : 0) << 3 | (canDelete ? 1 : 0) << 4;
+}
+
+inline void Mode::setMode(unsigned char newMode) {
+    mode = newMode;
+}
+
+inline void Mode::setReadMode() {
+	mode |= 1;
+}
+
+inline void Mode::setWriteMode() {
+	mode |= 2;
+}
+
+inline void Mode::setInsertMode() {
+	mode |= 4;
+}
+
+inline void Mode::setEraseMode() {
+	mode |= 8;
+}
+
+inline void Mode::setCanDeleteMode() {
+	mode |= 16;
+}
+inline bool Mode::checkMode(Mode newMode) const {
+    return newMode.mode & mode;
+}
+
+inline bool Mode::isReadMode() const {
+    return mode & 1;
+}
+
+inline bool Mode::isWriteMode() const {
+    return mode & 2;
+}
+
+inline bool Mode::isInsertMode() const {
+    return mode & 4;
+}
+
+inline bool Mode::isEraseMode() const {
+    return mode & 8;
+}
+
+inline bool Mode::isCanDeleteMode() const {
+    return mode & 16;
+}
+
+
+//Mode
 
 BaseNode::~BaseNode() {}
-BaseNode::BaseNode(size_t capacity) : _size(0), _buffer(capacity)
-, _capacity(capacity), _mode(), _eraseSize(0) {}
-
+// BaseNode::BaseNode(size_t capacity) : _size(0), _buffer(capacity)
+// , _capacity(capacity), _mode(), _eraseSize(0) {}
+BaseNode::BaseNode(size_t capacity) : _mode(), _size(0), _capacity(capacity), _eraseSize(0), _buffer(capacity) {}
 size_t BaseNode::erase(size_t n) {
 	static Mode _assertEraseMode(false, false, false, false, true);
 	
@@ -130,58 +185,5 @@ BaseNode::const_iterator BaseNode::end() const {
 
 bool BaseNode::isEmpty() const {
 	return _size == 0;
-}
-
-Mode::Mode() : mode(0) {}
-
-inline void Mode::setMode(bool read, bool write, bool insert, bool erase, bool canDelete) {
-    mode = (read ? 1 : 0) | (write ? 1 : 0) << 1 | (insert ? 1 : 0) << 2 | (erase ? 1 : 0) << 3 | (canDelete ? 1 : 0) << 4;
-}
-
-inline void Mode::setMode(unsigned char newMode) {
-    mode = newMode;
-}
-
-inline void Mode::setReadMode() {
-	mode |= 1;
-}
-
-inline void Mode::setWriteMode() {
-	mode |= 2;
-}
-
-inline void Mode::setInsertMode() {
-	mode |= 4;
-}
-
-inline void Mode::setEraseMode() {
-	mode |= 8;
-}
-
-inline void Mode::setCanDeleteMode() {
-	mode |= 16;
-}
-inline bool Mode::checkMode(Mode newMode) const {
-    return newMode.mode & mode;
-}
-
-inline bool Mode::isReadMode() const {
-    return mode & 1;
-}
-
-inline bool Mode::isWriteMode() const {
-    return mode & 2;
-}
-
-inline bool Mode::isInsertMode() const {
-    return mode & 4;
-}
-
-inline bool Mode::isEraseMode() const {
-    return mode & 8;
-}
-
-inline bool Mode::isCanDeleteMode() const {
-    return mode & 16;
 }
 

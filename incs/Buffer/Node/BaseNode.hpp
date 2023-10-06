@@ -4,7 +4,10 @@
 # include <iostream>
 # include <vector>
 # include <iterator>
-
+#include "../../../incs/Buffer/Exception/DisconnectionException.hpp"
+#include <algorithm>
+#include "../../../libs/Library/Assert.hpp"
+#include <unistd.h>
 //responsibilty : Authorization for deleting in Node, only Node, Not iterator
 //Behavior : partial Delete가 일어나는 상황 -> 뒤에 부터 지워지는 추상화
 //Behavior : erase가 한번이라도 일어난 후에는 insert가 일어나면 안됨 
@@ -22,6 +25,7 @@ public:
 	 * @param erase Specifies whether the mode allows erasing. True to allow erasing, false otherwise.
 	 * @param canDelete Specifies whether the mode allows deletion. True to allow deletion, false otherwise.
 	 */
+public:
 	Mode(bool read, bool write, bool insert, bool erase, bool canDelete);
     inline void setMode(bool read, bool write, bool insert, bool erase, bool canDelete);
     inline void setMode(unsigned char newMode);

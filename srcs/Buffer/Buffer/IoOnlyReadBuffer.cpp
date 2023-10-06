@@ -18,7 +18,6 @@ IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
     return *_instance;
 }
 
-IoOnlyReadBuffer::~IoOnlyReadBuffer(){}
 size_t IoOnlyReadBuffer::size(){
 	ft::Assert::_assert((!_head.has_value()),
 	"IoOnlyReadBuffer:: size Invarint Error");
