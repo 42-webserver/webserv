@@ -79,6 +79,13 @@ SRCS =	main.cpp \
 		Channel/Pipe.cpp \
 		Cache/cache.cpp \
 		Cache/LruCache.cpp \
+		Buffer/Buffer/BaseBuffer.cpp \
+		Buffer/Buffer/IoOnlyReadBuffer.cpp \
+		Buffer/Buffer/IoReadAndWriteBuffer.cpp \
+		Buffer/Node/BaseNode.cpp \
+		Buffer/Node/LargeNode.cpp \
+		Buffer/Node/NormalNode.cpp \
+
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -101,6 +108,8 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \
 				${OBJS_DIR}/Cache \
+				${OBJS_DIR}/Buffer/Buffer \
+				${OBJS_DIR}/Buffer/Node \
 
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
