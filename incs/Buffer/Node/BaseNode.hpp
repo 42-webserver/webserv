@@ -46,12 +46,14 @@ private:
 };
 
 class BaseNode {
+typedef std::vector<char>::iterator iterator;
+typedef std::vector<char>::const_iterator const_iterator;
 private:
 	Mode	_mode;
 private:
-    size_t _deleteCount;
 	size_t _size;
 	size_t _capacity;
+	size_t _eraseSize;
 	std::vector<char> _buffer;
 public:
 	const std::vector<char>& getBuffer() const;
@@ -59,12 +61,20 @@ public:
 public:
 	BaseNode(size_t size);
 	size_t ioRead(int fd);
+	size_t ioWrite(int fd);
 	size_t erase(size_t n);
 	size_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);
+	size_t insert(std::vector<char>::iterator start, size_t size);
 	virtual ~BaseNode();
 public:
 	void	reset();
+	iterator begin();
+	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
     size_t size() const;
 	bool canDelete() const;
+	virtual bool isFull() const = 0;
+	bool isEmpty() const;
 };
 #endif

@@ -12,19 +12,20 @@
 #include "../Exception/AllocationException.hpp"
 #include "IoAble.hpp"
 #include "Modifiable.hpp"
+
+//erase :: if only HeadNode, then kill buffer
+//erase :: if lst -> kill LargeNode in lst
 class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable{
 public:
     typedef enum{
         InitState,
-        NormalState,
-        LargeState,
+        AppendState,
         EraseState,
         StateSize
     }   State;
 private:
     State _state;
-    ft::Optional<ft::shared_ptr<NormalNode> >_head;
-    std::list<ft::shared_ptr<LargeNode> > _lst;
+    std::list<ft::shared_ptr<BaseNode> > _lst;
 //Constructor
 public:
     IoReadAndWriteBuffer();
@@ -38,9 +39,8 @@ public:
     virtual size_t size();
 private:
     size_t _initSize();
-    size_t _normalSize();
-    size_t _largeSize();
-    size_t _eraseSize();
+    size_t _AppendSize();
+    size_t _EraseSize();
     typedef size_t (IoReadAndWriteBuffer::*_sizeFunc)();
     static _sizeFunc _sizeFuncs[StateSize];
 //IoAble interface
@@ -52,11 +52,9 @@ public:
 public:
     virtual size_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);
     virtual size_t append(std::vector<char>::iterator begin, size_t size);
-    virtual size_t append(IoOnlyReadBuffer::iterator begin, IoOnlyReadBuffer::iterator end);
-    virtual size_t append(IoOnlyReadBuffer::iterator begin, size_t size);
     virtual size_t eraseFront(size_t size);
 //IoReadAndWriteBuffer interface
-public:
+private:
     void	_allocate();
     void	_deallocate();
 };

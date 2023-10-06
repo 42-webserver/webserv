@@ -5,11 +5,12 @@
 
 class LargeNode : public BaseNode
 {
-private:
+public:
 	static const size_t _sizeLarge;
 public:
 	LargeNode();
 	virtual ~LargeNode();
+	virtual bool isFull(void) const;
 private:
 	LargeNode(const LargeNode &other);
 	LargeNode& operator=(const LargeNode &other);
