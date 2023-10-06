@@ -15,7 +15,6 @@ public:
 	static ft::shared_ptr<HttpResponse> getErrorPageResponse(HttpStatusCode status);
 private:
 	static std::vector<char> getErrorPage(HttpStatusCode status);
-	static std::string getErrorPageName(HttpStatusCode status);
 
 };
 
