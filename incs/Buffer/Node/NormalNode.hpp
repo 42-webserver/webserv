@@ -6,11 +6,12 @@
 
 class NormalNode : public BaseNode
 {
-private:
+public:
 	static const size_t _sizeNormal;
 public:
 	NormalNode();
 	virtual ~NormalNode();
+	virtual bool isFull() const;
 private:
 	NormalNode(const NormalNode &other);
 	NormalNode& operator=(const NormalNode &other);

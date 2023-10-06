@@ -1,5 +1,5 @@
-#ifndef TYPE_HPP
-# define TYPE_HPP
+#ifndef _TYPE_HPP
+# define _TYPE_HPP
 
 #include <iostream>
 namespace ft{
@@ -27,6 +27,13 @@ struct enable_if<true, T> {
     typedef integral_constant<bool, true> true_type;
     typedef integral_constant<bool, false> false_type;
     //integral_constant
+   
+// is_same
+template<typename T, typename U>
+struct is_same : public false_type {};
+
+template<typename T>
+struct is_same<T, T> : public true_type {};
 
     //is_integral
     template <typename T>

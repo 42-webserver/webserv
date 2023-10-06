@@ -7,35 +7,54 @@
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
 #include "../../../libs/Library/Optional.hpp"
 #include "../../Channel/Socket.hpp"
-#include "../../../libs/Library/Assert.hpp"
 #include <list>
-#include "../Exception/AllocationException.hpp"
 #include "IoAble.hpp"
 #include "Modifiable.hpp"
-class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable {
-private:
-    ft::Optional<ft::shared_ptr<NormalNode> >_head;
-    std::list<ft::Optional<ft::shared_ptr<LargeNode> > > _lst;
+
+//erase :: if only HeadNode, then kill buffer
+//erase :: if lst -> kill LargeNode in lst
+class IoReadAndWriteBuffer : public BaseBuffer, IoAble, Modifiable{
 public:
-    enum {
-        NORMAL_STATE,
-        LARGE_STATE
-    };
+    typedef enum{
+        InitState,
+        AppendState,
+        EraseState,
+        StateSize
+    }   State;
+private:
+    State _state;
+    std::list<ft::shared_ptr<BaseNode> > _lst;
+//Constructor
+public:
+    IoReadAndWriteBuffer();
+    virtual ~IoReadAndWriteBuffer();
+//Copy, Assign => delete
+private:
+    IoReadAndWriteBuffer(const IoReadAndWriteBuffer& other);
+    IoReadAndWriteBuffer& operator=(const IoReadAndWriteBuffer& other);
 //Buffer Inteface
 public:
     virtual size_t size();
-    virtual ~IoReadAndWriteBuffer();
+private:
+    size_t _initSize();
+    size_t _AppendSize();
+    size_t _EraseSize();
+    typedef size_t (IoReadAndWriteBuffer::*_sizeFunc)();
+    static _sizeFunc _sizeFuncs[StateSize];
 //IoAble interface
+
 public:
     virtual size_t	ioRead(int fd);
-    virtual size_t	ioWrite(int fd);
+    virtual size_t	ioWrite(int fd); 
 //Modifiable interface
 public:
-    virtual size_t erase(size_t size);
-    virtual size_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);
+    virtual size_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);
+    virtual size_t append(std::vector<char>::iterator begin, size_t size);
+    virtual size_t eraseFront(size_t size);
 //IoReadAndWriteBuffer interface
-public:
+private:
     void	_allocate();
+    void	_deallocate();
 };
 
 #endif

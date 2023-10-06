@@ -2,7 +2,9 @@
 #include "../incs/Server/Webserv.hpp"
 #include "../incs/Log/Logger.hpp"
 #include "../incs/err/err.hpp"
+#include "../libs/Library/Assert.hpp"
 #include <iostream>
+
 
 int	main(int argc, char **argv) {
 	if (argc != 2) {
