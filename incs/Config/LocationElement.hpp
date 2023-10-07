@@ -14,6 +14,7 @@ class LocationElement: public ConfigElement {
 				ALIAS,
 				ALLOW_METHOD,
 				AUTOINDEX,
+				CGI_PASS,
 				ERROR_PAGE,
 				INDEX,
 				RETURN,

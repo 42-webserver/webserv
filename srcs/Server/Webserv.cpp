@@ -21,9 +21,9 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 	try {
 		this->_physical_server_manager.build(config);
 		this->_physical_server_manager.run();
-		std::cerr << "Webserv is running..." << std::endl;
-		// std::cout << *this << std::endl;
-		// exit(0);
+		//std::cerr << "Webserv is running..." << std::endl;
+		//std::cout << *this << std::endl;
+		//exit(0);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());

@@ -2,6 +2,7 @@
 #include "../../incs/Config/AliasElement.hpp"
 #include "../../incs/Config/AllowMethodElement.hpp"
 #include "../../incs/Config/AutoIndexElement.hpp"
+#include "../../incs/Config/CgiPassElement.hpp"
 #include "../../incs/Config/ClientMaxBodySizeElement.hpp"
 #include "../../incs/Config/ErrorPageElement.hpp"
 #include "../../incs/Config/IndexElement.hpp"
@@ -33,6 +34,8 @@ ConfigElementFactory::ElementPtr	ConfigElementFactory::create(const std::string 
 		ret = ft::make_shared<AutoIndexElement>(infile);
 	} else if (element == "allow_method") {
 		ret = ft::make_shared<AllowMethodElement>(infile);
+	} else if (element == "cgi_pass") {
+		ret = ft::make_shared<CgiPassElement>(infile);
 	} else if (element == "client_max_body_size") {
 		ret = ft::make_shared<ClientMaxBodySizeElement>(infile);
 	} else if (element == "error_page") {

@@ -9,6 +9,7 @@ LocationElement::KeyMap	LocationElement::_initKeyMap(void) {
 	ret["alias"] = KEY::ALIAS;
 	ret["allow_method"] = KEY::ALLOW_METHOD;
 	ret["autoindex"] = KEY::AUTOINDEX;
+	ret["cgi_pass"] = KEY::CGI_PASS;
 	ret["error_page"] = KEY::ERROR_PAGE;
 	ret["index"] = KEY::INDEX;
 	ret["return"] = KEY::RETURN;

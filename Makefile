@@ -20,6 +20,7 @@ SRCS =	main.cpp \
 		Config/AliasElement.cpp \
 		Config/AllowMethodElement.cpp \
 		Config/AutoIndexElement.cpp \
+		Config/CgiPassElement.cpp \
 		Config/ClientMaxBodySizeElement.cpp \
 		Config/Config.cpp \
 		Config/ConfigElement.cpp \

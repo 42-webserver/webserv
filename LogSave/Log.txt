@@ -90,3 +90,35 @@
 [2023-07-18 02:49:57] [INFO] Remove Read Event
 [2023-07-18 02:49:57] [INFO] Socket is destroyed
 [2023-07-18 02:49:57] [INFO] Enter Pull Event
+[2023-10-07 21:45:09] [ERROR] LocationElement: Invalid Element
+[2023-10-07 21:45:09] [ERROR] LocationElement: Fail to Parse
+[2023-10-07 21:45:09] [ERROR] LocationTrieElement: Fail to insert
+[2023-10-07 21:45:09] [ERROR] ServerElement: Fail to Create Element
+[2023-10-07 21:45:09] [ERROR] ServerElement: Fail to Parse
+[2023-10-07 21:45:09] [ERROR] Config: Fail to parse
+[2023-10-07 21:45:33] [ERROR] LocationElement: Invalid Element
+[2023-10-07 21:45:33] [ERROR] LocationElement: Fail to Parse
+[2023-10-07 21:45:33] [ERROR] LocationTrieElement: Fail to insert
+[2023-10-07 21:45:33] [ERROR] ServerElement: Fail to Create Element
+[2023-10-07 21:45:33] [ERROR] ServerElement: Fail to Parse
+[2023-10-07 21:45:33] [ERROR] Config: Fail to parse
+[2023-10-07 21:46:08] [ERROR] LocationElement: Invalid Element
+[2023-10-07 21:46:08] [ERROR] LocationElement: Fail to Parse
+[2023-10-07 21:46:08] [ERROR] LocationTrieElement: Fail to insert
+[2023-10-07 21:46:08] [ERROR] ServerElement: Fail to Create Element
+[2023-10-07 21:46:08] [ERROR] ServerElement: Fail to Parse
+[2023-10-07 21:46:08] [ERROR] Config: Fail to parse
+[2023-10-07 21:47:11] [ERROR] LocationElement: Invalid Element
+[2023-10-07 21:47:11] [ERROR] LocationElement: Fail to Parse
+[2023-10-07 21:47:11] [ERROR] LocationTrieElement: Fail to insert
+[2023-10-07 21:47:11] [ERROR] ServerElement: Fail to Create Element
+[2023-10-07 21:47:11] [ERROR] ServerElement: Fail to Parse
+[2023-10-07 21:47:11] [ERROR] Config: Fail to parse
+[2023-10-07 21:47:28] [ERROR] CgiPassElement: Invalid Argument
+[2023-10-07 21:47:28] [ERROR] CgiPassElement: Fail to Parse
+[2023-10-07 21:47:28] [ERROR] LocationElement: Fail to Create Element
+[2023-10-07 21:47:28] [ERROR] LocationElement: Fail to Parse
+[2023-10-07 21:47:28] [ERROR] LocationTrieElement: Fail to insert
+[2023-10-07 21:47:28] [ERROR] ServerElement: Fail to Create Element
+[2023-10-07 21:47:28] [ERROR] ServerElement: Fail to Parse
+[2023-10-07 21:47:28] [ERROR] Config: Fail to parse
