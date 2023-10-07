@@ -168,19 +168,19 @@ std::vector<char>& BaseNode::getBuffer() {
 }
 
 BaseNode::iterator BaseNode::begin() {
-	return _buffer.begin();
+	return _buffer.begin() + _eraseSize;
 }
 
 BaseNode::iterator BaseNode::end() {
-	return _buffer.end();
+	return _buffer.begin() + _size;
 }
 
 BaseNode::const_iterator BaseNode::begin() const {
-	return _buffer.begin();
+	return _buffer.begin() + _eraseSize;
 }
 
 BaseNode::const_iterator BaseNode::end() const {
-	return _buffer.end();
+	return _buffer.begin() + _size;
 }
 
 bool BaseNode::isEmpty() const {
