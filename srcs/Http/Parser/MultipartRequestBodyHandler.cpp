@@ -85,12 +85,13 @@ void MultipartRequestBodyHandler::parsePartOfBody(std::vector<char> &partBody){
 }
 
 void MultipartRequestBodyHandler::addBody(std::vector<char> &body){
-	MultipartRequest multipartRequest = this->_request->getMultipartRequests()[this->_index];
+	MultipartRequest &multipartRequest = this->_request->getMultipartRequests()[this->_index];
 	multipartRequest.insertBody(body);
 }
 
 void MultipartRequestBodyHandler::addHeader(const std::string & line)
 {
-	MultipartRequest multipartRequest = this->_request->getMultipartRequests()[this->_index];
+	MultipartRequest &multipartRequest = this->_request->getMultipartRequests()[this->_index];
 	multipartRequest.addHeader(line);
+	
 }

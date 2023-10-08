@@ -12,7 +12,7 @@ HttpRequest::~HttpRequest()
 
 void HttpRequest::insertBody(std::vector<char> &buffer)
 {
-	this->_body.append(buffer.begin(), buffer.end());
+	this->_body->append(buffer.begin(), buffer.end());
 }
 
 void HttpRequest::addHeader(const std::string & header)
@@ -116,7 +116,7 @@ std::string HttpRequest::getVersion()
 	return this->_version;
 }
 
-IoReadAndWriteBuffer &HttpRequest::getBody()
+ft::shared_ptr<IoReadAndWriteBuffer> HttpRequest::getBody()
 {
 	return this->_body;
 }

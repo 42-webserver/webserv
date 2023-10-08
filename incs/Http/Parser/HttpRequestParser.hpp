@@ -48,7 +48,7 @@ private:
 public:
 	//check: this maybe void
 	HttpRequestParser(void);
-	const RequestParseState &parseRequest(IoOnlyReadBuffer &requestBuffer, ft::shared_ptr<VirtualServerManager> vsm);
+	const RequestParseState &parseRequest(ft::shared_ptr<VirtualServerManager> vsm);
 	void clearBuffer();
 	const RequestParseState &getState();
 	const int & getReadBodySize();

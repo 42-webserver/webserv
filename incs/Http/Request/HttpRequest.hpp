@@ -8,6 +8,7 @@
 #include "../Exception/BadRequestException.hpp"
 #include "MultipartRequest.hpp"
 #include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
+#include "../../../libs/shared_ptr/shared_ptr.hpp"
 
 typedef enum BodyType{
 		NORMAL,
@@ -20,13 +21,13 @@ static const int				_MEMORY_BODY_SIZE = 16 * 1024;
 class HttpRequest
 {
 private:
-	std::string		 		_method;
-	std::string		 		_uri;
-	std::string		 		_version;
-	IoReadAndWriteBuffer    _body;
-	std::string		 		_protocol;
-	BodyType				_bodyType;
-	bool					_pending;
+	std::string		 						_method;
+	std::string		 						_uri;
+	std::string		 						_version;
+	ft::shared_ptr<IoReadAndWriteBuffer>    _body;
+	std::string		 						_protocol;
+	BodyType								_bodyType;
+	bool									_pending;
 
 	std::multimap<std::string, std::string> _headers;
 	std::map<std::string, std::string>	  	_queries;
@@ -44,7 +45,7 @@ public:
 	std::string getVersion();
 	std::string getProtocol();
 	std::string getHost();
-	IoReadAndWriteBuffer    			&getBody();
+	ft::shared_ptr<IoReadAndWriteBuffer> getBody();
 	std::vector<MultipartRequest>	&getMultipartRequests();
 	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();

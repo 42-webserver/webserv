@@ -8,8 +8,9 @@ HttpRequestParser::HttpRequestParser(void)
 	this->_buffer.reserve(_BUFFER_SIZE);
 }
 
-const RequestParseState &HttpRequestParser::parseRequest(IoOnlyReadBuffer &requestBuffer, ft::shared_ptr<VirtualServerManager> vsm) {
-	this->_buffer.insert(this->_buffer.end(), requestBuffer.begin(), requestBuffer.end());
+const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+	this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)
