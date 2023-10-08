@@ -1,9 +1,9 @@
 #include "../../../incs/Http/Request/HttpRequest.hpp"
 
 
-HttpRequest::HttpRequest():_bodyType(NORMAL), _pending(true)
+HttpRequest::HttpRequest():
+	_bodyType(NORMAL), _pending(true)
 {
-	this->_body.reserve(_MEMORY_BODY_SIZE);
 }
 
 HttpRequest::~HttpRequest()
@@ -12,7 +12,7 @@ HttpRequest::~HttpRequest()
 
 void HttpRequest::insertBody(std::vector<char> &buffer)
 {
-	this->_body.insert(this->_body.end(), buffer.begin(), buffer.end());
+	this->_body.append(buffer.begin(), buffer.end());
 }
 
 void HttpRequest::addHeader(const std::string & header)
@@ -116,7 +116,7 @@ std::string HttpRequest::getVersion()
 	return this->_version;
 }
 
-std::vector<char> &HttpRequest::getBody()
+IoReadAndWriteBuffer &HttpRequest::getBody()
 {
 	return this->_body;
 }
@@ -204,10 +204,10 @@ std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
 			os << "BodyType: MULTIPART_FORM_DATA" << std::endl;
 		else
 			os << "BodyType: UNKNOWN" << std::endl;
-		os << "Body: " << std::endl;
-		for (std::vector<char>::const_iterator it = request._body.begin(); it != request._body.end(); it++)
-			os << *it;
-		os << std::endl;
+		// os << "Body: " << std::endl;
+		// for (std::vector<char>::const_iterator it = request._body.begin(); it != request._body.end(); it++)
+		// 	os << *it;
+		// os << std::endl;
 		os << "Headers: " << std::endl;
 		for (std::multimap<std::string, std::string>::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
 			os << it->first << ": " << it->second << std::endl;
