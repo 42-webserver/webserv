@@ -8,9 +8,9 @@ HttpRequestParser::HttpRequestParser(void)
 	this->_buffer.reserve(_BUFFER_SIZE);
 }
 
-const RequestParseState &HttpRequestParser::parseRequest(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm) 
-	throw(HttpRequestParser::ClientBodySizeInvalidException){
-	this->_buffer.insert(this->_buffer.end(), reqBuffer.begin(), reqBuffer.end());
+const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+	this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)
@@ -54,7 +54,7 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
 	}
 }
 
-void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(HttpRequestParser::ClientBodySizeInvalidException){
+void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm){
 	this->_state = BODY;
 	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler();
