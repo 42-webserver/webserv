@@ -14,7 +14,7 @@ const ft::shared_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequ
 void ReadEventFromClientHandler::handleEvent(Event &event) {
 	std::vector<char>	buf;
 	BufReadHandler		buf_read_handler(event.getFd(), ft::bufSize);
-	RequestParseState state;
+	// RequestParseState state;
 	//check Moudle
 	// TotalReadBuffer -> assign-> copy
 	try {
@@ -41,8 +41,8 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		// this->_httpReauest = new shared();
 		// return tmp;
 		// vector <char>  [ req 1 re2 req3]
-		state = this->getHttpRequestParser()->
-		parseRequest(buf, static_cast<ReadEventFromClient*>(&event)->getVirtualServerManger());
+		// state = this->getHttpRequestParser()->
+		// parseRequest(buf, static_cast<ReadEventFromClient*>(&event)->getVirtualServerManger());
 		//header -> body  memory
 
 	}
@@ -53,7 +53,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	}
 
 
-	if (state == FINISH) {
+	// if (state == FINISH) {
 		//fix daegulee :
 		Logger::getInstance().info("FINISH Parse");
 		// std::cerr << *(this->getHttpRequestParser()->getHttpRequest().get())
@@ -67,6 +67,6 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		eventDto);
 		event.offboardQueue();
 		writeEvent->onboardQueue();
-	}
+	// }
 }
 

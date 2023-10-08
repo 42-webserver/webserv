@@ -7,6 +7,7 @@
 #include "../../Config/Config.hpp"
 #include "../../Server/VirtualServerManager.hpp"
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
+#include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
 #include "ParsePatternMatcher.hpp"
 #include "MultipartRequestBodyHandler.hpp"
 #include "RequestBodyHandler.hpp"
@@ -25,7 +26,6 @@ typedef enum State{
 } RequestParseState;
 
 
-//Refactoring::hyunkyle Shared_ptr-void
 class HttpRequestParser{
 
 public:
@@ -48,7 +48,7 @@ private:
 public:
 	//check: this maybe void
 	HttpRequestParser(void);
-	const RequestParseState &parseRequest(std::vector<char> &reqBuffer, ft::shared_ptr<VirtualServerManager> vsm) throw(ClientBodySizeInvalidException);
+	const RequestParseState &parseRequest(IoOnlyReadBuffer &requestBuffer, ft::shared_ptr<VirtualServerManager> vsm);
 	void clearBuffer();
 	const RequestParseState &getState();
 	const int & getReadBodySize();
@@ -62,7 +62,7 @@ private:
 	void handleBodyState();
 	bool isFileExists(const std::string& filename);
 	std::string generateUniqueFileName();
-	void changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm) throw(ClientBodySizeInvalidException);
+	void changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm);
 	void injectionHandler();
 };
 
