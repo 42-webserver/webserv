@@ -30,9 +30,9 @@ void MultipartRequest::handleMultipleValueHeader(std::string & value, std::strin
 }
 
 void MultipartRequest::insertBody(std::vector<char> &buffer) {
-	this->_body.insert(this->_body.end(), buffer.begin(), buffer.end());
+	this->_body.append(buffer.begin(), buffer.end());
 }
 
 std::multimap<std::string, std::string> &MultipartRequest::getHeaders(){ return (this->_headers); }
 
-std::vector<char> &MultipartRequest::getBody(){ return (this->_body); }
+IoReadAndWriteBuffer &MultipartRequest::getBody(){ return (this->_body); }
