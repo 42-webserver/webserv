@@ -4,6 +4,7 @@
 HttpRequest::HttpRequest():
 	_bodyType(NORMAL), _pending(true)
 {
+	_body = ft::make_shared<IoReadAndWriteBuffer>();
 }
 
 HttpRequest::~HttpRequest()
