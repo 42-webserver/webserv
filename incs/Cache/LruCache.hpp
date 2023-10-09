@@ -19,7 +19,7 @@ class LruCache {
 	private:
 		unsigned long			_capacity;
 		lru_list_t	_lru_list; 
-		std::vector<char>	_tmp;
+		std::vector<char>	empty;
 		cache_map_t	_cache; 
 		void		chekcFileSize(const std::string &Filepath);
 	public:
@@ -28,7 +28,7 @@ class LruCache {
 		LruCache(int capacity);
 
 	public:
-		const std::vector<char>	&get(const std::string &uri) throw (FailToGetException);
+		const std::vector<char>	&get(const std::string &uri);
 		void				put(std::string uri, std::vector<char> content);
 };
 

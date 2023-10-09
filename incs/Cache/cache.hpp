@@ -26,15 +26,19 @@ class FileNoExistException: public ServerErrorException {
 public:
 		static Cache	&getInstance(void);
 		void deleteInstance(void);
-		const std::vector<char>	&getFileContent(const std::string &uri) throw(BigFileException, FileAuthentificationException,
-		FileNoExistException);
+		const std::vector<char>	&getFileContent(const std::string &uri);
 private:
 	Cache(void);
 	~Cache(void);
+
+	//delete
+private:
 	Cache(const Cache &ref);
 	Cache &operator=(const Cache &rhs);
-	void checkAndThrow(const std::string &uri) throw(BigFileException, FileAuthentificationException,
-		FileNoExistException);
+
+
+private:	
+	void checkAndThrow(const std::string &uri);
 	bool checkAuthentification(const std::string &uri);
 private:
 	LruCache	_cache;

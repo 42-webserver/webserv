@@ -3,8 +3,7 @@
 Cache *Cache::_instance = NULL;
 Cache::Cache(void) {}
 Cache::~Cache(void) {}
-Cache::Cache(const Cache &ref) { (void)ref; }
-Cache &Cache::operator=(const Cache &rhs) { (void)rhs; return (*this); }
+
 
 void Cache::deleteInstance(void) {
 	if (Cache::_instance != NULL) {
@@ -23,8 +22,7 @@ bool Cache::checkAuthentification(const std::string &uri) {
 	//TODO: check authentification
 	return (true);
 }
-void Cache::checkAndThrow(const std::string &uri) throw(BigFileException, FileAuthentificationException,
-	FileNoExistException) {
+void Cache::checkAndThrow(const std::string &uri){
  	std::fstream file;
     file.open("test.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 	if (!file.is_open()) {
@@ -40,8 +38,7 @@ void Cache::checkAndThrow(const std::string &uri) throw(BigFileException, FileAu
 	file.close();
 }
 
-const std::vector<char>	&Cache::getFileContent(const std::string &uri) throw (BigFileException,
-	FileAuthentificationException, FileNoExistException) {
+const std::vector<char>	&Cache::getFileContent(const std::string &uri) {
 	checkAndThrow(uri);
 	// this->_cache.get(uri)
 	return (this->_cache.get(uri));

@@ -9,13 +9,7 @@
 #include <Http/Utils/RouterUtils.hpp>
 #include "../../libs/shared_ptr/shared_ptr.hpp"
 #include <queue>
-
-typedef enum EventType{
-    FILE_WRITE,
-    FILE_READ,
-    CGI_READ,
-    DELETE
-} EventType;
+#include <Pattern/PatternProcessor.hpp>
 
 class Client{
 private:
@@ -29,7 +23,7 @@ public:
     int getQueueSize(void);
 
 private:
-    EventType getEventType(ft::shared_ptr<VirtualServerManager> vsm);
+    PatternType getPatternType(ft::shared_ptr<VirtualServerManager> vsm);
 };
 
 #endif
