@@ -8,17 +8,19 @@
 class CgiChannel{
 public:
 	typedef enum e_pipe{
-		READ = 0,
-		WRITE = 1,
-		Count = 2
+		SERVER_READ = 0,
+		SERVER_WRITE,
+		CGI_READ,
+		CGI_WRITE,
+		Count
 	}				e_pipe;
 private:
 	ft::shared_ptr<Channel>		_channel[Count];
 public:
 	int getFd(e_pipe pipe) const;
-	void Build(void);
-	void Run(void);
-	void Close(e_pipe pipe);
+	void build(void);
+	void run(void);
+	void destroy(void);
 };
 
 #endif
