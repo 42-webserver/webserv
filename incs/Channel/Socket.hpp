@@ -25,7 +25,7 @@ class Socket : public Channel {
 	private:
 		virtual void	inJectChannelFd(int fd);
 	public:
-		bool	build(const int port, const std::string &ip) throw(std::exception);
+		bool	build(const int port, const std::string &ip);
 		bool	run(void);
 	
 	private:

@@ -21,8 +21,8 @@ class ReadEvent: public Event {
 	
 	public:
 		virtual void	callEventHandler(void) = 0;
-		virtual void	onboardQueue(void) throw (std::exception) = 0;
-		virtual void	offboardQueue(void) throw (std::exception) = 0;
+		virtual void	onboardQueue(void)  = 0;
+		virtual void	offboardQueue(void)  = 0;
 
 	protected:
 		const std::vector<char>	&getBuffer(void);

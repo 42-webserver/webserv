@@ -13,7 +13,7 @@ class Channel {
 
 
 	public:
-		void setNonBlocking(void) throw (std::exception);
+		void setNonBlocking(void);
 	protected:
 		Channel(void);
 		Channel(int fd);

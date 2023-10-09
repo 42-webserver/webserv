@@ -16,7 +16,7 @@ void	Channel::destroyChannelFd(void) {
 		this->_ChannelFd = -1;
 	}
 }
-void	Channel::setNonBlocking(void) throw (std::exception) {
+void	Channel::setNonBlocking(void){
 	int flags;
 
 	if ((flags = fcntl(this->getFd(), F_GETFL, 0)) == -1) {
