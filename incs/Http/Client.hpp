@@ -6,13 +6,15 @@
 #include <Http/Utils/HttpMethod.hpp>
 #include <Server/VirtualServerManager.hpp>
 #include <Server/VirtualServer.hpp>
+#include <Http/Utils/RouterUtils.hpp>
 #include "../../libs/shared_ptr/shared_ptr.hpp"
 #include <queue>
 
 typedef enum EventType{
     FILE_WRITE,
     FILE_READ,
-    CGI_READ
+    CGI_READ,
+    DELETE
 } EventType;
 
 class Client{

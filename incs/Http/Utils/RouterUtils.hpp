@@ -10,16 +10,18 @@
 #include "../../Server/VirtualServerManager.hpp"
 #include "../Request/HttpRequest.hpp"
 #include "../../Config/ClientMaxBodySizeElement.hpp"
+#include "../../Config/CgiPassElement.hpp"
 #include "../Utils/FileUploader.hpp"
 #include "../Exception/NotFoundException.hpp"
 
 class RouterUtils {
 public:
     static std::string	findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
-    static std::string	findPriorityPathWithIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req) throw (NotFoundException);
+    static std::string	findPriorityPathWithIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string  findRedirectUri(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static ft::shared_ptr<LocationElement> findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
-    static int            findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+    static int          findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+    static bool         isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
 private:
     static std::string	_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string	_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);

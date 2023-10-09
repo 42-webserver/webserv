@@ -19,12 +19,14 @@ EventType Client::getEventType(ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<HttpRequest> request = this->requests.front();
     vsm->getDefaultVirtualServer();
     std::string method = request->getMethod();
+    if (RouterUtils::isCgiRequest(vsm, request))
+        return CGI_READ;
     if (method.compare(HTTP_METHOD::GET) == 0)
         return FILE_READ;
     else if (method.compare(HTTP_METHOD::PUT) == 0 ||
         method.compare(HTTP_METHOD::POST) == 0)
         return FILE_WRITE;
-    
-    return CGI_READ;
+    else
+        return DELETE;
 }
 

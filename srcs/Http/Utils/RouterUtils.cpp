@@ -12,7 +12,7 @@ std::string RouterUtils::findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::
 }
 
 std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerManager> vsm, 
-        ft::shared_ptr<HttpRequest> req)throw (NotFoundException){
+        ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
@@ -46,6 +46,19 @@ int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::s
     if (it == serverElement.end())
         return INT_MAX;
     return ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
+}
+
+bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string uri = req->getUri();
+    std::string host = req->getHost();
+
+    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    if (locationElement.get() == NULL)
+        return false;
+    LocationElement::iterator it = locationElement->find(LocationElement::KEY::CGI_PASS);
+    if (it == locationElement->end())
+        return false;
+    return ft::static_pointer_cast<CgiPassElement>(it->second)->getFlag().compare("on") == 0;
 }
 
 std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::string &uri){
