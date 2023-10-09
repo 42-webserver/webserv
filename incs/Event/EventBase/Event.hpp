@@ -23,8 +23,8 @@ class Event {
 
 	public:
 		virtual void	callEventHandler(void) = 0;
-		virtual void	onboardQueue(void) throw (std::exception) = 0;
-		virtual void	offboardQueue(void) throw (std::exception) = 0;
+		virtual void	onboardQueue(void) = 0;
+		virtual void	offboardQueue(void) = 0;
 
 	public:
 		int								getFd(void) const;

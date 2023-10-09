@@ -26,7 +26,7 @@ class Socket : public Channel {
 		virtual void	inJectChannelFd(int fd);
 	public:
 		bool	build(const int port, const std::string &ip) throw(std::exception);
-		bool	run(void) throw(std::exception);
+		bool	run(void);
 	
 	private:
 		static uint32_t	stringToNetworkByteOrder(const std::string &ip);

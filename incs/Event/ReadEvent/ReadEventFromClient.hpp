@@ -14,8 +14,8 @@ class ReadEventFromClient: public ReadEvent {
 
 	public:
 		virtual void	callEventHandler(void);
-		virtual void	onboardQueue(void) throw (std::exception);
-		virtual void	offboardQueue(void) throw (std::exception);
+		virtual void	onboardQueue(void);
+		virtual void	offboardQueue(void);
 	
 	private:
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;

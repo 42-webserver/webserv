@@ -1,8 +1,8 @@
 #include <unistd.h>
 #include <iostream>
 
-#ifndef FILE_HPP
-# define FILE_HPP
+#ifndef CHANNEL_HPP
+# define CHANNEL_HPP
 
 # include <fcntl.h>
 # include "../Log/Logger.hpp"

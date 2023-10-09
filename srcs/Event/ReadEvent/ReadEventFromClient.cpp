@@ -9,7 +9,7 @@ ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel,
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
 void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
-void	ReadEventFromClient::onboardQueue() throw (std::exception) {
+void	ReadEventFromClient::onboardQueue() {
 	EventQueue	&event_queue = EventQueue::getInstance();
 	int			fd = this->getFd();
 	Event		*event = this;
@@ -38,7 +38,7 @@ void	ReadEventFromClient::onboardQueue() throw (std::exception) {
 		"ReadEventClient : kevents", strerror(errno));
 		throw (FailToOnboardException());
 	}}
-void	ReadEventFromClient::offboardQueue() throw (std::exception) {
+void	ReadEventFromClient::offboardQueue() {
 	EventQueue &event_queue = EventQueue::getInstance();
 
 	Logger::getInstance().info("Remove Read Event");
