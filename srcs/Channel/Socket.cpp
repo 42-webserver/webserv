@@ -23,7 +23,7 @@ void Socket::inJectChannelFd(int fd) {
 	setChannelFd(fd);
 }
 // Utils
-bool	Socket::build(const int port, const std::string &ip) throw(std::exception) {
+bool	Socket::build(const int port, const std::string &ip){
 	int socketFd;
 	if ((socketFd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		throw (FailToCreateException());
@@ -39,7 +39,7 @@ bool	Socket::build(const int port, const std::string &ip) throw(std::exception) 
 	this->inJectChannelFd(socketFd);
 	return (true);
 }
-bool	Socket::run(void) throw(std::exception) {
+bool	Socket::run(void)  {
 	if (bind(this->getFd(), (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1) {
 		Logger::getInstance().error(strerror(errno));
 		throw (FailToBindException());

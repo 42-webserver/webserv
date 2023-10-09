@@ -3,6 +3,7 @@
 #include "LruCache.hpp"
 #include "../Http/Exception/BadRequestException.hpp"
 #include "../Http/Exception/ServerErrorException.hpp"
+
 class Cache{
 public:
 	static const int	cacheBufferSize = 1024 *4;

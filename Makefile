@@ -76,9 +76,11 @@ SRCS =	main.cpp \
 		Server/VirtualServer.cpp \
 		Server/VirtualServerManager.cpp \
 		Server/Webserv.cpp \
+		Channel/ByteStream.cpp \
+		Channel/CgiChannel.cpp \
 		Channel/Channel.cpp \
+		Channel/FileStream.cpp \
 		Channel/Socket.cpp \
-		Channel/Pipe.cpp \
 		Cache/cache.cpp \
 		Cache/LruCache.cpp \
 		Buffer/Buffer/BaseBuffer.cpp \
