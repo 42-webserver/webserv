@@ -89,6 +89,12 @@ SRCS =	main.cpp \
 		Buffer/Node/BaseNode.cpp \
 		Buffer/Node/LargeNode.cpp \
 		Buffer/Node/NormalNode.cpp \
+		Pattern/CgiReaderProcessor.cpp \
+		Pattern/FileDeleterProcessor.cpp \
+		Pattern/FileReaderProcessor.cpp \
+		Pattern/FileWriterProcessor.cpp \
+		Pattern/PatternProcessor.cpp \
+		Pattern/ProcessorObject.cpp \
 
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
@@ -114,6 +120,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Cache \
 				${OBJS_DIR}/Buffer/Buffer \
 				${OBJS_DIR}/Buffer/Node \
+				${OBJS_DIR}/Pattern \
 
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}

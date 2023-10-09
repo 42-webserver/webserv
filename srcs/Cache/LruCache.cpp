@@ -4,10 +4,10 @@ LruCache::LruCache(void): _capacity(0) {}
 LruCache::~LruCache(void) {}
 LruCache::LruCache(int capacity): _capacity(capacity) {}
 
-const std::vector<char>	&LruCache::get(const std::string &uri) throw (FailToGetException){
+const std::vector<char>	&LruCache::get(const std::string &uri){
 	
 	if (this->_cache.find(uri) == this->_cache.end()) {
-		return (this->_tmp);
+		return (this->empty);
 	}
 
 	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);

@@ -15,7 +15,7 @@ int Client::getQueueSize(void){
     return this->requests.size();
 }
 
-EventType Client::getEventType(ft::shared_ptr<VirtualServerManager> vsm){
+PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<HttpRequest> request = this->requests.front();
     vsm->getDefaultVirtualServer();
     std::string method = request->getMethod();
