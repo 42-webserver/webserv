@@ -12,7 +12,7 @@ bool Client::isRequestEmpty(void){
 }
 
 bool Client::isResponseEmpty(void){
-    return response.has_value();
+    return !response.has_value();
 }
 
 bool Client::isQueueMax(void){
