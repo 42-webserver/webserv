@@ -1,35 +1,19 @@
 #include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
-#include "../../../incs/Event/ReadEvent/ReadEventFromClient.hpp"
-#include "../../../incs/Event/BufReadHandler.hpp"
-#include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
-#include "../../../incs/FtUtil/ft.hpp"
-#include "../../../incs/Server/VirtualServerManager.hpp"
-#include "../../../incs/Event/EventQueue/EventQueue.hpp"
-#include "../../../incs/Event/EventDto/EventDto.hpp"
-#include "../../../incs/Event/EventBase/EventFactory.hpp"
-#include "../../../incs/Log/Logger.hpp"
-ReadEventFromClientHandler::ReadEventFromClientHandler(void) : ReadEventHandler(), _HttpRequestParser(ft::make_shared<HttpRequestParser>()) {}
-ReadEventFromClientHandler::~ReadEventFromClientHandler(void) {}
-const ft::shared_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequestParser(void) { return (this->_HttpRequestParser); }
-void ReadEventFromClientHandler::handleEvent(Event &event) {
-	std::vector<char>	buf;
-	BufReadHandler		buf_read_handler(event.getFd(), ft::bufSize);
-	// RequestParseState state;
-	//check Moudle
-	// TotalReadBuffer -> assign-> copy
-	try {
-		buf = buf_read_handler.readBuf();
-		// std::string str(buf.begin(), buf.end());
-		// std::cerr << "buf size : " << buf.size() << " buf : " << str << std::endl;
-	} catch (const std::exception &e) {
-		Logger::getInstance().info("e.what()");
-		return ;
-	}
-	if (buf.empty()) {
-		Logger::getInstance().info("Client Send Eof");
-		event.offboardQueue();
-		return ;
-	}
+
+ReadEventFromClientHandler::_processFunc ReadEventFromClientHandler::_processFuncs[ConnectionCount] = {
+	&ReadEventFromClientHandler::_processReading,
+	&ReadEventFromClientHandler::_processNonBlock,
+	&ReadEventFromClientHandler::_processClosed
+};
+ReadEventFromClientHandler::e_client_connection_state	ReadEventFromClientHandler::_processMatcher(size_t n) {
+	if (n > 0)
+		return (Reading);
+	else if (n == 0)
+		return (Closed);
+	else
+		return (NonBlock);
+}
+void ReadEventFromClientHandler::_processReading() {
 	try {
 		// while bufBlocksize end
 		// 1 - 2 - 3 - 4 - 5 -6 -7 -8 <-Total
@@ -68,5 +52,34 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		event.offboardQueue();
 		writeEvent->onboardQueue();
 	// }
+}
+void ReadEventFromClientHandler::_processNonBlock() {
+	// Logger::getInstance().info("NonBlock");
+}
+void ReadEventFromClientHandler::_processClosed() {
+	//To do : client Close Connection
+	// Logger::getInstance().info("Closed");
+}
+
+void ReadEventFromClientHandler::_process(e_client_connection_state state) {
+	(this->*_processFuncs[state])();
+}
+
+ReadEventFromClientHandler::ReadEventFromClientHandler(void) : ReadEventHandler(), _HttpRequestParser(ft::make_shared<HttpRequestParser>()) {}
+ReadEventFromClientHandler::~ReadEventFromClientHandler(void) {}
+const ft::shared_ptr<HttpRequestParser>	&ReadEventFromClientHandler::getHttpRequestParser(void) { return (this->_HttpRequestParser); }
+void ReadEventFromClientHandler::handleEvent(Event &event) {
+	IoOnlyReadBuffer& buffer = IoOnlyReadBuffer::getInstance();
+	size_t n = 0;
+	// RequestParseState state;
+	//check Moudle
+	// TotalReadBuffer -> assign-> copy
+	try {
+		n = buffer.ioRead(static_cast<ReadEventFromClient*>(&event)->getChannel()->getFd()); 
+		_process(_processMatcher(n));
+	} 
+	 catch (...) {
+		throw ;
+	 }
 }
 

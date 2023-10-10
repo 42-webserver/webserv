@@ -4,8 +4,8 @@
 # include "../EventBase/Event.hpp"
 # include "../../Log/Logger.hpp"
 # include "../../Server/VirtualServerManager.hpp"
-
-class ListenEvent: public Event {
+# include <Channel/SingleStreamable.hpp>
+class ListenEvent: public Event, public SingleStreamable{
 	public:
 		ListenEvent(ft::shared_ptr<Channel> channel,
 		ft::shared_ptr<VirtualServerManager> physical_server);
@@ -23,8 +23,8 @@ class ListenEvent: public Event {
 
 	public:
 		virtual void	callEventHandler(void);
-		virtual void	onboardQueue(void) throw (std::exception);
-		virtual void	offboardQueue(void) throw (std::exception);
+		virtual void	onboardQueue(void);
+		virtual void	offboardQueue(void);
 
 	public:
 		class FailToAcceptException: public std::exception {

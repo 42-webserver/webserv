@@ -10,10 +10,10 @@ class ListenEventHandler: public EventHandler {
 		virtual	~ListenEventHandler(void);
 
 	private:
-		int	connectClient(int SocketFd) const throw(std::exception);
+		int	connectClient(int SocketFd) const;
 
 	public:
-		virtual void	handleEvent(Event &event)  throw(std::exception);
+		virtual void	handleEvent(Event &event);
 
 	private:
 		class FailToAcceptException: public std::exception {

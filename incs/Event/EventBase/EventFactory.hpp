@@ -21,6 +21,6 @@ class EventFactory {
 		virtual ~EventFactory(void);
 		static EventFactory	*_instance;
 	public:
-		Event	*createEvent(ft::EventType eventType, EventDto &EventDto) throw (FailToEventCreateException);
+		Event	*createEvent(ft::EventType eventType, EventDto &EventDto);
 };
 #endif

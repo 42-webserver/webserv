@@ -4,8 +4,10 @@
 
 ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel, 
 	ft::shared_ptr<VirtualServerManager> virtualServerManager):
-	ReadEvent(channel, new ReadEventFromClientHandler()),
-	_virtualServerManager(virtualServerManager)
+	ReadEvent(new ReadEventFromClientHandler()),
+	SingleStreamable(channel),
+	_virtualServerManager(virtualServerManager),
+	_client()
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
 void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
@@ -15,7 +17,7 @@ void	ReadEventFromClient::onboardQueue() {
 	Event		*event = this;
 
 	try {
-		event->getChannel()->setNonBlocking();
+		this->getChannel()->setNonBlocking();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (FailToOnboardException());

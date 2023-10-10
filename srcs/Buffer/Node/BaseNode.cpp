@@ -125,7 +125,7 @@ size_t BaseNode::ioRead(int fd){
 
 	size_t n = read(fd, _buffer.data() + _size, _capacity - _size);
 	_size += n;
-	return _size;
+	return n;
 }
 
 static bool isSIGPIPE = false;

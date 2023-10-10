@@ -6,7 +6,7 @@
 ListenEventHandler::ListenEventHandler() {};
 ListenEventHandler::~ListenEventHandler() {};
 
-int		ListenEventHandler::connectClient(int server_fd) const throw(std::exception) {
+int		ListenEventHandler::connectClient(int server_fd) const{
 	int	client_fd;
 	
 	if ((client_fd = ::accept(server_fd, (struct sockaddr *) NULL, NULL)) == -1) {
@@ -16,12 +16,12 @@ int		ListenEventHandler::connectClient(int server_fd) const throw(std::exception
 	return (client_fd);
 }
 
-void	ListenEventHandler::handleEvent(Event &event) throw (std::exception) {
+void	ListenEventHandler::handleEvent(Event &event) {
 	Logger		&log = Logger::getInstance();
 	int 		client_fd;
 
 	try {
-		client_fd = connectClient(event.getFd());
+		client_fd = connectClient(static_cast<ListenEvent &>(event).getFd());
 		log.info("Client connected");
 	} catch (const std::exception &e) {
 		log.error(e.what());
