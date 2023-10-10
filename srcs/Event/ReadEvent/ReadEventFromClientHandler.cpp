@@ -35,6 +35,7 @@ void ReadEventFromClientHandler::_processNonBlock(ReadEventFromClient *event) {
 	(void)event;
 }
 void ReadEventFromClientHandler::_processClosed(ReadEventFromClient *event) {
+	(void)event;
 	//To do : client Close Connection
 	// Logger::getInstance().info("Closed");
 }

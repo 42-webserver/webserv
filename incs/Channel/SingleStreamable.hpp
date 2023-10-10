@@ -11,11 +11,13 @@ public:
     int getFd(void) const;
     ft::shared_ptr<Channel> getChannel(void) const;
 private:
-    SingleStreamable(void);
     SingleStreamable(const SingleStreamable &ref);
     SingleStreamable &operator=(const SingleStreamable &rhs);
+public:
+    virtual ~SingleStreamable(void);
 protected:
     SingleStreamable(ft::shared_ptr<Channel> channel);
+    SingleStreamable(void);
 };
 
 #endif

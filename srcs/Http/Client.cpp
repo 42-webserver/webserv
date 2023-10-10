@@ -1,7 +1,10 @@
 #include <Http/Client.hpp>
 
-Client::Client() : _queueState{false, false} {
+Client::Client() {
+    _queueState[InReading] = false;
+    _queueState[InWriting] = false;
 }
+
 
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
     this->requests.push(request);

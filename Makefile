@@ -81,6 +81,8 @@ SRCS =	main.cpp \
 		Channel/Channel.cpp \
 		Channel/FileStream.cpp \
 		Channel/Socket.cpp \
+		Channel/SingleStreamable.cpp \
+		Channel/DualStreamable.cpp \
 		Cache/cache.cpp \
 		Cache/LruCache.cpp \
 		Buffer/Buffer/BaseBuffer.cpp \

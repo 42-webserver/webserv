@@ -9,14 +9,16 @@ class DualStreamable {
 protected:
     ft::shared_ptr<CgiChannel> _cgiChannel;
 public:
-    int getFd(CgiChannel::e_pipe pipe) const;
+    int getDualFd(CgiChannel::e_pipe pipe) const;
     ft::shared_ptr<CgiChannel> getCgiChannel(void) const;
 private:
-    DualStreamable(void);
     DualStreamable(const DualStreamable &ref);
     DualStreamable &operator=(const DualStreamable &rhs);
+public:
+    virtual ~DualStreamable(void);
 protected:
-    DualStreamable(ft::shared_ptr<CgiChannel> channel);
+    DualStreamable();
+    void buildCgiChannel();
 };
 
 #endif

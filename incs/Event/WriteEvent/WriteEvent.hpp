@@ -7,10 +7,9 @@
 
 class WriteEvent: public Event {
 	private:
-		std::vector<char>	_buffer;
-
+		//Todo Buffer IoReadWriter
 	protected:
-		WriteEvent(ft::shared_ptr<Channel> channel, WriteEventHandler* writeEventHandler);
+		WriteEvent(WriteEventHandler* writeEventHandler);
 
 	public:	
 		virtual	~WriteEvent(void);
@@ -20,11 +19,11 @@ class WriteEvent: public Event {
 		WriteEvent	&operator=(const WriteEvent &rhs);
 	public:
 		virtual void	callEventHandler(void) = 0;
-		virtual void	onboardQueue(void) throw (std::exception) = 0;
-		virtual void	offboardQueue(void) throw (std::exception) = 0;
+		virtual void	onboardQueue(void)  = 0;
+		virtual void	offboardQueue(void)  = 0;
 	protected:
-		const std::vector<char>	&getBuffer(void);
-		std::vector<char>	&getBufferRef(void);
+		// const std::vector<char>	&getBuffer(void);
+		// std::vector<char>	&getBufferRef(void);
 };
 
 #endif
