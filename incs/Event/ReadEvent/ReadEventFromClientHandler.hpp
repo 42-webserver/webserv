@@ -22,14 +22,14 @@ class ReadEventFromClientHandler : public ReadEventHandler {
 			Closed,
 			ConnectionCount
 		}	e_client_connection_state;
-		typedef void (ReadEventFromClientHandler::*_processFunc)(void);
+		typedef void (ReadEventFromClientHandler::*_processFunc)(ReadEventFromClient *event);
 	private:
 		static _processFunc	_processFuncs[ConnectionCount];
 	private:
-		void _processReading();
-		void _processNonBlock();
-		void _processClosed();
-		inline void _process(e_client_connection_state state);
+		void _processReading(ReadEventFromClient *event);
+		void _processNonBlock(ReadEventFromClient *event);
+		void _processClosed(ReadEventFromClient *event);
+		inline void _process(e_client_connection_state state, ReadEventFromClient *event);
 		inline e_client_connection_state	_processMatcher(size_t n);
 	public:
 		ReadEventFromClientHandler(void);

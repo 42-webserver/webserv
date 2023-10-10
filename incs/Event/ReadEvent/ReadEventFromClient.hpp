@@ -13,12 +13,14 @@ class ReadEventFromClient: public ReadEvent, public SingleStreamable{
 
 	public:
 		const ft::shared_ptr<VirtualServerManager>	&getVirtualServerManger(void) const;
-
+		bool canRead(void) const;
 	public:
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void);
 		virtual void	offboardQueue(void);
-	
+	public:
+		void			addRequest(ft::shared_ptr<HttpRequest> request);
+		bool			queryInEventQueue(e_client_queue_state state);
 	private:
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
 		ft::shared_ptr<Client>					_client;

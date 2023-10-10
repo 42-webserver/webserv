@@ -61,6 +61,17 @@ void	ReadEventFromClient::offboardQueue() {
 		delete this;
 
 }
+bool ReadEventFromClient::canRead(void) const {
+	if (_client->isQueueMax() || _client->isResponseEmpty())
+		return (false);
+	return (true);
+}
+const ft::shared_ptr<VirtualServerManager>	&ReadEventFromClient::getVirtualServerManger(void) const { return (this->_virtualServerManager); }
 
-const ft::shared_ptr<VirtualServerManager>	
-&ReadEventFromClient::getVirtualServerManger(void) const { return (this->_virtualServerManager); }
+void	ReadEventFromClient::addRequest(ft::shared_ptr<HttpRequest> request) {
+	this->_client->addRequest(request);
+}
+
+bool	ReadEventFromClient::queryInEventQueue(e_client_queue_state state) {
+	return (this->_client->isInEventQueue(state));
+}
