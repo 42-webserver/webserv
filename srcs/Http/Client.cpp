@@ -11,8 +11,12 @@ bool Client::isRequestEmpty(void){
     return this->requests.empty();
 }
 
-int Client::getQueueSize(void){
-    return this->requests.size();
+bool Client::isResponseEmpty(void){
+    return response.has_value();
+}
+
+bool Client::isQueueMax(void){
+    return this->requests.size() >= MAX_QUEUE_SIZE;
 }
 
 PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){

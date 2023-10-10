@@ -8,19 +8,23 @@
 #include <Server/VirtualServer.hpp>
 #include <Http/Utils/RouterUtils.hpp>
 #include "../../libs/shared_ptr/shared_ptr.hpp"
+#include "../../libs/Library/Optional.hpp"
 #include <queue>
 #include <Pattern/PatternProcessor.hpp>
+
+static size_t MAX_QUEUE_SIZE = 10;
 
 class Client{
 private:
     std::queue<ft::shared_ptr<HttpRequest> > requests;
-    ft::shared_ptr<HttpResponse> response;
+    ft::Optional<ft::shared_ptr<HttpResponse> > response;
 
 public:
     Client();
     void addRequest(ft::shared_ptr<HttpRequest> request);
     bool isRequestEmpty(void);
-    int getQueueSize(void);
+    bool isResponseEmpty(void);
+    bool isQueueMax(void);
 
 private:
     PatternType getPatternType(ft::shared_ptr<VirtualServerManager> vsm);
