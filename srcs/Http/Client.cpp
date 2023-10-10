@@ -1,7 +1,10 @@
 #include <Http/Client.hpp>
 
-Client::Client(){
+Client::Client() {
+    _queueState[InReading] = false;
+    _queueState[InWriting] = false;
 }
+
 
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
     this->requests.push(request);
@@ -17,6 +20,10 @@ bool Client::isResponseEmpty(void){
 
 bool Client::isQueueMax(void){
     return this->requests.size() >= MAX_QUEUE_SIZE;
+}
+
+bool Client::isInEventQueue(e_client_queue_state state){
+    return this->_queueState[state];
 }
 
 PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){

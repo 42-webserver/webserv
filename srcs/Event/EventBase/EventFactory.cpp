@@ -18,7 +18,7 @@ void EventFactory::DeleteInstance(void) {
 		delete _instance;
 	_instance = NULL;
 }
-Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto) throw (FailToEventCreateException) {
+Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 	switch (eventType) {
 		case ft::READ_EVENT_FROM_CLIENT:
 			return (new ReadEventFromClient(eventDto.getChannel(),

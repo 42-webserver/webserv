@@ -6,13 +6,13 @@
 #include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
 ListenEvent::ListenEvent(ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> virtual_server_manager):
-Event(channel, new ListenEventHandler()), _virtualServerManager(virtual_server_manager)
+Event(new ListenEventHandler()), SingleStreamable(channel), _virtualServerManager(virtual_server_manager)
 	{}
 
 ListenEvent::~ListenEvent(void) {}
 
 void	ListenEvent::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
-void	ListenEvent::onboardQueue(void) throw (std::exception) {
+void	ListenEvent::onboardQueue(void){
 	EventQueue	&event_queue = EventQueue::getInstance();
 	int			fd = this->getFd();
 	Event		*event = this;
@@ -20,7 +20,7 @@ void	ListenEvent::onboardQueue(void) throw (std::exception) {
 	Logger::getInstance().info("onboard Listen Event");
 	
 	try {
-		(event->getChannel()).get()->setNonBlocking();
+		this->getChannel().get()->setNonBlocking();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
 		Logger::getInstance().error("Fail to accept client");
@@ -43,7 +43,7 @@ void	ListenEvent::onboardQueue(void) throw (std::exception) {
 		throw (FailToOnboardException());
 	}
 }
-void	ListenEvent::offboardQueue(void) throw (std::exception) {
+void	ListenEvent::offboardQueue(void){
 	EventQueue &event_queue = EventQueue::getInstance();
 
 	Logger::getInstance().info("Remove Listen Event");

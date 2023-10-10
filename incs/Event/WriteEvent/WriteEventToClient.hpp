@@ -3,8 +3,12 @@
 
 # include "WriteEvent.hpp"
 # include "../../Http/Request/HttpRequest.hpp"
+# include <Channel/SingleStreamable.hpp>
+# include <Channel/DualStreamable.hpp>
+#include "../../../incs/Event/WriteEvent/WriteEventToClientHandler.hpp"
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
 
-class WriteEventToClient: public WriteEvent {
+class WriteEventToClient: public WriteEvent, public SingleStreamable, public DualStreamable{
 	public:
 		WriteEventToClient(ft::shared_ptr<Channel> fd, 
 		ft::shared_ptr<VirtualServerManager> virtualServerManager,
@@ -16,8 +20,8 @@ class WriteEventToClient: public WriteEvent {
 
 	public:
 		virtual void	callEventHandler(void);
-		virtual void	onboardQueue(void) throw (std::exception);
-		virtual void	offboardQueue(void) throw (std::exception);
+		virtual void	onboardQueue(void);
+		virtual void	offboardQueue(void);
 	
 	private:
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;

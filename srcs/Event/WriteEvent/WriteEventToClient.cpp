@@ -1,18 +1,18 @@
 #include "../../../incs/Event/WriteEvent/WriteEventToClient.hpp"
-#include "../../../incs/Event/WriteEvent/WriteEventToClientHandler.hpp"
-#include "../../../incs/Event/EventQueue/EventQueue.hpp"
+
 
 WriteEventToClient::WriteEventToClient(ft::shared_ptr<Channel> channel,
- ft::shared_ptr<VirtualServerManager> virtualServerManager
- , ft::shared_ptr<HttpRequest> httpRequest):
-WriteEvent(channel, new WriteEventToClientHandler()),
- _virtualServerManager(virtualServerManager),
- _httpRequest(httpRequest) {}
+ft::shared_ptr<VirtualServerManager> virtualServerManager
+,ft::shared_ptr<HttpRequest> httpRequest):
+WriteEvent(new WriteEventToClientHandler()), SingleStreamable(channel), DualStreamable(),
+_virtualServerManager(virtualServerManager), _httpRequest(httpRequest) {}
+
+
 WriteEventToClient::~WriteEventToClient(void) {}
 void	WriteEventToClient::callEventHandler(void) {
 	this->_event_handler->handleEvent(*this);
 }
-void	WriteEventToClient::onboardQueue(void) throw (std::exception) {
+void	WriteEventToClient::onboardQueue(void){
 	EventQueue &event_queue = EventQueue::getInstance();
 	Event *event = this;
 
@@ -38,7 +38,7 @@ void	WriteEventToClient::onboardQueue(void) throw (std::exception) {
 	}
 }
 
-void	WriteEventToClient::offboardQueue(void) throw (std::exception) {
+void	WriteEventToClient::offboardQueue(void){
 	EventQueue &event_queue = EventQueue::getInstance();
 
 	Logger::getInstance().info("Remove Write Event");

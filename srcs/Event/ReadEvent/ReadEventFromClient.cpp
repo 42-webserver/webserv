@@ -4,8 +4,10 @@
 
 ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel, 
 	ft::shared_ptr<VirtualServerManager> virtualServerManager):
-	ReadEvent(channel, new ReadEventFromClientHandler()),
-	_virtualServerManager(virtualServerManager)
+	ReadEvent(new ReadEventFromClientHandler()),
+	SingleStreamable(channel),
+	_virtualServerManager(virtualServerManager),
+	_client()
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
 void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
@@ -15,7 +17,7 @@ void	ReadEventFromClient::onboardQueue() {
 	Event		*event = this;
 
 	try {
-		event->getChannel()->setNonBlocking();
+		this->getChannel()->setNonBlocking();
 	} catch (const std::exception &e) {
 		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (FailToOnboardException());
@@ -59,6 +61,17 @@ void	ReadEventFromClient::offboardQueue() {
 		delete this;
 
 }
+bool ReadEventFromClient::canRead(void) const {
+	if (_client->isQueueMax() || _client->isResponseEmpty())
+		return (false);
+	return (true);
+}
+const ft::shared_ptr<VirtualServerManager>	&ReadEventFromClient::getVirtualServerManger(void) const { return (this->_virtualServerManager); }
 
-const ft::shared_ptr<VirtualServerManager>	
-&ReadEventFromClient::getVirtualServerManger(void) const { return (this->_virtualServerManager); }
+void	ReadEventFromClient::addRequest(ft::shared_ptr<HttpRequest> request) {
+	this->_client->addRequest(request);
+}
+
+bool	ReadEventFromClient::queryInEventQueue(e_client_queue_state state) {
+	return (this->_client->isInEventQueue(state));
+}

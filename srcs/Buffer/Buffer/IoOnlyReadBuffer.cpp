@@ -46,7 +46,9 @@ size_t	IoOnlyReadBuffer::ioRead(int fd) {
     catch (const std::exception& e) {
         throw;
     }
-
+    catch (...) {
+        throw;
+    }
     return _head.value()->ioRead(fd);
 }
 

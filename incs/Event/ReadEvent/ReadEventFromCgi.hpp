@@ -10,7 +10,7 @@ class ReadEventFromCgi: public ReadEvent {
 
 	public:
 		virtual void	callEventHandler(void);
-		virtual void	onboardQueue(void) throw (std::exception);
-		virtual void	offboardQueue(void) throw (std::exception);
+		virtual void	onboardQueue(void);
+		virtual void	offboardQueue(void);
 };
 #endif
