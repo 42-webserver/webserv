@@ -124,7 +124,7 @@ size_t BaseNode::ioRead(int fd){
 	_mode.setReadMode();
 
 	size_t n = read(fd, _buffer.data() + _size, _capacity - _size);
-	_size += n;
+	_size += n > 0 ? n : 0;
 	return n;
 }
 

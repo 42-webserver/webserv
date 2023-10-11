@@ -36,7 +36,7 @@ void	ReadEventFromClient::offboardQueue() {
 
 }
 bool ReadEventFromClient::canRead(void) const {
-	if (_client->isQueueMax() || _client->isResponseEmpty())
+	if (_client->isQueueMax())
 		return (false);
 	return (true);
 }

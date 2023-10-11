@@ -74,7 +74,7 @@ size_t IoReadAndWriteBuffer::ioRead(int fd) {
         if (_lst.empty()) _allocate();
 
         size = _lst.back()->ioRead(fd);
-
+        if (size <= 0) return size;
         if (_lst.back()->isFull()) _allocate();
     }
     catch (const std::exception& e) {
@@ -93,6 +93,7 @@ size_t IoReadAndWriteBuffer::ioWrite(int fd) {
         if (_lst.empty()) return 0;
 
         size = _lst.front()->ioWrite(fd);
+        if (size <= 0) return size;
         _lst.front()->erase(size);
         if (_state != EraseState) _state = EraseState;
     
