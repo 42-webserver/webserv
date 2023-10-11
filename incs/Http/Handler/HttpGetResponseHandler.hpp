@@ -8,7 +8,7 @@
 #include "../../Server/VirtualServerManager.hpp"
 #include "../Utils/RouterUtils.hpp"
 #include "../Utils/FileUploader.hpp"
-#include "../../Cache/cache.hpp"
+#include "../../FileManager/Cache/cache.hpp"
 #include <map>
 
 class HttpGetResponseHandler : public HttpRequestHandler

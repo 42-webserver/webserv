@@ -45,11 +45,15 @@ SRCS =	main.cpp \
 		Event/ReadEvent/ReadEvent.cpp \
 		Event/ReadEvent/ReadEventFromClient.cpp \
 		Event/ReadEvent/ReadEventFromClientHandler.cpp \
+		Event/ReadEvent/ReadEventFromFile.cpp \
+		Event/ReadEvent/ReadEventFromFileHandler.cpp \
 		Event/ReadEvent/ReadEventHandler.cpp \
 		Event/WriteEvent/WriteEvent.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \
 		Event/WriteEvent/WriteEventToClientHandler.cpp \
+		Event/WriteEvent/WriteEventToFile.cpp \
+		Event/WriteEvent/WriteEventToFileHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
 		Http/Client.cpp \

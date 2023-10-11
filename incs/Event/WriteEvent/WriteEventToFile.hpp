@@ -1,19 +1,19 @@
-#ifndef READEVENFROMFILE_HPP
-# define READEVENFROMFILE_HPP
+#ifndef WRITEEVENTTOFILE_HPP
+# define WRITEEVENTTOFILE_HPP
 
-# include "ReadEvent.hpp"
-# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
+# include "WriteEvent.hpp"
 # include <Channel/SingleStreamable.hpp>
+# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 # include <Channel/FileStream.hpp>
 # include <Event/Exception/KqueueError.hpp>
-# include <Event/ReadEvent/ReadEventFromFileHandler.hpp>
+# include <Event/WriteEvent/WriteEventToFileHandler.hpp>
 
-class ReadEventFromFile: public ReadEvent, public SingleStreamable{
+class WriteEventToFile: public WriteEvent, public SingleStreamable{
     public:
-        ReadEventFromFile(ft::shared_ptr<e_syncro_state> state,
+        WriteEventToFile(ft::shared_ptr<e_syncro_state> state,
             IoReadAndWriteBuffer &buffer,
             const std::string &path, std::string mode);
-        virtual	~ReadEventFromFile(void);
+        virtual	~WriteEventToFile(void);
 
     public:
         virtual void	callEventHandler(void);
