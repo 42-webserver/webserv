@@ -2,7 +2,6 @@
 # define READEVENTFROMCLIENTHANDLER_HPP
 
 #include "ReadEventHandler.hpp"
-#include "../../../incs/Event/ReadEvent/ReadEventFromClient.hpp"
 #include "../../../incs/Event/BufReadHandler.hpp"
 #include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
 #include "../../../incs/FtUtil/ft.hpp"
@@ -14,6 +13,7 @@
 #include "../../Http/Parser/HttpRequestParser.hpp"
 #include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
 
+class ReadEventFromClient;
 class ReadEventFromClientHandler : public ReadEventHandler {
 	public:
 		typedef enum{

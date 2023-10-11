@@ -5,6 +5,13 @@
 # include "../../Log/Logger.hpp"
 # include "../../Server/VirtualServerManager.hpp"
 # include <Channel/SingleStreamable.hpp>
+#include <unistd.h>
+#include <fcntl.h>
+#include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
+#include "../../../incs/Event/ListenEvent/ListenEventHandler.hpp"
+#include "../../../incs/Event/EventQueue/EventQueue.hpp"
+#include <Event/Exception/KqueueError.hpp>
+
 class ListenEvent: public Event, public SingleStreamable{
 	public:
 		ListenEvent(ft::shared_ptr<Channel> channel,

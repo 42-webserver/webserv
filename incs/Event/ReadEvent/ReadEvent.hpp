@@ -5,6 +5,8 @@
 # include "../EventDto/EventDto.hpp"
 # include "../../Log/Logger.hpp"
 # include "./ReadEventHandler.hpp"
+# include <Event/EventQueue/EventQueue.hpp>
+# include <Event/Exception/KqueueError.hpp>
 class ReadEvent: public Event {
 	protected:
 		ReadEvent(ReadEventHandler* readEventHandler);
@@ -21,7 +23,8 @@ class ReadEvent: public Event {
 		virtual void	offboardQueue(void)  = 0;
 
 	protected:
-
+		void	_onboardRead(Event *event, int fd);
+		void	_offboardRead(Event *event, int fd);
 };
 
 

@@ -50,6 +50,7 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \
 		Event/WriteEvent/WriteEventToClientHandler.cpp \
+		Event/Exception/KqueueError.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
 		Http/Client.cpp \
 		Http/Handler/HttpCgiResponseHandler.cpp \
@@ -108,6 +109,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Event/ListenEvent \
 				${OBJS_DIR}/Event/ReadEvent \
 				${OBJS_DIR}/Event/WriteEvent \
+				${OBJS_DIR}/Event/Exception \
 				${OBJS_DIR}/Channel \
 				${OBJS_DIR}/Http \
 				${OBJS_DIR}/Http/handler \

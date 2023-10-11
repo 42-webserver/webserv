@@ -4,6 +4,8 @@
 # include "ReadEvent.hpp"
 # include <Channel/SingleStreamable.hpp>
 # include <Http/Client.hpp>
+# include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
+# include <Event/Exception/KqueueError.hpp>
 
 class ReadEventFromClient: public ReadEvent, public SingleStreamable{
 	public:

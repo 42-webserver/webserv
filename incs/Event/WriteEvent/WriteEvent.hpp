@@ -4,6 +4,8 @@
 # include "../EventBase/Event.hpp"
 # include "WriteEventHandler.hpp"
 # include <vector>
+# include <Event/EventQueue/EventQueue.hpp>
+# include <Event/Exception/KqueueError.hpp>
 
 class WriteEvent: public Event {
 	private:
@@ -22,8 +24,8 @@ class WriteEvent: public Event {
 		virtual void	onboardQueue(void)  = 0;
 		virtual void	offboardQueue(void)  = 0;
 	protected:
-		// const std::vector<char>	&getBuffer(void);
-		// std::vector<char>	&getBufferRef(void);
+		void _onboardWrite(Event *event, int fd);
+		void _offboardWrite(Event *event, int fd);
 };
 
 #endif
