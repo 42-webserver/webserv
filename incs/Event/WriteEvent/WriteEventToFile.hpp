@@ -7,7 +7,7 @@
 # include <Channel/FileStream.hpp>
 # include <Event/Exception/KqueueError.hpp>
 # include <Event/WriteEvent/WriteEventToFileHandler.hpp>
-#include <FileManager/FileChecker/FileSyncOnDestruct.hpp>
+#include <FileManager/FileTableManager/FileSyncOnDestruct.hpp>
 
 class WriteEventToFile: public WriteEvent, public SingleStreamable{
 friend class FileIdent;   

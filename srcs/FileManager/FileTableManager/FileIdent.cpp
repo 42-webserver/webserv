@@ -1,7 +1,21 @@
-#include <FileManager/FileChecker/FileIdent.hpp>
+#include <FileManager/FileTableManager/FileIdent.hpp>
 
 FileIdent::~FileIdent(void) {}
 FileIdent::FileIdent(const std::string &path) : _path(path), _state(Init), _haveToUpdate(true) {
+}
+FileIdent::FileIdent(void) : _path(""), _state(Init), _haveToUpdate(true) {
+}
+FileIdent::FileIdent(const FileIdent &ref) {
+    *this = ref;
+}
+FileIdent &FileIdent::operator=(const FileIdent &rhs) {
+    if (this != &rhs) {
+        this->_fileSize = rhs._fileSize;
+        this->_path = rhs._path;
+        this->_state = rhs._state;
+        this->_haveToUpdate = rhs._haveToUpdate;
+    }
+    return (*this);
 }
 void FileIdent::_updateFileSize() {
     FILE *file = fopen(this->_path.c_str(), "w+");

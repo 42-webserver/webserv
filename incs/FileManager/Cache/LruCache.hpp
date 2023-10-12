@@ -17,11 +17,10 @@ class LruCache {
 		typedef std::map< std::string, lru_list_t::iterator > cache_map_t;
 
 	private:
-		static const int _capacity;
+		static const int _capacity = 4 * 1024;
 		lru_list_t	_lru_list; 
 		std::vector<char>	empty;
 		cache_map_t	_cache; 
-		void		chekcFileSize(const std::string &Filepath);
 	public:
 		LruCache(void);
 		~LruCache(void);

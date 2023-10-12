@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
 #include <Event/WriteEvent/WriteEventToFile.hpp>
-// 상속받아서 해제 할떄 해당 state를 그 생성한 방식으로 변경할 수 있는것 구현 
+
 class FileIdent
 {
 private:
@@ -16,6 +16,9 @@ private:
     bool    _haveToUpdate;
 public:
     FileIdent(const std::string &path);
+    FileIdent(const FileIdent &ref);
+    FileIdent &operator=(const FileIdent &rhs);
+    FileIdent(void);
     ~FileIdent(void);
     const e_file_content_syncro &getState(void) const;
     long getFileSize(void);

@@ -7,7 +7,7 @@
 # include <Channel/FileStream.hpp>
 # include <Event/Exception/KqueueError.hpp>
 # include <Event/ReadEvent/ReadEventFromFileHandler.hpp>
-# include <FileManager/FileChecker/FileSyncOnDestruct.hpp>
+# include <FileManager/FileTableManager/FileSyncOnDestruct.hpp>
 
 class ReadEventFromFile: public ReadEvent, public SingleStreamable{
 friend class FileIdent;

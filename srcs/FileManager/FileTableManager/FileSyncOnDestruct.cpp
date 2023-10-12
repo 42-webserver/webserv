@@ -1,4 +1,4 @@
-#include <FileManager/FileChecker/FileSyncOnDestruct.hpp>
+#include <FileManager/FileTableManager/FileSyncOnDestruct.hpp>
 
 FileSyncOnDestruct::FileSyncOnDestruct(void) : _state(NULL), _haveToUpdate(NULL), _targetState(Init) {}
 FileSyncOnDestruct::~FileSyncOnDestruct(void) {

@@ -7,8 +7,6 @@
 
 class Cache{
 public:
-	static const int	cacheBufferSize = 1024 *4;
-public:
 		static Cache	&getInstance(void);
 		void deleteInstance(void);
 		size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri);

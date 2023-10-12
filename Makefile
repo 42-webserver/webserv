@@ -104,9 +104,9 @@ SRCS =	main.cpp \
 		Client/ClientLimitExceededException.cpp \
 		FileManager/Cache/cache.cpp \
 		FileManager/Cache/LruCache.cpp \
-		FileManager/FileChecker/FileChecker.cpp \
-		FileManager/FileChecker/FileIdent.cpp \
-		FileManager/FileChecker/FileSyncOnDestruct.cpp \
+		FileManager/FileTableManager/FileTableManager.cpp \
+		FileManager/FileTableManager/FileIdent.cpp \
+		FileManager/FileTableManager/FileSyncOnDestruct.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -134,7 +134,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Pattern \
 				${OBJS_DIR}/Client \
 				${OBJS_DIR}/FileManager/Cache \
-				${OBJS_DIR}/FileManager/FileChecker \
+				${OBJS_DIR}/FileManager/FileTableManager \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}

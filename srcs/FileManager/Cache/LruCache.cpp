@@ -1,6 +1,5 @@
 #include <FileManager/Cache/LruCache.hpp>
 
-const int LruCache::_capacity = 4 * 1024;
 LruCache::LruCache(void)  {}
 LruCache::~LruCache(void) {}
 
