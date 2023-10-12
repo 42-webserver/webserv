@@ -17,38 +17,17 @@ Cache	&Cache::getInstance(void) {
 	}
 	return (*Cache::_instance);
 }
-bool Cache::checkAuthentification(const std::string &uri) {
-	(void)uri;
-	//TODO: check authentification
-	return (true);
+
+
+bool Cache::hit(const std::string &uri) {
+	return (this->_cache.find(uri) != this->_cache.end());
 }
-void Cache::checkAndThrow(const std::string &uri){
- 	std::fstream file;
-    file.open("test.txt", std::fstream::in | std::fstream::out | std::fstream::app);
-	if (!file.is_open()) {
-		throw FileNoExistException();
-	}
-	if (!checkAuthentification(uri)) {
-		throw FileAuthentificationException();
-	}
-	file.seekg(0, std::ios::end);
-	if (file.tellg() > Cache::cacheBufferSize) {
-		throw BigFileException();
-	}
-	file.close();
+size_t	Cache::copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) const {
+	
+	size_t size = buffer.append(this->_cache.get(uri), this->_cache.getCacheContentSize(uri));
+	return (size);
+}
+size_t	Cache::getCacheContentSize(const std::string &uri) const {
+	return (this->_cache.getCacheContentSize(uri));
 }
 
-const std::vector<char>	&Cache::getFileContent(const std::string &uri) {
-	checkAndThrow(uri);
-	// this->_cache.get(uri)
-	return (this->_cache.get(uri));
-}
-const char *Cache::BigFileException::what() const throw() {
-	return ("File is too big");
-}
-const char *Cache::FileAuthentificationException::what() const throw() {
-	return ("File authentification failed");
-}
-const char *Cache::FileNoExistException::what() const throw() {
-	return ("File does not exist");
-}

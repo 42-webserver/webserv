@@ -29,6 +29,7 @@ class LruCache {
 
 	public:
 		const std::vector<char>	&get(const std::string &uri);
+		size_t					getCacheContentSize(const std::string &uri);
 		void				put(std::string uri, std::vector<char> content);
 };
 

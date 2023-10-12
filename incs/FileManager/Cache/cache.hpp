@@ -3,30 +3,17 @@
 #include "LruCache.hpp"
 #include "../../Http/Exception/BadRequestException.hpp"
 #include "../../Http/Exception/ServerErrorException.hpp"
-
+#include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 class Cache{
 public:
 	static const int	cacheBufferSize = 1024 *4;
 public:
-class BigFileException {
-	public:
-		virtual const char *what() const throw();
-};
-class FileAuthentificationException: public BadRequestException {
-	public:
-		FileAuthentificationException(void) : BadRequestException(FORBIDDEN){};
-		virtual const char *what() const throw();
-};
-class FileNoExistException: public ServerErrorException {
-	public:
-		FileNoExistException(void) : ServerErrorException(INTERNAL_SERVER_ERROR){};
-	public:
-		virtual const char *what() const throw();
-};
-public:
 		static Cache	&getInstance(void);
 		void deleteInstance(void);
-		const std::vector<char>	&getFileContent(const std::string &uri);
+		size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) const;
+		size_t  getCacheContentSize(const std::string &uri) const;
+public:		
+		bool hit(const std::string &uri);
 private:
 	Cache(void);
 	~Cache(void);
@@ -35,11 +22,6 @@ private:
 private:
 	Cache(const Cache &ref);
 	Cache &operator=(const Cache &rhs);
-
-
-private:	
-	void checkAndThrow(const std::string &uri);
-	bool checkAuthentification(const std::string &uri);
 private:
 	LruCache	_cache;
 	static Cache	*_instance;
