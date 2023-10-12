@@ -1,4 +1,4 @@
-#include "../../incs/Cache/LruCache.hpp"
+#include <FileManager/Cache/LruCache.hpp>
 
 LruCache::LruCache(void): _capacity(0) {}
 LruCache::~LruCache(void) {}

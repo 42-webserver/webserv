@@ -1,9 +1,5 @@
 #include "../../../incs/Event/ListenEvent/ListenEvent.hpp"
-#include <unistd.h>
-#include <fcntl.h>
-#include "../../../incs/Event/ReadEvent/ReadEvent.hpp"
-#include "../../../incs/Event/ListenEvent/ListenEventHandler.hpp"
-#include "../../../incs/Event/EventQueue/EventQueue.hpp"
+
 
 ListenEvent::ListenEvent(ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> virtual_server_manager):
 Event(new ListenEventHandler()), SingleStreamable(channel), _virtualServerManager(virtual_server_manager)
@@ -38,9 +34,10 @@ void	ListenEvent::onboardQueue(void){
 		event
 	);
 
-	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 1, NULL, 0, NULL) == -1) {
+	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 
+	1, NULL, 0, NULL) == -1) {
 		perror("kevent");
-		throw (FailToOnboardException());
+		throw (KqueueError());
 	}
 }
 void	ListenEvent::offboardQueue(void){
@@ -57,11 +54,11 @@ void	ListenEvent::offboardQueue(void){
 		this
 	);
 
-	delete this;
 
 	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 1, NULL, 0, NULL) == -1) {
-		throw (Event::FailToOffboardException());
+		throw (KqueueError());
 	}
+	delete this;
 }
 
 ft::shared_ptr<VirtualServerManager>	ListenEvent::getVirtualServerManager(void) const { return (this->_virtualServerManager); }

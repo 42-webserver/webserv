@@ -1,4 +1,5 @@
 #include "../../../incs/Event/ReadEvent/ReadEventFromClientHandler.hpp"
+#include <Event/ReadEvent/ReadEventFromClient.hpp>
 
 ReadEventFromClientHandler::_processFunc ReadEventFromClientHandler::_processFuncs[ConnectionCount] = {
 	&ReadEventFromClientHandler::_processReading,

@@ -13,49 +13,25 @@ void	WriteEventToClient::callEventHandler(void) {
 	this->_event_handler->handleEvent(*this);
 }
 void	WriteEventToClient::onboardQueue(void){
-	EventQueue &event_queue = EventQueue::getInstance();
 	Event *event = this;
 
-	Logger::getInstance().info("onboard Write Event");
-	EV_SET(
-		event_queue.getEventSetElementPtr(),
-		this->getFd(),
-		EVFILT_WRITE,
-		EV_ADD | EV_ENABLE,
-		0,
-		0,
-		event
-	);
-
-	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 1, NULL, 0, NULL) == -1) {
-		Logger::getInstance().error("{} {}", 
-		2, 
-		"WriteEventClient : kevents", strerror(errno));
-		std::cerr << "WriteEventClient : kevents" << strerror(errno) << std::endl;
-		std::cerr << event_queue.getEventQueueFd() << std::endl;
-		std::cerr << event_queue.getEventSet() << std::endl;
-		throw (FailToOnboardException());
+	try {
+		this->getChannel().get()->setNonBlocking();
+		this->_onboardWrite(event, this->getFd());
+	}
+	catch (...) {
+		Logger::getInstance().error("Fail to onboard Write Event");
+		throw ;
 	}
 }
 
 void	WriteEventToClient::offboardQueue(void){
-	EventQueue &event_queue = EventQueue::getInstance();
-
-	Logger::getInstance().info("Remove Write Event");
-	EV_SET(
-		event_queue.getEventSetElementPtr(),
-		this->getFd(),
-		EVFILT_WRITE,
-		EV_DELETE,
-		0,
-		0,
-		this
-	);
-
-	delete this;
-
-	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 1, NULL, 0, NULL) == -1) {
-		throw (Event::FailToOffboardException());
+	try {
+		this->_offboardWrite(this, this->getFd());
+	}
+	catch (...) {
+		Logger::getInstance().error("Fail to offboard Write Event");
+		throw ;
 	}	
 }
 

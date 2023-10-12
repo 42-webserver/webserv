@@ -1,8 +1,8 @@
 #ifndef CACHE_HPP
 # define CACHE_HPP
 #include "LruCache.hpp"
-#include "../Http/Exception/BadRequestException.hpp"
-#include "../Http/Exception/ServerErrorException.hpp"
+#include "../../Http/Exception/BadRequestException.hpp"
+#include "../../Http/Exception/ServerErrorException.hpp"
 
 class Cache{
 public:
