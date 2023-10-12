@@ -56,7 +56,6 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToFileHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
-		Http/Client.cpp \
 		Http/Handler/HttpCgiResponseHandler.cpp \
 		Http/Handler/HttpGetResponseHandler.cpp \
 		Http/Parser/HttpRequestParser.cpp \
@@ -102,7 +101,9 @@ SRCS =	main.cpp \
 		Pattern/FileWriterProcessor.cpp \
 		Pattern/PatternProcessor.cpp \
 		Pattern/ProcessorObject.cpp \
-
+		Client/Client.cpp \
+		Client/ClientIdManager.cpp \
+		Client/ClientLimitExceededException.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -129,7 +130,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Buffer/Buffer \
 				${OBJS_DIR}/Buffer/Node \
 				${OBJS_DIR}/Pattern \
-
+				${OBJS_DIR}/Client \
 				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
