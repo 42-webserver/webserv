@@ -7,12 +7,14 @@
 # include <Channel/FileStream.hpp>
 # include <Event/Exception/KqueueError.hpp>
 # include <Event/WriteEvent/WriteEventToFileHandler.hpp>
+#include <FileManager/FileChecker/FileSyncOnDestruct.hpp>
 
 class WriteEventToFile: public WriteEvent, public SingleStreamable{
+friend class FileIdent;   
     public:
         WriteEventToFile(
             IoReadAndWriteBuffer &buffer,
-            const std::string &path, std::string mode, e_syncro_state *state);
+            const std::string &path, std::string mode);
         virtual	~WriteEventToFile(void);
 
     public:
@@ -20,8 +22,9 @@ class WriteEventToFile: public WriteEvent, public SingleStreamable{
         virtual void	onboardQueue(void);
         virtual void	offboardQueue(void);
     private:
-        e_syncro_state *_state;
-        void _notifyFinish(void);
+        FileSyncOnDestruct _syncObj;
+        void               _sync(e_file_content_syncro *origin,
+        e_file_content_syncro targetState, bool *haveToUpdate);
 };
 
 #endif

@@ -2,16 +2,15 @@
 
 ReadEventFromFile::ReadEventFromFile(
     IoReadAndWriteBuffer &buffer,
-    const std::string &path, std::string mode = "w+", e_syncro_state *state = NULL) :
+    const std::string &path, std::string mode = "w+") :
     ReadEvent(new ReadEventFromFileHandler(buffer)),
-    SingleStreamable(new FileStream(path, mode)), _state(state) {}
-ReadEventFromFile::~ReadEventFromFile(void) {
-    this->_notifyFinish();
-}
-void ReadEventFromFile::_notifyFinish(void) {
-    if (this->_state != NULL) {
-        *this->_state = SyncroFinish;
-    }
+    SingleStreamable(new FileStream(path, mode)) {}
+
+ReadEventFromFile::~ReadEventFromFile(void) {}
+
+void ReadEventFromFile::_sync(e_file_content_syncro *origin,
+    e_file_content_syncro targetState, bool *haveToUpdate) {
+    _syncObj.Sync(origin, targetState, haveToUpdate);
 }
 void ReadEventFromFile::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);
@@ -32,6 +31,7 @@ void ReadEventFromFile::onboardQueue(void) {
         throw ;
     }
 }
+
 void ReadEventFromFile::offboardQueue(void) {
 
     try {

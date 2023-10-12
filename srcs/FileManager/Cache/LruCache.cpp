@@ -1,8 +1,8 @@
 #include <FileManager/Cache/LruCache.hpp>
 
-LruCache::LruCache(void): _capacity(0) {}
+const int LruCache::_capacity = 4 * 1024;
+LruCache::LruCache(void)  {}
 LruCache::~LruCache(void) {}
-LruCache::LruCache(int capacity): _capacity(capacity) {}
 
 const std::vector<char>	&LruCache::get(const std::string &uri){
 	
@@ -14,11 +14,18 @@ const std::vector<char>	&LruCache::get(const std::string &uri){
 	return (this->_cache[uri]->second);
 }
 
-size_t					LruCache::getCacheContentSize(const std::string &uri){
+size_t				LruCache::getCacheContentSize(const std::string &uri){
 	if (this->_cache.find(uri) == this->_cache.end()) {
 		return (0);
 	}
 	return (this->_cache[uri]->second.size());
+}
+std::vector<char>::iterator	LruCache::getIter(const std::string &uri){
+	if (this->_cache.find(uri) == this->_cache.end()) {
+		return (this->empty.end());
+	}
+	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);
+	return (this->_cache[uri]->second.begin());
 }
 void				LruCache::put(std::string uri, std::vector<char> content) {
 	if (this->_cache.size() >= this->_capacity) {

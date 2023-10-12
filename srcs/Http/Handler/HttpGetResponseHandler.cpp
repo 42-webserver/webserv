@@ -13,18 +13,16 @@ HttpGetResponseHandler::~HttpGetResponseHandler()
 }
 
 ft::shared_ptr<HttpResponse> HttpGetResponseHandler::handleRequest(ft::shared_ptr<HttpRequest> req, 
-        ft::shared_ptr<VirtualServerManager> vsm) throw (HttpException){
+        ft::shared_ptr<VirtualServerManager> vsm) {
     ft::shared_ptr<HttpResponse> response = ft::make_shared<HttpResponse>();
     std::string path = RouterUtils::findPriorityPathWithIndex(vsm, req);
 
-    try{
-        Cache &cache = Cache::getInstance();
-        std::vector<char> content = cache.getFileContent(path);
-        response->setBody(content);
-    } catch (Cache::BigFileException &e){
-        response->setFileName(path);
-    }
-    _makeResponseHeader(path, response, req);
+    //Todo
+        // Cache &cache = Cache::getInstance();
+        // std::vector<char> content = cache.getFileContent(path);
+    //     response->setBody(content);
+    //     response->setFileName(path);
+    // _makeResponseHeader(path, response, req);
     return response;
 }
 

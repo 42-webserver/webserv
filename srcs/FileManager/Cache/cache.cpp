@@ -20,14 +20,14 @@ Cache	&Cache::getInstance(void) {
 
 
 bool Cache::hit(const std::string &uri) {
-	return (this->_cache.find(uri) != this->_cache.end());
+	return (this->_cache.get(uri).size() != 0);
 }
-size_t	Cache::copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) const {
+size_t	Cache::copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) {
 	
-	size_t size = buffer.append(this->_cache.get(uri), this->_cache.getCacheContentSize(uri));
+	size_t size = buffer.append(_cache.getIter(uri), this->_cache.getCacheContentSize(uri));
 	return (size);
 }
-size_t	Cache::getCacheContentSize(const std::string &uri) const {
-	return (this->_cache.getCacheContentSize(uri));
+size_t	Cache::getCacheContentSize(const std::string &uri)  {
+	return (_cache.getCacheContentSize(uri));
 }
 

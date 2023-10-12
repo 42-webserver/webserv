@@ -4,14 +4,15 @@
 #include "../../Http/Exception/BadRequestException.hpp"
 #include "../../Http/Exception/ServerErrorException.hpp"
 #include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
+
 class Cache{
 public:
 	static const int	cacheBufferSize = 1024 *4;
 public:
 		static Cache	&getInstance(void);
 		void deleteInstance(void);
-		size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) const;
-		size_t  getCacheContentSize(const std::string &uri) const;
+		size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri);
+		size_t  getCacheContentSize(const std::string &uri);
 public:		
 		bool hit(const std::string &uri);
 private:

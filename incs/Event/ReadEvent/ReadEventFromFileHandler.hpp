@@ -2,7 +2,7 @@
 # define READEVENTFROMFILEHANDLER_HPP
 
 # include "ReadEventHandler.hpp"
-# include <FileManager/Syncro.hpp>
+# include <FileManager/FileState.hpp>
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
 
 class ReadEventFromFileHandler: public ReadEventHandler{

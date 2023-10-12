@@ -2,7 +2,7 @@
 # define WRITEEVENTTOFILEHANDLER_HPP
 
 # include "WriteEventHandler.hpp"
-# include <FileManager/Syncro.hpp>
+# include <FileManager/FileState.hpp>
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
 # include <Buffer/Exception/DisconnectionException.hpp>
 

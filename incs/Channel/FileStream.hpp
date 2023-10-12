@@ -12,7 +12,6 @@ public:
     FileStream(std::string path, std::string mode);
     virtual ~FileStream(void);
     virtual void inJectChannelFd(int fd);
-    long getFileSize();
 class FailToOpenException: public std::exception {
     public:
         virtual const char *what() const throw();
