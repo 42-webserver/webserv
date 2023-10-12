@@ -10,15 +10,18 @@
 
 class ReadEventFromFile: public ReadEvent, public SingleStreamable{
     public:
-        ReadEventFromFile(ft::shared_ptr<e_syncro_state> state,
+        ReadEventFromFile(
             IoReadAndWriteBuffer &buffer,
-            const std::string &path, std::string mode);
+            const std::string &path, std::string mode, e_syncro_state *state);
         virtual	~ReadEventFromFile(void);
 
     public:
         virtual void	callEventHandler(void);
         virtual void	onboardQueue(void);
         virtual void	offboardQueue(void);
+    private:
+        e_syncro_state *_state;
+        void _notifyFinish(void);
 };
 
 #endif

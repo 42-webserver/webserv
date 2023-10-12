@@ -1,13 +1,10 @@
 #include <Event/WriteEvent/WriteEventToFileHandler.hpp>
 #include <Event/WriteEvent/WriteEventToFile.hpp>
 
-WriteEventToFileHandler::WriteEventToFileHandler(ft::shared_ptr<e_syncro_state> state,
-    IoReadAndWriteBuffer &buffer) :
-    _state(state), _buffer(buffer) {}
+WriteEventToFileHandler::WriteEventToFileHandler(
+    IoReadAndWriteBuffer &buffer) : _buffer(buffer) {}
 WriteEventToFileHandler::~WriteEventToFileHandler(void) {}
-void WriteEventToFileHandler::_notifyFinish() {
-    *this->_state = SyncroFinish;
-}
+
 void WriteEventToFileHandler::handleEvent(Event &event) {
     WriteEventToFile *writeEventToFile = static_cast<WriteEventToFile *>(&event);
     size_t n;
@@ -22,7 +19,6 @@ void WriteEventToFileHandler::handleEvent(Event &event) {
         throw ;
     }
     if (n == 0) {
-        this->_notifyFinish();
         writeEventToFile->offboardQueue();
     }
 }

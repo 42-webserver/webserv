@@ -9,15 +9,12 @@
 
 class WriteEventToFileHandler: public WriteEventHandler{
     public:
-        WriteEventToFileHandler(ft::shared_ptr<e_syncro_state> state,
-            IoReadAndWriteBuffer &buffer);
+        WriteEventToFileHandler(IoReadAndWriteBuffer &buffer);
             virtual	~WriteEventToFileHandler(void);
 
     public:
         virtual void   handleEvent(Event &event);
     private:
-        ft::shared_ptr<e_syncro_state>  _state;
         IoReadAndWriteBuffer      &_buffer;
-        void    _notifyFinish();
 };
 #endif

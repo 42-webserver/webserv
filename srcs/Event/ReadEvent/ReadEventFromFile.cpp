@@ -1,11 +1,18 @@
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
 
-ReadEventFromFile::ReadEventFromFile(ft::shared_ptr<e_syncro_state> state,
+ReadEventFromFile::ReadEventFromFile(
     IoReadAndWriteBuffer &buffer,
-    const std::string &path, std::string mode = "w+") :
-    ReadEvent(new ReadEventFromFileHandler(state, buffer)),
-    SingleStreamable(new FileStream(path, mode)) {}
-ReadEventFromFile::~ReadEventFromFile(void) {}
+    const std::string &path, std::string mode = "w+", e_syncro_state *state = NULL) :
+    ReadEvent(new ReadEventFromFileHandler(buffer)),
+    SingleStreamable(new FileStream(path, mode)), _state(state) {}
+ReadEventFromFile::~ReadEventFromFile(void) {
+    this->_notifyFinish();
+}
+void ReadEventFromFile::_notifyFinish(void) {
+    if (this->_state != NULL) {
+        *this->_state = SyncroFinish;
+    }
+}
 void ReadEventFromFile::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);
 }

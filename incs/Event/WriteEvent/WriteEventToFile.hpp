@@ -10,15 +10,18 @@
 
 class WriteEventToFile: public WriteEvent, public SingleStreamable{
     public:
-        WriteEventToFile(ft::shared_ptr<e_syncro_state> state,
+        WriteEventToFile(
             IoReadAndWriteBuffer &buffer,
-            const std::string &path, std::string mode);
+            const std::string &path, std::string mode, e_syncro_state *state);
         virtual	~WriteEventToFile(void);
 
     public:
         virtual void	callEventHandler(void);
         virtual void	onboardQueue(void);
         virtual void	offboardQueue(void);
+    private:
+        e_syncro_state *_state;
+        void _notifyFinish(void);
 };
 
 #endif

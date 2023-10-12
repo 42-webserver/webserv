@@ -1,11 +1,18 @@
 #include <Event/WriteEvent/WriteEventToFile.hpp>
 
-WriteEventToFile::WriteEventToFile(ft::shared_ptr<e_syncro_state> state,
+WriteEventToFile::WriteEventToFile(
     IoReadAndWriteBuffer &buffer,
-    const std::string &path, std::string mode) :
-    WriteEvent(new WriteEventToFileHandler(state, buffer)),
-    SingleStreamable(new FileStream(path, mode)) {}
-WriteEventToFile::~WriteEventToFile(void) {}
+    const std::string &path, std::string mode = "w+", e_syncro_state *state = NULL) :
+    WriteEvent(new WriteEventToFileHandler(buffer)),
+    SingleStreamable(new FileStream(path, mode)), _state(state) {}
+WriteEventToFile::~WriteEventToFile(void) {
+    this->_notifyFinish();
+}
+void WriteEventToFile::_notifyFinish(void) {
+    if (this->_state != NULL) {
+        *this->_state = SyncroFinish;
+    }
+}
 void WriteEventToFile::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);
 }
