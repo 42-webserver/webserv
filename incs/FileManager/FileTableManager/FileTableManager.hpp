@@ -8,8 +8,19 @@
 # include <Event/ReadEvent/ReadEventFromFile.hpp>
 # include <Event/WriteEvent/WriteEventToFile.hpp>
 
+class FileManager;
+class FileProcessor;
 class FileTableManager
 {
+public:
+    class AcessKey
+    {
+    private:
+        friend class FileManager;
+        friend class FileProcessor;
+        AcessKey(void);
+        ~AcessKey(void);
+    };
 private:
     std::map<std::string, FileIdent> _fileTable;
 private:
@@ -18,8 +29,8 @@ private:
     FileTableManager(const FileTableManager &ref);
     FileTableManager &operator=(const FileTableManager &rhs);
 public:
-    FileTableManager &getInstance(void);
-    void deleteInstance(void);
+    FileTableManager &getInstance(const AcessKey &acessKey);
+    void deleteInstance(const AcessKey &acessKey);
     e_file_content_syncro getFileState(const std::string &path);
     bool hit(const std::string &path);
     bool syncTo(const std::string &path, ReadEventFromFile *readEventFromFile,

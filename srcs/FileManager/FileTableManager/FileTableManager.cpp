@@ -1,16 +1,20 @@
 #include <FileManager/FileTableManager/FileTableManager.hpp>
 
+FileTableManager::AcessKey::AcessKey(void) {}
+FileTableManager::AcessKey::~AcessKey(void) {}
 FileTableManager *FileTableManager::_instance = NULL;
 FileTableManager::FileTableManager(void) {}
 FileTableManager::~FileTableManager(void) {}
-FileTableManager& FileTableManager::getInstance(void) {
+FileTableManager& FileTableManager::getInstance(const AcessKey &acessKey) {
+    (void)acessKey;
     if (FileTableManager::_instance == NULL) {
         FileTableManager::_instance = new FileTableManager();
     }
     return (*FileTableManager::_instance);
 }
 
-void FileTableManager::deleteInstance(void) {
+void FileTableManager::deleteInstance(const AcessKey &acessKey) {
+    (void)acessKey;
     if (FileTableManager::_instance != NULL) {
         delete FileTableManager::_instance;
         FileTableManager::_instance = NULL;
