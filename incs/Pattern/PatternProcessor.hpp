@@ -13,6 +13,7 @@ typedef enum PatternType{
     FILE_READ,
     CGI_READ,
     DELETE,
+    REDIRECTION,
     PatternSize
 } PatternType;
 

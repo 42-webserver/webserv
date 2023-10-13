@@ -42,6 +42,8 @@ PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<HttpRequest> request = this->requests.front();
     vsm->getDefaultVirtualServer();
     std::string method = request->getMethod();
+    if (RouterUtils::isRedirection(vsm, request))
+        return REDIRECTION;
     if (RouterUtils::isCgiRequest(vsm, request))
         return CGI_READ;
     if (method.compare(HTTP_METHOD::GET) == 0)
