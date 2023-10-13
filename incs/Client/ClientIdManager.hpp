@@ -6,15 +6,22 @@
 # include "../../libs/shared_ptr/shared_ptr.hpp"
 
 typedef int clinet_id_t;
-
+typedef enum {
+    Reader,
+    Writer,
+    Deleter
+}   e_client_role;
 class Client_id {
 private:
     clinet_id_t _id;
     bool _isAvailable;
+    e_client_role _role;
 public:
-    Client_id(clinet_id_t id, bool isAvailable);
+    Client_id(clinet_id_t id, bool isAvailable, e_client_role role);
     ~Client_id();
     clinet_id_t getId() const;
+    bool isAvailable() const;
+    e_client_role getRole() const;
     void release();
 };
 
@@ -32,7 +39,7 @@ public:
     static ClientIdManager &getInstance();
 
 public:
-    ft::shared_ptr<Client_id> allocateId();
+    ft::shared_ptr<Client_id> allocateId(e_client_role role);
     void releaseId(ft::shared_ptr<Client_id> id);
 };
 #endif

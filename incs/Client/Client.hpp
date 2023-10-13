@@ -12,7 +12,8 @@
 #include <queue>
 #include <Pattern/PatternProcessor.hpp>
 #include <Client/ClientIdManager.hpp>
-static size_t MAX_QUEUE_SIZE = 10;
+
+static size_t MAX_QUEUE_SIZE = 15;
 
 typedef enum {
     None       = 0b00, // 00
@@ -38,7 +39,7 @@ public:
     e_client_event_queue_state queryClientEventQueueState(void);
     void addClientEventQueueState(e_client_event_queue_state state);
     void removeClientEventQueueState(e_client_event_queue_state state);
-    void build();
+    void build(e_client_role role);
 private:
     PatternType getPatternType(ft::shared_ptr<VirtualServerManager> vsm);
 };

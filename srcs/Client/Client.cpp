@@ -6,9 +6,9 @@ Client::~Client() {
     ClientIdManager &idManager = ClientIdManager::getInstance();
     idManager.releaseId(this->_id);
 }
-void Client::build(){
+void Client::build(e_client_role role){
     ClientIdManager &idManager = ClientIdManager::getInstance();
-    this->_id = idManager.allocateId();
+    this->_id = idManager.allocateId(role);
 }
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
     this->requests.push(request);
