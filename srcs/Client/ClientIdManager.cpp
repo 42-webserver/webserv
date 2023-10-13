@@ -19,6 +19,7 @@ ClientIdManager &ClientIdManager::getInstance() {
 }
 ClientIdManager::ClientIdManager(void) : _nextId(0) {}
 
+//check this
 ft::shared_ptr<Client_id> ClientIdManager::allocateId() {
     if (_nextId == INT_MAX) {
         if (_availableIds.empty()) {
@@ -34,7 +35,6 @@ ft::shared_ptr<Client_id> ClientIdManager::allocateId() {
     } else {
         clinet_id_t id = *_availableIds.begin();
         _availableIds.erase(_availableIds.begin());
-        clinet_id_t nextId = _nextId;
         return ft::shared_ptr<Client_id>(new Client_id(id, true));
     }
 }

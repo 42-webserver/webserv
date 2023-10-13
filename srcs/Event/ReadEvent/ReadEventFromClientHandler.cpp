@@ -21,8 +21,9 @@ void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 		
 		while (parser.parseRequest(event->getVirtualServerManger()) == FINISH)
 			event->addRequest(parser.getHttpRequest());
-		
-		if (parser.getState() == FINISH && !event->queryInEventQueue(InWriting)) {
+
+		e_client_event_queue_state state = event->queryClientEventQueueState();
+		if (parser.getState() == FINISH && state != Write && state != ReadWrite) {
 			//TODO: add to event queue
 		}
 			

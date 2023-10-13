@@ -1,9 +1,7 @@
 #include <Client/Client.hpp>
 
-Client::Client() {
-    _queueState[InReading] = false;
-    _queueState[InWriting] = false;
-}
+Client::Client() : _eventQueueState(None) {}
+Client::Client(e_client_event_queue_state eventQueueState) : _eventQueueState(eventQueueState) {}
 Client::~Client() {
     ClientIdManager &idManager = ClientIdManager::getInstance();
     idManager.releaseId(this->_id);
@@ -28,8 +26,16 @@ bool Client::isQueueMax(void){
     return this->requests.size() >= MAX_QUEUE_SIZE;
 }
 
-bool Client::isInEventQueue(e_client_queue_state state){
-    return this->_queueState[state];
+e_client_event_queue_state Client::queryClientEventQueueState(void){
+    return this->_eventQueueState;
+}
+
+void Client::addClientEventQueueState(e_client_event_queue_state state){
+    this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState | state);
+}
+
+void Client::removeClientEventQueueState(e_client_event_queue_state state){
+    this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState & ~state);
 }
 
 PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){
