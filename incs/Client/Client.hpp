@@ -25,7 +25,7 @@ private:
     std::queue<ft::shared_ptr<HttpRequest> > requests;
     ft::Optional<ft::shared_ptr<HttpResponse> > response;
     bool _queueState[StateCount];
-    int _id;
+    ft::shared_ptr<Client_id> _id;
 public:
     Client();
     ~Client();

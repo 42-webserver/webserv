@@ -3,10 +3,25 @@
 
 # include <set>
 # include <Client/ClientLimitExceededException.hpp>
+# include "../../libs/shared_ptr/shared_ptr.hpp"
+
+typedef int clinet_id_t;
+
+class Client_id {
+private:
+    clinet_id_t _id;
+    bool _isAvailable;
+public:
+    Client_id(clinet_id_t id, bool isAvailable);
+    ~Client_id();
+    clinet_id_t getId() const;
+    void release();
+};
+
 class ClientIdManager {
 private:
-    std::set<int> _availableIds;
-    int _nextId;
+    std::set<clinet_id_t> _availableIds;
+    clinet_id_t _nextId;
     static ClientIdManager *_instance;
 private:
     ClientIdManager();
@@ -17,7 +32,7 @@ public:
     static ClientIdManager &getInstance();
 
 public:
-    int allocateId();
-    void releaseId(int id);
+    ft::shared_ptr<Client_id> allocateId();
+    void releaseId(ft::shared_ptr<Client_id> id);
 };
 #endif
