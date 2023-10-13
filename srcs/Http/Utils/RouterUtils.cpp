@@ -61,6 +61,19 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
     return ft::static_pointer_cast<CgiPassElement>(it->second)->getFlag().compare("on") == 0;
 }
 
+bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string uri = req->getUri();
+    std::string host = req->getHost();
+
+    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    if (locationElement.get() == NULL)
+        return false;
+    LocationElement::iterator it = locationElement->find(LocationElement::KEY::RETURN);
+    if (it == locationElement->end())
+        return false;
+    return true;
+}
+
 std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::string &uri){
     std::string path;
     if(root.empty() && alias.empty())
