@@ -56,7 +56,6 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToFileHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
-		Http/Client.cpp \
 		Http/Handler/HttpCgiResponseHandler.cpp \
 		Http/Handler/HttpGetResponseHandler.cpp \
 		Http/Parser/HttpRequestParser.cpp \
@@ -88,8 +87,6 @@ SRCS =	main.cpp \
 		Channel/Socket.cpp \
 		Channel/SingleStreamable.cpp \
 		Channel/DualStreamable.cpp \
-		Cache/cache.cpp \
-		Cache/LruCache.cpp \
 		Buffer/Buffer/BaseBuffer.cpp \
 		Buffer/Buffer/IoOnlyReadBuffer.cpp \
 		Buffer/Buffer/IoReadAndWriteBuffer.cpp \
@@ -102,7 +99,14 @@ SRCS =	main.cpp \
 		Pattern/FileWriterProcessor.cpp \
 		Pattern/PatternProcessor.cpp \
 		Pattern/ProcessorObject.cpp \
-
+		Client/Client.cpp \
+		Client/ClientIdManager.cpp \
+		Client/ClientLimitExceededException.cpp \
+		FileManager/Cache/cache.cpp \
+		FileManager/Cache/LruCache.cpp \
+		FileManager/FileTableManager/FileTableManager.cpp \
+		FileManager/FileTableManager/FileIdent.cpp \
+		FileManager/FileTableManager/FileSyncOnDestruct.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -125,12 +129,13 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Log \
 				${OBJS_DIR}/route \
 				${OBJS_DIR}/Server \
-				${OBJS_DIR}/Cache \
 				${OBJS_DIR}/Buffer/Buffer \
 				${OBJS_DIR}/Buffer/Node \
 				${OBJS_DIR}/Pattern \
+				${OBJS_DIR}/Client \
+				${OBJS_DIR}/FileManager/Cache \
+				${OBJS_DIR}/FileManager/FileTableManager \
 
-				
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
 OBJS := ${SRCS:${SRCS_DIR}/%.cpp=${OBJS_DIR}/%.o}

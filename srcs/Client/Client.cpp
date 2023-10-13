@@ -1,11 +1,17 @@
-#include <Http/Client.hpp>
+#include <Client/Client.hpp>
 
 Client::Client() {
     _queueState[InReading] = false;
     _queueState[InWriting] = false;
 }
-
-
+Client::~Client() {
+    ClientIdManager &idManager = ClientIdManager::getInstance();
+    idManager.releaseId(this->_id);
+}
+void Client::build(){
+    ClientIdManager &idManager = ClientIdManager::getInstance();
+    this->_id = idManager.allocateId();
+}
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
     this->requests.push(request);
 }

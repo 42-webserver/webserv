@@ -40,7 +40,7 @@ public:
     HttpGetResponseHandler();
     ~HttpGetResponseHandler();
     ft::shared_ptr<HttpResponse> handleRequest(ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm) \
-        throw (HttpException);
+    ;
 
 private:
     void _makeResponseHeader(std::string &path, ft::shared_ptr<HttpResponse> response, ft::shared_ptr<HttpRequest> request);
