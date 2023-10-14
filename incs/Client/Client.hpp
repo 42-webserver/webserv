@@ -28,6 +28,10 @@ private:
     ft::Optional<ft::shared_ptr<HttpResponse> > response;
     e_client_event_queue_state _eventQueueState;
     ft::shared_ptr<Client_id> _id;
+private:
+    Client(const Client& other);
+    Client& operator=(const Client& other);
+    void _build();
 public:
     Client();
     ~Client();
@@ -39,7 +43,6 @@ public:
     e_client_event_queue_state queryClientEventQueueState(void);
     void addClientEventQueueState(e_client_event_queue_state state);
     void removeClientEventQueueState(e_client_event_queue_state state);
-    void build(e_client_role role);
 private:
     PatternType getPatternType(ft::shared_ptr<VirtualServerManager> vsm);
 };

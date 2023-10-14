@@ -7,21 +7,22 @@
 
 typedef int clinet_id_t;
 typedef enum {
-    Reader,
-    Writer,
-    Deleter
-}   e_client_role;
+    ActionNone,
+    ActionRead,
+    ActionWrite,
+    ActionDelete
+}   e_client_file_action;
 class Client_id {
 private:
     clinet_id_t _id;
     bool _isAvailable;
-    e_client_role _role;
+    e_client_file_action _fileAction;
 public:
-    Client_id(clinet_id_t id, bool isAvailable, e_client_role role);
+    Client_id(clinet_id_t id, bool isAvailable, e_client_file_action fileAction);
     ~Client_id();
     clinet_id_t getId() const;
     bool isAvailable() const;
-    e_client_role getRole() const;
+    e_client_file_action getfileAction() const;
     void release();
 };
 
@@ -46,7 +47,7 @@ public:
     static ClientIdManager &getInstance(const AcessKey &acessKey);
 
 public:
-    ft::shared_ptr<Client_id> allocateId(e_client_role role);
+    ft::shared_ptr<Client_id> allocateId();
     void releaseId(ft::shared_ptr<Client_id> id);
 };
 #endif

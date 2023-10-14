@@ -2,7 +2,7 @@
 
 
 Client_id::Client_id(clinet_id_t id, bool isAvailable, 
-e_client_role role) : _id(id), _isAvailable(isAvailable), _role(role) {}
+e_client_file_action fileAction) : _id(id), _isAvailable(isAvailable), _fileAction(fileAction) {}
 Client_id::~Client_id() {}
 clinet_id_t Client_id::getId() const {
     return _id;
@@ -10,8 +10,8 @@ clinet_id_t Client_id::getId() const {
 bool Client_id::isAvailable() const {
     return _isAvailable;
 }
-e_client_role Client_id::getRole() const {
-    return _role;
+e_client_file_action Client_id::getfileAction() const {
+    return _fileAction;
 }
 void Client_id::release() {
     _isAvailable = false;
@@ -48,7 +48,7 @@ ClientIdManager::ClientIdManager(void) : _nextId(0) {}
 //         return ft::shared_ptr<Client_id>(new Client_id(id, true));
 //     }
 // }
-ft::shared_ptr<Client_id> ClientIdManager::allocateId(e_client_role role) {
+ft::shared_ptr<Client_id> ClientIdManager::allocateId() {
     if (_nextId == INT_MAX) {
         if (_availableIds.empty()) {
             throw ClientLimitExceededException();
@@ -56,14 +56,14 @@ ft::shared_ptr<Client_id> ClientIdManager::allocateId(e_client_role role) {
             clinet_id_t id = *_availableIds.begin();
             
             _availableIds.erase(_availableIds.begin());
-            return ft::shared_ptr<Client_id>(new Client_id(id, true, role));
+            return ft::shared_ptr<Client_id>(new Client_id(id, true, ActionNone));
         }
     } else if (_availableIds.empty()) {
-        return ft::shared_ptr<Client_id>(new Client_id(_nextId++, true, role));
+        return ft::shared_ptr<Client_id>(new Client_id(_nextId++, true, ActionNone));
     } else {
         clinet_id_t id = *_availableIds.begin();
         _availableIds.erase(_availableIds.begin());
-        return ft::shared_ptr<Client_id>(new Client_id(id, true, role));
+        return ft::shared_ptr<Client_id>(new Client_id(id, true, ActionNone));
     }
 }
 void ClientIdManager::releaseId(ft::shared_ptr<Client_id> id) {

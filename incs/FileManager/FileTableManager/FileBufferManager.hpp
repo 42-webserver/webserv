@@ -11,12 +11,14 @@ class FileBufferManager
 public:
     FileBufferManager(void);
     ~FileBufferManager(void);
+public:
 private:
     FileBufferManager(const FileBufferManager &ref);
     FileBufferManager &operator=(const FileBufferManager &rhs);
 private:
     std::queue<ft::shared_ptr<Client_id> > _clientWaitingQueue;
-    ft::shared_ptr<IoReadAndWriteBuffer> _buffer;
+    ft::shared_ptr<IoReadAndWriteBuffer> _readFromFileToClientBuffer;
+    bool _queueSwitch;
 };
 
 #endif

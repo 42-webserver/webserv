@@ -1,14 +1,18 @@
 #include <Client/Client.hpp>
 
-Client::Client() : _eventQueueState(None) {}
-Client::Client(e_client_event_queue_state eventQueueState) : _eventQueueState(eventQueueState) {}
+Client::Client() : _eventQueueState(None) {
+    this->_build();
+}
+Client::Client(e_client_event_queue_state eventQueueState) : _eventQueueState(eventQueueState) {
+    this->_build();
+}
 Client::~Client() {
     ClientIdManager &idManager = ClientIdManager::getInstance(ClientIdManager::AcessKey());
     idManager.releaseId(this->_id);
 }
-void Client::build(e_client_role role){
+void Client::_build(){
     ClientIdManager &idManager = ClientIdManager::getInstance(ClientIdManager::AcessKey());
-    this->_id = idManager.allocateId(role);
+    this->_id = idManager.allocateId();
 }
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
     this->requests.push(request);
