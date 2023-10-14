@@ -45,7 +45,7 @@ private:
 
 public:
     virtual size_t	ioRead(int fd);
-    virtual size_t	ioWrite(int fd); 
+    virtual size_t	ioWrite(int fd);
 //Modifiable interface
 public:
     virtual size_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);

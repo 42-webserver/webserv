@@ -12,48 +12,48 @@
 //Behavior : partial Delete가 일어나는 상황 -> 뒤에 부터 지워지는 추상화
 //Behavior : erase가 한번이라도 일어난 후에는 insert가 일어나면 안됨 
 
-class Mode {
-public:
-    Mode();
+// class Mode {
+// public:
+//     Mode();
 
-	/**
-	 * @brief Constructs a Mode object with the specified properties.
-	 *
-	 * @param read Specifies whether the mode allows reading. True to allow reading, false otherwise.
-	 * @param write Specifies whether the mode allows writing. True to allow writing, false otherwise.
-	 * @param insert Specifies whether the mode allows inserting. True to allow inserting, false otherwise.
-	 * @param erase Specifies whether the mode allows erasing. True to allow erasing, false otherwise.
-	 * @param canDelete Specifies whether the mode allows deletion. True to allow deletion, false otherwise.
-	 */
-public:
-	Mode(bool read, bool write, bool insert, bool erase, bool canDelete);
-    inline void setMode(bool read, bool write, bool insert, bool erase, bool canDelete);
-    inline void setMode(unsigned char newMode);
-	inline void setReadMode();
-	inline void setWriteMode();
-	inline void setInsertMode();
-	inline void setEraseMode();
-	inline void setCanDeleteMode();
+// 	/**
+// 	 * @brief Constructs a Mode object with the specified properties.
+// 	 *
+// 	 * @param read Specifies whether the mode allows reading. True to allow reading, false otherwise.
+// 	 * @param write Specifies whether the mode allows writing. True to allow writing, false otherwise.
+// 	 * @param insert Specifies whether the mode allows inserting. True to allow inserting, false otherwise.
+// 	 * @param erase Specifies whether the mode allows erasing. True to allow erasing, false otherwise.
+// 	 * @param canDelete Specifies whether the mode allows deletion. True to allow deletion, false otherwise.
+// 	 */
+// public:
+// 	Mode(bool read, bool write, bool insert, bool erase, bool canDelete);
+//     inline void setMode(bool read, bool write, bool insert, bool erase, bool canDelete);
+//     inline void setMode(unsigned char newMode);
+// 	inline void setReadMode();
+// 	inline void setWriteMode();
+// 	inline void setInsertMode();
+// 	inline void setEraseMode();
+// 	inline void setCanDeleteMode();
 
-    inline bool checkMode(Mode newMode) const;
+//     inline bool checkMode(Mode newMode) const;
     
-    inline bool isReadMode() const;
-    inline bool isWriteMode() const;
-    inline bool isInsertMode() const;
-    inline bool isEraseMode() const;
-    inline bool isCanDeleteMode() const;
+//     inline bool isReadMode() const;
+//     inline bool isWriteMode() const;
+//     inline bool isInsertMode() const;
+//     inline bool isEraseMode() const;
+//     inline bool isCanDeleteMode() const;
 
-    void displayModes() const;
+//     void displayModes() const;
 
-private:
-    unsigned char mode : 5;
-};
+// private:
+//     unsigned char mode : 5;
+// };
 
 class BaseNode {
 typedef std::vector<char>::iterator iterator;
 typedef std::vector<char>::const_iterator const_iterator;
-private:
-	Mode	_mode;
+// private:
+// 	Mode	_mode;
 private:
 	size_t _size;
 	size_t _capacity;
@@ -77,7 +77,6 @@ public:
 	const_iterator begin() const;
 	const_iterator end() const;
     size_t size() const;
-	bool canDelete() const;
 	virtual bool isFull() const = 0;
 	bool isEmpty() const;
 };
