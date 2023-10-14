@@ -26,6 +26,13 @@ public:
 };
 
 class ClientIdManager {
+public:
+    class AcessKey {
+    private:
+        friend class Client;
+        AcessKey(void);
+        ~AcessKey(void);
+    };
 private:
     std::set<clinet_id_t> _availableIds;
     clinet_id_t _nextId;
@@ -36,7 +43,7 @@ private:
     ClientIdManager &operator=(const ClientIdManager &rhs);
     ~ClientIdManager();
 public:
-    static ClientIdManager &getInstance();
+    static ClientIdManager &getInstance(const AcessKey &acessKey);
 
 public:
     ft::shared_ptr<Client_id> allocateId(e_client_role role);

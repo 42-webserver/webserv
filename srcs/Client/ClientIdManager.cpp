@@ -1,5 +1,6 @@
 #include <Client/ClientIdManager.hpp>
 
+
 Client_id::Client_id(clinet_id_t id, bool isAvailable, 
 e_client_role role) : _id(id), _isAvailable(isAvailable), _role(role) {}
 Client_id::~Client_id() {}
@@ -17,8 +18,10 @@ void Client_id::release() {
 }
 ClientIdManager *ClientIdManager::_instance = NULL;
 ClientIdManager::~ClientIdManager() {}
-
-ClientIdManager &ClientIdManager::getInstance() {
+ClientIdManager::AcessKey::AcessKey(void) {}
+ClientIdManager::AcessKey::~AcessKey(void) {}
+ClientIdManager &ClientIdManager::getInstance(const AcessKey &acessKey) {
+    (void)acessKey;
     if (_instance == NULL) {
         _instance = new ClientIdManager();
     }

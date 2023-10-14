@@ -107,7 +107,9 @@ SRCS =	main.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
 		FileManager/FileTableManager/FileIdent.cpp \
 		FileManager/FileTableManager/FileSyncOnDestruct.cpp \
-
+		FileManager/FileTableManager/FileBufferManager.cpp \
+		FileManager/FileTableManager/FileOperationController.cpp \
+		
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
 				${OBJS_DIR}/Event \
