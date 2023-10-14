@@ -13,6 +13,13 @@ typedef enum {
     ActionDelete
 }   e_client_file_action;
 class Client_id {
+public:
+    class fileActionKey {
+    private:
+        friend class FileManager;
+        fileActionKey(void);
+        ~fileActionKey(void);
+    };
 private:
     clinet_id_t _id;
     bool _isAvailable;
@@ -24,6 +31,8 @@ public:
     bool isAvailable() const;
     e_client_file_action getfileAction() const;
     void release();
+    void setFileAction(e_client_file_action fileAction,
+    const fileActionKey &fileActionKey);
 };
 
 class ClientIdManager {

@@ -13,7 +13,7 @@
 #include <Pattern/PatternProcessor.hpp>
 #include <Client/ClientIdManager.hpp>
 
-static size_t MAX_QUEUE_SIZE = 15;
+static const size_t MAX_QUEUE_SIZE = 15;
 
 typedef enum {
     None       = 0b00, // 00

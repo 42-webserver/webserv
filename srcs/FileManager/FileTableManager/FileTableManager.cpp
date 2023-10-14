@@ -3,7 +3,8 @@
 FileTableManager::AcessKey::AcessKey(void) {}
 FileTableManager::AcessKey::~AcessKey(void) {}
 FileTableManager *FileTableManager::_instance = NULL;
-FileTableManager::FileTableManager(void) {}
+FileTableManager::FileTableManager(void) {
+}
 FileTableManager::~FileTableManager(void) {}
 FileTableManager& FileTableManager::getInstance(const AcessKey &acessKey) {
     (void)acessKey;

@@ -1,6 +1,7 @@
 #include <Client/ClientIdManager.hpp>
 
-
+Client_id::fileActionKey::fileActionKey(void) {}
+Client_id::fileActionKey::~fileActionKey(void) {}
 Client_id::Client_id(clinet_id_t id, bool isAvailable, 
 e_client_file_action fileAction) : _id(id), _isAvailable(isAvailable), _fileAction(fileAction) {}
 Client_id::~Client_id() {}
@@ -16,6 +17,14 @@ e_client_file_action Client_id::getfileAction() const {
 void Client_id::release() {
     _isAvailable = false;
 }
+void Client_id::setFileAction(e_client_file_action fileAction,
+const fileActionKey &fileActionKey) {
+    (void)fileActionKey;
+    _fileAction = fileAction;
+}
+
+
+//ClientIdManager
 ClientIdManager *ClientIdManager::_instance = NULL;
 ClientIdManager::~ClientIdManager() {}
 ClientIdManager::AcessKey::AcessKey(void) {}
