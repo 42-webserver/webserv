@@ -109,7 +109,10 @@ SRCS =	main.cpp \
 		FileManager/FileTableManager/FileSyncOnDestruct.cpp \
 		FileManager/FileTableManager/FileBufferManager.cpp \
 		FileManager/FileTableManager/FileOperationController.cpp \
-		
+		Hash/Sha256_copy.cpp \
+		Hash/Etag.cpp \
+		Hash/DirectoryListing.cpp \
+
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
 				${OBJS_DIR}/Event \
@@ -137,6 +140,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Client \
 				${OBJS_DIR}/FileManager/Cache \
 				${OBJS_DIR}/FileManager/FileTableManager \
+				${OBJS_DIR}/Hash \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}
 SRCS := ${addprefix ${SRCS_DIR}/, ${SRCS}}
