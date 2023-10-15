@@ -12,6 +12,7 @@ public:
     FileBufferManager(void);
     ~FileBufferManager(void);
 public:
+    void registerClientWaitingForFile(ft::shared_ptr<Client_id> &client_id);
 private:
     FileBufferManager(const FileBufferManager &ref);
     FileBufferManager &operator=(const FileBufferManager &rhs);

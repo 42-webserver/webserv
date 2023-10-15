@@ -4,10 +4,10 @@
 
 //왜 있는지 모르겠는데 일단 넣어둠
 typedef enum {
-    SyncroReady,
-    SyncroProcessing,
-    SyncroFinish
-}   e_local_syncro_state;
+    OkGood,
+    InvalidArgument,
+    deletedFile
+}   e_file_msg;
 
 
 typedef enum{
@@ -15,10 +15,10 @@ typedef enum{
     InCache,
     InsertingCache,
     UpdatingCache,
-    NotUsed,
     ReadingFile,
     WritingFile,
     InBuffer,
+    BufferFlushed,
     eraseProcessing,
     sharedProcessing,
     deleted  
