@@ -18,7 +18,6 @@ private:
 private:
     std::queue<ft::shared_ptr<Client_id> > _clientWaitingQueue;
     ft::shared_ptr<IoReadAndWriteBuffer> _readFromFileToClientBuffer;
-    bool _queueSwitch;
 };
 
 #endif

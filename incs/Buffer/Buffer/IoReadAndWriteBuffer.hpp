@@ -55,6 +55,8 @@ public:
 private:
     void	_allocate();
     void	_deallocate();
+public:
+    size_t  ioSaveWrite(int fd, size_t start);
 };
 
 #endif

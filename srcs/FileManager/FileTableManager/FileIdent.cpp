@@ -2,6 +2,11 @@
 
 FileIdent::~FileIdent(void) {}
 FileIdent::FileIdent(const std::string &path) : _path(path), _state(Init), _haveToUpdate(true) {
+    try {
+        this->_fileType = _queryFileType();
+    } catch (const std::exception &e) {
+        throw ;
+    }
 }
 FileIdent::FileIdent(void) : _path(""), _state(Init), _haveToUpdate(true) {
 }
@@ -17,16 +22,15 @@ FileIdent &FileIdent::operator=(const FileIdent &rhs) {
     }
     return (*this);
 }
-void FileIdent::_updateFileSize() {
-    FILE *file = fopen(this->_path.c_str(), "w+");
 
-    if (file == NULL)
+void FileIdent::_updateFileSize() {
+    struct stat fileInfo;
+
+    if (stat(this->_path.c_str(), &fileInfo) != 0) {
         throw FileIdent::FailToOpenException();
-    long originalPos = ftell(file);
-    fseek(file, 0, SEEK_END);
-    this->_fileSize = ftell(file);
-    fseek(file, originalPos, SEEK_SET);
-    fclose(file);
+    } else {
+        this->_fileSize = fileInfo.st_size;
+    }
 }
 bool FileIdent::_queryUpdateNeeded() {
     bool ret = false;
@@ -35,6 +39,19 @@ bool FileIdent::_queryUpdateNeeded() {
         _haveToUpdate = false;
     }
     return (ret);
+}
+e_file_type FileIdent::_queryFileType() {
+    struct stat fileInfo;
+
+    if (stat(this->_path.c_str(), &fileInfo) != 0) {
+        throw FileIdent::FailToOpenException();
+    } else {
+        if (S_ISDIR(fileInfo.st_mode)) {
+            return (directory);
+        } else {
+            return (normal);
+        }
+    }
 }
 void FileIdent::_queryUpdateFileSize() {
     if (_queryUpdateNeeded()) {
@@ -46,6 +63,9 @@ void FileIdent::_queryUpdateFileSize() {
     }
 }
 
+const e_file_type& FileIdent::getFileType(void) const {
+    return (this->_fileType);
+}
 const e_file_content_syncro &FileIdent::getState(void) const {
     return (this->_state);
 }

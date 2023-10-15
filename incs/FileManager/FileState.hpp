@@ -20,7 +20,8 @@ typedef enum{
     WritingFile,
     InBuffer,
     eraseProcessing,
-    sharedProcessing   
+    sharedProcessing,
+    deleted  
 }   e_file_content_syncro;
 
 #endif
