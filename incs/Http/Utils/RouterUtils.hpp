@@ -5,13 +5,16 @@
 #include "../../Config/IndexElement.hpp"
 #include "../../Config/LocationElement.hpp"
 #include "../../Config/RootElement.hpp"
+#include "../../Config/AllowMethodElement.hpp"
 #include "../../Config/AliasElement.hpp"
+#include "../../Config/AutoIndexElement.hpp"
 #include "../../Server/VirtualServer.hpp"
 #include "../../Server/VirtualServerManager.hpp"
 #include "../Request/HttpRequest.hpp"
 #include "../../Config/ClientMaxBodySizeElement.hpp"
 #include "../../Config/CgiPassElement.hpp"
 #include "../Utils/FileUploader.hpp"
+#include "../Utils/HttpMethod.hpp"
 #include "../Exception/NotFoundException.hpp"
 
 class RouterUtils {
@@ -22,7 +25,10 @@ public:
     static ft::shared_ptr<LocationElement> findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static int          findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static bool         isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+
+    static bool         isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static bool         isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+
 private:
     static std::string	_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string	_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
