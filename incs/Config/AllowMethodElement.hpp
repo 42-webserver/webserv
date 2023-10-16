@@ -1,10 +1,11 @@
 #ifndef ALLOWMETHODELEMENT_HPP
 # define ALLOWMETHODELEMENT_HPP
 
-# define M_NONE	0x00
+# define M_NONE		0x00
 # define M_GET		0x01
-# define M_POST	0x04
-# define M_DELETE	0x10
+# define M_PUT		0x02
+# define M_POST		0x04
+# define M_DELETE	0x08
 
 # include "ConfigElement.hpp"
 # include <map>

@@ -37,3 +37,7 @@ void	WriteEventToClient::offboardQueue(void){
 
 const ft::shared_ptr<VirtualServerManager>	
 &WriteEventToClient::getVirtualServerManger(void) const { return (this->_virtualServerManager); }
+
+e_client_event_queue_state WriteEventToClient::queryClientEventQueueState(void) {
+	return (this->_client->queryClientEventQueueState());
+}

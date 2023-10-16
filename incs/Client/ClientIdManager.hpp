@@ -3,10 +3,49 @@
 
 # include <set>
 # include <Client/ClientLimitExceededException.hpp>
-class ClientIdManager {
+# include "../../libs/shared_ptr/shared_ptr.hpp"
+
+typedef int clinet_id_t;
+typedef enum {
+    ActionNone,
+    ActionRead,
+    ActionWrite,
+    ActionDelete
+}   e_client_file_action;
+class Client_id {
+public:
+    class fileActionKey {
+    private:
+        friend class FileManager;
+        fileActionKey(void);
+        ~fileActionKey(void);
+    };
 private:
-    std::set<int> _availableIds;
-    int _nextId;
+    clinet_id_t _id;
+    bool _isAvailable;
+    e_client_file_action _fileAction;
+public:
+    Client_id(clinet_id_t id, bool isAvailable, e_client_file_action fileAction);
+    ~Client_id();
+    clinet_id_t getId() const;
+    bool isAvailable() const;
+    e_client_file_action getfileAction() const;
+    void release();
+    void setFileAction(e_client_file_action fileAction,
+    const fileActionKey &fileActionKey);
+};
+
+class ClientIdManager {
+public:
+    class AcessKey {
+    private:
+        friend class Client;
+        AcessKey(void);
+        ~AcessKey(void);
+    };
+private:
+    std::set<clinet_id_t> _availableIds;
+    clinet_id_t _nextId;
     static ClientIdManager *_instance;
 private:
     ClientIdManager();
@@ -14,10 +53,10 @@ private:
     ClientIdManager &operator=(const ClientIdManager &rhs);
     ~ClientIdManager();
 public:
-    static ClientIdManager &getInstance();
+    static ClientIdManager &getInstance(const AcessKey &acessKey);
 
 public:
-    int allocateId();
-    void releaseId(int id);
+    ft::shared_ptr<Client_id> allocateId();
+    void releaseId(ft::shared_ptr<Client_id> id);
 };
 #endif

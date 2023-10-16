@@ -1,13 +1,13 @@
 #ifndef FILETABLEMANAGER_HPP
 # define FILETABLEMANAGER_HPP
 
-# include <FileManager/FileTableManager/FileIdent.hpp>
 # include <FileManager/FileState.hpp>
 # include <iostream>
 # include <map>
 # include <Event/ReadEvent/ReadEventFromFile.hpp>
 # include <Event/WriteEvent/WriteEventToFile.hpp>
-
+# include <FileManager/FileTableManager/FileOperationController.hpp>
+# include <unistd.h>
 class FileManager;
 class FileProcessor;
 class FileTableManager
@@ -22,12 +22,14 @@ public:
         ~AcessKey(void);
     };
 private:
-    std::map<std::string, FileIdent> _fileTable;
+    std::map<std::string, ft::shared_ptr<FileOperationController> > _fileTable;
 private:
     FileTableManager(void);
     ~FileTableManager(void);
     FileTableManager(const FileTableManager &ref);
     FileTableManager &operator=(const FileTableManager &rhs);
+private:
+    bool _fileExist(const std::string &path);
 public:
     FileTableManager &getInstance(const AcessKey &acessKey);
     void deleteInstance(const AcessKey &acessKey);

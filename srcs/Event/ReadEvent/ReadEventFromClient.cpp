@@ -46,6 +46,6 @@ void	ReadEventFromClient::addRequest(ft::shared_ptr<HttpRequest> request) {
 	this->_client->addRequest(request);
 }
 
-bool	ReadEventFromClient::queryInEventQueue(e_client_queue_state state) {
-	return (this->_client->isInEventQueue(state));
+e_client_event_queue_state ReadEventFromClient::queryClientEventQueueState(void) {
+	return (this->_client->queryClientEventQueueState());
 }

@@ -1,15 +1,17 @@
 #include <Client/Client.hpp>
 
-Client::Client() {
-    _queueState[InReading] = false;
-    _queueState[InWriting] = false;
+Client::Client() : _eventQueueState(None) {
+    this->_build();
+}
+Client::Client(e_client_event_queue_state eventQueueState) : _eventQueueState(eventQueueState) {
+    this->_build();
 }
 Client::~Client() {
-    ClientIdManager &idManager = ClientIdManager::getInstance();
+    ClientIdManager &idManager = ClientIdManager::getInstance(ClientIdManager::AcessKey());
     idManager.releaseId(this->_id);
 }
-void Client::build(){
-    ClientIdManager &idManager = ClientIdManager::getInstance();
+void Client::_build(){
+    ClientIdManager &idManager = ClientIdManager::getInstance(ClientIdManager::AcessKey());
     this->_id = idManager.allocateId();
 }
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
@@ -28,14 +30,24 @@ bool Client::isQueueMax(void){
     return this->requests.size() >= MAX_QUEUE_SIZE;
 }
 
-bool Client::isInEventQueue(e_client_queue_state state){
-    return this->_queueState[state];
+e_client_event_queue_state Client::queryClientEventQueueState(void){
+    return this->_eventQueueState;
+}
+
+void Client::addClientEventQueueState(e_client_event_queue_state state){
+    this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState | state);
+}
+
+void Client::removeClientEventQueueState(e_client_event_queue_state state){
+    this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState & ~state);
 }
 
 PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<HttpRequest> request = this->requests.front();
     vsm->getDefaultVirtualServer();
     std::string method = request->getMethod();
+    if (RouterUtils::isRedirection(vsm, request))
+        return REDIRECTION;
     if (RouterUtils::isCgiRequest(vsm, request))
         return CGI_READ;
     if (method.compare(HTTP_METHOD::GET) == 0)

@@ -6,6 +6,7 @@ AllowMethodElement::MethodMap	AllowMethodElement::_initMethodMap(void) {
 	MethodMap	ret;
 
 	ret["GET"] = M_GET;
+	ret["PUT"] = M_PUT;
 	ret["POST"] = M_POST;
 	ret["DELETE"] = M_DELETE;
 	return (ret);

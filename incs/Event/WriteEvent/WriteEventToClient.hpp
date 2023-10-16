@@ -7,7 +7,7 @@
 # include <Channel/DualStreamable.hpp>
 #include "../../../incs/Event/WriteEvent/WriteEventToClientHandler.hpp"
 #include "../../../incs/Event/EventQueue/EventQueue.hpp"
-
+#include <Client/Client.hpp>
 class WriteEventToClient: public WriteEvent, public SingleStreamable, public DualStreamable{
 	public:
 		WriteEventToClient(ft::shared_ptr<Channel> fd, 
@@ -22,10 +22,11 @@ class WriteEventToClient: public WriteEvent, public SingleStreamable, public Dua
 		virtual void	callEventHandler(void);
 		virtual void	onboardQueue(void);
 		virtual void	offboardQueue(void);
-	
+		e_client_event_queue_state queryClientEventQueueState(void);
 	private:
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
 		ft::shared_ptr<HttpRequest>	_httpRequest;
+		ft::shared_ptr<Client>	_client;
 };
 
 #endif 
