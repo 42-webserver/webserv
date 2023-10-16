@@ -31,11 +31,11 @@ private:
 private:
     Client(const Client& other);
     Client& operator=(const Client& other);
-    void _build();
+    void _build(ft::shared_ptr<Channel> socket);
 public:
-    Client();
+    Client(ft::shared_ptr<Channel> socket,
+    e_client_event_queue_state eventQueueState);
     ~Client();
-    Client(e_client_event_queue_state eventQueueState);
     void addRequest(ft::shared_ptr<HttpRequest> request);
     bool isRequestEmpty(void);
     bool isResponseEmpty(void);

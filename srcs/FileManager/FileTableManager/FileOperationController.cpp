@@ -31,43 +31,38 @@ e_file_msg FileOperationController::_invalidArgument(void) {
 
 e_file_msg FileOperationController::_loadIsOk(ft::shared_ptr<Client_id> currentClientId) {
     this->_fileBufferManager.registerClientWaitingForFile(currentClientId);
-    return (OkGood);
+    return (OkNext);
 }
 
 
 e_file_msg FileOperationController::loadFileContent(ft::shared_ptr<Client_id> currentClientId) {
     e_file_content_syncro fileState = this->_fileIdent.getState();
+    const e_client_file_action clientAction = currentClientId->getfileAction();
 
-    switch (fileState) {
-        case e_file_content_syncro::Init:
-            return (InvalidArgument);
-        case e_file_content_syncro::InCache:
-            return (InvalidArgument);
-        case e_file_content_syncro::InsertingCache:
-            return (InvalidArgument);
-        case e_file_content_syncro::UpdatingCache:
-            return (InvalidArgument);
-        case e_file_content_syncro::ReadingFile: {
-            return (this->_loadIsOk(currentClientId));
-        }
-        case e_file_content_syncro::WritingFile: {
-            return (this->_loadIsOk(currentClientId));
-        }
-        case e_file_content_syncro::InBuffer: {
-            return (this->_loadIsOk(currentClientId));
-        }
-        case e_file_content_syncro::BufferFlushed: {
-            return (InvalidArgument);
-        }
-        case e_file_content_syncro::eraseProcessing: {
-            return (InvalidArgument);
-        }
-        case e_file_content_syncro::sharedProcessing: {
-            return (InvalidArgument);
-        }
-        case e_file_content_syncro::deleted: {
-            return (deletedFile);
-        }
+    switch (clientAction) {
+        case ActionRead:
+            break;
+        default:
+            return (this->_invalidArgument());
     }
+    
+}
+
+e_file_msg FileOperationController::sendFileContent(ft::shared_ptr<Client_id> currentClientId) {
+    (void)currentClientId;
+    //TODO: send file content
+    return (OkNext);
+}
+
+e_file_msg FileOperationController::deleteFileContent(ft::shared_ptr<Client_id> currentClientId) {
+    (void)currentClientId;
+    //TODO: delete file content
+    return (OkNext);
+}
+
+e_file_msg FileOperationController::updateFileContent(ft::shared_ptr<Client_id> currentClientId) {
+    (void)currentClientId;
+    //TODO: update file content
+    return (OkNext);
 }
 
