@@ -4,6 +4,7 @@
 # include <set>
 # include <Client/ClientLimitExceededException.hpp>
 # include "../../libs/shared_ptr/shared_ptr.hpp"
+# include <Channel/Channel.hpp>
 
 typedef int clinet_id_t;
 typedef enum {
@@ -24,8 +25,10 @@ private:
     clinet_id_t _id;
     bool _isAvailable;
     e_client_file_action _fileAction;
+    ft::shared_ptr<Channel> _socket;
 public:
-    Client_id(clinet_id_t id, bool isAvailable, e_client_file_action fileAction);
+    Client_id(clinet_id_t id, bool isAvailable, e_client_file_action fileAction,
+    ft::shared_ptr<Channel> socket);
     ~Client_id();
     clinet_id_t getId() const;
     bool isAvailable() const;
@@ -33,6 +36,8 @@ public:
     void release();
     void setFileAction(e_client_file_action fileAction,
     const fileActionKey &fileActionKey);
+    bool operator==(const Client_id &rhs) const;
+    bool operator!=(const Client_id &rhs) const;
 };
 
 class ClientIdManager {
@@ -56,7 +61,7 @@ public:
     static ClientIdManager &getInstance(const AcessKey &acessKey);
 
 public:
-    ft::shared_ptr<Client_id> allocateId();
+    ft::shared_ptr<Client_id> allocateId(ft::shared_ptr<Channel> socket);
     void releaseId(ft::shared_ptr<Client_id> id);
 };
 #endif

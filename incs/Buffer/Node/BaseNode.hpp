@@ -66,6 +66,7 @@ public:
 	BaseNode(size_t size);
 	size_t ioRead(int fd);
 	size_t ioWrite(int fd);
+	size_t ioSaveWrite(int fd, size_t start);
 	size_t erase(size_t n);
 	size_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);
 	size_t insert(std::vector<char>::iterator start, size_t size);
