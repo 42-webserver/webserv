@@ -37,7 +37,6 @@ ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<Virtual
 }
 
 int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string uri = req->getUri();
     std::string host = req->getHost();
 
     VirtualServerManager::VirtualServerPtr targetServer = vsm->findVirtualServer(host);
@@ -49,9 +48,6 @@ int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::s
 }
 
 bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string uri = req->getUri();
-    std::string host = req->getHost();
-
     ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
     if (locationElement.get() == NULL)
         return false;
@@ -59,6 +55,28 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
     if (it == locationElement->end())
         return false;
     return ft::static_pointer_cast<CgiPassElement>(it->second)->getFlag().compare("on") == 0;
+}
+
+bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    std::string method = req->getMethod();
+    if (locationElement.get() == NULL)
+        return method.compare(HTTP_METHOD::GET) == 0;
+    LocationElement::iterator it = locationElement->find(LocationElement::KEY::ALLOW_METHOD);
+    if (it == locationElement->end())
+        return method.compare(HTTP_METHOD::GET) == 0;
+    ft::shared_ptr<ConfigElement> allowMethodsConfElem = it->second;
+    ft::shared_ptr<AllowMethodElement> allowMethodsElem = ft::static_pointer_cast<AllowMethodElement>(allowMethodsConfElem);
+    
+    if (allowMethodsElem->getFlag() == M_GET && method.compare(HTTP_METHOD::GET) == 0)
+        return true;
+    if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
+        return true;
+    if (allowMethodsElem->getFlag() == M_PUT && method.compare(HTTP_METHOD::PUT) == 0)
+        return true;
+    if (allowMethodsElem->getFlag() == M_DELETE && method.compare(HTTP_METHOD::DELETE) == 0)
+        return true;
+    return false;
 }
 
 bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
@@ -72,6 +90,7 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     if (it == locationElement->end())
         return false;
     return true;
+
 }
 
 std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::string &uri){
@@ -137,8 +156,15 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
     if (!FileUploader::isDirectory(path))
             return path;
     ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
-    if (locationElement.get() != NULL)
+    if (locationElement.get() != NULL){
+        LocationElement::iterator it = locationElement->find(LocationElement::KEY::AUTOINDEX);
+        if (it != locationElement->end()){
+            ft::shared_ptr<AutoIndexElement> autoIndexElem = ft::static_pointer_cast<AutoIndexElement>(it->second);
+            if (autoIndexElem->getFlag())
+                return path;
+        }
         return _findIndexInLocation(path, locationElement);
+    }
     else
         return _findIndexInServer(path, vsm, req);
 }

@@ -18,11 +18,11 @@ public:
 	~MultipartRequest(void);
 	void addHeader(const std::string & header);
 	void insertBody(std::vector<char> &buffer);
-	std::multimap<std::string, std::string> &getHeaders();
-	ft::shared_ptr<IoReadAndWriteBuffer> getBody();
-
+	ft::shared_ptr<IoReadAndWriteBuffer> getBody(void);
+	bool needUpload(void);
+	std::string &getFilename(void);
 private:
-	void handleMultipleValueHeader(std::string & value, std::string & key);
+	void handleMultipleValueHeader(std::string & line);
 };
 
 
