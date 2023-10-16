@@ -5,6 +5,7 @@
 #include "../../Config/IndexElement.hpp"
 #include "../../Config/LocationElement.hpp"
 #include "../../Config/RootElement.hpp"
+#include "../../Config/AllowMethodElement.hpp"
 #include "../../Config/AliasElement.hpp"
 #include "../../Server/VirtualServer.hpp"
 #include "../../Server/VirtualServerManager.hpp"
@@ -22,6 +23,7 @@ public:
     static ft::shared_ptr<LocationElement> findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static int          findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static bool         isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+    static bool         isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
 private:
     static std::string	_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string	_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);

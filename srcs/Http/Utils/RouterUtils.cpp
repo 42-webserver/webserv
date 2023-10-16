@@ -37,7 +37,6 @@ ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<Virtual
 }
 
 int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string uri = req->getUri();
     std::string host = req->getHost();
 
     VirtualServerManager::VirtualServerPtr targetServer = vsm->findVirtualServer(host);
@@ -49,9 +48,6 @@ int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::s
 }
 
 bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string uri = req->getUri();
-    std::string host = req->getHost();
-
     ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
     if (locationElement.get() == NULL)
         return false;
@@ -59,6 +55,24 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
     if (it == locationElement->end())
         return false;
     return ft::static_pointer_cast<CgiPassElement>(it->second)->getFlag().compare("on") == 0;
+}
+
+bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    if (locationElement.get() == NULL)
+        return true;
+    LocationElement::iterator it = locationElement->find(LocationElement::KEY::ALLOW_METHOD);
+    if (it == locationElement->end())
+        return true;
+    ft::shared_ptr<ConfigElement> allowMethodsConfElem = it->second;
+    ft::shared_ptr<AllowMethodElement> allowMethodsElem = ft::static_pointer_cast<AllowMethodElement>(allowMethodsConfElem);
+    // std::vector<std::string> allowMethods = allowMethodsElem->getMethods();
+    std::string method = req->getMethod();
+    // for (std::vector<std::string>::iterator it = allowMethods.begin(); it != allowMethods.end(); it++){
+    //     if (method.compare(*it) == 0)
+    //         return true;
+    // }
+    return false;
 }
 
 std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::string &uri){
