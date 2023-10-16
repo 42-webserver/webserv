@@ -7,6 +7,7 @@
 #include "../../Config/RootElement.hpp"
 #include "../../Config/AllowMethodElement.hpp"
 #include "../../Config/AliasElement.hpp"
+#include "../../Config/AutoIndexElement.hpp"
 #include "../../Server/VirtualServer.hpp"
 #include "../../Server/VirtualServerManager.hpp"
 #include "../Request/HttpRequest.hpp"
