@@ -36,7 +36,7 @@ e_file_msg FileOperationController::_loadIsOk(ft::shared_ptr<Client_id> currentC
 
 
 e_file_msg FileOperationController::loadFileContent(ft::shared_ptr<Client_id> currentClientId) {
-    e_file_content_syncro fileState = this->_fileIdent.getState();
+    // e_file_content_syncro fileState = this->_fileIdent.getState();
     const e_client_file_action clientAction = currentClientId->getfileAction();
 
     switch (clientAction) {
@@ -45,7 +45,10 @@ e_file_msg FileOperationController::loadFileContent(ft::shared_ptr<Client_id> cu
         default:
             return (this->_invalidArgument());
     }
-    
+    if (!this->_fileBufferManager.isClientRegistered(currentClientId))
+        this->_fileBufferManager.registerClientWaitingForFile(currentClientId);
+    //Todo
+    return (OkNext);
 }
 
 e_file_msg FileOperationController::sendFileContent(ft::shared_ptr<Client_id> currentClientId) {

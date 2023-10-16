@@ -1,0 +1,26 @@
+
+//get /images
+
+//fileRead-> 객체 안에서
+
+//findPath 일반적인 get요청이 아닌 모든
+//Index붙여주는거는 일반적인 get요청일떄만 
+
+
+//get /html -> Priority 이친구가불리겠져?
+//std::string -> html이 있으면(dir,NormalFile) 저거 주고, 아니면 html/index.html 얘도 없다 -> filenotfound exception
+                                                        // html/index.html->html/index.html ->이러한 우선순위로
+//Priority-> dir이면 우선순위 autoindex먼저.
+
+//Note: html이 있는데 dir인데 autoIndex가 꺼져있으면 이랑  켜 있는거에 대해서 분할처리
+//get /html/ -> Priority 는 get /html과 동작이 동치.
+
+//get /cgi/hi.hello-> find -> 최종 패스 붙여주는에 
+
+
+
+        general              cgi
+//get     Priority   ||  find
+//put           f     ||   find
+//POST          f     ||   find
+//delete         f    ||    f 

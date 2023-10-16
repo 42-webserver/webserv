@@ -37,6 +37,7 @@ public:
     void setFileAction(e_client_file_action fileAction,
     const fileActionKey &fileActionKey);
     bool operator==(const Client_id &rhs) const;
+    bool operator!=(const Client_id &rhs) const;
 };
 
 class ClientIdManager {

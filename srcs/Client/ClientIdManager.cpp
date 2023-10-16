@@ -27,6 +27,9 @@ bool Client_id::operator==(const Client_id &rhs) const {
     return _id == rhs._id && _isAvailable && rhs._isAvailable;
 }
 
+bool Client_id::operator!=(const Client_id &rhs) const {
+    return !(*this == rhs);
+}
 //ClientIdManager
 ClientIdManager *ClientIdManager::_instance = NULL;
 ClientIdManager::~ClientIdManager() {}

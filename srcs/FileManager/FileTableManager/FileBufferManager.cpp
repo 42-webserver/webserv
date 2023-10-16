@@ -35,19 +35,27 @@ bool CurrentSharedWriteClient::operator==(const ft::shared_ptr<Client_id> &clien
 
 ///////////
 FileBufferManager::FileBufferManager(void) :
-_clientWaitingQueue(std::queue<ft::shared_ptr<Client_id> >()),
+_clientWaitingQueue(std::deque<ft::shared_ptr<Client_id> >()),
 _readFromFileToClientBuffer(ft::shared_ptr<IoReadAndWriteBuffer>(new IoReadAndWriteBuffer())) {}
 
 FileBufferManager::~FileBufferManager(void) {}
 
 void FileBufferManager::registerClientWaitingForFile(ft::shared_ptr<Client_id> &client_id) {
-    this->_clientWaitingQueue.push(client_id);
+    this->_clientWaitingQueue.push_back(client_id);
+    this->_clientWaitingQueueTable[client_id->getId()] = this->_clientWaitingQueue.end() - 1;
 }
 
 bool FileBufferManager::isClientRegistered(const ft::shared_ptr<Client_id> &client_id) {
-    clientQueueIterator it = this->_clientWaitingQueueTable.find(client_id->getId());
+    CurrentWaitQueueTableIterator it = this->_clientWaitingQueueTable.find(client_id->getId());
+
+    if (it == this->_clientWaitingQueueTable.end() 
+    || (*it->second)->isAvailable() == false)
+        return (false);
+    return (true);
 }
+
 e_file_msg FileBufferManager::ioWriteUsingSharedBuffer(const ft::shared_ptr<Client_id> &client_id) {
-    CurrentSharedWriteClient &currentWriteClient = this->_currentWriteClients[client_id->getId()];
+    // CurrentSharedWriteClient &currentWriteClient = this->_currentWriteClients[client_id->getId()];
+    (void)client_id;
     return (deletedFile);
 }
