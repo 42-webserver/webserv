@@ -34,9 +34,6 @@ public:
 			~AccessKey();
 	};
 
-//file Interface
-private:
-	e_file_upload_sync						_fileUploadSync;
 
 
 private:
@@ -52,7 +49,9 @@ private:
 	std::map<std::string, std::string>	  	_queries;
 	std::map<std::string, std::string>	  	_cookies;
 	std::vector<MultipartRequest>		 	_multipartRequests;
-
+//file Interface
+private:
+	e_file_upload_sync						_fileUploadSync;
 //file Interface
 public:
 	e_file_upload_sync getFileUploadSync(AccessKey key);

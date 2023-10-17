@@ -33,6 +33,7 @@ class LruCache {
 		void				put(std::string uri, std::vector<char> content);
 		void				put(const std::string& uri);
 		void 				put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
+		void				deleteContent(const std::string &uri);
 };
 
 #endif

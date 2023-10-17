@@ -35,6 +35,7 @@ private:
 private:
     static FileManager *_instance;
     void _readFile(const std::string &uri, ft::shared_ptr<HttpResponse> response);
+    void _writeFile(const std::string &uri, ft::shared_ptr<HttpRequest> request);
 public:
     static FileManager &getInstance(void);
     e_FileRequestType requstFileContent(const std::string &uri, ft::shared_ptr<HttpResponse> response);
@@ -44,9 +45,13 @@ public:
     ft::shared_ptr<HttpRequest> request);
     e_FileRequestType _requestFileUploadMultiPart(const std::string &uri,
     ft::shared_ptr<HttpRequest> request);
+
+//static utility
+public:
     static e_file_info getFileInfo(const std::string &uri, struct stat &fileStat);
     static bool isInCashSize(struct stat &fileStat);
     static bool isInCashSize(size_t size);
+    static size_t getFileSize(const std::string &uri);
 };
 
 

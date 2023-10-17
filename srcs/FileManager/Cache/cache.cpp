@@ -45,3 +45,7 @@ void    Cache::putCacheContent(const std::string &uri) {
 void	Cache::putCacheContent(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
 	this->_cache.put(uri, buffer);
 }
+
+void	Cache::deleteCacheContent(const std::string &uri) {
+	this->_cache.deleteContent(uri);
+}

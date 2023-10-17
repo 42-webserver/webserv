@@ -43,9 +43,15 @@ void LruCache::put(const std::string& uri) {
 	(void)uri;
 }
 
+//있는거면 덮어씌우게 uri로 찾았을떄 해야될듯 ?
 void LruCache::put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
 	//Todo :
 	(void)uri;
 	(void)buffer;
+}
+
+void LruCache::deleteContent(const std::string &uri) {
+	//Todo :
+	(void)uri;
 }
 const char	*LruCache::FailToGetException::what(void) const throw() { return ("LruCache: Fail to get"); }

@@ -24,7 +24,7 @@ e_FileProcessingType FileTableManager::findFileProcessingType(const std::string 
 {
     std::map<std::string, FileData>::iterator iter = this->_fileTable.find(fileName);
     if (iter == this->_fileTable.end())
-        this->_fileTable.insert(std::make_pair(fileName, Fil₩eData())); 
+        this->_fileTable.insert(std::make_pair(fileName, FileData())); 
     return (_fileTable[fileName].getFileProcessingType());
 }
 

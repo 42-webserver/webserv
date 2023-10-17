@@ -8,7 +8,6 @@
 #include "../Utils/Cookie.hpp"
 #include <iostream>
 #include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
-#include <../../../libs/Library/Optional.hpp>
 
 typedef enum{
 	NotSet,
@@ -44,13 +43,13 @@ private:
 //Relation with file Interface
 private:
 	e_ResponseSize		_responseSize;
-	ft::Optional<e_File_Sync>	_fileSync;
+	e_File_Sync	_fileSync;
 	ft::shared_ptr<IoReadAndWriteBuffer> _BigSizeBuffer;
 	std::vector<char>	_NormalCaseBuffer;
 public:
 	void setFileSync(e_File_Sync fileSync, AccessKey key);
 	void setResponseSize(e_ResponseSize responseSize, AccessKey key);
-	ft::Optional<e_File_Sync> getFileSync(AccessKey key);
+	e_File_Sync getFileSync(AccessKey key);
 	std::vector<char>& getNormalCaseBuffer(AccessKey key);
 	ft::shared_ptr<IoReadAndWriteBuffer> &getBigSizeBuffer(AccessKey key);
 	void allocateBigSizeBuffer(AccessKey key);
