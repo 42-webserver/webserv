@@ -41,3 +41,7 @@ size_t	Cache::getCacheContentSize(const std::string &uri)  {
 void    Cache::putCacheContent(const std::string &uri) {
 	this->_cache.put(uri);
 }
+
+void	Cache::putCacheContent(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
+	this->_cache.put(uri, buffer);
+}

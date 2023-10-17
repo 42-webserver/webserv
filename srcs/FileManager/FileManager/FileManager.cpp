@@ -59,60 +59,125 @@ std::string getDirectoryListing(const std::string& path) {
     return oss.str();
 }
 
+e_file_info FileManager::getFileInfo(const std::string &uri, struct stat &fileStat) {
+    if (stat(uri.c_str(), &fileStat) < 0) {
+        return (NotExistFile);
+    }
+    if (S_ISDIR(fileStat.st_mode)) {
+        return (ExistDirectory);
+    }
+    return (ExistFile);
+}
+
+// 항상 getFileinfo를 통해서 fileStat을 받아와야됨
+bool FileManager::isInCashSize(struct stat &fileStat) {
+    if (fileStat.st_size < Cache::cache_block_size) {
+        return (true);
+    }
+    return (false);
+}
+
+bool FileManager::isInCashSize(size_t size) {
+    if (size < Cache::cache_block_size) {
+        return (true);
+    }
+    return (false);
+}
 //check FileSuccess with responseType setting
 // modulizing Need
 // 이 전에 헤더 내용이 buffer에 들어가있다라고 가정하기떄문에 파일 사이즈 물어보는게 있어서 수정하고 들어가있는걸 가정
-e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
-    struct stat fileStat;
-    e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
-    if (fileSync == NotSetting) {
-        if (stat(uri.c_str(), &fileStat) < 0) {
-            return (FileRequestFail);
-        }
-        if (S_ISDIR(fileStat.st_mode)) {
-            //To do: send directory listing Moduliziing
-            std::vector<char> &buffer = response->getNormalCaseBuffer(HttpResponse::AccessKey());
-            std::string directoryListing = getDirectoryListing(uri);
+// check FileSuccess with response->statusCode setting
+// e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
+//     struct stat fileStat;
+//     e_file_info fileInfo = getFileInfo(uri, fileStat);
 
-            buffer.insert(buffer.end(), directoryListing.begin(), directoryListing.end());
-            response->setResponseSize(normalSize, HttpResponse::AccessKey());
-            return (FileRequestSuccess);
-        }
-    }
-    if (fileStat.st_size < Cache::cache_block_size) {
-        Cache & cache = Cache::getInstance();
-        if (cache.hit(uri)) {
-            cache.getCacheContent(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
-            response->setResponseSize(normalSize, HttpResponse::AccessKey());
-            return (FileRequestSuccess);
-        }
-        else {
-            if (fileSync == NotSetting) {
-                // 이 밑에 코드에서는 파일을 등록을 하는데 cache가 등록하도록해야됨 
-                cache.putCacheContent(uri);
-                response->setFileSync(Reading, HttpResponse::AccessKey());
-            }
-            //else 는 파일이 등록 되고 있는중이라 hit안된거임으로 파일을 등록할 필요 없음
-            return (FileRequestShouldWait);
-        }
+//     e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
+//     if (fileSync == NotSetting) {
+
+//         if (fileInfo == NotExistFile) {
+//             response->setStatusCode(NOT_FOUND);
+//             return (FileRequestFail);
+//         }
+//         if (fileInfo == ExistDirectory) {
+//             //To do: send directory listing Moduliziing
+//             std::vector<char> &buffer = response->getNormalCaseBuffer(HttpResponse::AccessKey());
+//             std::string directoryListing = getDirectoryListing(uri);
+
+//             buffer.insert(buffer.end(), directoryListing.begin(), directoryListing.end());
+//             response->setResponseSize(normalSize, HttpResponse::AccessKey());
+//             response->setStatusCode(OK);
+//             return (FileRequestSuccess);
+//         }
+//     }
+//     if (isInCashSize(fileStat)) {
+//         Cache & cache = Cache::getInstance();
+//         if (cache.hit(uri)) {
+//             cache.getCacheContent(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
+//             response->setResponseSize(normalSize, HttpResponse::AccessKey());
+//             response->setStatusCode(OK);
+//             return (FileRequestSuccess);
+//         }
+//         else {
+//             if (fileSync == NotSetting) {
+//                 // 이 밑에 코드에서는 파일을 등록을 하는데 cache가 등록하도록해야됨 
+//                 cache.putCacheContent(uri);
+//                 response->setFileSync(Reading, HttpResponse::AccessKey());
+//             }
+//             //else 는 파일이 등록 되고 있는중이라 hit안된거임으로 파일을 등록할 필요 없음
+//             return (FileRequestShouldWait);
+//         }
+//     }
+//     else {
+//         FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
+//         e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
+
+//         if (fileSync == ReadingDone) {
+//             response->setStatusCode(OK);
+//             return (FileRequestSuccess);
+//         }
+//         if (fileProcessingType == ReadingProcessing || fileProcessingType == NoneProcessing) {
+//             if (fileSync == NotSetting) {
+//                 response->setResponseSize(BigSize, HttpResponse::AccessKey());
+//                 response->setFileSync(Reading, HttpResponse::AccessKey());
+//                 _readFile(uri, response);
+//             }
+//             //else 는 파일이 이 읽히고 있는중이고 그리고 따로 readFile에서 자동으로 ReadingProcessing으로 바꿀거라 ㄱㅊ
+//             return (FileRequestShouldWait);
+//         }
+//         else
+//             //file 이 수정되고 나서의 상태 예측이 불가능하기 떄문에 이와 같이 진행
+//             return (FileRequestShouldWait);
+//     }
+// }
+
+
+e_FileRequestType FileManager::requestFileUpload(const std::string &uri,
+ft::shared_ptr<HttpRequest> request) {
+    if (request->getBodyType() == MULTIPART_FORM_DATA) {
+        return (_requestFileUploadMultiPart(uri, request));
     }
     else {
-        FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
-        e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
+        return (_requestFileUploadDefault(uri, request));
+    }
+}
 
-        if (fileSync == ReadingDone)
-            return (FileRequestSuccess);
-        if (fileProcessingType == ReadingProcessing || fileProcessingType == NoneProcessing) {
-            if (fileSync == NotSetting) {
-                response->setResponseSize(BigSize, HttpResponse::AccessKey());
-                response->setFileSync(Reading, HttpResponse::AccessKey());
-                _readFile(uri, response);
-            }
-            //else 는 파일이 이 읽히고 있는중이고 그리고 따로 readFile에서 자동으로 ReadingProcessing으로 바꿀거라 ㄱㅊ
-            return (FileRequestShouldWait);
+e_FileRequestType FileManager::_requestFileUploadDefault(const std::string &uri,
+ft::shared_ptr<HttpRequest> request) {
+//Todo: logic
+    FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
+    //fileTableManager 에 없으면 fileData를 만들어서 넣어줌 NoneProcessing으로
+    e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
+    size_t contentLength = request->getBodySize();
+
+    if (fileProcessingType == ReadingProcessing) {
+        return (FileRequestShouldWait);
+    }
+    if (fileProcessingType == NoneProcessing) {
+        if (isInCashSize(contentLength)) {
         }
-        else
-            //file 이 수정되고 나서의 상태 예측이 불가능하기 떄문에 이와 같이 진행
-            return (FileRequestShouldWait);
+        else {
+        }
+    }
+    if (fileProcessingType == WritingProcessing) {
     }
 }

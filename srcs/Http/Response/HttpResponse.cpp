@@ -13,7 +13,7 @@ void HttpResponse::setFileSync(e_File_Sync fileSync, AccessKey key)
 	this->_fileSync = fileSync;
 }
 
-e_File_Sync HttpResponse::getFileSync(AccessKey key)
+ft::Optional<e_File_Sync> HttpResponse::getFileSync(AccessKey key)
 {
 	(void)key;
 	return this->_fileSync;

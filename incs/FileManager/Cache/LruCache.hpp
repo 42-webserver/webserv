@@ -5,7 +5,8 @@
 # include <list>
 # include <map>
 # include <vector>
-
+# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
+# include "../../../libs/shared_ptr/shared_ptr.hpp"
 class LruCache {
 	public:
 	class FailToGetException: public std::exception {
@@ -31,6 +32,7 @@ class LruCache {
 		 size_t				getCacheContentSize(const std::string &uri);
 		void				put(std::string uri, std::vector<char> content);
 		void				put(const std::string& uri);
+		void 				put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 };
 
 #endif

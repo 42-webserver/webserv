@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <Http/Response/HttpResponse.hpp>
+#include <Http/Request/HttpRequest.hpp>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -19,7 +20,11 @@ typedef enum{
     FileRequestFail
 }   e_FileRequestType;
 
-
+typedef enum{
+    NotExistFile,
+    ExistFile,
+    ExistDirectory
+}   e_file_info;
 class FileManager
 {
 private:
@@ -33,7 +38,15 @@ private:
 public:
     static FileManager &getInstance(void);
     e_FileRequestType requstFileContent(const std::string &uri, ft::shared_ptr<HttpResponse> response);
-
+    e_FileRequestType requestFileUpload(const std::string &uri, 
+    ft::shared_ptr<HttpRequest> request);
+    e_FileRequestType _requestFileUploadDefault(const std::string &uri,
+    ft::shared_ptr<HttpRequest> request);
+    e_FileRequestType _requestFileUploadMultiPart(const std::string &uri,
+    ft::shared_ptr<HttpRequest> request);
+    static e_file_info getFileInfo(const std::string &uri, struct stat &fileStat);
+    static bool isInCashSize(struct stat &fileStat);
+    static bool isInCashSize(size_t size);
 };
 
 

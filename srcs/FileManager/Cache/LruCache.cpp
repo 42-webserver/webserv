@@ -42,4 +42,10 @@ void LruCache::put(const std::string& uri) {
 	//Todo :
 	(void)uri;
 }
+
+void LruCache::put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
+	//Todo :
+	(void)uri;
+	(void)buffer;
+}
 const char	*LruCache::FailToGetException::what(void) const throw() { return ("LruCache: Fail to get"); }
