@@ -11,7 +11,6 @@
 #include "../../libs/Library/Optional.hpp"
 #include <queue>
 #include <Pattern/PatternProcessor.hpp>
-#include <Client/ClientIdManager.hpp>
 
 static const size_t MAX_QUEUE_SIZE = 15;
 
@@ -27,14 +26,13 @@ private:
     std::queue<ft::shared_ptr<HttpRequest> > requests;
     ft::Optional<ft::shared_ptr<HttpResponse> > response;
     e_client_event_queue_state _eventQueueState;
-    ft::shared_ptr<Client_id> _id;
 private:
     Client(const Client& other);
     Client& operator=(const Client& other);
     void _build(ft::shared_ptr<Channel> socket);
 public:
-    Client(ft::shared_ptr<Channel> socket,
-    e_client_event_queue_state eventQueueState);
+    Client(
+    e_client_event_queue_state eventQueueState = None);
     ~Client();
     void addRequest(ft::shared_ptr<HttpRequest> request);
     bool isRequestEmpty(void);

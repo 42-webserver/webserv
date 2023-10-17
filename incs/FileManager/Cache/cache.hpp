@@ -9,8 +9,10 @@ class Cache{
 public:
 		static Cache	&getInstance(void);
 		void deleteInstance(void);
-		size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri);
+		// size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri);
 		size_t  getCacheContentSize(const std::string &uri);
+		void    getCacheContent(const std::string &uri, std::vector<char> &buffer);
+		void    putCacheContent(const std::string &uri);
 public:		
 		bool hit(const std::string &uri);
 private:
@@ -24,6 +26,8 @@ private:
 private:
 	LruCache	_cache;
 	static Cache	*_instance;
+public:
+	static const int cache_block_size = 1024 * 4;
 };
 
 #endif

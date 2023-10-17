@@ -72,9 +72,12 @@ void HttpCgiResponseHandler::_addTypeAndLength(ft::shared_ptr<HttpResponse> resp
 void HttpCgiResponseHandler::_makeResponseBody(std::string &buffer, ft::shared_ptr<HttpResponse> response){
     if (response->getBody().size() + buffer.size() > static_cast<size_t>(_contentLength)){
         std::string tmp = buffer.substr(0, _contentLength - response->getBody().size());
-        response->setBody(tmp);
+        //TODO: setBody
+        // response->setBody(tmp);
+        
     }else{
-        response->setBody(buffer);
+        //TODO: setBody
+        // response->setBody(buffer);
     }
 }
 
