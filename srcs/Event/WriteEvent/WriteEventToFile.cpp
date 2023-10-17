@@ -1,7 +1,7 @@
 #include <Event/WriteEvent/WriteEventToFile.hpp>
 
 WriteEventToFile::WriteEventToFile(
-    IoReadAndWriteBuffer &buffer,
+    ft::shared_ptr<IoReadAndWriteBuffer> buffer,
     const std::string &path, std::string mode = "w+") :
     WriteEvent(new WriteEventToFileHandler(buffer)),
     SingleStreamable(new FileStream(path, mode)){}
@@ -9,10 +9,7 @@ WriteEventToFile::WriteEventToFile(
 WriteEventToFile::~WriteEventToFile(void) {
 }
 
-void WriteEventToFile::_sync(e_file_content_syncro *origin,
-    e_file_content_syncro targetState, bool *haveToUpdate) {
-    _syncObj.Sync(origin, targetState, haveToUpdate);
-}
+
 
 void WriteEventToFile::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);

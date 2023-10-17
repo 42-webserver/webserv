@@ -1,7 +1,47 @@
 #include "../../../incs/Http/Response/HttpResponse.hpp"
 
+HttpResponse::AccessKey::AccessKey()
+{
+}
+HttpResponse::AccessKey::~AccessKey()
+{
+}
 
-HttpResponse::HttpResponse()
+void HttpResponse::setFileSync(e_File_Sync fileSync, AccessKey key)
+{
+	(void)key;
+	this->_fileSync = fileSync;
+}
+
+e_File_Sync HttpResponse::getFileSync(AccessKey key)
+{
+	(void)key;
+	return this->_fileSync;
+}
+
+void HttpResponse::setResponseSize(e_ResponseSize responseSize , AccessKey key)
+{
+	(void)key;
+	this->_responseSize = responseSize;
+}
+std::vector<char>& HttpResponse::getNormalCaseBuffer(AccessKey key)
+{
+	(void)key;
+	return this->_NormalCaseBuffer;
+}
+
+ft::shared_ptr<IoReadAndWriteBuffer> &HttpResponse::getBigSizeBuffer(AccessKey key)
+{
+	(void)key;
+	return this->_BigSizeBuffer;
+}
+
+void HttpResponse::allocateBigSizeBuffer(AccessKey key)
+{
+	(void)key;
+	this->_BigSizeBuffer = ft::shared_ptr<IoReadAndWriteBuffer>(new IoReadAndWriteBuffer());
+}
+HttpResponse::HttpResponse() : _responseSize(NotSet), _fileSync(NotSetting)
 {
 	this->_version = "1.1";
 	this->_protocol = "HTTP";
@@ -12,15 +52,7 @@ HttpResponse::~HttpResponse()
 {
 }
 
-void HttpResponse::setBody(std::vector<char> & body)
-{
-	this->_body.insert(this->_body.end(), body.begin(), body.end());
-}
 
-void HttpResponse::setBody(std::string & body)
-{
-	this->_body.insert(this->_body.end(), body.begin(), body.end());
-}
 
 void HttpResponse::setFileName(std::string & fileName)
 {

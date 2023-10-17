@@ -100,18 +100,14 @@ SRCS =	main.cpp \
 		Pattern/PatternProcessor.cpp \
 		Pattern/ProcessorObject.cpp \
 		Client/Client.cpp \
-		Client/ClientIdManager.cpp \
 		Client/ClientLimitExceededException.cpp \
 		FileManager/Cache/cache.cpp \
 		FileManager/Cache/LruCache.cpp \
+		FileManager/FileManager/FileData.cpp \
+		FileManager/FileManager/FileManager.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
-		FileManager/FileTableManager/FileIdent.cpp \
-		FileManager/FileTableManager/FileSyncOnDestruct.cpp \
-		FileManager/FileTableManager/FileBufferManager.cpp \
-		FileManager/FileTableManager/FileOperationController.cpp \
 		Hash/Sha256_copy.cpp \
 		Hash/Etag.cpp \
-		Hash/DirectoryListing.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -140,6 +136,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Client \
 				${OBJS_DIR}/FileManager/Cache \
 				${OBJS_DIR}/FileManager/FileTableManager \
+				${OBJS_DIR}/FileManager/FileManager \
 				${OBJS_DIR}/Hash \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}

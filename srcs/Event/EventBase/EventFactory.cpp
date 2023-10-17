@@ -3,6 +3,8 @@
 #include "../../../incs/Event/WriteEvent/WriteEventToClient.hpp"
 #include "../../../incs/Event/ReadEvent/ReadEventFromCgi.hpp"
 #include "../../../incs/Event/ListenEvent/ListenEvent.hpp"
+#include <Event/ReadEvent/ReadEventFromFile.hpp>
+
 // #include "../../../incs/Event/WriteEvent/WriteEventToCgi.hpp"
 
 EventFactory *EventFactory::_instance = NULL;
@@ -29,6 +31,12 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 			 eventDto.getVirtualServerManager(),
 			 eventDto.getHttpRequest())
 			);
+		case ft::FILE_READ_EVENT:
+			return (new ReadEventFromFile(eventDto.getBuffer(),
+			 eventDto.getPath(), eventDto.getMode())
+			);
+
+
 		// case ft::READ_EVENT_FROM_CGI:
 		// 	return (new ReadEventFromCgi(eventDto));
 		// case ft::WRITE_EVENT_TO_CGI:

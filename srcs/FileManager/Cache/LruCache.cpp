@@ -38,4 +38,8 @@ void				LruCache::put(std::string uri, std::vector<char> content) {
 	this->_lru_list.push_front(std::make_pair(uri, content));
 	this->_cache[uri] = this->_lru_list.begin();
 }
+void LruCache::put(const std::string& uri) {
+	//Todo :
+	(void)uri;
+}
 const char	*LruCache::FailToGetException::what(void) const throw() { return ("LruCache: Fail to get"); }

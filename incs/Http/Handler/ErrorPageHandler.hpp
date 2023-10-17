@@ -12,9 +12,9 @@
 class ErrorPageHandler
 {
 public:
-	static ft::shared_ptr<HttpResponse> getErrorPageResponse(HttpStatusCode status);
+	// static ft::shared_ptr<HttpResponse> getErrorPageResponse(HttpStatusCode status);
 private:
-	static std::vector<char> getErrorPage(HttpStatusCode status);
+	// static std::vector<char> getErrorPage(HttpStatusCode status);
 
 };
 

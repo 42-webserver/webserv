@@ -30,6 +30,7 @@ class LruCache {
 		std::vector<char>::iterator	getIter(const std::string &uri);
 		 size_t				getCacheContentSize(const std::string &uri);
 		void				put(std::string uri, std::vector<char> content);
+		void				put(const std::string& uri);
 };
 
 #endif

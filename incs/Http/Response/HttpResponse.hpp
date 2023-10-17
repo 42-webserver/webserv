@@ -7,24 +7,53 @@
 #include "../Utils/HttpStatus.hpp"
 #include "../Utils/Cookie.hpp"
 #include <iostream>
+#include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
+\
+typedef enum{
+	NotSet,
+	normalSize,
+	BigSize
+}	e_ResponseSize;
 
+typedef enum{
+	NotSetting,
+	Reading,
+	ReadingDone
+}	e_File_Sync;
+class FileManager;
 class HttpResponse
 {
+public:
+	class AccessKey
+	{
+		friend class FileManager;
+		private:
+			AccessKey();
+			~AccessKey();
+	};
 private:
+	e_ResponseSize		_responseSize;
 	std::string 		_version;
 	std::vector<char>	_body;
 	std::string 		_protocol;
 	HttpStatusCode 		_statusCode;
 	std::string 		_fileName;
-	
+	ft::shared_ptr<IoReadAndWriteBuffer> _BigSizeBuffer;
+	std::vector<char>	_NormalCaseBuffer;
 	std::multimap<std::string, std::string> _headers;
 	std::vector<Cookie> _cookies;
-
+	e_File_Sync			_fileSync;
+//file Interface
+public:
+	void setFileSync(e_File_Sync fileSync, AccessKey key);
+	void setResponseSize(e_ResponseSize responseSize, AccessKey key);
+	e_File_Sync getFileSync(AccessKey key);
+	std::vector<char>& getNormalCaseBuffer(AccessKey key);
+	ft::shared_ptr<IoReadAndWriteBuffer> &getBigSizeBuffer(AccessKey key);
+	void allocateBigSizeBuffer(AccessKey key);
 public:
 	HttpResponse();
 	~HttpResponse();
-	void setBody(std::vector<char> & body);
-	void setBody(std::string & body);
 	void setFileName(std::string & fileName);
 	void addHeader(const std::string & key, const std::string & value);
 	void setStatusCode(HttpStatusCode code);

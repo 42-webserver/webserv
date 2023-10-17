@@ -1,16 +1,15 @@
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
 
 ReadEventFromFile::ReadEventFromFile(
-    IoReadAndWriteBuffer &buffer,
+    ft::shared_ptr<IoReadAndWriteBuffer> buffer,
     const std::string &path, std::string mode = "w+") :
     ReadEvent(new ReadEventFromFileHandler(buffer)),
     SingleStreamable(new FileStream(path, mode)) {}
 
 ReadEventFromFile::~ReadEventFromFile(void) {}
 
-void ReadEventFromFile::_sync(e_file_content_syncro *origin,
-    e_file_content_syncro targetState, bool *haveToUpdate) {
-    _syncObj.Sync(origin, targetState, haveToUpdate);
+void ReadEventFromFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndReader> syncroFileDataAndReader) {
+    this->_syncroFileDataAndReader = syncroFileDataAndReader;
 }
 void ReadEventFromFile::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);
