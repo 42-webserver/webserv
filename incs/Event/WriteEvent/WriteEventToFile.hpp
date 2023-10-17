@@ -7,9 +7,10 @@
 # include <Channel/FileStream.hpp>
 # include <Event/Exception/KqueueError.hpp>
 # include <Event/WriteEvent/WriteEventToFileHandler.hpp>
+# include "../../../libs/shared_ptr/shared_ptr.hpp"
+# include <FileManager/FileManager/FileData.hpp>
 
 class WriteEventToFile: public WriteEvent, public SingleStreamable{
-friend class FileIdent;   
     public:
         WriteEventToFile(
             ft::shared_ptr<IoReadAndWriteBuffer> buffer,
@@ -21,7 +22,9 @@ friend class FileIdent;
         virtual void	onboardQueue(void);
         virtual void	offboardQueue(void);
     private:
-        //To do syncroFileDataAndWriter
+        ft::shared_ptr<SyncroFileDataAndWriter> _syncroFileDataAndWriter;
+    public:   
+        void _syncWithFileTable(ft::shared_ptr<SyncroFileDataAndWriter> syncroFileDataAndWriter);
 };
 
 #endif

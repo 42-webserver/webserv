@@ -10,9 +10,10 @@ public:
 		static Cache	&getInstance(void);
 		void deleteInstance(void);
 		// size_t	copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri);
-		size_t  getCacheContentSize(const std::string &uri);
-		void    getCacheContent(const std::string &uri, std::vector<char> &buffer);
-		void    putCacheContent(const std::string &uri);
+		// size_t  getCacheContentSize(const std::string &uri);
+		void    copyCacheContentVectorBack(const std::string &uri, std::vector<char> &buffer);
+		// void    putCacheContent(const std::string &uri);
+		void	initCacheContent(const std::string &uri);
 		void	putCacheContent(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 		void	deleteCacheContent(const std::string &uri);
 public:		

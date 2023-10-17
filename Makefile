@@ -54,6 +54,8 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToClientHandler.cpp \
 		Event/WriteEvent/WriteEventToFile.cpp \
 		Event/WriteEvent/WriteEventToFileHandler.cpp \
+		Event/WriteEvent/WriteEventToCache.cpp \
+		Event/WriteEvent/WriteEventToCacheHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
 		Http/Handler/HttpCgiResponseHandler.cpp \
@@ -106,6 +108,8 @@ SRCS =	main.cpp \
 		FileManager/FileManager/FileData.cpp \
 		FileManager/FileManager/FileManager.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
+		FileManager/Exception/FileIsDirectoryException.cpp \
+		FileManager/Exception/FileNotExistException.cpp \
 		Hash/Sha256_copy.cpp \
 		Hash/Etag.cpp \
 
@@ -137,6 +141,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/FileManager/Cache \
 				${OBJS_DIR}/FileManager/FileTableManager \
 				${OBJS_DIR}/FileManager/FileManager \
+				${OBJS_DIR}/FileManager/Exception \
 				${OBJS_DIR}/Hash \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}

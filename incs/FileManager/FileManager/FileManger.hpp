@@ -13,7 +13,9 @@
 #include <Event/EventBase/EventFactory.hpp>
 #include <Event/EventDto/EventDto.hpp>
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
-
+#include <Event/WriteEvent/WriteEventToFile.hpp>
+#include <FileManager/Exception/FileNotExistException.hpp>
+#include <FileManager/Exception/FileIsDirectoryException.hpp>
 typedef enum{
     FileRequestShouldWait,
     FileRequestSuccess,
@@ -48,6 +50,7 @@ public:
 
 //static utility
 public:
+    static std::string getDirectoryListing(const std::string& path);
     static e_file_info getFileInfo(const std::string &uri, struct stat &fileStat);
     static bool isInCashSize(struct stat &fileStat);
     static bool isInCashSize(size_t size);

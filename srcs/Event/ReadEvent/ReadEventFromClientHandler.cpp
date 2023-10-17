@@ -38,8 +38,7 @@ void ReadEventFromClientHandler::_processNonBlock(ReadEventFromClient *event) {
 }
 void ReadEventFromClientHandler::_processClosed(ReadEventFromClient *event) {
 	(void)event;
-	//To do : client Close Connection
-	// Logger::getInstance().info("Closed");
+	event->offboardQueue();
 }
 
 void ReadEventFromClientHandler::_process(e_client_connection_state state, ReadEventFromClient *event) {

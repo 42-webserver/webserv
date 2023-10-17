@@ -29,18 +29,24 @@ bool Cache::hit(const std::string &uri) {
 // 	return (size);
 // }
 
-void    Cache::getCacheContent(const std::string &uri, std::vector<char> &buffer) {
+
+void    Cache::copyCacheContentVectorBack(const std::string &uri, std::vector<char> &buffer) {
 	const std::vector<char> &tmp = this->_cache.get(uri);
 	buffer.insert(buffer.end(), tmp.begin(), tmp.end());
 }
 
-size_t	Cache::getCacheContentSize(const std::string &uri)  {
-	return (_cache.getCacheContentSize(uri));
+void 	Cache::initCacheContent(const std::string &uri) {
+	//Todo :
+	(void)uri;
 }
 
-void    Cache::putCacheContent(const std::string &uri) {
-	this->_cache.put(uri);
-}
+// size_t	Cache::getCacheContentSize(const std::string &uri)  {
+// 	return (_cache.getCacheContentSize(uri));
+// }
+
+// void    Cache::putCacheContent(const std::string &uri) {
+// 	this->_cache.put(uri);
+// }
 
 void	Cache::putCacheContent(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
 	this->_cache.put(uri, buffer);

@@ -3,10 +3,13 @@
 EventDto::EventDto(void): _channel(ft::shared_ptr<Channel>(NULL)), _virtualServerManager(ft::shared_ptr<VirtualServerManager>(NULL)) {}
 EventDto::EventDto(ft::shared_ptr<Channel> channel, 
 ft::shared_ptr<VirtualServerManager> virtualServerManager,
-ft::shared_ptr<HttpRequest> httpRequest): 
-_channel(channel), _virtualServerManager(virtualServerManager), _httpRequest(httpRequest) {}
+ft::shared_ptr<HttpRequest> httpRequest, std::vector<char> *content) :
+_channel(channel), _virtualServerManager(virtualServerManager), _httpRequest(httpRequest), _content(content) {}
 EventDto::EventDto(ft::shared_ptr<IoReadAndWriteBuffer> buffer,
-const std::string &path, std::string mode): _buffer(buffer), _path(path), _mode(mode) {}
+const std::string &path, std::string mode,
+std::vector<char>*content): _buffer(buffer), _content(content) , _path(path), _mode(mode) {}
+EventDto::EventDto(std::vector<char> *content,
+const std::string &path, std::string mode):  _content(content) ,_path(path), _mode(mode) {}
 EventDto::~EventDto(void) {}
 
 
@@ -16,3 +19,4 @@ const ft::shared_ptr<HttpRequest> &EventDto::getHttpRequest() const { return (th
 const ft::shared_ptr<IoReadAndWriteBuffer> &EventDto::getBuffer() const { return (this->_buffer); }
 const std::string &EventDto::getPath() const { return (this->_path); }
 const std::string &EventDto::getMode() const { return (this->_mode); }
+std::vector<char> &EventDto::getContent() const { return (*this->_content); }

@@ -27,7 +27,21 @@ void FileManager::_readFile(const std::string &uri, ft::shared_ptr<HttpResponse>
     readEventFromFile->onboardQueue();
 }
 
-std::string getDirectoryListing(const std::string& path) {
+void FileManager::_writeFile(const std::string &uri, ft::shared_ptr<HttpRequest> request) {
+
+    FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
+    FileData &fileData = fileTableManager.getFileData(uri);
+
+    EventFactory &eventFactory = EventFactory::getInstance();
+    ft::shared_ptr<SyncroFileDataAndWriter> syncroFileDataAndWriter = fileData.buildSyncroFileDataAndWriter();
+    EventDto eventDto(request->getBody(), uri, "w");
+    WriteEventToFile* writeEventToFile = static_cast<WriteEventToFile*>(eventFactory.createEvent(ft::FILE_WRITE_EVENT, eventDto));
+
+    writeEventToFile->_syncWithFileTable(syncroFileDataAndWriter);
+    writeEventToFile->onboardQueue();
+}
+
+std::string FileManager::getDirectoryListing(const std::string& path) {
     DIR *dir;
     struct dirent *ent;
     std::ostringstream oss;
@@ -123,15 +137,15 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
         Cache & cache = Cache::getInstance();
         //cache hit은 파일이 완전히 업로드 되야 hi
         if (cache.hit(uri)) {
-            cache.getCacheContent(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
+            cache.copyCacheContentVectorBack(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
             response->setResponseSize(normalSize, HttpResponse::AccessKey());
             response->setStatusCode(OK);
             return (FileRequestSuccess);
         }
         else {
-            if (fileSync != Reading) {
-                // 이 밑에 코드에서는 파일을 등록을 하는데 cache가 등록하도록해야됨 
-                cache.putCacheContent(uri);
+            if (fileSync == NotSetting) {
+                // cache에 없지만 cache사이즈 인건데 파일이 존재하는 경우-> 등록하고 기다려야됨
+                cache.initCacheContent(uri);
                 response->setFileSync(Reading, HttpResponse::AccessKey());
             }
             //else 는 파일이 등록 되고 있는중이라 hit안된거임으로 파일을 등록할 필요 없음
@@ -164,22 +178,7 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
 
 
 
-// file에다가 쓰는거 실패하면 어떻게 되는지 생각해야됨->안실패한다고 가정 
-void FileManager::_writeFile(const std::string &uri, ft::shared_ptr<HttpRequest> request) {
 
-    (void)uri;
-    (void)request;
-    // FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
-    // FileData &fileData = fileTableManager.getFileData(uri);
-    
-    // EventFactory &eventFactory = EventFactory::getInstance();
-    // ft::shared_ptr<SyncroFileDataAndWriter> syncroFileDataAndWriter = fileData.buildSyncroFileDataAndWriter();
-    // EventDto eventDto(request->getBody(), uri, "w");
-    // WriteEventToFile* writeEventToFile = static_cast<WriteEventToFile*>(eventFactory.createEvent(ft::FILE_WRITE_EVENT, eventDto));
-
-    // writeEventToFile->_syncWithFileTable(syncroFileDataAndWriter);
-    // writeEventToFile->onboardQueue();
-}
 e_FileRequestType FileManager::requestFileUpload(const std::string &uri,
 ft::shared_ptr<HttpRequest> request) {
     if (request->getBodyType() == MULTIPART_FORM_DATA) {
@@ -234,14 +233,12 @@ ft::shared_ptr<HttpRequest> request) {
                 }
                 else {
                     cache.putCacheContent(uri, request->getBody());
-                    _writeFile(uri, request);
                     request->setFileUploadSync(WritingDone, HttpRequest::AccessKey());
                     return (FileRequestSuccess);
                 }
             }
             if (isInCashSize(contentLength)){
                 cache.putCacheContent(uri, request->getBody());
-                _writeFile(uri, request);
                 request->setFileUploadSync(WritingDone, HttpRequest::AccessKey());
                 return (FileRequestSuccess);
             }
