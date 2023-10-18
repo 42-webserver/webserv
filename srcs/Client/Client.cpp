@@ -59,7 +59,7 @@ ft::shared_ptr<HttpResponse> Client::getResponse(void){
 }
 
 void Client::allocateResponse(void){
-    this->response = ft::Optional<ft::shared_ptr<HttpResponse> >(new HttpResponse());
+    this->response = ft::shared_ptr<HttpResponse>(new HttpResponse());
 }
 
 void Client::clearResponseAndRequest(void){

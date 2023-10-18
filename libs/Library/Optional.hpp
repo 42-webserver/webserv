@@ -24,7 +24,7 @@ namespace ft {
         const T* pointer() const {
             return reinterpret_cast<const T*>(_storage);
         }
-		void swap(Optional& other) {
+		void swap(Optional& other)  {
 		    char temp[sizeof(T)];
 		    memcpy(temp, &_storage, sizeof(T));
 		    memcpy(&_storage, &other._storage, sizeof(T));

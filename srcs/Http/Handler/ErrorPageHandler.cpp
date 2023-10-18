@@ -1,4 +1,7 @@
 #include <Http/Handler/ErrorPageHandler.hpp>
+
+
+
 // ft::shared_ptr<HttpResponse> ErrorPageHandler::getErrorPageResponse(HttpStatusCode status) {
 // 	ft::shared_ptr<HttpResponse> response = ft::make_shared<HttpResponse>();
 // 	std::vector<char> errorPage = getErrorPage(status);

@@ -25,7 +25,6 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		PatternType patternType = client->getPatternType(curEvent->getVirtualServerManger());
 		PatternProcessor &patternProcessor = PatternProcessor::getInstance(patternType,
 		curEvent->getVirtualServerManger(), client);
-
 		//Todo: check this
 		if (client->isRequestEmpty())
 			client->processCurrentRequestDone();
