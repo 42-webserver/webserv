@@ -59,8 +59,10 @@ void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> v
 	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler();
 	int contentLength = this->_httpRequest->getContentLength();
-	if (contentLength > clientMaxBodySize)
-		throw ClientBodySizeInvalidException();
+	if (contentLength > clientMaxBodySize){
+		this->_httpRequest->setError(REQUEST_ENTITY_TOO_LARGE);
+		this->_state = FINISH;
+	}
 }
 
 void HttpRequestParser::injectionHandler(){

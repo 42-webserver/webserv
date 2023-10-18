@@ -2,7 +2,7 @@
 
 
 HttpRequest::HttpRequest():
-	_bodyType(NORMAL), _pending(true)
+	_error(false), _bodyType(NORMAL), _pending(true)
 {
 	_body = ft::make_shared<IoReadAndWriteBuffer>();
 }
@@ -188,6 +188,15 @@ bool HttpRequest::isPending()
 void HttpRequest::setFinished()
 {
 	this->_pending = false;
+}
+
+bool HttpRequest::isError(){
+	return this->_error;
+}
+
+void HttpRequest::setError(HttpStatusCode errorCode){
+	this->_error = true;
+	this->_errorStatusCode = errorCode;
 }
 
 std::ostream &operator<<(std::ostream & os, const HttpRequest & request)

@@ -16,11 +16,11 @@ typedef enum BodyType{
 		MULTIPART_FORM_DATA
 } BodyType;
 
-static const int				_MEMORY_BODY_SIZE = 16 * 1024;
-
 class HttpRequest
 {
 private:
+	bool									_error;
+	HttpStatusCode							_errorStatusCode;
 	std::string		 						_method;
 	std::string		 						_uri;
 	std::string		 						_version;
@@ -56,6 +56,8 @@ public:
 	std::string getHeader(const std::string & key);
 	bool isPending();
 	void setFinished();
+	bool isError();
+	void setError(HttpStatusCode errorCode);
 	friend std::ostream &operator<<(std::ostream & os, const HttpRequest & request);
 
 private:
