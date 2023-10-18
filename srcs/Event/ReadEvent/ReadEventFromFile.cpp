@@ -2,7 +2,7 @@
 
 ReadEventFromFile::ReadEventFromFile(
     ft::shared_ptr<IoReadAndWriteBuffer> buffer,
-    const std::string &path, std::string mode = "w+") :
+    const std::string &path, std::string mode = "w") :
     ReadEvent(new ReadEventFromFileHandler(buffer)),
     SingleStreamable(new FileStream(path, mode)) {}
 

@@ -2,7 +2,7 @@
 #include <Event/WriteEvent/WriteEventToCache.hpp>
 
 WriteEventToCacheHandler::WriteEventToCacheHandler(
-std::vector<char> &content) : _content(content) {}
+ft::shared_ptr<IoReadAndWriteBuffer> buffer) : _buffer(buffer){}
 WriteEventToCacheHandler::~WriteEventToCacheHandler(void) {}
 
 void WriteEventToCacheHandler::handleEvent(Event &event) {
@@ -13,10 +13,17 @@ void WriteEventToCacheHandler::handleEvent(Event &event) {
         return ;
     }
     size_t n;
-    n = write(writeEventToCache->getFd(), _content.data() + _offset, _content.size() - _offset);
-    if (n < 0) return ;
-    _offset += n;
-    if (_offset == _content.size()) {
+    try {
+     n = _buffer->ioWrite(writeEventToCache->getFd());
+    }
+    catch (const DisconnectionException &e) {
+        throw ;
+    }
+    catch (...) {
+        Logger::getInstance().error("{} {}", 2, "WriteEventToCacheHandler", "Fail to write to cache");
+        throw ;
+    }
+    if (n == 0) {
         writeEventToCache->offboardQueue();
     }
 }

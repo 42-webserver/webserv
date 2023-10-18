@@ -45,6 +45,7 @@ class LruCacheNode {
 		int					_finalWriterNum;
 	public:
 		LruCacheNode(void);
+		LruCacheNode(ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 		~LruCacheNode(void);
 		bool isUpdatedContent(void);
 		e_cache_node_status getStatus(void);
@@ -69,7 +70,7 @@ class LruCache {
 			virtual const char *what() const throw();
 	};
 	public:
-		typedef std::list< LruCacheNode > lru_list_t;
+		typedef std::list< std::pair<std::string, LruCacheNode> > lru_list_t;
 		typedef std::map< std::string, lru_list_t::iterator > cache_map_t;
 	public:
 		static const int _BlockSize = 4 * 1024;
@@ -84,13 +85,13 @@ class LruCache {
 
 	private:
 		void _readToCache(const std::string &uri);
-		void _writeToCache(const std::string &uri);
+		void _writeToCache(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 	public:
 		bool hit(const std::string &uri);
 		const std::vector<char>	&get(const std::string &uri);
 		// std::vector<char>::iterator	getIter(const std::string &uri);
 		 size_t				getCacheContentSize(const std::string &uri);
-		void				put(std::string uri, std::vector<char> content);
+		// void				put(std::string uri, const std::vector<char> &content);
 		void				put(const std::string& uri);
 		void 				put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 		void				deleteContent(const std::string &uri);

@@ -206,3 +206,9 @@ bool BaseNode::isEmpty() const {
 	return _size == 0;
 }
 
+size_t BaseNode::copyTo(std::vector<char>& dest) {
+	size_t n = _size - _eraseSize;
+	dest.resize(n);
+	std::copy(_buffer.begin() + _eraseSize, _buffer.begin() + _size, dest.begin());
+	return n;
+}

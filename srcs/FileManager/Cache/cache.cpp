@@ -20,8 +20,7 @@ Cache	&Cache::getInstance(void) {
 
 
 bool Cache::hit(const std::string &uri) {
-	//Todo : fix this!
-	return (this->_cache.get(uri).size() != 0);
+	return (this->_cache.hit(uri));
 }
 // size_t	Cache::copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) {
 	
@@ -36,8 +35,9 @@ void    Cache::copyCacheContentVectorBack(const std::string &uri, std::vector<ch
 }
 
 void 	Cache::initCacheContent(const std::string &uri) {
-	//Todo :
-	(void)uri;
+	if (this->_cache.hit(uri) == false) {
+		this->_cache.put(uri);
+	}
 }
 
 // size_t	Cache::getCacheContentSize(const std::string &uri)  {

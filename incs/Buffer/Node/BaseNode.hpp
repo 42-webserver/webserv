@@ -80,5 +80,6 @@ public:
     size_t size() const;
 	virtual bool isFull() const = 0;
 	bool isEmpty() const;
+	size_t copyTo(std::vector<char>& dest);
 };
 #endif

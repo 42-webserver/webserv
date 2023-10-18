@@ -3,16 +3,15 @@
 
 # include "WriteEventHandler.hpp"
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
-
+# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 class WriteEventToCacheHandler: public WriteEventHandler{
     public:
-        WriteEventToCacheHandler(std::vector<char> &content);
+        WriteEventToCacheHandler(ft::shared_ptr<IoReadAndWriteBuffer> buffer);
             virtual	~WriteEventToCacheHandler(void);
 
     public:
         virtual void   handleEvent(Event &event);
     private:
-        std::vector<char> &_content;
-        size_t _offset;
+        ft::shared_ptr<IoReadAndWriteBuffer> _buffer;
 };
 #endif

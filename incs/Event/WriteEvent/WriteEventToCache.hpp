@@ -9,11 +9,11 @@
 # include <Event/WriteEvent/WriteEventToCacheHandler.hpp>
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
 # include <FileManager/Cache/LruCache.hpp>
-
+# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 class WriteEventToCache: public WriteEvent, public SingleStreamable{
     public:
         WriteEventToCache(
-            std::vector<char> &content,
+            ft::shared_ptr<IoReadAndWriteBuffer> buffer,
             const std::string &path, std::string mode);
         virtual	~WriteEventToCache(void);
 

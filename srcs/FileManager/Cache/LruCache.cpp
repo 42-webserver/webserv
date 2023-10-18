@@ -1,6 +1,7 @@
 #include <FileManager/Cache/LruCache.hpp>
 #include <FileManager/FileManager/FileManger.hpp>
 #include <Event/WriteEvent/WriteEventToCache.hpp>
+#include <Event/ReadEvent/ReadEventFromCache.hpp>
 SyncroWriteWithCache::SyncroWriteWithCache(LruCacheNode &lruCache): lruCache(lruCache), _thisWriterNum(lruCache.getFinalWriterNum() + 1) {
 	this->lruCache.setWriting();
 }
@@ -28,6 +29,12 @@ LruCacheNode::LruCacheNode(void): _content(), _status(e_done), _finalWriterNum(0
 }
 
 LruCacheNode::~LruCacheNode(void) {}
+
+LruCacheNode::LruCacheNode(ft::shared_ptr<IoReadAndWriteBuffer> buffer): _content(), _status(e_done), _finalWriterNum(0) {
+	_content.reserve(LruCache::_BlockSize);
+	buffer->copyHeadTo(this->_content);
+}
+
 
 bool LruCacheNode::isUpdatedContent(void) {
 	return (this->_status == e_done);
@@ -86,21 +93,30 @@ void LruCache::_readToCache(const std::string &uri) {
 	if (fileInfo == ExistDirectory) {
 		throw FileIsDirectoryException(uri);
 	}
-	//Todo::
-	
+	EventFactory &eventFactory = EventFactory::getInstance();
+	LruCacheNode &lruCacheNode = (this->_cache[uri])->second;
+	ft::shared_ptr<SyncroReadWithCache> syncroReadWithCache = lruCacheNode.buildSyncroReadWithCache();
+	EventDto eventDto(&(lruCacheNode.getContent()), uri, "r");
+	ReadEventFromCache *readEventFromCache = static_cast<ReadEventFromCache *>
+	(eventFactory.createEvent(ft::CACHE_READ_EVENT, eventDto));
+
+	readEventFromCache->_syncWithCache(syncroReadWithCache);
+	readEventFromCache->onboardQueue();
 }
 
-void LruCache::_writeToCache(const std::string &uri){
+void LruCache::_writeToCache(const std::string &uri,
+ ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
 	struct stat fileStat;
+
 	e_file_info fileInfo = FileManager::getFileInfo(uri, fileStat);
 	if (fileInfo == ExistDirectory) {
 		throw FileIsDirectoryException(uri);
 	}
 
 	EventFactory &eventFactory = EventFactory::getInstance();
-	LruCacheNode &lruCacheNode = *(this->_cache[uri]);
+	LruCacheNode &lruCacheNode = (this->_cache[uri])->second;
 	ft::shared_ptr<SyncroWriteWithCache> syncroWriteWithCache = lruCacheNode.buildSyncroWriteWithCache();
-	EventDto eventDto(&(lruCacheNode.getContent()), uri, "w");
+	EventDto eventDto(buffer, uri, "w");
 	WriteEventToCache *writeEventToCache = static_cast<WriteEventToCache *>(eventFactory.createEvent
 	(ft::CACHE_WRITE_EVENT, eventDto));
 
@@ -109,23 +125,23 @@ void LruCache::_writeToCache(const std::string &uri){
 }
 const std::vector<char>	&LruCache::get(const std::string &uri){
 	
-	if (this->_cache.find(uri) == this->_cache.end()) {
+	if (hit(uri) == false) {
 		return (this->empty);
 	}
 
 	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);
-	return (this->_cache[uri]->getContent());
+	return (this->_cache[uri]->second.getContent());
 }
 
 bool LruCache::hit(const std::string &uri) {
 	return (this->_cache.find(uri) != this->_cache.end())
-	&& (this->_cache[uri]->getStatus() == e_done);
+	&& (this->_cache[uri]->second.getStatus() == e_done);
 }
 size_t				LruCache::getCacheContentSize(const std::string &uri){
 	if (this->_cache.find(uri) == this->_cache.end()) {
 		return (0);
 	}
-	return (this->_cache[uri]->getContentSize());
+	return (this->_cache[uri]->second.getContentSize());
 }
 // std::vector<char>::iterator	LruCache::getIter(const std::string &uri){
 // 	if (this->_cache.find(uri) == this->_cache.end()) {
@@ -134,31 +150,55 @@ size_t				LruCache::getCacheContentSize(const std::string &uri){
 // 	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);
 // 	return (this->_cache[uri]->second.begin());
 // }
-void				LruCache::put(std::string uri, std::vector<char> content) {
-	//Todo :
-	(void)uri;
-	(void)content;
-	// if (this->_cache.size() >= this->_capacity) {
-	// 	lru_list_t::iterator	last = this->_lru_list.end();
+// void				LruCache::put(std::string uri, const std::vector<char> &content) {
 
-	// 	last--;
-	// 	this->_cache.erase(last->first);
-	// 	this->_lru_list.pop_back();
-	// }
+//    if (this->_cache.size() >= this->_capacity) {
+//         lru_list_t::iterator last = this->_lru_list.end();
+//         last--;
 
-	// this->_lru_list.push_front(std::make_pair(uri, content));
-	// this->_cache[uri] = this->_lru_list.begin();
-}
-void LruCache::put(const std::string& uri) {
-	//Todo :
-	(void)uri;
-}
+//         this->_cache.erase(last->first);  // 가장 오래된 항목의 키로 삭제
+//         this->_lru_list.pop_back();
+//     }
 
-//있는거면 덮어씌우게 uri로 찾았을떄 해야될듯 ?
+// 	this->_lru_list.push_front(std::make_pair(uri, 
+// 	LruCacheNode(content)));
+// 	_writeToCache(uri);
+// 	this->_cache[uri] = this->_lru_list.begin();
+// }
+// void LruCache::put(const std::string& uri) {
+// 	//Todo :
+// 	(void)uri;
+// }
+
+//hit을 가정안하고 없다 가정하에, 클라이언트 버퍼를받아와서 그내용 넣음
 void LruCache::put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
-	//Todo :
-	(void)uri;
-	(void)buffer;
+	
+   if (this->_cache.size() >= this->_capacity) {
+        lru_list_t::iterator last = this->_lru_list.end();
+        last--;
+
+        this->_cache.erase(last->first);  // 가장 오래된 항목의 키로 삭제
+        this->_lru_list.pop_back();
+    }
+
+	this->_lru_list.push_front(std::make_pair(uri, 
+	LruCacheNode(buffer)));
+	_writeToCache(uri, buffer);
+	this->_cache[uri] = this->_lru_list.begin();
+}
+void LruCache::put(const std::string& uri){
+   if (this->_cache.size() >= this->_capacity) {
+        lru_list_t::iterator last = this->_lru_list.end();
+        last--;
+
+        this->_cache.erase(last->first);  // 가장 오래된 항목의 키로 삭제
+        this->_lru_list.pop_back();
+    }
+
+	this->_lru_list.push_front(std::make_pair(uri, 
+	LruCacheNode()));
+	_readToCache(uri);
+	this->_cache[uri] = this->_lru_list.begin();	
 }
 
 void LruCache::deleteContent(const std::string &uri) {

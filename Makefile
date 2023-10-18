@@ -48,6 +48,8 @@ SRCS =	main.cpp \
 		Event/ReadEvent/ReadEventFromFile.cpp \
 		Event/ReadEvent/ReadEventFromFileHandler.cpp \
 		Event/ReadEvent/ReadEventHandler.cpp \
+		Event/ReadEvent/ReadEventFromCache.cpp \
+		Event/ReadEvent/ReadEventFromCacheHandler.cpp \
 		Event/WriteEvent/WriteEvent.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \

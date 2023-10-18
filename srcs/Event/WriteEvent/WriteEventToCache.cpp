@@ -1,9 +1,9 @@
 #include <Event/WriteEvent/WriteEventToCache.hpp>
 
 WriteEventToCache::WriteEventToCache(
-    std::vector<char> &content,
+    ft::shared_ptr<IoReadAndWriteBuffer> buffer,
     const std::string &path, std::string mode) : 
-    WriteEvent(new WriteEventToCacheHandler(content)),
+    WriteEvent(new WriteEventToCacheHandler(buffer)),
     SingleStreamable(new FileStream(path, mode)){}
 
 WriteEventToCache::~WriteEventToCache(void){}
