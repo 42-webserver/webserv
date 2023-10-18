@@ -36,3 +36,10 @@ FileData &FileTableManager::getFileData(const std::string &fileName)
         this->_fileTable.insert(std::make_pair(fileName, FileData())); 
     return (_fileTable[fileName]);
 }
+
+void FileTableManager::deleteFileData(const std::string &fileName)
+{
+    std::map<std::string, FileData>::iterator iter = this->_fileTable.find(fileName);
+    if (iter != this->_fileTable.end())
+        this->_fileTable.erase(iter);
+}
