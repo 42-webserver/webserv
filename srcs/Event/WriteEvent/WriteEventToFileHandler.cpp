@@ -2,14 +2,14 @@
 #include <Event/WriteEvent/WriteEventToFile.hpp>
 
 WriteEventToFileHandler::WriteEventToFileHandler(
-    IoReadAndWriteBuffer &buffer) : _buffer(buffer) {}
+ft::shared_ptr<IoReadAndWriteBuffer> buffer) : _buffer(buffer) {}
 WriteEventToFileHandler::~WriteEventToFileHandler(void) {}
 
 void WriteEventToFileHandler::handleEvent(Event &event) {
     WriteEventToFile *writeEventToFile = static_cast<WriteEventToFile *>(&event);
     size_t n;
     try {
-     n = _buffer.ioWrite(writeEventToFile->getFd());
+     n = _buffer->ioWrite(writeEventToFile->getFd());
     }
     catch (const DisconnectionException &e) {
         throw ;

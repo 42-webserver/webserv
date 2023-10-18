@@ -60,6 +60,9 @@
 
 //Mode
 
+BaseNode::AccessKey::AccessKey() {}
+BaseNode::AccessKey::~AccessKey() {}
+
 BaseNode::~BaseNode() {}
 
 
@@ -113,9 +116,10 @@ size_t BaseNode::insert(std::vector<char>::iterator start, size_t size) {
 	return size;
 }
 size_t BaseNode::size() const {return _size;}
-void BaseNode::reset() {
-	_buffer.clear();
+void BaseNode::reset(AccessKey key) {
+	(void)key;
 	_size = 0;
+	_eraseSize = 0;
 }
 size_t BaseNode::ioRead(int fd){
 	// static Mode _assertReadMode(false, true, true, true, true);
@@ -129,6 +133,7 @@ size_t BaseNode::ioRead(int fd){
 }
 
 static bool isSIGPIPE = false;
+static bool isHandlerSet = false;
 //because of name mangling
 extern "C" {
     void handleSIGPIPE(int) {
@@ -139,10 +144,9 @@ extern "C" {
 size_t BaseNode::ioWrite(int fd) {
     // static Mode _assertWriteMode(false, false, false, false, true); 
 
-    static bool handlerSet = false;
-    if (!handlerSet) {
+    if (!isHandlerSet) {
         signal(SIGPIPE, handleSIGPIPE);
-        handlerSet = true;
+        isHandlerSet = true;
     }
 
     // ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
@@ -158,6 +162,25 @@ size_t BaseNode::ioWrite(int fd) {
     return n;
 }
 
+size_t BaseNode::ioSaveWrite(int fd, size_t start) {
+	// static Mode _assertWriteMode(false, false, false, false, true); 
+
+	if (!isHandlerSet) {
+		signal(SIGPIPE, handleSIGPIPE);
+		isHandlerSet = true;
+	}
+
+	// ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
+	// _mode.setWriteMode();
+
+	size_t n = write(fd, _buffer.data() + start, _size - start);
+	
+	if (isSIGPIPE) {
+		isSIGPIPE = false; // 플래그 재설정
+		throw DisconnectionException();
+	}
+	return n;
+}
 
 
 const std::vector<char>& BaseNode::getBuffer() const {
@@ -187,3 +210,9 @@ bool BaseNode::isEmpty() const {
 	return _size == 0;
 }
 
+size_t BaseNode::copyTo(std::vector<char>& dest) {
+	size_t n = _size - _eraseSize;
+	dest.resize(n);
+	std::copy(_buffer.begin() + _eraseSize, _buffer.begin() + _size, dest.begin());
+	return n;
+}

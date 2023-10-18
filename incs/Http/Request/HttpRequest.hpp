@@ -16,8 +16,26 @@ typedef enum BodyType{
 		MULTIPART_FORM_DATA
 } BodyType;
 
+typedef enum {
+	NoneSetting,
+	Writing,
+	WritingDone
+}	e_file_upload_sync;
+
+
 class HttpRequest
 {
+public:
+	class AccessKey
+	{
+		friend class FileManager;
+		private:
+			AccessKey();
+			~AccessKey();
+	};
+
+
+
 private:
 	bool									_error;
 	HttpStatusCode							_errorStatusCode;
@@ -27,12 +45,20 @@ private:
 	ft::shared_ptr<IoReadAndWriteBuffer>    _body;
 	std::string		 						_protocol;
 	BodyType								_bodyType;
-	bool									_pending;
+
 
 	std::multimap<std::string, std::string> _headers;
 	std::map<std::string, std::string>	  	_queries;
 	std::map<std::string, std::string>	  	_cookies;
 	std::vector<MultipartRequest>		 	_multipartRequests;
+//file Interface
+private:
+	e_file_upload_sync						_fileUploadSync;
+//file Interface
+public:
+	e_file_upload_sync getFileUploadSync(AccessKey key);
+	void setFileUploadSync(e_file_upload_sync fileUploadSync, AccessKey key);
+
 
 public:
 	HttpRequest();
@@ -46,6 +72,7 @@ public:
 	std::string getProtocol();
 	std::string getHost();
 	ft::shared_ptr<IoReadAndWriteBuffer> getBody();
+	size_t getBodySize() const;
 	std::vector<MultipartRequest>	&getMultipartRequests();
 	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();

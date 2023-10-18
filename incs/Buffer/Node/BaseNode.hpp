@@ -48,7 +48,7 @@
 // private:
 //     unsigned char mode : 5;
 // };
-
+class IoOnlyReadBuffer;
 class BaseNode {
 typedef std::vector<char>::iterator iterator;
 typedef std::vector<char>::const_iterator const_iterator;
@@ -66,12 +66,12 @@ public:
 	BaseNode(size_t size);
 	size_t ioRead(int fd);
 	size_t ioWrite(int fd);
+	size_t ioSaveWrite(int fd, size_t start);
 	size_t erase(size_t n);
 	size_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);
 	size_t insert(std::vector<char>::iterator start, size_t size);
 	virtual ~BaseNode();
 public:
-	void	reset();
 	iterator begin();
 	iterator end();
 	const_iterator begin() const;
@@ -79,5 +79,15 @@ public:
     size_t size() const;
 	virtual bool isFull() const = 0;
 	bool isEmpty() const;
+	size_t copyTo(std::vector<char>& dest);
+
+class AccessKey {
+friend class IoOnlyReadBuffer;
+private:
+	AccessKey();
+	~AccessKey();
+};
+public:
+	void reset(AccessKey key);
 };
 #endif

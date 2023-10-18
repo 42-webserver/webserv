@@ -1,19 +1,16 @@
 #include <Client/Client.hpp>
+#include <Http/Exception/MethodNotAllowedException.hpp>
+Client::Client(
+e_client_event_queue_state eventQueueState) : _eventQueueState(eventQueueState ){
+}
 
-Client::Client() : _eventQueueState(None) {
-    this->_build();
-}
-Client::Client(e_client_event_queue_state eventQueueState) : _eventQueueState(eventQueueState) {
-    this->_build();
-}
 Client::~Client() {
-    ClientIdManager &idManager = ClientIdManager::getInstance(ClientIdManager::AcessKey());
-    idManager.releaseId(this->_id);
 }
-void Client::_build(){
-    ClientIdManager &idManager = ClientIdManager::getInstance(ClientIdManager::AcessKey());
-    this->_id = idManager.allocateId();
+
+void Client::clientKill(){
+    _eventQueueState = None;
 }
+
 void Client::addRequest(ft::shared_ptr<HttpRequest> request){
     this->requests.push(request);
 }
@@ -30,10 +27,25 @@ bool Client::isQueueMax(void){
     return this->requests.size() >= MAX_QUEUE_SIZE;
 }
 
+bool Client::isClientDie(void){
+    return this->_eventQueueState == None;
+}
+
 e_client_event_queue_state Client::queryClientEventQueueState(void){
     return this->_eventQueueState;
 }
 
+ft::shared_ptr<HttpRequest> Client::getRequest(void){
+    return this->requests.front();
+}
+
+void Client::processCurrentRequestDone(void){
+    this->requests.pop();
+}
+
+bool Client::isEventQueueStateTurnOn(e_client_event_queue_state state){
+    return (this->_eventQueueState & state) == state;
+}
 void Client::addClientEventQueueState(e_client_event_queue_state state){
     this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState | state);
 }
@@ -42,10 +54,13 @@ void Client::removeClientEventQueueState(e_client_event_queue_state state){
     this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState & ~state);
 }
 
-PatternType Client::getPatternType(ft::shared_ptr<VirtualServerManager> vsm){
+PatternType Client::getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const {
     ft::shared_ptr<HttpRequest> request = this->requests.front();
     vsm->getDefaultVirtualServer();
     std::string method = request->getMethod();
+
+    if (!RouterUtils::isMethodAllowed(vsm, request))
+        throw MethodNotAllowedException();
     if (RouterUtils::isRedirection(vsm, request))
         return REDIRECTION;
     if (RouterUtils::isCgiRequest(vsm, request))

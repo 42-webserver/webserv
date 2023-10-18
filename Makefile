@@ -48,12 +48,16 @@ SRCS =	main.cpp \
 		Event/ReadEvent/ReadEventFromFile.cpp \
 		Event/ReadEvent/ReadEventFromFileHandler.cpp \
 		Event/ReadEvent/ReadEventHandler.cpp \
+		Event/ReadEvent/ReadEventFromCache.cpp \
+		Event/ReadEvent/ReadEventFromCacheHandler.cpp \
 		Event/WriteEvent/WriteEvent.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \
 		Event/WriteEvent/WriteEventToClientHandler.cpp \
 		Event/WriteEvent/WriteEventToFile.cpp \
 		Event/WriteEvent/WriteEventToFileHandler.cpp \
+		Event/WriteEvent/WriteEventToCache.cpp \
+		Event/WriteEvent/WriteEventToCacheHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Handler/ErrorPageHandler.cpp \
 		Http/Handler/HttpCgiResponseHandler.cpp \
@@ -98,20 +102,19 @@ SRCS =	main.cpp \
 		Pattern/FileReaderProcessor.cpp \
 		Pattern/FileWriterProcessor.cpp \
 		Pattern/PatternProcessor.cpp \
+		Pattern/RedirectionProcessor.cpp \
 		Pattern/ProcessorObject.cpp \
 		Client/Client.cpp \
-		Client/ClientIdManager.cpp \
 		Client/ClientLimitExceededException.cpp \
 		FileManager/Cache/cache.cpp \
 		FileManager/Cache/LruCache.cpp \
+		FileManager/FileManager/FileData.cpp \
+		FileManager/FileManager/FileManager.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
-		FileManager/FileTableManager/FileIdent.cpp \
-		FileManager/FileTableManager/FileSyncOnDestruct.cpp \
-		FileManager/FileTableManager/FileBufferManager.cpp \
-		FileManager/FileTableManager/FileOperationController.cpp \
+		FileManager/Exception/FileIsDirectoryException.cpp \
+		FileManager/Exception/FileNotExistException.cpp \
 		Hash/Sha256_copy.cpp \
 		Hash/Etag.cpp \
-		Hash/DirectoryListing.cpp \
 
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
@@ -140,6 +143,8 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Client \
 				${OBJS_DIR}/FileManager/Cache \
 				${OBJS_DIR}/FileManager/FileTableManager \
+				${OBJS_DIR}/FileManager/FileManager \
+				${OBJS_DIR}/FileManager/Exception \
 				${OBJS_DIR}/Hash \
 
 LIBS := ${addprefix ${LIBS_DIR}/, ${LIBS}}

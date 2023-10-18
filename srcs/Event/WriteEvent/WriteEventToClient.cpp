@@ -2,10 +2,12 @@
 
 
 WriteEventToClient::WriteEventToClient(ft::shared_ptr<Channel> channel,
-ft::shared_ptr<VirtualServerManager> virtualServerManager
-,ft::shared_ptr<HttpRequest> httpRequest):
-WriteEvent(new WriteEventToClientHandler()), SingleStreamable(channel), DualStreamable(),
-_virtualServerManager(virtualServerManager), _httpRequest(httpRequest) {}
+ft::shared_ptr<VirtualServerManager> virtualServerManager,
+ft::shared_ptr<Client> client):
+WriteEvent(new WriteEventToClientHandler()), SingleStreamable(channel),
+_virtualServerManager(virtualServerManager), _client(client) {
+	client->addClientEventQueueState(Write);
+}
 
 
 WriteEventToClient::~WriteEventToClient(void) {}
@@ -28,6 +30,8 @@ void	WriteEventToClient::onboardQueue(void){
 void	WriteEventToClient::offboardQueue(void){
 	try {
 		this->_offboardWrite(this, this->getFd());
+		//Todo: check this
+		this->_client->clientKill();
 	}
 	catch (...) {
 		Logger::getInstance().error("Fail to offboard Write Event");
@@ -40,4 +44,8 @@ const ft::shared_ptr<VirtualServerManager>
 
 e_client_event_queue_state WriteEventToClient::queryClientEventQueueState(void) {
 	return (this->_client->queryClientEventQueueState());
+}
+
+ft::shared_ptr<Client> WriteEventToClient::getClient(void)  {
+	return (this->_client);
 }

@@ -7,13 +7,11 @@
 # include <Channel/FileStream.hpp>
 # include <Event/Exception/KqueueError.hpp>
 # include <Event/ReadEvent/ReadEventFromFileHandler.hpp>
-# include <FileManager/FileTableManager/FileSyncOnDestruct.hpp>
-
+# include <FileManager/FileManager/FileData.hpp>
 class ReadEventFromFile: public ReadEvent, public SingleStreamable{
-friend class FileIdent;
     public:
         ReadEventFromFile(
-            IoReadAndWriteBuffer &buffer,
+            ft::shared_ptr<IoReadAndWriteBuffer> buffer,
             const std::string &path, std::string mode);
         virtual	~ReadEventFromFile(void);
 
@@ -22,9 +20,9 @@ friend class FileIdent;
         virtual void	onboardQueue(void);
         virtual void	offboardQueue(void);
     private:
-        FileSyncOnDestruct _syncObj;
-        void               _sync(e_file_content_syncro *origin,
-        e_file_content_syncro targetState, bool *haveToUpdate);
+        ft::shared_ptr<SyncroFileDataAndReader> _syncroFileDataAndReader;
+    public: 
+        void _syncWithFileTable(ft::shared_ptr<SyncroFileDataAndReader> syncroFileDataAndReader);
 };
 
 #endif

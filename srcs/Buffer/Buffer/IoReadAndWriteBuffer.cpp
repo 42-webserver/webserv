@@ -107,7 +107,40 @@ size_t IoReadAndWriteBuffer::ioWrite(int fd) {
     }
     return size;
 }
+size_t IoReadAndWriteBuffer::ioSaveWrite(int fd, size_t start) {
+    std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin();
+    size_t accumulatesize = 0;
+    size_t writtensize = 0;
+    try {
+        if (_lst.empty()) return 0;
 
+        // size = _lst.front()->ioSaveWrite(fd, start);
+        // if (size <= 0) return size;
+        // _lst.front()->erase(size);
+        // if (_state != EraseState) _state = EraseState;
+        for (; it != _lst.end(); ++it) {
+            if (start < accumulatesize + (*it)->size()) {
+                writtensize = (*it)->ioSaveWrite(fd, start - accumulatesize);
+                break;
+            }
+            accumulatesize += (*it)->size();
+        }
+
+    }
+    catch (const std::exception& e) {
+        throw;
+    }
+    catch (...) {
+        throw;
+    }
+    return writtensize >= 0 ? writtensize + start : start;
+}
+
+size_t IoReadAndWriteBuffer::copyHeadTo(std::vector<char>& dest) {
+    if (_lst.empty()) return 0;
+
+    return _lst.front()->copyTo(dest);
+}
 size_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vector<char>::iterator end) {
     size_t size = 0;
 

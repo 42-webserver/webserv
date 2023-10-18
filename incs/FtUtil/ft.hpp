@@ -12,6 +12,8 @@ namespace ft {
 			LISTEN_EVENT,
 			FILE_READ_EVENT,
 			FILE_WRITE_EVENT,
+			CACHE_READ_EVENT,
+			CACHE_WRITE_EVENT,
 			COUNT
 		};
 };

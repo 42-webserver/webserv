@@ -3,6 +3,9 @@
 #include "../../../incs/Event/WriteEvent/WriteEventToClient.hpp"
 #include "../../../incs/Event/ReadEvent/ReadEventFromCgi.hpp"
 #include "../../../incs/Event/ListenEvent/ListenEvent.hpp"
+#include <Event/WriteEvent/WriteEventToCache.hpp>
+#include <Event/ReadEvent/ReadEventFromFile.hpp>
+#include <Event/ReadEvent/ReadEventFromCache.hpp>
 // #include "../../../incs/Event/WriteEvent/WriteEventToCgi.hpp"
 
 EventFactory *EventFactory::_instance = NULL;
@@ -27,8 +30,22 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 		case ft::WRITE_EVENT_TO_CLIENT:
 			return (new WriteEventToClient(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager(),
-			 eventDto.getHttpRequest())
+			 eventDto.getClient())
 			);
+		case ft::FILE_READ_EVENT:
+			return (new ReadEventFromFile(eventDto.getBuffer(),
+			 eventDto.getPath(), eventDto.getMode())
+			);
+		// case ft::CACHE_READ_EVENT
+		case ft::CACHE_WRITE_EVENT:
+			return (new WriteEventToCache(eventDto.getBuffer(),
+			 eventDto.getPath(), eventDto.getMode())
+			);
+		case ft::CACHE_READ_EVENT:
+			return (new ReadEventFromCache(eventDto.getContent(),
+			 eventDto.getPath(), eventDto.getMode())
+			);
+
 		// case ft::READ_EVENT_FROM_CGI:
 		// 	return (new ReadEventFromCgi(eventDto));
 		// case ft::WRITE_EVENT_TO_CGI:
