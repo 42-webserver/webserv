@@ -9,6 +9,6 @@ class FileDeleterProcessor : public ProcessorObject {
         virtual ~FileDeleterProcessor(void);
         virtual void process(ft::shared_ptr
             <VirtualServerManager> virtualServerManager,
-            ft::shared_ptr<HttpRequest> request);
+            ft::shared_ptr<Client> client);
 };
 #endif

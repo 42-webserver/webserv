@@ -102,6 +102,7 @@ SRCS =	main.cpp \
 		Pattern/FileReaderProcessor.cpp \
 		Pattern/FileWriterProcessor.cpp \
 		Pattern/PatternProcessor.cpp \
+		Pattern/RedirectionProcessor.cpp \
 		Pattern/ProcessorObject.cpp \
 		Client/Client.cpp \
 		Client/ClientLimitExceededException.cpp \

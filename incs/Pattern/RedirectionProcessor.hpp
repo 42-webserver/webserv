@@ -1,14 +1,15 @@
-#ifndef FILEREADERPROCESSOR_HPP
-# define FILEREADERPROCESSOR_HPP
+#ifndef REDIRECTIONPROCESSOR_HPP
+# define REDIRECTIONPROCESSOR_HPP
 
 #include <Pattern/ProcessorObject.hpp>
 
-class FileReaderProcessor : public ProcessorObject {
+class RedirectionProcessor : public ProcessorObject {
     public:
-        FileReaderProcessor(void);
-        virtual ~FileReaderProcessor(void);
+        RedirectionProcessor(void);
+        virtual ~RedirectionProcessor(void);
         virtual void process(ft::shared_ptr
             <VirtualServerManager> virtualServerManager,
             ft::shared_ptr<Client> client);
 };
+
 #endif

@@ -26,6 +26,7 @@ class ReadEventFromClient: public ReadEvent, public SingleStreamable{
 		e_client_event_queue_state queryClientEventQueueState(void);
 		bool 			isRequestEmpty(void);
 		bool			isEventQueueTurnOn(e_client_event_queue_state state);
+		bool			isClientDie(void);
 		ft::shared_ptr<Client> getClient(void);
 	private:
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;

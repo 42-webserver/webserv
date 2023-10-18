@@ -9,6 +9,6 @@ class CgiReaderProcessor : public ProcessorObject {
         virtual ~CgiReaderProcessor(void);
         virtual void process(ft::shared_ptr
             <VirtualServerManager> virtualServerManager,
-            ft::shared_ptr<HttpRequest> request);
+            ft::shared_ptr<Client> client);
 };
 #endif
