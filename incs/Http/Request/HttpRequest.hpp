@@ -58,6 +58,7 @@ public:
 	void setFinished();
 	bool isError();
 	void setError(HttpStatusCode errorCode);
+	HttpStatusCode getErrorStatusCode();
 	friend std::ostream &operator<<(std::ostream & os, const HttpRequest & request);
 
 private:

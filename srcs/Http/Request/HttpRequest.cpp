@@ -199,6 +199,10 @@ void HttpRequest::setError(HttpStatusCode errorCode){
 	this->_errorStatusCode = errorCode;
 }
 
+HttpStatusCode HttpRequest::getErrorStatusCode(){
+	return this->_errorStatusCode;
+}
+
 std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
 {
 		os << "Method: " << request._method << std::endl;
