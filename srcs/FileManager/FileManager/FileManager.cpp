@@ -251,3 +251,36 @@ ft::shared_ptr<HttpRequest> request) {
     }
     return (FileRequestFail);
 }
+
+e_FileRequestType FileManager::requestFileDelete(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
+   struct stat fileStat;
+    e_file_info fileInfo = getFileInfo(uri, fileStat);
+    if (fileInfo == NotExistFile) {
+            response->setStatusCode(NOT_FOUND);
+            return (FileRequestFail);
+        }
+    if (fileInfo == ExistDirectory) {
+            response->setStatusCode(FORBIDDEN);
+            return (FileRequestFail);
+        }
+    Cache &cache = Cache::getInstance();
+    if (cache.hit(uri)) {
+        cache.deleteCacheContent(uri);
+        response->setStatusCode(OK);
+        return (FileRequestSuccess);
+    }
+    FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
+    e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
+    if (fileProcessingType == ReadingProcessing) {
+        return (FileRequestShouldWait);
+    }
+    else if (fileProcessingType == WritingProcessing) {
+        return (FileRequestShouldWait);
+    }
+    else if (fileProcessingType == NoneProcessing) {
+        fileTableManager.deleteFileData(uri);
+        unlink(uri.c_str());
+        return (FileRequestShouldWait);
+    }
+    return (FileRequestFail);
+}

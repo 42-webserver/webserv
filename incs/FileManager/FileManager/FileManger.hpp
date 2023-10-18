@@ -47,6 +47,7 @@ public:
     ft::shared_ptr<HttpRequest> request);
     e_FileRequestType _requestFileUploadMultiPart(const std::string &uri,
     ft::shared_ptr<HttpRequest> request);
+    e_FileRequestType requestFileDelete(const std::string &uri, ft::shared_ptr<HttpResponse> response);
 
 //static utility
 public:

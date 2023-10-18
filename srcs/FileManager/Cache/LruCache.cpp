@@ -54,6 +54,7 @@ void LruCacheNode::setReading(void) {
 
 void LruCacheNode::updateFinsish(void) {
 	this->_status = e_done;
+	this->_finalWriterNum = 0;
 }
 
 bool LruCacheNode::getFinalWriterNum(void) {
@@ -201,8 +202,12 @@ void LruCache::put(const std::string& uri){
 	this->_cache[uri] = this->_lru_list.begin();	
 }
 
+//Todo :check
 void LruCache::deleteContent(const std::string &uri) {
-	//Todo :
-	(void)uri;
+	if (this->_cache.find(uri) == this->_cache.end()) {
+		return ;
+	}
+	this->_lru_list.erase(this->_cache[uri]);
+	this->_cache.erase(uri);
 }
 const char	*LruCache::FailToGetException::what(void) const throw() { return ("LruCache: Fail to get"); }
