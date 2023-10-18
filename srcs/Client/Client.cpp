@@ -27,6 +27,9 @@ e_client_event_queue_state Client::queryClientEventQueueState(void){
     return this->_eventQueueState;
 }
 
+bool Client::isEventQueueStateTurnOn(e_client_event_queue_state state){
+    return (this->_eventQueueState & state) == state;
+}
 void Client::addClientEventQueueState(e_client_event_queue_state state){
     this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState | state);
 }

@@ -11,7 +11,7 @@
 #include "../../../incs/Log/Logger.hpp"
 #include "../../Http/Parser/HttpRequestParser.hpp"
 #include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
-
+#include <Event/WriteEvent/WriteEventToClient.hpp>
 class ReadEventFromClient;
 class ReadEventFromClientHandler : public ReadEventHandler {
 	public:

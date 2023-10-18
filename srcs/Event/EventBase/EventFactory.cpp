@@ -30,7 +30,7 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 		case ft::WRITE_EVENT_TO_CLIENT:
 			return (new WriteEventToClient(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager(),
-			 eventDto.getHttpRequest())
+			 eventDto.getClient())
 			);
 		case ft::FILE_READ_EVENT:
 			return (new ReadEventFromFile(eventDto.getBuffer(),

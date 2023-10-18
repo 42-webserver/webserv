@@ -38,6 +38,7 @@ public:
     bool isRequestEmpty(void);
     bool isResponseEmpty(void);
     bool isQueueMax(void);
+    bool isEventQueueStateTurnOn(e_client_event_queue_state state);
     e_client_event_queue_state queryClientEventQueueState(void);
     void addClientEventQueueState(e_client_event_queue_state state);
     void removeClientEventQueueState(e_client_event_queue_state state);

@@ -5,7 +5,7 @@ ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel,
 	ReadEvent(new ReadEventFromClientHandler()),
 	SingleStreamable(channel),
 	_virtualServerManager(virtualServerManager),
-	_client()
+	_client(new Client(Read))
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
 void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
@@ -48,4 +48,16 @@ void	ReadEventFromClient::addRequest(ft::shared_ptr<HttpRequest> request) {
 
 e_client_event_queue_state ReadEventFromClient::queryClientEventQueueState(void) {
 	return (this->_client->queryClientEventQueueState());
+}
+
+bool ReadEventFromClient::isRequestEmpty(void) {
+	return (this->_client->isRequestEmpty());
+}
+
+bool ReadEventFromClient::isEventQueueTurnOn(e_client_event_queue_state state) {
+	return (this->_client->isEventQueueStateTurnOn(state));
+}
+
+ft::shared_ptr<Client> ReadEventFromClient::getClient(void) {
+	return (this->_client);
 }

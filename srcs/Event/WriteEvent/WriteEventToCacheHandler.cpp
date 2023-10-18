@@ -12,9 +12,8 @@ void WriteEventToCacheHandler::handleEvent(Event &event) {
         writeEventToCache->offboardQueue();
         return ;
     }
-    size_t n;
     try {
-     n = _buffer->ioWrite(writeEventToCache->getFd());
+        _buffer->ioWrite(writeEventToCache->getFd());
     }
     catch (const DisconnectionException &e) {
         throw ;
@@ -23,7 +22,7 @@ void WriteEventToCacheHandler::handleEvent(Event &event) {
         Logger::getInstance().error("{} {}", 2, "WriteEventToCacheHandler", "Fail to write to cache");
         throw ;
     }
-    if (n == 0) {
+    if (_buffer->size() == 0) {
         writeEventToCache->offboardQueue();
     }
 }
