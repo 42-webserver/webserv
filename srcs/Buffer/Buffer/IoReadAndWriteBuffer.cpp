@@ -135,6 +135,12 @@ size_t IoReadAndWriteBuffer::ioSaveWrite(int fd, size_t start) {
     }
     return writtensize >= 0 ? writtensize + start : start;
 }
+
+size_t IoReadAndWriteBuffer::copyHeadTo(std::vector<char>& dest) {
+    if (_lst.empty()) return 0;
+
+    return _lst.front()->copyTo(dest);
+}
 size_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vector<char>::iterator end) {
     size_t size = 0;
 

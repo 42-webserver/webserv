@@ -20,8 +20,7 @@ Cache	&Cache::getInstance(void) {
 
 
 bool Cache::hit(const std::string &uri) {
-	//Todo : fix this!
-	return (this->_cache.get(uri).size() != 0);
+	return (this->_cache.hit(uri));
 }
 // size_t	Cache::copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) {
 	
@@ -29,15 +28,30 @@ bool Cache::hit(const std::string &uri) {
 // 	return (size);
 // }
 
-void    Cache::getCacheContent(const std::string &uri, std::vector<char> &buffer) {
+
+void    Cache::copyCacheContentVectorBack(const std::string &uri, std::vector<char> &buffer) {
 	const std::vector<char> &tmp = this->_cache.get(uri);
 	buffer.insert(buffer.end(), tmp.begin(), tmp.end());
 }
 
-size_t	Cache::getCacheContentSize(const std::string &uri)  {
-	return (_cache.getCacheContentSize(uri));
+void 	Cache::initCacheContent(const std::string &uri) {
+	if (this->_cache.hit(uri) == false) {
+		this->_cache.put(uri);
+	}
 }
 
-void    Cache::putCacheContent(const std::string &uri) {
-	this->_cache.put(uri);
+// size_t	Cache::getCacheContentSize(const std::string &uri)  {
+// 	return (_cache.getCacheContentSize(uri));
+// }
+
+// void    Cache::putCacheContent(const std::string &uri) {
+// 	this->_cache.put(uri);
+// }
+
+void	Cache::putCacheContent(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
+	this->_cache.put(uri, buffer);
+}
+
+void	Cache::deleteCacheContent(const std::string &uri) {
+	this->_cache.deleteContent(uri);
 }

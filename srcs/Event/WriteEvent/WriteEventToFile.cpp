@@ -9,7 +9,9 @@ WriteEventToFile::WriteEventToFile(
 WriteEventToFile::~WriteEventToFile(void) {
 }
 
-
+void WriteEventToFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndWriter> syncroFileDataAndWriter) {
+    this->_syncroFileDataAndWriter = syncroFileDataAndWriter;
+}
 
 void WriteEventToFile::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);

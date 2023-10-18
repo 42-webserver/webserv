@@ -1,8 +1,32 @@
 #include "../../../incs/Http/Request/HttpRequest.hpp"
 
+// FileUpload 
+
+HttpRequest::AccessKey::AccessKey()
+{
+}
+
+HttpRequest::AccessKey::~AccessKey()
+{
+}
+
+void HttpRequest::setFileUploadSync(e_file_upload_sync fileSync, AccessKey key)
+{
+	(void)key;
+	this->_fileUploadSync = fileSync;
+}
+
+e_file_upload_sync HttpRequest::getFileUploadSync(AccessKey key)
+{
+	(void)key;
+	return this->_fileUploadSync;
+}
+// End FileUpload
+
+
 
 HttpRequest::HttpRequest():
-	_bodyType(NORMAL), _pending(true)
+	_bodyType(NORMAL)
 {
 	_body = ft::make_shared<IoReadAndWriteBuffer>();
 }
@@ -122,6 +146,11 @@ ft::shared_ptr<IoReadAndWriteBuffer> HttpRequest::getBody()
 	return this->_body;
 }
 
+size_t HttpRequest::getBodySize() const
+{
+	return this->_body->size();
+}
+
 std::string HttpRequest::getProtocol()
 {
 	return this->_protocol;
@@ -180,15 +209,9 @@ std::string HttpRequest::getHeader(const std::string & key)
 	return "";
 }
 
-bool HttpRequest::isPending()
-{
-	return this->_pending;
-}
 
-void HttpRequest::setFinished()
-{
-	this->_pending = false;
-}
+
+
 
 std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
 {

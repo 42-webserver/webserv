@@ -18,6 +18,14 @@ public:
 private:
     FileData &_fileData;
 };
+
+class SyncroFileDataAndWriter{
+public:
+    SyncroFileDataAndWriter(FileData &fileData);
+    ~SyncroFileDataAndWriter();
+private:
+    FileData &_fileData;
+};
 class FileData{
 private:
     e_FileProcessingType _fileProcessingType;
@@ -30,7 +38,10 @@ public:
 public:
     void decreaseReaderCount(void);
     void increaseReaderCount(void);
+    void onWriting(void);
+    void offWriting(void);
     ft::shared_ptr<SyncroFileDataAndReader> buildSyncroFileDataAndReader(void);
+    ft::shared_ptr<SyncroFileDataAndWriter> buildSyncroFileDataAndWriter(void);
     e_FileProcessingType getFileProcessingType(void);
 };
 
