@@ -1,5 +1,5 @@
 #ifndef CLIENT_HPP
-#define CLIENT_HPP
+# define CLIENT_HPP
 
 #include <Http/Request/HttpRequest.hpp>
 #include <Http/Response/HttpResponse.hpp>
@@ -10,7 +10,7 @@
 #include "../../libs/shared_ptr/shared_ptr.hpp"
 #include "../../libs/Library/Optional.hpp"
 #include <queue>
-#include <Pattern/PatternProcessor.hpp>
+#include <Pattern/PatternType.hpp>
 
 static const size_t MAX_QUEUE_SIZE = 15;
 
@@ -29,21 +29,24 @@ private:
 private:
     Client(const Client& other);
     Client& operator=(const Client& other);
-    void _build(ft::shared_ptr<Channel> socket);
 public:
     Client(
     e_client_event_queue_state eventQueueState = None);
     ~Client();
+    void clientKill(void);
     void addRequest(ft::shared_ptr<HttpRequest> request);
     bool isRequestEmpty(void);
     bool isResponseEmpty(void);
     bool isQueueMax(void);
+    bool isClientDie(void);
+    ft::shared_ptr<HttpRequest> getRequest(void);
+    void processCurrentRequestDone(void);
     bool isEventQueueStateTurnOn(e_client_event_queue_state state);
     e_client_event_queue_state queryClientEventQueueState(void);
     void addClientEventQueueState(e_client_event_queue_state state);
     void removeClientEventQueueState(e_client_event_queue_state state);
-private:
-    PatternType getPatternType(ft::shared_ptr<VirtualServerManager> vsm);
+public:
+    PatternType getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const;
 };
 
 #endif

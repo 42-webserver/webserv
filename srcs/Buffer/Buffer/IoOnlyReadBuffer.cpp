@@ -27,7 +27,7 @@ void	IoOnlyReadBuffer::recycleInstance(){
 	ft::Assert::_assert((!_head.has_value()),
 	"IoOnlyReadBuffer:: recycleInstance Invarint Error");
 	if (_head.has_value()) 
-		(*_head)->reset();
+		(*_head)->reset(BaseNode::AccessKey());
 }
 void	IoOnlyReadBuffer::_allocate() {
     try {

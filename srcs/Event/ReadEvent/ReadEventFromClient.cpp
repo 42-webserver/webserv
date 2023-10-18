@@ -29,6 +29,8 @@ void	ReadEventFromClient::offboardQueue() {
 
 	try {
 		this->_offboardRead(this, this->getFd());
+		//To do: check this
+		this->_client->removeClientEventQueueState(Read);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (KqueueError());
@@ -60,4 +62,8 @@ bool ReadEventFromClient::isEventQueueTurnOn(e_client_event_queue_state state) {
 
 ft::shared_ptr<Client> ReadEventFromClient::getClient(void) {
 	return (this->_client);
+}
+
+bool ReadEventFromClient::isClientDie(void) {
+	return (this->_client->isClientDie());
 }

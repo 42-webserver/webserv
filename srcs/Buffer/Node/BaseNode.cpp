@@ -60,6 +60,9 @@
 
 //Mode
 
+BaseNode::AccessKey::AccessKey() {}
+BaseNode::AccessKey::~AccessKey() {}
+
 BaseNode::~BaseNode() {}
 
 
@@ -113,9 +116,10 @@ size_t BaseNode::insert(std::vector<char>::iterator start, size_t size) {
 	return size;
 }
 size_t BaseNode::size() const {return _size;}
-void BaseNode::reset() {
-	_buffer.clear();
+void BaseNode::reset(AccessKey key) {
+	(void)key;
 	_size = 0;
+	_eraseSize = 0;
 }
 size_t BaseNode::ioRead(int fd){
 	// static Mode _assertReadMode(false, true, true, true, true);

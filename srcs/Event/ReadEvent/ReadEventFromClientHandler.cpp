@@ -15,29 +15,46 @@ ReadEventFromClientHandler::e_client_connection_state	ReadEventFromClientHandler
 		return (NonBlock);
 }
 
-//a b c d/2
-//->a ->b ->c d/2
+//(a b error c d )
 void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
-	try {
-		HttpRequestParser &parser = *(this->getHttpRequestParser());
+	HttpRequestParser &parser = *(this->getHttpRequestParser());
 		
-		while (parser.parseRequest(event->getVirtualServerManger()) == FINISH)
-			event->addRequest(parser.getHttpRequest());
-
-		if (!event->isRequestEmpty() && !event->isEventQueueTurnOn(Write)) {
-			EventFactory& eventFactory = EventFactory::getInstance();
-			EventDto eventDto(
-				event->getChannel(),
-				event->getVirtualServerManger(),
-				event->getClient());
-
-			Event *writeEventToClient = eventFactory.createEvent(ft::WRITE_EVENT_TO_CLIENT, eventDto);
+	while (1) {
+		try {
+			if (parser.parseRequest(event->getVirtualServerManger()) != FINISH)
+				break ;
+		}
+		catch (BadRequestException& e){
+			//To do: errorRequest를 만들어서 보내줘야함
+		}
+		catch (std::exception& e){
+			// Logger::getInstance().error(e.what());
+			// ErrorPageHandler::getInstance()->process(event->getClient(), INTERNAL_SERVER_ERROR);
+			event->offboardQueue();
+			return ;
+		} 
+		event->addRequest(parser.getHttpRequest());
+	}
+// parser.parseRequest(event->getVirtualServerManger()) == FINISH
+	//To do Error 잡아서 클라이언트에게 errorHttpResponse를 보내줘야함
+	if (!event->isRequestEmpty() && !event->isEventQueueTurnOn(Write)) {
+		EventFactory& eventFactory = EventFactory::getInstance();
+		EventDto eventDto(
+			event->getChannel(),
+			event->getVirtualServerManger(),
+			event->getClient());
+		Event *writeEventToClient = eventFactory.createEvent(ft::WRITE_EVENT_TO_CLIENT, eventDto);
+		try {
 			writeEventToClient->onboardQueue();
 		}
-			
-	}
-	catch (...) {
-		throw ;
+		catch(std::exception &e) {
+			// Logger::getInstance().error(e.what());
+			delete writeEventToClient;
+		}
+		catch(...) {
+			// Logger::getInstance().error("Unknown Error");
+			delete writeEventToClient;
+		}
 	}
 }
 void ReadEventFromClientHandler::_processNonBlock(ReadEventFromClient *event) {
@@ -63,14 +80,14 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	// RequestParseState state;
 	//check Moudle
 	// TotalReadBuffer -> assign-> copy
-	try {
-		if (readEventClient->canRead() == false)
-			return ;
-		n = buffer.ioRead(readEventClient->getFd());
-		_process(_processMatcher(n), readEventClient);
-	} 
-	 catch (...) {
-		throw ;
-	 }
+	if (readEventClient->isClientDie() == true) {
+		readEventClient->offboardQueue();
+		return ;
+	}
+	if (readEventClient->canRead() == false)
+		return ;
+	n = buffer.ioRead(readEventClient->getFd());
+	_process(_processMatcher(n), readEventClient);
+	buffer.recycleInstance();
 }
 

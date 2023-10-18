@@ -7,7 +7,7 @@ CgiReaderProcessor::~CgiReaderProcessor(void) {
 }
 void CgiReaderProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
-    ft::shared_ptr<HttpRequest> request) {
+    ft::shared_ptr<Client> client) {
     (void)virtualServerManager;
-    (void)request;
+    (void)client;
 }

@@ -7,7 +7,7 @@ FileWriterProcessor::~FileWriterProcessor(void) {
 }
 void FileWriterProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
-    ft::shared_ptr<HttpRequest> request) {
+    ft::shared_ptr<Client> client) {
     (void)virtualServerManager;
-    (void)request;
+    (void)client;
 }
