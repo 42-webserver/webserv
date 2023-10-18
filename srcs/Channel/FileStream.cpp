@@ -1,5 +1,5 @@
 #include "../../incs/Channel/FileStream.hpp"
-#include <FileManager/FileManager/FileManger.hpp>
+#include <FileManager/FileManager/FileManager.hpp>
 
 void FileStream::inJectChannelFd(int fd) {
     this->setChannelFd(fd);

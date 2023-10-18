@@ -1,4 +1,4 @@
-#include <FileManager/FileManager/FileManger.hpp>
+#include <FileManager/FileManager/FileManager.hpp>
 
 FileManager *FileManager::_instance = NULL;
 FileManager::FileManager(void) {}
@@ -266,7 +266,6 @@ e_FileRequestType FileManager::requestFileDelete(const std::string &uri, ft::sha
     Cache &cache = Cache::getInstance();
     if (cache.hit(uri)) {
         cache.deleteCacheContent(uri);
-        response->setStatusCode(OK);
         return (FileRequestSuccess);
     }
     FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
@@ -280,7 +279,7 @@ e_FileRequestType FileManager::requestFileDelete(const std::string &uri, ft::sha
     else if (fileProcessingType == NoneProcessing) {
         fileTableManager.deleteFileData(uri);
         unlink(uri.c_str());
-        return (FileRequestShouldWait);
+        return (FileRequestSuccess);
     }
     return (FileRequestFail);
 }

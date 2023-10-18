@@ -5,6 +5,7 @@ WriteEventToFileHandler::WriteEventToFileHandler(
 ft::shared_ptr<IoReadAndWriteBuffer> buffer) : _buffer(buffer) {}
 WriteEventToFileHandler::~WriteEventToFileHandler(void) {}
 
+// Todo: 보내고 있는 와중에 클라이언트가 연결 끊으면, 파일 unlink
 void WriteEventToFileHandler::handleEvent(Event &event) {
     WriteEventToFile *writeEventToFile = static_cast<WriteEventToFile *>(&event);
     size_t n;

@@ -1,5 +1,5 @@
 #include <FileManager/Cache/LruCache.hpp>
-#include <FileManager/FileManager/FileManger.hpp>
+#include <FileManager/FileManager/FileManager.hpp>
 #include <Event/WriteEvent/WriteEventToCache.hpp>
 #include <Event/ReadEvent/ReadEventFromCache.hpp>
 SyncroWriteWithCache::SyncroWriteWithCache(LruCacheNode &lruCache): lruCache(lruCache), _thisWriterNum(lruCache.getFinalWriterNum() + 1) {
@@ -209,5 +209,6 @@ void LruCache::deleteContent(const std::string &uri) {
 	}
 	this->_lru_list.erase(this->_cache[uri]);
 	this->_cache.erase(uri);
+	unlink(uri.c_str());
 }
 const char	*LruCache::FailToGetException::what(void) const throw() { return ("LruCache: Fail to get"); }

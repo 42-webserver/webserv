@@ -45,6 +45,9 @@ public:
     e_client_event_queue_state queryClientEventQueueState(void);
     void addClientEventQueueState(e_client_event_queue_state state);
     void removeClientEventQueueState(e_client_event_queue_state state);
+    void allocateResponse(void);
+    void clearResponseAndRequest(void);
+    ft::shared_ptr<HttpResponse> getResponse(void);
 public:
     PatternType getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const;
 };

@@ -15,7 +15,7 @@ ReadEventFromClientHandler::e_client_connection_state	ReadEventFromClientHandler
 		return (NonBlock);
 }
 
-//(a b error c d )
+//(a b error c d ) -> ( a b error)-> response a, response b, response error
 void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 	HttpRequestParser &parser = *(this->getHttpRequestParser());
 		

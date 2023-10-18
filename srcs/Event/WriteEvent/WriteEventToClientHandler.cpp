@@ -6,7 +6,8 @@ WriteEventToClientHandler::WriteEventToClientHandler() : WriteEventHandler() {}
 WriteEventToClientHandler::~WriteEventToClientHandler() {}
 
 
-// clientQueue안에서는 동기화 적으로 작동, 
+// clientQueue안에서는 동기화 적으로 작동,
+// 파일을 보내는걸 완료했는데 클라이언트가 죽은 경우 고려 
 void WriteEventToClientHandler::handleEvent(Event &event){
 	WriteEventToClient *curEvent = static_cast<WriteEventToClient *>(&event);
 	ft::shared_ptr<Client> client = curEvent->getClient();
@@ -24,6 +25,10 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		PatternType patternType = client->getPatternType(curEvent->getVirtualServerManger());
 		PatternProcessor &patternProcessor = PatternProcessor::getInstance(patternType,
 		curEvent->getVirtualServerManger(), client);
+
+		//Todo: check this
+		if (client->isRequestEmpty())
+			client->processCurrentRequestDone();
 		patternProcessor.process();
 		patternProcessor.clear();
 	}

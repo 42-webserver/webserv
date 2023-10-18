@@ -7,7 +7,7 @@ class RedirectionProcessor : public ProcessorObject {
     public:
         RedirectionProcessor(void);
         virtual ~RedirectionProcessor(void);
-        virtual void process(ft::shared_ptr
+        virtual e_pattern_Process_result process(ft::shared_ptr
             <VirtualServerManager> virtualServerManager,
             ft::shared_ptr<Client> client);
 };

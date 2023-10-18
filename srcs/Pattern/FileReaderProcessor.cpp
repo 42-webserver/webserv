@@ -5,9 +5,10 @@ FileReaderProcessor::FileReaderProcessor(void) {
 }
 FileReaderProcessor::~FileReaderProcessor(void) {
 }
-void FileReaderProcessor::process(ft::shared_ptr
+e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
     (void)virtualServerManager;
     (void)client;
+    return SUCCESS;
 }

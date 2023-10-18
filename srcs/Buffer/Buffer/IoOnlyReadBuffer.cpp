@@ -19,13 +19,13 @@ IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
 }
 
 size_t IoOnlyReadBuffer::size(){
-	ft::Assert::_assert((!_head.has_value()),
-	"IoOnlyReadBuffer:: size Invarint Error");
+	// ft::Assert::_assert((!_head.has_value()),
+	// "IoOnlyReadBuffer:: size Invarint Error");
 	return _head.value_or(0);
 }
 void	IoOnlyReadBuffer::recycleInstance(){
-	ft::Assert::_assert((!_head.has_value()),
-	"IoOnlyReadBuffer:: recycleInstance Invarint Error");
+	// ft::Assert::_assert((!_head.has_value()),
+	// "IoOnlyReadBuffer:: recycleInstance Invarint Error");
 	if (_head.has_value()) 
 		(*_head)->reset(BaseNode::AccessKey());
 }

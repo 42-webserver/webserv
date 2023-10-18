@@ -54,6 +54,18 @@ void Client::removeClientEventQueueState(e_client_event_queue_state state){
     this->_eventQueueState = (e_client_event_queue_state)(this->_eventQueueState & ~state);
 }
 
+ft::shared_ptr<HttpResponse> Client::getResponse(void){
+    return this->response.value();
+}
+
+void Client::allocateResponse(void){
+    this->response = ft::Optional<ft::shared_ptr<HttpResponse> >(new HttpResponse());
+}
+
+void Client::clearResponseAndRequest(void){
+    this->response.reset();
+    this->requests.pop();
+}
 PatternType Client::getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const {
     ft::shared_ptr<HttpRequest> request = this->requests.front();
     vsm->getDefaultVirtualServer();
