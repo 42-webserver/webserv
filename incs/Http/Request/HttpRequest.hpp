@@ -16,12 +16,12 @@ typedef enum BodyType{
 		MULTIPART_FORM_DATA
 } BodyType;
 
-
 typedef enum {
 	NoneSetting,
 	Writing,
 	WritingDone
 }	e_file_upload_sync;
+
 
 class HttpRequest
 {
@@ -37,6 +37,8 @@ public:
 
 
 private:
+	bool									_error;
+	HttpStatusCode							_errorStatusCode;
 	std::string		 						_method;
 	std::string		 						_uri;
 	std::string		 						_version;
@@ -79,6 +81,11 @@ public:
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 	std::string getHeader(const std::string & key);
+	bool isPending();
+	void setFinished();
+	bool isError();
+	void setError(HttpStatusCode errorCode);
+	HttpStatusCode getErrorStatusCode();
 	friend std::ostream &operator<<(std::ostream & os, const HttpRequest & request);
 
 private:
