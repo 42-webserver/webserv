@@ -30,9 +30,10 @@ void	ListenEventHandler::handleEvent(Event &event) {
 	EventFactory &factory = EventFactory::getInstance();
 	try {
 		ListenEvent *listenEvent =static_cast<ListenEvent *>(&event);
-		EventDto event_dto(ft::static_pointer_cast<Channel>(ft::make_shared<Socket>(client_fd)), 
+		// EventDto event_dto(ft::static_pointer_cast<Channel>(ft::make_shared<Socket>(client_fd)), 
+		// listenEvent->getVirtualServerManager());
+		EventDto event_dto(ft::shared_ptr<Channel>(new Socket(client_fd)),
 		listenEvent->getVirtualServerManager());
-
 		Event *readEventFromClient = factory.createEvent(ft::READ_EVENT_FROM_CLIENT, event_dto);
 		readEventFromClient->onboardQueue();
 	} catch (const std::exception &e) {

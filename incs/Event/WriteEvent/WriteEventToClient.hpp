@@ -12,7 +12,7 @@ class WriteEventToClient: public WriteEvent, public SingleStreamable, public Dua
 	public:
 		WriteEventToClient(ft::shared_ptr<Channel> fd, 
 		ft::shared_ptr<VirtualServerManager> virtualServerManager,
-		ft::shared_ptr<HttpRequest> httpRequest);
+		ft::shared_ptr<Client> client);
 		virtual	~WriteEventToClient(void);
 
 	public:
@@ -25,7 +25,6 @@ class WriteEventToClient: public WriteEvent, public SingleStreamable, public Dua
 		e_client_event_queue_state queryClientEventQueueState(void);
 	private:
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
-		ft::shared_ptr<HttpRequest>	_httpRequest;
 		ft::shared_ptr<Client>	_client;
 };
 

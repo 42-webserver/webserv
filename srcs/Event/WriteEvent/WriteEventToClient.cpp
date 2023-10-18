@@ -2,10 +2,12 @@
 
 
 WriteEventToClient::WriteEventToClient(ft::shared_ptr<Channel> channel,
-ft::shared_ptr<VirtualServerManager> virtualServerManager
-,ft::shared_ptr<HttpRequest> httpRequest):
+ft::shared_ptr<VirtualServerManager> virtualServerManager,
+ft::shared_ptr<Client> client):
 WriteEvent(new WriteEventToClientHandler()), SingleStreamable(channel), DualStreamable(),
-_virtualServerManager(virtualServerManager), _httpRequest(httpRequest) {}
+_virtualServerManager(virtualServerManager), _client(client) {
+	client->addClientEventQueueState(Write);
+}
 
 
 WriteEventToClient::~WriteEventToClient(void) {}

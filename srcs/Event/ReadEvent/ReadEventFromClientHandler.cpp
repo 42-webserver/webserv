@@ -15,6 +15,8 @@ ReadEventFromClientHandler::e_client_connection_state	ReadEventFromClientHandler
 		return (NonBlock);
 }
 
+//a b c d/2
+//->a ->b ->c d/2
 void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 	try {
 		HttpRequestParser &parser = *(this->getHttpRequestParser());
@@ -22,9 +24,15 @@ void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 		while (parser.parseRequest(event->getVirtualServerManger()) == FINISH)
 			event->addRequest(parser.getHttpRequest());
 
-		e_client_event_queue_state state = event->queryClientEventQueueState();
-		if (parser.getState() == FINISH && state != Write && state != ReadWrite) {
-			//TODO: add to event queue
+		if (!event->isRequestEmpty() && !event->isEventQueueTurnOn(Write)) {
+			EventFactory& eventFactory = EventFactory::getInstance();
+			EventDto eventDto(
+				event->getChannel(),
+				event->getVirtualServerManger(),
+				event->getClient());
+
+			Event *writeEventToClient = eventFactory.createEvent(ft::WRITE_EVENT_TO_CLIENT, eventDto);
+			writeEventToClient->onboardQueue();
 		}
 			
 	}
