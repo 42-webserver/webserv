@@ -26,7 +26,7 @@ e_file_upload_sync HttpRequest::getFileUploadSync(AccessKey key)
 
 
 HttpRequest::HttpRequest():
-	_error(false), _bodyType(NORMAL), _pending(true)
+	_error(false), _bodyType(NORMAL)
 {
 	_body = ft::make_shared<IoReadAndWriteBuffer>();
 }
@@ -175,6 +175,7 @@ int HttpRequest::getContentLength()
 {
 	std::multimap<std::string, std::string>::iterator it;
 
+	//Todo: hyunkyle, -> error handling
 	it = this->_headers.find("Content-Length");
 	if (it == this->_headers.end())
 		throw BadRequestException(BAD_REQUEST);

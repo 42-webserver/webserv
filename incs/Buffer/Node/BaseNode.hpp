@@ -51,7 +51,7 @@
 class IoOnlyReadBuffer;
 
 namespace ft{
-	void _ioWrite(int fd, std::vector<char>& buffer);
+	size_t _ioWrite(int fd, std::vector<char>& buffer, size_t start);
 };
 class BaseNode {
 typedef std::vector<char>::iterator iterator;

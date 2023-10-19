@@ -10,6 +10,7 @@ void ErrorPageHandler::getErrorPageResponseTo(ft::shared_ptr<Client> client, Htt
     insert(response->getNormalCaseBuffer(HttpResponse::AccessKey()).end(), errorPage.begin(), errorPage.end());
 	response->addHeader("Content-Type", "text/html");
 	response->setStatusCode(status);
+	response->setCanSending();
 	client->setResponse(response);
 }
 

@@ -7,29 +7,40 @@ WriteEventToClientHandler::WriteEventToClientHandler() : WriteEventHandler() {}
 WriteEventToClientHandler::~WriteEventToClientHandler() {}
 
 
+
 // clientQueue안에서는 동기화 적으로 작동,
 // 파일을 보내는걸 완료했는데 클라이언트가 죽은 경우 고려 
+void WriteEventToClientHandler::_partialSending(ft::shared_ptr<HttpResponse> response, ft::shared_ptr<Client> client,
+WriteEventToClient *curEvent){
+	if (response->sendToClient(curEvent->getChannel()) == sendingDone){
+		client->clearResponseAndRequest();
+		if (client->isClientDie())
+			curEvent->offboardQueue();
+	}
+}
+
 void WriteEventToClientHandler::handleEvent(Event &event){
 	WriteEventToClient *curEvent = static_cast<WriteEventToClient *>(&event);
 	ft::shared_ptr<Client> client = curEvent->getClient();
 
 	//Todo: check this
-
 	if (client->isRequestEmpty()) {
 		if (!client->isResponseEmpty()) {
-			ft::shared_ptr<HttpResponse> curResponse = client->getResponse();
-			if (curResponse->isSending()){
-				if (curResponse->sendToClient(curEvent->getChannel()) == sendingDone)
-					client->clearResponseAndRequest();
-			}
+			if (client->getResponse()->isSending())
+				_partialSending(client->getResponse(), client, curEvent);
 		}
 		else {
 			if (client->isClientDie())
 				curEvent->offboardQueue();
 		}
+		//request Empty && !(clientDie || (ResponseExist && isSending) )-> return
 		return ;
 	}
-
+	if (client->getRequest()->isError()){
+		ErrorPageHandler::getErrorPageResponseTo(client, REQUEST_ENTITY_TOO_LARGE);
+		client->clientKill();
+		_partialSending(client->getResponse(), client, curEvent);	
+	}
 	try {
 		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
 		PatternType patternType = client->getPatternType(curEvent->getVirtualServerManger());
@@ -44,31 +55,19 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		}
 		else if (patternProcessor.process() == SUCCESS) {
 			patternProcessor.clear();
-			ft::shared_ptr<HttpResponse> curResponse = client->getResponse();
-			curResponse->setCanSending();
-			if (curResponse->sendToClient(curEvent->getChannel()) == sendingDone)
-				client->clearResponseAndRequest();
+			_partialSending(client->getResponse(), client, curEvent);
 		}
 		else {
-			//Todo::
+			throw std::runtime_error("WriteEventToClientHandler::handleEvent : patternProcessor.process() is FAIL");
 		}
 	}
 	catch (HttpException &e) {
 		// Logger::getInstance()->log(LogLevel::ERROR, e.what());
 		ErrorPageHandler::getErrorPageResponseTo(client, e.getStatusCode());
-		ft::shared_ptr<HttpResponse> response = client->getResponse();
-		response->setCanSending();
-
-		if (response->sendToClient(curEvent->getChannel()) == sendingDone)
-			client->clearResponseAndRequest();
+		_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (std::exception &e) {
 		ErrorPageHandler::getErrorPageResponseTo(client, INTERNAL_SERVER_ERROR);
-		ft::shared_ptr<HttpResponse> response = client->getResponse();
-		response->setCanSending();
-
-		//log error
-		if (response->sendToClient(curEvent->getChannel()) == sendingDone)
-			client->clearResponseAndRequest();		
+		_partialSending(client->getResponse(), client, curEvent);	
 	}
 }

@@ -47,7 +47,7 @@ private:
 	std::string 		_fileName;
 	std::multimap<std::string, std::string> _headers;
 	std::vector<Cookie> _cookies;
-
+	size_t				_previousWriteSize;
 //Todo: connection With processing
 	bool _isSending;
 //Relation with file Interface
@@ -85,6 +85,8 @@ public:
 	friend	std::ostream &operator<<(std::ostream & os, const HttpResponse & response);
 	bool isSending();
 	void setCanSending();
+private:
+	e_send_To_client_status _sendNormalToClient(ft::shared_ptr<Channel> clientChannel);
 
 };
 

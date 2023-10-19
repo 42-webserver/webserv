@@ -41,7 +41,7 @@ void HttpResponse::allocateBigSizeBuffer(AccessKey key)
 	(void)key;
 	this->_BigSizeBuffer = ft::shared_ptr<IoReadAndWriteBuffer>(new IoReadAndWriteBuffer());
 }
-HttpResponse::HttpResponse() : _isSending(false), _responseSize(NotSet), _fileSync(NotSetting)
+HttpResponse::HttpResponse() : _previousWriteSize(0), _isSending(false), _responseSize(NotSet), _fileSync(NotSetting)
 {
 	this->_version = "1.1";
 	this->_protocol = "HTTP";
@@ -145,22 +145,30 @@ std::ostream &operator<<(std::ostream & os,const HttpResponse & response){
 	return os;
 }
 
+e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel> clientChannel)
+{
+	size_t n = ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer, this->_previousWriteSize);
+	if (n < 0)
+		return sending;
+	this->_previousWriteSize += n;
+	if (this->_previousWriteSize == this->_NormalCaseBuffer.size())
+		return sendingDone;
+	return sending;
+}
+
 e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clientChannel)
 {
 	if (this->_responseSize == NotSet)
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
 	if (this->_responseSize == NormalSize)
 	{
-		ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer);
-		if (this->_NormalCaseBuffer.size() == 0)
-			return sendingDone;
-		return sending;
+		return this->_sendNormalToClient(clientChannel);
 	}
 	else 
 	{
 		//BigSize
-		if (this->_NormalCaseBuffer.size() != 0) {
-			ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer);
+		if (this->_previousWriteSize < this->_NormalCaseBuffer.size()) {
+			_sendNormalToClient(clientChannel);
 			return sending;
 		}
 		else {

@@ -162,7 +162,7 @@ size_t BaseNode::ioWrite(int fd) {
     return n;
 }
 
-void ft::_ioWrite(int fd, std::vector<char>& buffer) {
+size_t ft::_ioWrite(int fd, std::vector<char>& buffer, size_t start) {
 	// static Mode _assertWriteMode(false, false, false, false, true); 
 
 	if (!isHandlerSet) {
@@ -173,14 +173,12 @@ void ft::_ioWrite(int fd, std::vector<char>& buffer) {
 	// ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
 	// _mode.setWriteMode();
 
-	size_t n = write(fd, buffer.data(), buffer.size());
-	if (n > 0) buffer.erase(buffer.begin(), buffer.begin() + n);
-	
+	size_t n = write(fd, buffer.data() + start, buffer.size() - start);	
 	if (isSIGPIPE) {
 		isSIGPIPE = false; // 플래그 재설정
 		throw DisconnectionException();
 	}
-
+	return n;
 }
 
 

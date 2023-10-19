@@ -19,8 +19,8 @@ public:
 	void addHeader(const std::string & header);
 	void insertBody(std::vector<char> &buffer);
 	ft::shared_ptr<IoReadAndWriteBuffer> getBody(void);
-	bool needUpload(void);
-	std::string &getFilename(void);
+	// bool needUpload(void);
+	// std::string &getFilename(void);
 private:
 	void handleMultipleValueHeader(std::string & line);
 };
