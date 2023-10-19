@@ -1,5 +1,4 @@
 #include <FileManager/Cache/cache.hpp>
-#include <fstream>
 Cache *Cache::_instance = NULL;
 Cache::Cache(void) {}
 Cache::~Cache(void) {}

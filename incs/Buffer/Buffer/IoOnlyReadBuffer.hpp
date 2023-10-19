@@ -8,10 +8,8 @@
 #include "../../Channel/Socket.hpp"
 #include <vector>
 #include "IoAble.hpp"
-//Todo : Refactoring iterator
-//Todo: 1)check RequestParser Pattern(어떤 매서드 지원해야되는지)
-//Todo: 2)memory Exception
-//Todo: 3)iterator
+
+
 class IoOnlyReadBuffer : public BaseBuffer, IoReadable {
 //for iterator
 public: 

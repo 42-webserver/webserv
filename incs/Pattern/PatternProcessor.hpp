@@ -34,7 +34,7 @@ public:
     ft::shared_ptr<VirtualServerManager> vsm, 
     ft::shared_ptr<Client> client);
     // void deleteInstance(void);
-    void process();
+    e_pattern_Process_result process();
     void clear();
 };
 #endif 

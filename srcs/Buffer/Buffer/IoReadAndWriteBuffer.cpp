@@ -44,7 +44,6 @@ size_t IoReadAndWriteBuffer::_EraseSize() {
 }
 
 void IoReadAndWriteBuffer::_allocate() {
-    try {
         if (_state == InitState) {
             _lst.push_back(ft::shared_ptr<BaseNode>(new NormalNode()));
             _state = AppendState;
@@ -53,18 +52,12 @@ void IoReadAndWriteBuffer::_allocate() {
             _lst.push_back(ft::shared_ptr<BaseNode>(new LargeNode()));
         }
         else {
-            ft::Assert::_assert((false), "IoReadAndWriteBuffer::_allocate Invarint Error");
+            // ft::Assert::_assert((false), "IoReadAndWriteBuffer::_allocate Invarint Error");
         }
-    }
-    catch (const std::exception& e) {
-        throw;
-    }
-    catch (...) {
-        throw;
-    }
+
 }
 void IoReadAndWriteBuffer::_deallocate() {
-        ft::Assert::_assert((_state == EraseState), "IoReadAndWriteBuffer::_deallocate Invarint Error");
+        // ft::Assert::_assert((_state == EraseState), "IoReadAndWriteBuffer::_deallocate Invarint Error");
         _lst.pop_front();        
 }
 size_t IoReadAndWriteBuffer::ioRead(int fd) {

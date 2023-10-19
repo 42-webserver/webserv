@@ -43,8 +43,8 @@ ft::shared_ptr<Client> client) {
     return *PatternProcessor::instance;
 }
 
-void PatternProcessor::process() {
-    this->_processorObject->process(this->_vsm, this->_client);
+e_pattern_Process_result PatternProcessor::process() {
+    return this->_processorObject->process(this->_vsm, this->_client);
 }
 
 void PatternProcessor::clear(void) {

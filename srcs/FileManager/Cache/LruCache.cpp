@@ -1,5 +1,5 @@
 #include <FileManager/Cache/LruCache.hpp>
-#include <FileManager/FileManager/FileManger.hpp>
+#include <FileManager/FileManager/FileManager.hpp>
 #include <Event/WriteEvent/WriteEventToCache.hpp>
 #include <Event/ReadEvent/ReadEventFromCache.hpp>
 SyncroWriteWithCache::SyncroWriteWithCache(LruCacheNode &lruCache): lruCache(lruCache), _thisWriterNum(lruCache.getFinalWriterNum() + 1) {
@@ -144,32 +144,7 @@ size_t				LruCache::getCacheContentSize(const std::string &uri){
 	}
 	return (this->_cache[uri]->second.getContentSize());
 }
-// std::vector<char>::iterator	LruCache::getIter(const std::string &uri){
-// 	if (this->_cache.find(uri) == this->_cache.end()) {
-// 		return (this->empty.end());
-// 	}
-// 	this->_lru_list.splice(this->_lru_list.begin(), this->_lru_list, this->_cache[uri]);
-// 	return (this->_cache[uri]->second.begin());
-// }
-// void				LruCache::put(std::string uri, const std::vector<char> &content) {
 
-//    if (this->_cache.size() >= this->_capacity) {
-//         lru_list_t::iterator last = this->_lru_list.end();
-//         last--;
-
-//         this->_cache.erase(last->first);  // 가장 오래된 항목의 키로 삭제
-//         this->_lru_list.pop_back();
-//     }
-
-// 	this->_lru_list.push_front(std::make_pair(uri, 
-// 	LruCacheNode(content)));
-// 	_writeToCache(uri);
-// 	this->_cache[uri] = this->_lru_list.begin();
-// }
-// void LruCache::put(const std::string& uri) {
-// 	//Todo :
-// 	(void)uri;
-// }
 
 //hit을 가정안하고 없다 가정하에, 클라이언트 버퍼를받아와서 그내용 넣음
 void LruCache::put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer) {
@@ -209,5 +184,6 @@ void LruCache::deleteContent(const std::string &uri) {
 	}
 	this->_lru_list.erase(this->_cache[uri]);
 	this->_cache.erase(uri);
+	unlink(uri.c_str());
 }
 const char	*LruCache::FailToGetException::what(void) const throw() { return ("LruCache: Fail to get"); }

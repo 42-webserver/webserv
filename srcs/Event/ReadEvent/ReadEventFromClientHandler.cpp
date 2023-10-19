@@ -15,25 +15,28 @@ ReadEventFromClientHandler::e_client_connection_state	ReadEventFromClientHandler
 		return (NonBlock);
 }
 
-//(a b error c d )
+//(a b error c d ) -> ( a b error)-> response a, response b, response error
 void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 	HttpRequestParser &parser = *(this->getHttpRequestParser());
 		
-	while (1) {
-		try {
-			if (parser.parseRequest(event->getVirtualServerManger()) != FINISH)
-				break ;
-		}
-		catch (BadRequestException& e){
-			//To do: errorRequest를 만들어서 보내줘야함
-		}
-		catch (std::exception& e){
-			// Logger::getInstance().error(e.what());
-			// ErrorPageHandler::getInstance()->process(event->getClient(), INTERNAL_SERVER_ERROR);
-			event->offboardQueue();
-			return ;
-		} 
+	// while (1) {
+	// 		if (parser.parseRequest(event->getVirtualServerManger()) != FINISH)
+	// 			break ;
+	// 	}
+	// 	catch (BadRequestException& e){
+	// 		//To do: errorRequest를 만들어서 보내줘야함
+	// 	}
+	// 	catch (std::exception& e){
+	// 		// Logger::getInstance().error(e.what());
+	// 		// ErrorPageHandler::getInstance()->process(event->getClient(), INTERNAL_SERVER_ERROR);
+	// 		event->offboardQueue();
+	// 		return ;
+	// 	} 
+	// 	event->addRequest(parser.getHttpRequest());
+	// }
+	while (parser.parseRequest(event->getVirtualServerManger()) != FINISH) {
 		event->addRequest(parser.getHttpRequest());
+		// Logger::getInstance().info("Parsing");
 	}
 // parser.parseRequest(event->getVirtualServerManger()) == FINISH
 	//To do Error 잡아서 클라이언트에게 errorHttpResponse를 보내줘야함

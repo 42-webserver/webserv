@@ -9,7 +9,7 @@
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
 # include <sys/stat.h>
 # include <FileManager/Exception/FileNotExistException.hpp>
-
+# include <unistd.h>
 
 typedef enum{
 	e_reading,

@@ -10,4 +10,10 @@ typedef enum PatternType{
     PatternSize
 } PatternType;
 
+typedef enum {
+    FAILURE = 0,
+    SUCCESS,
+    WAITING
+} e_pattern_Process_result;
+
 #endif

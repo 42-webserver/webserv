@@ -46,19 +46,19 @@ void MultipartRequest::insertBody(std::vector<char> &buffer) {
 
 ft::shared_ptr<IoReadAndWriteBuffer> MultipartRequest::getBody(void){ return (this->_body); }
 
-bool MultipartRequest::needUpload(void){
-	std::map<std::string, std::string>::iterator it = this->_headers.find("name");
-	if (it == this->_headers.end() || it->second.compare("file") != 0)
-		return false;
-	it = this->_headers.find("filename");
-	if (it == this->_headers.end())
-		return false;
-	return true;
-}
+// bool MultipartRequest::needUpload(void){
+// 	std::map<std::string, std::string>::iterator it = this->_headers.find("name");
+// 	if (it == this->_headers.end() || it->second.compare("file") != 0)
+// 		return false;
+// 	it = this->_headers.find("filename");
+// 	if (it == this->_headers.end())
+// 		return false;
+// 	return true;
+// }
 
-std::string &MultipartRequest::getFilename(void){
-	if (!needUpload())
-		throw std::runtime_error("MultipartRequest::getFilename: this request is not file upload request");
-	std::map<std::string, std::string>::iterator it = this->_headers.find("filename");
-	return it->second;
-}
+// std::string &MultipartRequest::getFilename(void){
+// 	if (!needUpload())
+// 		throw std::runtime_error("MultipartRequest::getFilename: this request is not file upload request");
+// 	std::map<std::string, std::string>::iterator it = this->_headers.find("filename");
+// 	return it->second;
+// }
