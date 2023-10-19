@@ -68,7 +68,8 @@ void Client::setResponse(ft::shared_ptr<HttpResponse> response){
 
 void Client::clearResponseAndRequest(void){
     this->response.reset();
-    this->requests.pop();
+    if (!this->requests.empty())
+        this->requests.pop();
 }
 PatternType Client::getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const {
     ft::shared_ptr<HttpRequest> request = this->requests.front();
