@@ -11,9 +11,7 @@ FileManager    &FileManager::getInstance(void) {
     return (*FileManager::_instance);
 }
 void FileManager::_readFile(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
-    //Todo :: fileSync로 자동으로 readerCount증가하는거 생각 
-    // kqueue에 등록해야됨 readFile
-    // File*로 파일 새로 열어줌 ( 같은 파일에 대해 여러개 여는중)
+    //Todo :: 
     FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
     FileData &fileData = fileTableManager.getFileData(uri);
     
@@ -107,6 +105,26 @@ size_t FileManager::getFileSize(const std::string &uri) {
     }
     return (fileStat.st_size);
 }
+
+bool FileManager::isFileExists(const std::string &uri) {
+    struct stat fileStat;
+    e_file_info fileInfo = getFileInfo(uri, fileStat);
+
+    if (fileInfo == NotExistFile) {
+        return (false);
+    }
+    return (true);
+}
+
+bool FileManager::isDirectory(const std::string &uri) {
+    struct stat fileStat;
+    e_file_info fileInfo = getFileInfo(uri, fileStat);
+
+    if (fileInfo == ExistDirectory) {
+        return (true);
+    }
+    return (false);
+}
 // check FileSuccess with responseType setting
 // modulizing Need
 // 이 전에 헤더 내용이 buffer에 들어가있다라고 가정하기떄문에 파일 사이즈 물어보는게 있어서 수정하고 들어가있는걸 가정
@@ -128,7 +146,7 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
             std::string directoryListing = getDirectoryListing(uri);
 
             buffer.insert(buffer.end(), directoryListing.begin(), directoryListing.end());
-            response->setResponseSize(normalSize, HttpResponse::AccessKey());
+            response->setResponseSize(NormalSize, HttpResponse::AccessKey());
             response->setStatusCode(OK);
             return (FileRequestSuccess);
         }
@@ -138,7 +156,7 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
         //cache hit은 파일이 완전히 업로드 되야 hi
         if (cache.hit(uri)) {
             cache.copyCacheContentVectorBack(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
-            response->setResponseSize(normalSize, HttpResponse::AccessKey());
+            response->setResponseSize(NormalSize, HttpResponse::AccessKey());
             response->setStatusCode(OK);
             return (FileRequestSuccess);
         }

@@ -1,6 +1,7 @@
 #include "../../../incs/Event/WriteEvent/WriteEventToClientHandler.hpp"
 #include "../../../incs/Event/WriteEvent/WriteEventToClient.hpp"
 #include <Http/Exception/HttpException.hpp>
+#include <Http/Exception/MethodNotAllowedException.hpp>
 
 WriteEventToClientHandler::WriteEventToClientHandler() : WriteEventHandler() {}
 WriteEventToClientHandler::~WriteEventToClientHandler() {}
@@ -13,9 +14,18 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 	ft::shared_ptr<Client> client = curEvent->getClient();
 
 	//Todo: check this
-	if (client->isRequestEmpty() && client->isResponseEmpty()) {
-		if (client->isClientDie()) {
-			curEvent->offboardQueue();
+
+	if (client->isRequestEmpty()) {
+		if (!client->isResponseEmpty()) {
+			ft::shared_ptr<HttpResponse> curResponse = client->getResponse();
+			if (curResponse->isSending()){
+				if (curResponse->sendToClient(curEvent->getChannel()) == sendingDone)
+					client->clearResponseAndRequest();
+			}
+		}
+		else {
+			if (client->isClientDie())
+				curEvent->offboardQueue();
 		}
 		return ;
 	}
@@ -25,22 +35,40 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		PatternType patternType = client->getPatternType(curEvent->getVirtualServerManger());
 		PatternProcessor &patternProcessor = PatternProcessor::getInstance(patternType,
 		curEvent->getVirtualServerManger(), client);
-		//Todo: check this
-		if (client->isRequestEmpty())
-			client->processCurrentRequestDone();
-		patternProcessor.process();
-		patternProcessor.clear();
+		client->allocateResponse();
+		
+		// Todo: The processor should pre-populate the normalcase buffer with the appropriate format, 
+		// excluding the content body, in anticipation of a successful scenario. 
+		if (patternProcessor.process() == WAITING) {
+			patternProcessor.clear();
+		}
+		else if (patternProcessor.process() == SUCCESS) {
+			patternProcessor.clear();
+			ft::shared_ptr<HttpResponse> curResponse = client->getResponse();
+			curResponse->setCanSending();
+			if (curResponse->sendToClient(curEvent->getChannel()) == sendingDone)
+				client->clearResponseAndRequest();
+		}
+		else {
+			//Todo::
+		}
 	}
 	catch (HttpException &e) {
 		// Logger::getInstance()->log(LogLevel::ERROR, e.what());
-		// ErrorPageHandler::getInstance()->process(client, e.getStatusCode());
+		ErrorPageHandler::getErrorPageResponseTo(client, e.getStatusCode());
+		ft::shared_ptr<HttpResponse> response = client->getResponse();
+		response->setCanSending();
+
+		if (response->sendToClient(curEvent->getChannel()) == sendingDone)
+			client->clearResponseAndRequest();
 	}
 	catch (std::exception &e) {
-		// Logger::getInstance()->log(LogLevel::ERROR, e.what());
-		// ErrorPageHandler::getInstance()->process(client, INTERNAL_SERVER_ERROR);
-	}
-	catch (...) {
-		// Logger::getInstance()->log(LogLevel::ERROR, "Unknown Error");
-		// ErrorPageHandler::getInstance()->process(client, INTERNAL_SERVER_ERROR);
+		ErrorPageHandler::getErrorPageResponseTo(client, INTERNAL_SERVER_ERROR);
+		ft::shared_ptr<HttpResponse> response = client->getResponse();
+		response->setCanSending();
+
+		//log error
+		if (response->sendToClient(curEvent->getChannel()) == sendingDone)
+			client->clearResponseAndRequest();		
 	}
 }

@@ -1,4 +1,5 @@
 #include "../../../incs/Http/Utils/RouterUtils.hpp"
+#include <FileManager/FileManager/FileManager.hpp>
 
 std::string RouterUtils::findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
@@ -108,9 +109,9 @@ std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::s
 std::string RouterUtils::_findIndexInLocation(std::string path, ft::shared_ptr<LocationElement> locationElement){
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::INDEX);
     if (it == locationElement->end()){
-        if (FileUploader::isFileExists(path))
+        if (FileManager::isFileExists(path))
             return path;
-        else if (FileUploader::isFileExists(path + "/index.html"))
+        else if (FileManager::isFileExists(path + "/index.html"))
             return path + "/index.html";
         throw NotFoundException();
     }
@@ -119,7 +120,7 @@ std::string RouterUtils::_findIndexInLocation(std::string path, ft::shared_ptr<L
     std::vector<std::string> indexList = indexElem->getUris();
     for (std::vector<std::string>::iterator it = indexList.begin(); it != indexList.end(); it++){
         std::string indexPath = path + "/" + *it;
-        if (FileUploader::isFileExists(indexPath))
+        if (FileManager::isFileExists(indexPath))
             return indexPath;
     }
     throw NotFoundException();
@@ -135,9 +136,9 @@ std::string RouterUtils::_findIndexInServer(std::string path, ft::shared_ptr<Vir
     ServerElement server_element = targetServer->getServerElement();
     ServerElement::iterator it2 = server_element.find(ServerElement::KEY::INDEX);
     if (it2 == server_element.end()){
-        if (FileUploader::isFileExists(path))
+        if (FileManager::isFileExists(path))
             return path;
-        else if (FileUploader::isFileExists(path + "/index.html"))
+        else if (FileManager::isFileExists(path + "/index.html"))
             return path + "/index.html";
         throw NotFoundException();
     }
@@ -146,14 +147,14 @@ std::string RouterUtils::_findIndexInServer(std::string path, ft::shared_ptr<Vir
     std::vector<std::string> indexList2 = indexElem2->getUris();
     for (std::vector<std::string>::iterator it = indexList2.begin(); it != indexList2.end(); it++){
         std::string indexPath = path + "/" + *it;
-        if (FileUploader::isFileExists(indexPath))
+        if (FileManager::isFileExists(indexPath))
             return indexPath;
     }
     throw NotFoundException();
 }
 
 std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path){
-    if (!FileUploader::isDirectory(path))
+    if (!FileManager::isDirectory(path))
             return path;
     ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
     if (locationElement.get() != NULL){

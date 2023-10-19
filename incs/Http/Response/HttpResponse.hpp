@@ -11,7 +11,7 @@
 
 typedef enum{
 	NotSet,
-	normalSize,
+	NormalSize,
 	BigSize
 }	e_ResponseSize;
 
@@ -20,6 +20,13 @@ typedef enum{
 	Reading,
 	ReadingDone
 }	e_File_Sync;
+
+
+typedef enum{
+	sending,
+	sendingDone,
+	clientClose
+}	e_send_To_client_status;
 class FileManager;
 class HttpResponse
 {
@@ -27,6 +34,7 @@ public:
 	class AccessKey
 	{
 		friend class FileManager;
+		friend class ErrorPageHandler;
 		private:
 			AccessKey();
 			~AccessKey();
@@ -40,6 +48,8 @@ private:
 	std::multimap<std::string, std::string> _headers;
 	std::vector<Cookie> _cookies;
 
+//Todo: connection With processing
+	bool _isSending;
 //Relation with file Interface
 private:
 	e_ResponseSize		_responseSize;
@@ -71,8 +81,10 @@ public:
 	const std::multimap<std::string, std::string> &getHeaders() const;
 	std::string getHeader(const std::string & key);
 	const std::vector<Cookie> &getCookies() const;
-
+	e_send_To_client_status sendToClient(ft::shared_ptr<Channel> clientChannel);
 	friend	std::ostream &operator<<(std::ostream & os, const HttpResponse & response);
+	bool isSending();
+	void setCanSending();
 
 };
 

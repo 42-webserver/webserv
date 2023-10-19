@@ -8,13 +8,13 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <Client/Client.hpp>
 class ErrorPageHandler
 {
 public:
-	// static ft::shared_ptr<HttpResponse> getErrorPageResponse(HttpStatusCode status);
+	static void getErrorPageResponseTo(ft::shared_ptr<Client> client, HttpStatusCode status);
 private:
-	// static std::vector<char> getErrorPage(HttpStatusCode status);
+	static std::vector<char> getErrorPage(HttpStatusCode status);
 
 };
 

@@ -1,5 +1,5 @@
 #include "../../../incs/Http/Handler/HttpGetResponseHandler.hpp"
-
+#include <FileManager/FileManager/FileManager.hpp>
 //fix daegulee: may be this logic in Write Event.
 
 std::map<std::string, std::string> HttpGetResponseHandler::_contentTypeMap = HttpGetResponseHandler::_initializeContentTypeMap();
@@ -35,7 +35,7 @@ void HttpGetResponseHandler::_makeResponseHeader(std::string &path, ft::shared_p
     if (response->getFileName().empty())
         contentLengthTmp = response->getBody().size();
     else
-        contentLengthTmp = FileUploader::getFileSize(response->getFileName());
+        contentLengthTmp = FileManager::getFileSize(response->getFileName());
     std::stringstream ss;
     ss << contentLengthTmp;
     std::string contentLength = ss.str();

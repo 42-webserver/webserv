@@ -6,7 +6,7 @@
 #include "../../libs/shared_ptr/shared_ptr.hpp"
 #include "ByteStream.hpp"
 #include <unistd.h>
-//Todo : 상황에 맞게 구현해야됨 
+
 class CgiChannel{
 public:
 	typedef enum {

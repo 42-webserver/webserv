@@ -56,6 +56,8 @@ public:
     static bool isInCashSize(struct stat &fileStat);
     static bool isInCashSize(size_t size);
     static size_t getFileSize(const std::string &uri);
+    static bool isFileExists(const std::string &uri);
+    static bool isDirectory(const std::string &uri);
 };
 
 

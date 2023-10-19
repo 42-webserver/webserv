@@ -7,7 +7,6 @@
 #include "../Handler/ErrorPageHandler.hpp"
 #include "../../Server/VirtualServerManager.hpp"
 #include "../Utils/RouterUtils.hpp"
-#include "../Utils/FileUploader.hpp"
 #include "../../FileManager/Cache/cache.hpp"
 #include <map>
 

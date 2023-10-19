@@ -48,6 +48,7 @@ public:
     void allocateResponse(void);
     void clearResponseAndRequest(void);
     ft::shared_ptr<HttpResponse> getResponse(void);
+    void setResponse(ft::shared_ptr<HttpResponse> response);
 public:
     PatternType getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const;
 };

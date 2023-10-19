@@ -49,6 +49,10 @@
 //     unsigned char mode : 5;
 // };
 class IoOnlyReadBuffer;
+
+namespace ft{
+	void _ioWrite(int fd, std::vector<char>& buffer);
+};
 class BaseNode {
 typedef std::vector<char>::iterator iterator;
 typedef std::vector<char>::const_iterator const_iterator;
