@@ -26,7 +26,7 @@ e_file_upload_sync HttpRequest::getFileUploadSync(AccessKey key)
 
 
 HttpRequest::HttpRequest():
-	_bodyType(NORMAL)
+	_error(false), _bodyType(NORMAL), _pending(true)
 {
 	_body = ft::make_shared<IoReadAndWriteBuffer>();
 }
@@ -212,6 +212,19 @@ std::string HttpRequest::getHeader(const std::string & key)
 
 
 
+
+bool HttpRequest::isError(){
+	return this->_error;
+}
+
+void HttpRequest::setError(HttpStatusCode errorCode){
+	this->_error = true;
+	this->_errorStatusCode = errorCode;
+}
+
+HttpStatusCode HttpRequest::getErrorStatusCode(){
+	return this->_errorStatusCode;
+}
 
 std::ostream &operator<<(std::ostream & os, const HttpRequest & request)
 {

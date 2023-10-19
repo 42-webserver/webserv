@@ -3,6 +3,7 @@
 
 #include "../Request/HttpRequest.hpp"
 #include "../Utils/RouterUtils.hpp"
+#include "../Utils/HttpStatus.hpp"
 #include "../Exception/BadRequestException.hpp"
 #include "../../Config/Config.hpp"
 #include "../../Server/VirtualServerManager.hpp"
