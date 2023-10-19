@@ -67,6 +67,7 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (std::exception &e) {
+		//log error
 		ErrorPageHandler::getErrorPageResponseTo(client, INTERNAL_SERVER_ERROR);
 		_partialSending(client->getResponse(), client, curEvent);	
 	}
