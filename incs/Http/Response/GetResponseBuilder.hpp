@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "HttpResponseBuilder.hpp"
-#include <Exception>
 
 
 class GetResponseBuilder: public HttpResponseBuilder
