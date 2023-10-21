@@ -8,7 +8,7 @@
 #include "../Utils/Cookie.hpp"
 #include <iostream>
 #include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
-
+#include "HttpResponseBuilder.hpp"
 typedef enum{
 	NotSet,
 	NormalSize,
@@ -34,19 +34,25 @@ public:
 	class AccessKey
 	{
 		friend class FileManager;
-		friend class ErrorPageHandler;
+		friend class ErrorPageBuilder;
+		friend class FileReaderProcessor;
+		friend class FileDeleterProcessor;
+		friend class FileWriterProcessor;
+		friend class RedirectionProcessor;
+		friend class WriteEventToClientHandler;
 		private:
 			AccessKey();
 			~AccessKey();
 	};
 private:
-	std::string 		_version;
-	std::vector<char>	_body;
-	std::string 		_protocol;
-	HttpStatusCode 		_statusCode;
-	std::string 		_fileName;
-	std::multimap<std::string, std::string> _headers;
-	std::vector<Cookie> _cookies;
+	// std::string 		_version;
+	// std::vector<char>	_body;
+	// std::string 		_protocol;
+	// HttpStatusCode 		_statusCode;
+	// std::string 		_fileName;
+	// std::multimap<std::string, std::string> _headers;
+	// std::vector<Cookie> _cookies;
+	ft::shared_ptr<HttpResponseBuilder> _builder;
 	size_t				_previousWriteSize;
 //Todo: connection With processing
 	bool _isSending;
@@ -68,23 +74,26 @@ public:
 public:
 	HttpResponse();
 	~HttpResponse();
-	void setFileName(std::string & fileName);
-	void addHeader(const std::string & key, const std::string & value);
-	void setStatusCode(HttpStatusCode code);
-	void addCookie(const std::string & key, const std::string & value);
-	std::string getVersion();
-	std::string getFileName();
-	std::vector<char> &getBody();
-	std::string getProtocol();
-	std::string getReasonPhrase();
-	int getStatusCode();
-	const std::multimap<std::string, std::string> &getHeaders() const;
-	std::string getHeader(const std::string & key);
-	const std::vector<Cookie> &getCookies() const;
 	e_send_To_client_status sendToClient(ft::shared_ptr<Channel> clientChannel);
-	friend	std::ostream &operator<<(std::ostream & os, const HttpResponse & response);
+	void setFileName(std::string & fileName);
+	const ft::shared_ptr<HttpResponseBuilder> &getBuilder();
+	void allocateBuilder(HttpResponseBuilder *builder);
 	bool isSending();
 	void setCanSending();
+
+	// void addHeader(const std::string & key, const std::string & value);
+	// void setStatusCode(HttpStatusCode code);
+	// void addCookie(const std::string & key, const std::string & value);
+	// std::string getVersion();
+	// std::string getFileName();
+	// std::vector<char> &getBody();
+	// std::string getProtocol();
+	// std::string getReasonPhrase();
+	// int getStatusCode();
+	// const std::multimap<std::string, std::string> &getHeaders() const;
+	// std::string getHeader(const std::string & key);
+	// const std::vector<Cookie> &getCookies() const;
+	// friend	std::ostream &operator<<(std::ostream & os, const HttpResponse & response);
 private:
 	e_send_To_client_status _sendNormalToClient(ft::shared_ptr<Channel> clientChannel);
 

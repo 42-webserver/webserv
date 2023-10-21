@@ -2,7 +2,7 @@
 # define FileWriterProcessor_HPP
 
 #include <Pattern/ProcessorObject.hpp>
-
+#include <Http/Response/PutAndPostResponseBuilder.hpp>
 class FileWriterProcessor : public ProcessorObject {
     public:
         FileWriterProcessor(void);

@@ -2,11 +2,11 @@
 # define WriteEventToClientHandler_HPP
 
 # include "WriteEventHandler.hpp"
-#include "../../../incs/Http/Handler/ErrorPageHandler.hpp"
 #include "../../../incs/Http/Response/HttpResponse.hpp"
 #include "../../../incs/Log/Logger.hpp"
 #include "../../../incs/Event/EventBase/EventFactory.hpp"
 #include <Pattern/PatternProcessor.hpp>
+#include <Http/Response/ErrorPageBuilder.hpp>
 
 class WriteEventToClient;
 class WriteEventToClientHandler: public WriteEventHandler {

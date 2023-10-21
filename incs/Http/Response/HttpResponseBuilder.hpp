@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include "../Utils/HttpStatus.hpp"
-#include "../../libs/Library/Optional.hpp"
-#include "../../libs/shared_ptr/shared_ptr.hpp"
+#include "../../../libs/Library/Optional.hpp"
+#include "../../../libs/shared_ptr/shared_ptr.hpp"
+#include <Server/VirtualServerManager.hpp>
 #include <vector>
-#include <Client/Client.hpp>
 #include <sstream>
 
-
+class HttpRequest;
+class Client;
 class DirectoryException: public std::exception
 {
 public:

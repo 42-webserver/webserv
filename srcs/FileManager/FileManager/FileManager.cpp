@@ -147,7 +147,6 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
 
             buffer.insert(buffer.end(), directoryListing.begin(), directoryListing.end());
             response->setResponseSize(NormalSize, HttpResponse::AccessKey());
-            response->setStatusCode(OK);
             return (FileRequestSuccess);
         }
     }
@@ -157,7 +156,6 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
         if (cache.hit(uri)) {
             cache.copyCacheContentVectorBack(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
             response->setResponseSize(NormalSize, HttpResponse::AccessKey());
-            response->setStatusCode(OK);
             return (FileRequestSuccess);
         }
         else {
@@ -175,7 +173,6 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
         e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
 
         if (fileSync == ReadingDone) {
-            response->setStatusCode(OK);
             return (FileRequestSuccess);
         }
         if (fileProcessingType == ReadingProcessing || fileProcessingType == NoneProcessing) {

@@ -2,7 +2,7 @@
 # define FILEREADERPROCESSOR_HPP
 
 #include <Pattern/ProcessorObject.hpp>
-
+#include <Http/Response/GetResponseBuilder.hpp>
 class FileReaderProcessor : public ProcessorObject {
     public:
         FileReaderProcessor(void);

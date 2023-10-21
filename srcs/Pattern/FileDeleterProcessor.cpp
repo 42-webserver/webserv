@@ -10,6 +10,10 @@ e_pattern_Process_result FileDeleterProcessor::process(ft::shared_ptr
   FileManager& fileManager = FileManager::getInstance();
   e_FileRequestType type;
    try { 
+      client->getResponse()->allocateBuilder(new DeleteResponseBuilder(client, vsm));
+      ft::shared_ptr<HttpResponseBuilder> builder = client->getResponse()->getBuilder();
+      builder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+
       std::string path = RouterUtils::findPriorityPathWithIndex(vsm, client->getRequest());
       type = fileManager.requestFileDelete(path);
    }

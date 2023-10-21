@@ -37,7 +37,11 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		return ;
 	}
 	if (client->getRequest()->isError()){
-		ErrorPageHandler::getErrorPageResponseTo(client, REQUEST_ENTITY_TOO_LARGE);
+		// ErrorPageHandler::getErrorPageResponseTo(client, REQUEST_ENTITY_TOO_LARGE);
+		ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, REQUEST_ENTITY_TOO_LARGE));
+
+		//Todo: check bottom one line
+		errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
 		client->clientKill();
 		_partialSending(client->getResponse(), client, curEvent);	
 	}
@@ -63,12 +67,19 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 	}
 	catch (HttpException &e) {
 		// Logger::getInstance()->log(LogLevel::ERROR, e.what());
-		ErrorPageHandler::getErrorPageResponseTo(client, e.getStatusCode());
+		ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, e.getStatusCode()));
+
+		//Todo: check bottom one line
+		errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
 		_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (std::exception &e) {
 		//log error
-		ErrorPageHandler::getErrorPageResponseTo(client, INTERNAL_SERVER_ERROR);
+		ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, INTERNAL_SERVER_ERROR));
+
+		//Todo: check bottom one line
+		errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+		
 		_partialSending(client->getResponse(), client, curEvent);	
 	}
 }

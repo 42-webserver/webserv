@@ -1,4 +1,6 @@
 #include <Http/Response/HttpResponseBuilder.hpp>
+#include <Http/Response/HttpResponse.hpp>
+#include <Client/Client.hpp>
 
 ContentLength::ContentLength(int contentLength) : _transferEncodingHeader(""), _contentLength(contentLength), _contentLengthHeaderType(e_content_length_header)
 {
@@ -28,6 +30,43 @@ const char *DirectoryException::what() const throw() {
     return "DirectoryException";
 }
 
+// std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request) {
+//     std::string uri = request->getUri();
+
+//     if (uri.find_last_of(".") == std::string::npos) {
+//         throw DirectoryException();
+//     }
+
+//     std::string extension = uri.substr(uri.find_last_of(".") + 1);
+//     for (std::string::iterator it = extension.begin(); it != extension.end(); ++it) {
+//         *it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
+//     }
+
+//     std::map<std::string, std::string> mimeTypes;
+//     mimeTypes["html"] = "text/html";
+//     mimeTypes["css"] = "text/css";
+//     mimeTypes["js"] = "application/javascript";
+//     mimeTypes["jpg"] = "image/jpeg";
+//     mimeTypes["jpeg"] = "image/jpeg";
+//     mimeTypes["png"] = "image/png";
+//     mimeTypes["gif"] = "image/gif";
+//     mimeTypes["svg"] = "image/svg+xml";
+//     mimeTypes["mp4"] = "video/mp4";
+//     mimeTypes["txt"] = "text/plain";
+//     mimeTypes["pdf"] = "application/pdf";
+//     mimeTypes["zip"] = "application/zip";
+//     mimeTypes["json"] = "application/json";
+//     mimeTypes["ico"] = "image/x-icon";
+//     mimeTypes["xml"] = "application/xml";
+//     mimeTypes["bmp"] = "image/bmp";
+
+//     std::map<std::string, std::string>::iterator it = mimeTypes.find(extension);
+//     if (it != mimeTypes.end()) {
+//         return "Content-Type: " + it->second;
+//     } else {
+//         return "Content-Type: application/octet-stream";
+//     }
+// }
 std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request) {
     std::string uri = request->getUri();
 
@@ -40,16 +79,25 @@ std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpReque
         *it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
     }
 
-    std::map<std::string, std::string> mimeTypes;
-    mimeTypes["html"] = "text/html";
-    mimeTypes["css"] = "text/css";
-    mimeTypes["js"] = "application/javascript";
-    mimeTypes["jpg"] = "image/jpg";
-    mimeTypes["jpeg"] = "image/jpeg";
-    mimeTypes["png"] = "image/png";
-    mimeTypes["gif"] = "image/gif";
-    mimeTypes["svg"] = "image/svg+xml";
-    mimeTypes["mp4"] = "video/mp4";
+    static std::map<std::string, std::string> mimeTypes;
+    if (mimeTypes.empty()) {
+        mimeTypes["html"] = "text/html";
+        mimeTypes["css"] = "text/css";
+        mimeTypes["js"] = "application/javascript";
+        mimeTypes["jpg"] = "image/jpeg";
+        mimeTypes["jpeg"] = "image/jpeg";
+        mimeTypes["png"] = "image/png";
+        mimeTypes["gif"] = "image/gif";
+        mimeTypes["svg"] = "image/svg+xml";
+        mimeTypes["mp4"] = "video/mp4";
+        mimeTypes["txt"] = "text/plain";
+        mimeTypes["pdf"] = "application/pdf";
+        mimeTypes["zip"] = "application/zip";
+        mimeTypes["json"] = "application/json";
+        mimeTypes["ico"] = "image/x-icon";
+        mimeTypes["xml"] = "application/xml";
+        mimeTypes["bmp"] = "image/bmp";
+    }
 
     std::map<std::string, std::string>::iterator it = mimeTypes.find(extension);
     if (it != mimeTypes.end()) {
@@ -58,6 +106,7 @@ std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpReque
         return "Content-Type: application/octet-stream";
     }
 }
+
 
 
 std::string HttpResponseBuilder::_makeDateHeader(void)
@@ -95,9 +144,9 @@ void HttpResponseBuilder::_allocContentLength(ContentLength::e_content_length_he
                              int contentLength)
 {
     if (contentLengthHeaderType == ContentLength::e_content_length_header)
-        this->_contentLength = ft::Optional<ContentLength>(ContentLength(contentLength));
+        this->_contentLength = (ContentLength(contentLength));
     else
-        this->_contentLength = ft::Optional<ContentLength>(ContentLength());
+        this->_contentLength = (ContentLength());
 }
 
 void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
