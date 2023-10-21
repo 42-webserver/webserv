@@ -5,17 +5,17 @@
 # include <string>
 
 
-class FileNotExistException : public std::exception {
-private:
-    std::string _msg;
-    mutable std::string _fullMsg;  
+// class FileNotExistException : public std::exception {
+// private:
+//     std::string _msg;
+//     mutable std::string _fullMsg;  
 
-public:
-    FileNotExistException(const std::string &msg);
-    virtual ~FileNotExistException() throw();
+// public:
+//     FileNotExistException(const std::string &msg);
+//     virtual ~FileNotExistException() throw();
 
-    virtual const char *what() const throw();
-};
+//     virtual const char *what() const throw();
+// };
 
 
 #endif

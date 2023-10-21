@@ -42,11 +42,11 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 		_partialSending(client->getResponse(), client, curEvent);	
 	}
 	try {
+		client->allocateResponse();
 		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
 		PatternType patternType = client->getPatternType(curEvent->getVirtualServerManger());
 		PatternProcessor &patternProcessor = PatternProcessor::getInstance(patternType,
 		curEvent->getVirtualServerManger(), client);
-		client->allocateResponse();
 		
 		// Todo: The processor should pre-populate the normalcase buffer with the appropriate format, 
 		// excluding the content body, in anticipation of a successful scenario. 

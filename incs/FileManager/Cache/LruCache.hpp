@@ -8,7 +8,8 @@
 # include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 # include "../../../libs/shared_ptr/shared_ptr.hpp"
 # include <sys/stat.h>
-# include <FileManager/Exception/FileNotExistException.hpp>
+# include <Http/Exception/NotFoundException.hpp>
+# include <Http/Exception/ForbiddenException.hpp>
 # include <unistd.h>
 
 typedef enum{

@@ -110,8 +110,6 @@ SRCS =	main.cpp \
 		FileManager/FileManager/FileData.cpp \
 		FileManager/FileManager/FileManager.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
-		FileManager/Exception/FileIsDirectoryException.cpp \
-		FileManager/Exception/FileNotExistException.cpp \
 		Hash/Sha256_copy.cpp \
 		Hash/Etag.cpp \
 

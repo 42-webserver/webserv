@@ -62,6 +62,10 @@ void Client::allocateResponse(void){
     this->response = ft::shared_ptr<HttpResponse>(new HttpResponse());
 }
 
+// void Client::deallocateResponse(void){
+//     this->response.reset();
+// }
+
 void Client::setResponse(ft::shared_ptr<HttpResponse> response){
     this->response = response;
 }

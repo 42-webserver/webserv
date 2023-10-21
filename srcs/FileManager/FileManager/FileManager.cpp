@@ -137,7 +137,7 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
     if (fileSync == NotSetting) {
 
         if (fileInfo == NotExistFile) {
-            response->setStatusCode(NOT_FOUND);
+            throw NotFoundException();
             return (FileRequestFail);
         }
         if (fileInfo == ExistDirectory) {
@@ -270,16 +270,14 @@ ft::shared_ptr<HttpRequest> request) {
     return (FileRequestFail);
 }
 
-e_FileRequestType FileManager::requestFileDelete(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
+e_FileRequestType FileManager::requestFileDelete(const std::string &uri) {
    struct stat fileStat;
     e_file_info fileInfo = getFileInfo(uri, fileStat);
     if (fileInfo == NotExistFile) {
-            response->setStatusCode(NOT_FOUND);
-            return (FileRequestFail);
+            throw NotFoundException();
         }
     if (fileInfo == ExistDirectory) {
-            response->setStatusCode(FORBIDDEN);
-            return (FileRequestFail);
+            throw ForbiddenException();
         }
     Cache &cache = Cache::getInstance();
     if (cache.hit(uri)) {

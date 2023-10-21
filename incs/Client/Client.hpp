@@ -46,6 +46,7 @@ public:
     void addClientEventQueueState(e_client_event_queue_state state);
     void removeClientEventQueueState(e_client_event_queue_state state);
     void allocateResponse(void);
+    // void deallocateResponse(void);
     void clearResponseAndRequest(void);
     ft::shared_ptr<HttpResponse> getResponse(void);
     void setResponse(ft::shared_ptr<HttpResponse> response);
