@@ -54,10 +54,6 @@ void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 			// Logger::getInstance().error(e.what());
 			delete writeEventToClient;
 		}
-		catch(...) {
-			// Logger::getInstance().error("Unknown Error");
-			delete writeEventToClient;
-		}
 	}
 }
 void ReadEventFromClientHandler::_processNonBlock(ReadEventFromClient *event) {

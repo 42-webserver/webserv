@@ -24,14 +24,12 @@ SyncroReadWithCache::~SyncroReadWithCache(void) {
 	this->lruCache.updateFinsish();
 }
 
-LruCacheNode::LruCacheNode(void): _content(), _status(e_done), _finalWriterNum(0) {
-	_content.reserve(LruCache::_BlockSize);
+LruCacheNode::LruCacheNode(void): _content(LruCache::_BlockSize), _status(e_done), _finalWriterNum(0) {
 }
 
 LruCacheNode::~LruCacheNode(void) {}
 
 LruCacheNode::LruCacheNode(ft::shared_ptr<IoReadAndWriteBuffer> buffer): _content(), _status(e_done), _finalWriterNum(0) {
-	_content.reserve(LruCache::_BlockSize);
 	buffer->copyHeadTo(this->_content);
 }
 
@@ -88,12 +86,16 @@ LruCache::~LruCache(void) {}
 void LruCache::_readToCache(const std::string &uri) {
 	struct stat fileStat;
 	e_file_info fileInfo = FileManager::getFileInfo(uri, fileStat);
+	//To do: checkthis
 	if (fileInfo == NotExistFile) {
-		throw FileNotExistException(uri);
+		// log
+		throw NotFoundException();
 	}
 	if (fileInfo == ExistDirectory) {
-		throw FileIsDirectoryException(uri);
+		//log
+		throw ForbiddenException();
 	}
+	//
 	EventFactory &eventFactory = EventFactory::getInstance();
 	LruCacheNode &lruCacheNode = (this->_cache[uri])->second;
 	ft::shared_ptr<SyncroReadWithCache> syncroReadWithCache = lruCacheNode.buildSyncroReadWithCache();
@@ -111,7 +113,7 @@ void LruCache::_writeToCache(const std::string &uri,
 
 	e_file_info fileInfo = FileManager::getFileInfo(uri, fileStat);
 	if (fileInfo == ExistDirectory) {
-		throw FileIsDirectoryException(uri);
+		throw ForbiddenException();
 	}
 
 	EventFactory &eventFactory = EventFactory::getInstance();

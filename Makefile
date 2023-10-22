@@ -59,9 +59,6 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToCache.cpp \
 		Event/WriteEvent/WriteEventToCacheHandler.cpp \
 		Event/Exception/KqueueError.cpp \
-		Http/Handler/ErrorPageHandler.cpp \
-		Http/Handler/HttpCgiResponseHandler.cpp \
-		Http/Handler/HttpGetResponseHandler.cpp \
 		Http/Parser/HttpRequestParser.cpp \
 		Http/Parser/HttpResponseParser.cpp \
 		Http/Parser/ChunkedRequestBodyHandler.cpp \
@@ -72,6 +69,12 @@ SRCS =	main.cpp \
 		Http/Request/HttpRequest.cpp \
 		Http/Request/MultipartRequest.cpp \
 		Http/Response/HttpResponse.cpp \
+		Http/Response/DeleteResponseBuilder.cpp \
+		Http/Response/GetResponseBuilder.cpp \
+		Http/Response/HttpResponseBuilder.cpp \
+		Http/Response/PutAndPostResponseBuilder.cpp \
+		Http/Response/RedirectionResponseBuilder.cpp \
+		Http/Response/ErrorPageBuilder.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/RouterUtils.cpp \
@@ -110,8 +113,6 @@ SRCS =	main.cpp \
 		FileManager/FileManager/FileData.cpp \
 		FileManager/FileManager/FileManager.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
-		FileManager/Exception/FileIsDirectoryException.cpp \
-		FileManager/Exception/FileNotExistException.cpp \
 		Hash/Sha256_copy.cpp \
 		Hash/Etag.cpp \
 

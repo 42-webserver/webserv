@@ -45,15 +45,19 @@ FILE* FileStream::fopen_with_dirs(const std::string& path, const char* mode) {
 FileStream::FileStream(std::string path, std::string mode) {
     if (mode == "w" || mode == "w+" || mode == "wb" || mode == "w+b") {
             this->_fp = fopen_with_dirs(path, mode.c_str());
-        if (this->_fp == NULL)
-            throw FileStream::FailToOpenException();
+        if (this->_fp == NULL) {
+            //log error
+            throw std::runtime_error(std::string("FileStream: Fail to open ") + path);
+        }
         this->inJectChannelFd(fileno(this->_fp));
         return ;
     }
     else if (mode == "r" || mode == "r+" || mode == "rb" || mode == "r+b") {
             this->_fp = fopen(path.c_str(), mode.c_str()); // 이미 이진 모드로 지정됨
-        if (this->_fp == NULL)
-            throw FileNotExistException(path);
+        if (this->_fp == NULL) {
+            //log error
+            throw NotFoundException();
+        }
         this->inJectChannelFd(fileno(this->_fp));
     }
     else {

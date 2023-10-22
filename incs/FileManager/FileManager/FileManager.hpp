@@ -14,8 +14,10 @@
 #include <Event/EventDto/EventDto.hpp>
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
 #include <Event/WriteEvent/WriteEventToFile.hpp>
-#include <FileManager/Exception/FileNotExistException.hpp>
+// #include <FileManager/Exception/FileNotExistException.hpp>
 #include <FileManager/Exception/FileIsDirectoryException.hpp>
+#include <Http/Exception/NotFoundException.hpp>
+#include <Http/Exception/ForbiddenException.hpp>
 typedef enum{
     FileRequestShouldWait,
     FileRequestSuccess,
@@ -47,7 +49,7 @@ public:
     ft::shared_ptr<HttpRequest> request);
     e_FileRequestType _requestFileUploadMultiPart(const std::string &uri,
     ft::shared_ptr<HttpRequest> request);
-    e_FileRequestType requestFileDelete(const std::string &uri, ft::shared_ptr<HttpResponse> response);
+    e_FileRequestType requestFileDelete(const std::string &uri);
 
 //static utility
 public:

@@ -232,7 +232,7 @@ bool BaseNode::isEmpty() const {
 }
 
 size_t BaseNode::copyTo(std::vector<char>& dest) {
-	size_t n = _size - _eraseSize;
+	size_t n = _size;
 	dest.resize(n);
 	std::copy(_buffer.begin() + _eraseSize, _buffer.begin() + _size, dest.begin());
 	return n;

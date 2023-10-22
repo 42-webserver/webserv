@@ -2,7 +2,7 @@
 # define REDIRECTIONPROCESSOR_HPP
 
 #include <Pattern/ProcessorObject.hpp>
-
+#include <Http/Response/RedirectionResponseBuilder.hpp>
 class RedirectionProcessor : public ProcessorObject {
     public:
         RedirectionProcessor(void);

@@ -9,13 +9,13 @@
 #include <string>
 #include <vector>
 #include <Client/Client.hpp>
-class ErrorPageHandler
-{
-public:
-	static void getErrorPageResponseTo(ft::shared_ptr<Client> client, HttpStatusCode status);
-private:
-	static std::vector<char> getErrorPage(HttpStatusCode status);
+// class ErrorPageHandler
+// {
+// public:
+// 	static void getErrorPageResponseTo(ft::shared_ptr<Client> client, HttpStatusCode status);
+// private:
+// 	static std::vector<char> getErrorPage(HttpStatusCode status);
 
-};
+// };
 
 #endif
