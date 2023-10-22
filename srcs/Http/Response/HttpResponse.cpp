@@ -149,13 +149,16 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 	if (n < 0)
 		return sending;
 	this->_previousWriteSize += n;
-	if (this->_previousWriteSize == this->_NormalCaseBuffer.size())
+	if (this->_previousWriteSize == this->_NormalCaseBuffer.size()) {
+		this->_NormalCaseBuffer.clear();
+		this->_previousWriteSize = 0;
 		return sendingDone;
+	}
 	return sending;
 }
 
 e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clientChannel)
-{
+{g
 	if (this->_responseSize == NotSet)
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
 	if (this->_responseSize == NormalSize)
