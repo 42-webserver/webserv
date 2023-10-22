@@ -1,4 +1,5 @@
 #include "../../incs/Channel/CgiChannel.hpp"
+#include <Http/Exception/InternalServerErrorException.hpp>
 
 CgiChannel::CgiChannel(void) {
 	for (int i = 0; i < Count; i++)
@@ -22,16 +23,22 @@ void CgiChannel::build(void) {
 
 	for (int i = 0; i < Count; i += 2) {
 		if (pipe(pipeFd) == -1) {
-			Logger::getInstance().error("Fail to create pipe");
-			throw (FailToCreateException());
+			// Logger::getInstance().error("Fail to create pipe");
+			throw (InternalServerErrorException());
 		}
-		this->_channel[i] = ft::shared_ptr<Channel>(new ByteStream(pipeFd[Read]));
-		this->_channel[i]->setNonBlocking();
-		this->_channel[i + 1] = ft::shared_ptr<Channel>(new ByteStream(pipeFd[Write]));
-		this->_channel[i + 1]->setNonBlocking();
+		try {
+			this->_channel[i] = ft::shared_ptr<Channel>(new ByteStream(pipeFd[Read]));
+			this->_channel[i]->setNonBlocking();
+			this->_channel[i + 1] = ft::shared_ptr<Channel>(new ByteStream(pipeFd[Write]));
+			this->_channel[i + 1]->setNonBlocking();
+		}
+		catch (const std::exception &e) {
+			// Logger::getInstance().error(e.what());
+			throw (InternalServerErrorException());
+		}
 	}
 }
-void CgiChannel::dupCgiFd(void){
+void CgiChannel::_dupFdInCgiProcess(void){
 	if (dup2(this->_channel[CGI_READ]->getFd(), STDIN_FILENO) < 0) {
 		Logger::getInstance().error("Fail to dup");
 		throw (FailToDupException());
@@ -41,9 +48,15 @@ void CgiChannel::dupCgiFd(void){
 		throw (FailToDupException());
 	}
 }
-void CgiChannel::clearCgiFd(void){
-	this->_destroy(CGI_READ);
-	this->_destroy(CGI_WRITE);
+
+void CgiChannel::_closeServerSideFd(void) {
+	this->_channel[SERVER_READ] = ft::shared_ptr<Channel>();
+	this->_channel[SERVER_WRITE] = ft::shared_ptr<Channel>();
+}
+
+void CgiChannel::_closeCgiSideFd(void) {
+	this->_channel[CGI_READ] = ft::shared_ptr<Channel>();
+	this->_channel[CGI_WRITE] = ft::shared_ptr<Channel>();
 }
 
 const char	*CgiChannel::FailToCreateException::what(void) const throw() { return ("CgiChannel: Fail to create"); }

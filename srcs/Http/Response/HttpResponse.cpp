@@ -43,7 +43,7 @@ void HttpResponse::allocateBigSizeBuffer(AccessKey key)
 }
 HttpResponse::HttpResponse() : _previousWriteSize(0), _isSending(false), _responseSize(NotSet), _fileSync(NotSetting)
 {
-
+	this->_NormalCaseBuffer.reserve(e_normal_buffer_size);
 }
 
 HttpResponse::~HttpResponse()
@@ -158,7 +158,7 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 }
 
 e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clientChannel)
-{g
+{
 	if (this->_responseSize == NotSet)
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
 	if (this->_responseSize == NormalSize)

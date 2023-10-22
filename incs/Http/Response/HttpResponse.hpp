@@ -31,6 +31,10 @@ class FileManager;
 class HttpResponse
 {
 public:
+	typedef enum{
+		e_normal_buffer_size = 1024
+	}	e_normal_size;
+public:
 	class AccessKey
 	{
 		friend class FileManager;

@@ -13,11 +13,13 @@ class Socket : public Channel {
 	private:
 		int					_enable;
 		struct sockaddr_in	_addr;
+		std::string _clientIp;
 	
 	public:
 		Socket(void);
-		//fix daeguleee
 		Socket(int fd);
+		//fix daeguleee
+		Socket(int fd, std::string clientIp);
 		virtual ~Socket(void);
 	private:
 		Socket(const Socket &ref);
@@ -27,7 +29,8 @@ class Socket : public Channel {
 	public:
 		bool	build(const int port, const std::string &ip);
 		bool	run(void);
-	
+		const std::string& getClientIp() const;
+		static std::string custom_inet_ntoa(struct in_addr in);
 	private:
 		static uint32_t	stringToNetworkByteOrder(const std::string &ip);
 

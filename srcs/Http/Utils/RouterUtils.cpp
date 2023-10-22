@@ -1,6 +1,7 @@
 #include "../../../incs/Http/Utils/RouterUtils.hpp"
 #include <FileManager/FileManager/FileManager.hpp>
 
+// Todo: check path->tri
 std::string RouterUtils::findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
     std::string host = req->getHost();

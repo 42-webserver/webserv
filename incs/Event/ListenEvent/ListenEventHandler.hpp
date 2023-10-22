@@ -10,7 +10,7 @@ class ListenEventHandler: public EventHandler {
 		virtual	~ListenEventHandler(void);
 
 	private:
-		int	connectClient(int SocketFd) const;
+		std::pair<int, std::string> connectClient(int server_fd) const;
 
 	public:
 		virtual void	handleEvent(Event &event);
