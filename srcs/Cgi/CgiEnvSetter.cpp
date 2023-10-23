@@ -20,7 +20,7 @@ CgiEnvSetter::e_method method, ft::shared_ptr<Channel> channel, ft::shared_ptr<V
     else if (method == e_put)
         setPostAndPutEnv(client, vsm, "PUT");
     else if (method == e_delete)
-        setDeleteEnv(client);
+        setDeleteEnv(client, vsm);
     return _env;
 }
 
@@ -65,9 +65,10 @@ std::string method){
     _env["CONTENT_TYPE"] = client->getRequest()->getHeader("Content-Type");
 }
 
-void CgiEnvSetter::setDeleteEnv(ft::shared_ptr<Client> client){
+void CgiEnvSetter::setDeleteEnv(ft::shared_ptr<Client> client,
+ft::shared_ptr<VirtualServerManager> vsm){
     _env["REQUEST_METHOD"] = "DELETE";
     _env["QUERY_STRING"] = joinQueries(client->getRequest()->getQueries());
-    _env["SCRIPT_NAME"] = client->getRequest()->getUri();
-    _env["PATH_INFO"] = client->getRequest()->getUri();
+    _env["SCRIPT_NAME"] = RouterUtils::findCgiScriptPath(vsm, client->getRequest());
+    _env["PATH_INFO"] = RouterUtils::findPathInfo(vsm, client->getRequest());
 }
