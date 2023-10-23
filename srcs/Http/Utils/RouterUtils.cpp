@@ -33,20 +33,6 @@ ft::shared_ptr<VirtualServer> targetServer){
     return locationElement;
 }
 
-std::string RouterUtils::findPathInfo(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string uri = req->getUri();
-    std::string host = req->getHost();
-
-    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
-    ServerElement serverElement = targetServer->getServerElement();
-    ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);
-    ServerElement::ElementPtr locationTrie = it->second;
-
-    ft::shared_ptr<LocationTrieElement> locationTrieElement = ft::static_pointer_cast<LocationTrieElement>(locationTrie);
-    std::string prefix = locationTrieElement->longestPrefixString(uri);
-    return uri.substr(prefix.size());
-}
-
 int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string host = req->getHost();
 
@@ -67,6 +53,22 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
     if (it == locationElement->end())
         return false;
     return ft::static_pointer_cast<CgiPassElement>(it->second)->getFlag().compare("on") == 0;
+}
+std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string fullPath = findPath(vsm, req);
+
+    size_t pos = fullPath.rfind(".cgi");
+    if (pos != std::string::npos) {
+        return fullPath.substr(0, pos + 4);
+    }
+    //TO do: 빈 문자열로할지 throw로 할지
+    return "";
+}
+std::string RouterUtils::findPathInfo(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string fullPath = findPath(vsm, req);
+    std::string cgiScriptPath = findCgiScriptPath(vsm, req);
+
+    return fullPath.substr(cgiScriptPath.size());
 }
 
 bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){

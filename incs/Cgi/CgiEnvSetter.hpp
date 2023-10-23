@@ -27,7 +27,7 @@ private:
     std::string joinQueries(const std::map<std::string, std::string>& queries);
 public:
     void setGetEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm);
-    void setPostAndPutEnv(ft::shared_ptr<Client> client);
+    void setPostAndPutEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm,std::string method);
     void setDeleteEnv(ft::shared_ptr<Client> client);
     static void execute(const std::map<std::string, std::string>& env);
 private:

@@ -115,7 +115,8 @@ SRCS =	main.cpp \
 		FileManager/FileTableManager/FileTableManager.cpp \
 		Hash/Sha256_copy.cpp \
 		Hash/Etag.cpp \
-
+		Cgi/CgiEnvSetter.cpp \
+		
 OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Config \
 				${OBJS_DIR}/Event \
