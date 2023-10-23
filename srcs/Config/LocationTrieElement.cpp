@@ -44,6 +44,8 @@ bool	LocationTrieElement::insert(std::ifstream &infile) throw(std::exception) {
 
 LocationTrieElement::LocationElementPtr	LocationTrieElement::longestPrefixSearch(const std::string &path) const { return (this->_location_element_ptr_trie.longestPrefixSearch(path)); }
 
+//Fix : daegulee
+std::string	LocationTrieElement::longestPrefixString(const std::string &path) const { return (this->_location_element_ptr_trie.longestPrefixString(path)); }
 bool	LocationTrieElement::_parse(std::ifstream &infile) throw(std::exception) {
 	try {
 		this->insert(infile);

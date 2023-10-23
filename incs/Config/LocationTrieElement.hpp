@@ -25,6 +25,7 @@ class LocationTrieElement: public ConfigElement {
 	public:
 		bool				insert(std::ifstream &infile) throw(std::exception);
 		LocationElementPtr	longestPrefixSearch(const std::string &path) const;
+		std::string			longestPrefixString(const std::string &path) const;
 	
 	private:
 		bool	_parse(std::ifstream &infile) throw(std::exception);
