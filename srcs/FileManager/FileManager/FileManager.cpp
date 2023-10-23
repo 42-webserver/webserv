@@ -14,7 +14,7 @@ void FileManager::_readFile(const std::string &uri, ft::shared_ptr<HttpResponse>
     //Todo :: 
     FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
     FileData &fileData = fileTableManager.getFileData(uri);
-    
+
     EventFactory &eventFactory = EventFactory::getInstance();
     ft::shared_ptr<SyncroFileDataAndReader> syncroFileDataAndReader = fileData.buildSyncroFileDataAndReader();
     response->allocateBigSizeBuffer(HttpResponse::AccessKey());
@@ -29,8 +29,8 @@ void FileManager::_writeFile(const std::string &uri, ft::shared_ptr<HttpRequest>
 
     FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
     FileData &fileData = fileTableManager.getFileData(uri);
-
     EventFactory &eventFactory = EventFactory::getInstance();
+
     ft::shared_ptr<SyncroFileDataAndWriter> syncroFileDataAndWriter = fileData.buildSyncroFileDataAndWriter();
     EventDto eventDto(request->getBody(), uri, "w");
     WriteEventToFile* writeEventToFile = static_cast<WriteEventToFile*>(eventFactory.createEvent(ft::FILE_WRITE_EVENT, eventDto));
@@ -134,6 +134,7 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
     e_file_info fileInfo = getFileInfo(uri, fileStat);
 
     e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
+    // can't here, buildHeader check this
     if (fileSync == NotSetting) {
 
         if (fileInfo == NotExistFile) {

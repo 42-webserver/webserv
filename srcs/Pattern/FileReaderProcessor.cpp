@@ -13,14 +13,14 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     //Todo : try check
     try {
         //basic Handle All RequireMent
+        std::string indexingPath = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());
         _commandBuildHeaderTo(
-            ft::shared_ptr<HttpResponseBuilder>(new GetResponseBuilder(client, virtualServerManager)),
+            ft::shared_ptr<HttpResponseBuilder>(new GetResponseBuilder(client, virtualServerManager, indexingPath)),
             client
         );
 
         //Todo: 여기서부터 로직한번더 체크해야됨
-        std::string path = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());    
-        type = fileManager.requstFileContent(path, client->getResponse());
+        type = fileManager.requstFileContent(indexingPath, client->getResponse());
     }
     catch (DirectoryException& e) {
         return SUCCESS;

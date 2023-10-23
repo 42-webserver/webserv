@@ -34,7 +34,6 @@ SRCS =	main.cpp \
 		Config/RootElement.cpp \
 		Config/ServerElement.cpp \
 		Config/ServerNameElement.cpp \
-		Event/BufReadHandler.cpp \
 		Event/EventBase/Event.cpp \
 		Event/EventBase/EventFactory.cpp \
 		Event/EventBase/EventHandler.cpp \

@@ -4,11 +4,12 @@
 
 
 GetResponseBuilder::GetResponseBuilder(ft::shared_ptr<Client> client, 
-ft::shared_ptr<VirtualServerManager> vsm) : HttpResponseBuilder(client), _vsm(vsm) {
+ft::shared_ptr<VirtualServerManager> vsm, std::string indexingPath) : HttpResponseBuilder(client), _vsm(vsm), _indexingPath(indexingPath) {
 }
 
 GetResponseBuilder::~GetResponseBuilder(void) {
 }
+
 
 void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
     bool isDirectory = false;
@@ -16,7 +17,9 @@ void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
     std::string dirListing;
     _setStatusCode(OK);
     try {
-        _ContentTypeHeader = HttpResponseBuilder::_makeContentTypeHeader(this->getClient()->getRequest());
+        _ContentTypeHeader = 
+        HttpResponseBuilder::_makeContentTypeHeader(this->getClient()->getRequest(), 
+        this->_indexingPath);
     } catch (DirectoryException &e) {
         isDirectory = true;
         dirPath = RouterUtils::findPath(this->_vsm, this->getClient()->getRequest());

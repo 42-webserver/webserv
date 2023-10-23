@@ -67,13 +67,12 @@ const char *DirectoryException::what() const throw() {
 //         return "Content-Type: application/octet-stream";
 //     }
 // }
-std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request) {
+std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath){
     std::string uri = request->getUri();
 
-    if (uri.find_last_of(".") == std::string::npos) {
+    if (indexingPath[indexingPath.size() - 1] != '/')
         throw DirectoryException();
-    }
-
+        
     std::string extension = uri.substr(uri.find_last_of(".") + 1);
     for (std::string::iterator it = extension.begin(); it != extension.end(); ++it) {
         *it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
