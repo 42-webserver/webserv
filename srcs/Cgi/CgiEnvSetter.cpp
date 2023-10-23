@@ -26,8 +26,7 @@ void CgiEnvSetter::_setDefaultEnv(ft::shared_ptr<Client> client,
 ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<Socket> socket = ft::static_pointer_cast<Socket>(channel);
     _env["REMOTE_ADDR"] = socket->getClientIp();
-    (void)vsm;
-    // _env["SERVER_PORT"] = vsm->getPort();
+    _env["SERVER_PORT"] = vsm->getPort();
     _env["SERVER_PROTOCOL"] = "HTTP/1.1";
     _env["SERVER_SOFTWARE"] = "webserv";
     _env["SERVER_NAME"] = client->getRequest()->getHost();
@@ -50,7 +49,7 @@ std::string CgiEnvSetter::joinQueries(const std::map<std::string, std::string>& 
 void CgiEnvSetter::setGetEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm){
     _env["REQUEST_METHOD"] = "GET";
     _env["QUERY_STRING"] = joinQueries(client->getRequest()->getQueries());
-    _env["REQUEST_URI"] = client->getRequest()->getUri();
+    _env["SCRIPT_NAME"] = RouterUtils::findPath(vsm, client->getRequest());
     _env["PATH_INFO"] = RouterUtils::findPathInfo(vsm, client->getRequest());
 }
 

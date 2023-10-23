@@ -4,9 +4,6 @@
 // Todo: check path->tri
 std::string RouterUtils::findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
-    std::string host = req->getHost();
-
-    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
 
     std::string root = _findRoot(vsm, req);
     std::string alias = _findAlias(vsm, req);
@@ -16,7 +13,6 @@ std::string RouterUtils::findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::
 std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerManager> vsm, 
         ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
-    std::string host = req->getHost();
 
     std::string root = _findRoot(vsm, req);
     std::string alias = _findAlias(vsm, req);
@@ -24,11 +20,10 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
     return _findIndex(vsm, req, path);
 }
 
-ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<HttpRequest> req,
+ft::shared_ptr<VirtualServer> targetServer){
     std::string uri = req->getUri();
-    std::string host = req->getHost();
 
-    VirtualServerManager::VirtualServerPtr targetServer = vsm->findVirtualServer(host);
     ServerElement serverElement = targetServer->getServerElement();
     ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);
     ServerElement::ElementPtr locationTrie = it->second;
@@ -42,7 +37,7 @@ std::string RouterUtils::findPathInfo(ft::shared_ptr<VirtualServerManager> vsm, 
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
-    VirtualServerManager::VirtualServerPtr targetServer = vsm->findVirtualServer(host);
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ServerElement serverElement = targetServer->getServerElement();
     ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);
     ServerElement::ElementPtr locationTrie = it->second;
@@ -64,7 +59,8 @@ int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::s
 }
 
 bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
+    ft::shared_ptr<LocationElement> locationElement = findLocation(req, targetServer);
     if (locationElement.get() == NULL)
         return false;
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::CGI_PASS);
@@ -74,7 +70,8 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
 }
 
 bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
+    ft::shared_ptr<LocationElement> locationElement = findLocation(req, targetServer);
     std::string method = req->getMethod();
     if (locationElement.get() == NULL)
         return method.compare(HTTP_METHOD::GET) == 0;
@@ -99,7 +96,8 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
-    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
+    ft::shared_ptr<LocationElement> locationElement = findLocation(req, targetServer);
     if (locationElement.get() == NULL)
         return false;
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::RETURN);
@@ -171,7 +169,8 @@ std::string RouterUtils::_findIndexInServer(std::string path, ft::shared_ptr<Vir
 std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path){
     if (!FileManager::isDirectory(path))
             return path;
-    ft::shared_ptr<LocationElement> locationElement = findLocation(vsm, req);
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
+    ft::shared_ptr<LocationElement> locationElement = findLocation(req, targetServer);
     if (locationElement.get() != NULL){
         LocationElement::iterator it = locationElement->find(LocationElement::KEY::AUTOINDEX);
         if (it != locationElement->end()){
@@ -185,14 +184,19 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
         return _findIndexInServer(path, vsm, req);
 }
 
-std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string root;
+ft::shared_ptr<VirtualServer> RouterUtils::_findVirtualServer(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     ft::shared_ptr<VirtualServer> targetServer;
     try{
         targetServer = vsm->findVirtualServer(req->getHost());
     } catch (VirtualServerManager::InvalidHostFormatException &e){
         targetServer = vsm->getDefaultVirtualServer();
     }
+    return targetServer;
+}
+
+std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string root;
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ServerElement server_element = targetServer->getServerElement();
     ServerElement::iterator it = server_element.find(ServerElement::KEY::ROOT);
     if (it != server_element.end()){
@@ -200,7 +204,7 @@ std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft:
         root = ft::static_pointer_cast<RootElement>(rootConfElem)->getPath();
     }
 
-    ft::shared_ptr<LocationElement>  locationElement = findLocation(vsm, req);
+    ft::shared_ptr<LocationElement>  locationElement = findLocation(req, targetServer);
     if(locationElement.get() == NULL)
         return root;
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::ROOT);
@@ -213,7 +217,8 @@ std::string RouterUtils::_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft:
 
 std::string RouterUtils::_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string alias;
-    ft::shared_ptr<LocationElement>  locationElement = findLocation(vsm, req);
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
+    ft::shared_ptr<LocationElement>  locationElement = findLocation(req, targetServer);
     if(locationElement.get() == NULL)
         return alias;
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::ALIAS);
