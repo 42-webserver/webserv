@@ -34,6 +34,16 @@ void	ListenEvent::onboardQueue(void){
 		event
 	);
 
+ 	struct sockaddr_in localAddress;
+    socklen_t addressLength = sizeof(localAddress);
+    if (getsockname(fd, (struct sockaddr*)&localAddress, &addressLength) == -1) {
+        perror("getsockname");
+		throw std::runtime_error("getsockname");
+    }
+	int localPort = ntohs(localAddress.sin_port);
+	ft::shared_ptr<VirtualServerManager> vsm = this->getVirtualServerManager();
+	vsm->setPort(localPort);
+	
 	if (kevent(event_queue.getEventQueueFd(), event_queue.getEventSet(), 
 	1, NULL, 0, NULL) == -1) {
 		perror("kevent");

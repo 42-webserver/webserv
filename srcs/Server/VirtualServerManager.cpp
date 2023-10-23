@@ -204,3 +204,11 @@ std::ostream	&operator<<(std::ostream &os, const VirtualServerManager &virtual_s
 	}
 	return (os);
 }
+
+int VirtualServerManager::getPort() const {
+	return _port;
+}
+
+void VirtualServerManager::setPort(int port) {
+	_port = port;
+}

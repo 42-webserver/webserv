@@ -156,7 +156,7 @@
 #ifndef TRIE_HPP
 # define TRIE_HPP
 
-# include "shared_ptr.hpp"
+# include "../shared_ptr/shared_ptr.hpp"
 # include <map>
 # include <string>
 # include <iostream>

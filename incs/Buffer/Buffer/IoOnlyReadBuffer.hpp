@@ -5,7 +5,7 @@
 #include "../Node/LargeNode.hpp"
 #include "../../../libs/shared_ptr/shared_ptr.hpp"
 #include "../../../libs/Library/Optional.hpp"
-#include "../../Channel/.hpp"
+#include <Channel/Channel.hpp>
 #include <vector>
 #include "IoAble.hpp"
 
