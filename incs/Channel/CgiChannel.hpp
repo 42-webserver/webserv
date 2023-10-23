@@ -25,8 +25,10 @@ private:
 private:
 	void _destroy(e_pipe type);
 public:
-	void dupCgiFd();
-	void clearCgiFd();
+	void _dupFdInCgiProcess();
+	void _closeServerSideFd();
+	void _closeCgiSideFd();
+	// void _close
 public:
 	CgiChannel(void);
 	~CgiChannel(void);

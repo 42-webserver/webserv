@@ -17,8 +17,8 @@ private:
 public:
     virtual ~DualStreamable(void);
 protected:
-    DualStreamable();
-    void buildCgiChannel();
+    DualStreamable(ft::shared_ptr<CgiChannel> cgiChannel);
+    // void buildCgiChannel();
 };
 
 #endif

@@ -30,6 +30,14 @@ class VirtualServerManager {
 		IpMap			_ip_map;
 		ServerNameMap 	_server_name_map;
 
+	//daegulee
+	private:
+		int _port;
+	public:
+		int getPort() const;
+		void setPort(int port);
+	//고쳐야 될수도 
+
 	public:
 		VirtualServerManager(void);
 		~VirtualServerManager(void);

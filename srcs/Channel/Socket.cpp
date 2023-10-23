@@ -6,6 +6,7 @@
 #include "../../incs/Log/Logger.hpp"
 Socket::Socket(void): Channel(), _enable(0), _addr(sockaddr_in()) { memset(&this->_addr, 0, sizeof(struct sockaddr_in)); }
 Socket::Socket(int fd): Channel(fd), _enable(1), _addr(sockaddr_in()) { }
+Socket::Socket(int fd, std::string clientIp): Channel(fd), _enable(1), _addr(sockaddr_in()), _clientIp(clientIp) { }
 Socket::Socket(const Socket &ref): Channel(),_enable(ref._enable), _addr(ref._addr) {}
 Socket::~Socket(void) {
 	Logger::getInstance().info("Socket is destroyed");
@@ -50,6 +51,9 @@ bool	Socket::run(void)  {
 	return (true);
 }
 
+const std::string& Socket::getClientIp() const {
+	return _clientIp;
+}
 uint32_t	Socket::stringToNetworkByteOrder(const std::string &ip) {
     std::istringstream	iss(ip);
     std::string 		segment;
@@ -75,4 +79,11 @@ std::ostream	&operator<<(std::ostream &os, const Socket &socket) {
 	os << "\t\t\t\tSocket:" << '\n';
 	os << "\t\t\t\t\t" << "fd: " << socket.getFd();
 	return (os);
+}
+
+std::string Socket::custom_inet_ntoa(struct in_addr in){
+    unsigned char* bytes = (unsigned char*)&in;
+    std::ostringstream oss;
+    oss << (int)bytes[0] << "." << (int)bytes[1] << "." << (int)bytes[2] << "." << (int)bytes[3];
+    return oss.str();
 }

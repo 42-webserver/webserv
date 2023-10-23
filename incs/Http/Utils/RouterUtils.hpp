@@ -21,13 +21,15 @@ public:
     static std::string	findPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string	findPriorityPathWithIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string  findRedirectUri(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
-    static ft::shared_ptr<LocationElement> findLocation(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+    static ft::shared_ptr<LocationElement> findLocation(ft::shared_ptr<HttpRequest> req,
+    ft::shared_ptr<VirtualServer> targetServer);
     static int          findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static bool         isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
 
     static bool         isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static bool         isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
-
+    
+    static std::string findPathInfo(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
 private:
     static std::string	_findRoot(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
     static std::string	_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
@@ -35,6 +37,7 @@ private:
     static std::string _findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req, std::string path);
     static std::string _findIndexInLocation(std::string path, ft::shared_ptr<LocationElement> locationElement);
     static std::string _findIndexInServer(std::string path, ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
+    static ft::shared_ptr<VirtualServer> _findVirtualServer(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req);
 };  
 
 #endif

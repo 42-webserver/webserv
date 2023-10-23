@@ -43,7 +43,7 @@ void HttpResponse::allocateBigSizeBuffer(AccessKey key)
 }
 HttpResponse::HttpResponse() : _previousWriteSize(0), _isSending(false), _responseSize(NotSet), _fileSync(NotSetting)
 {
-
+	this->_NormalCaseBuffer.reserve(e_normal_buffer_size);
 }
 
 HttpResponse::~HttpResponse()
@@ -149,8 +149,11 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 	if (n < 0)
 		return sending;
 	this->_previousWriteSize += n;
-	if (this->_previousWriteSize == this->_NormalCaseBuffer.size())
+	if (this->_previousWriteSize == this->_NormalCaseBuffer.size()) {
+		this->_NormalCaseBuffer.clear();
+		this->_previousWriteSize = 0;
 		return sendingDone;
+	}
 	return sending;
 }
 
