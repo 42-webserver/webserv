@@ -12,74 +12,107 @@ WriteEventToClientHandler::~WriteEventToClientHandler() {}
 // 파일을 보내는걸 완료했는데 클라이언트가 죽은 경우 고려 
 void WriteEventToClientHandler::_partialSending(ft::shared_ptr<HttpResponse> response, ft::shared_ptr<Client> client,
 WriteEventToClient *curEvent){
-	if (response->sendToClient(curEvent->getChannel()) == sendingDone){
-		client->clearResponseAndRequest();
-		if (client->isClientDie())
-			curEvent->offboardQueue();
+	e_send_To_client_status sendingStatus = response->sendToClient(curEvent->getChannel());
+	
+	switch (sendingStatus)
+	{
+	case sendingDone:{
+			client->clearResponseAndRequest();
+		}
+		break;
+	case clientClose: {
+		curEvent->offboardQueue();
+		client->clientKill();
+		break;
+	}
+	default:
+		break;
+	}
+}
+void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, WriteEventToClient *curEvent){
+	ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
+	ft::shared_ptr<VirtualServerManager> vsm = curEvent->getVirtualServerManger();
+	PatternType patternType = client->getPatternType(vsm);
+	PatternProcessor patternProcessor(vsm, patternType, client);
+		
+	if (patternProcessor.querryCanSending() == SUCCESS)
+		_partialSending(client->getResponse(), client, curEvent);
+}
+
+void WriteEventToClientHandler::_handleEnd(WriteEventToClient *curEvent){
+	curEvent->offboardQueue();
+}
+
+void WriteEventToClientHandler::_handleWait(void){
+	//do nothing
+}
+
+e_handle_status WriteEventToClientHandler::_queryHandleStatus(ft::shared_ptr<Client> client){
+	if (client->isResponseEmpty() == false) {
+		return (e_handle_remain);
+	}
+	if (client->isClientDie()) {
+		if (client->isRequestEmpty() == false)
+			return (e_handle_new);
+		else
+			return (e_handle_end);
+	}
+	else {
+		if (client->isRequestEmpty() == false)
+			return (e_handle_new);
+		else
+			return (e_handle_wait);
+	}
+}
+
+void WriteEventToClientHandler::_hanldeErrorPage(ft::shared_ptr<Client> client, WriteEventToClient *curEvent, HttpStatusCode statusCode){
+	ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, statusCode));
+
+	errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+	_partialSending(client->getResponse(), client, curEvent);
+}
+
+void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteEventToClient *curEvent){
+	if (client->getRequest()->isError()){
+		_hanldeErrorPage(client, curEvent, REQUEST_ENTITY_TOO_LARGE);
+		return ;
+	}
+	try {
+		client->allocateResponse();
+		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
+		ft::shared_ptr<VirtualServerManager> vsm = curEvent->getVirtualServerManger();
+		PatternType patternType = client->getPatternType(vsm);
+		PatternProcessor patternProcessor(vsm, patternType, client);
+
+		if (patternProcessor.process() == SUCCESS)
+			_partialSending(client->getResponse(), client, curEvent);
+	}
+	catch (HttpException &e) {
+		_hanldeErrorPage(client, curEvent, e.getStatusCode());
+	}
+	catch (std::exception &e) {
+		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
 }
 
 void WriteEventToClientHandler::handleEvent(Event &event){
 	WriteEventToClient *curEvent = static_cast<WriteEventToClient *>(&event);
 	ft::shared_ptr<Client> client = curEvent->getClient();
+	e_handle_status handleStatus = _queryHandleStatus(client);
 
-	//Todo: check this
-	if (client->isRequestEmpty()) {
-		if (!client->isResponseEmpty()) {
-			if (client->getResponse()->isSending())
-				_partialSending(client->getResponse(), client, curEvent);
-		}
-		else {
-			if (client->isClientDie())
-				curEvent->offboardQueue();
-		}
-		//request Empty && !(clientDie || (ResponseExist && isSending) )-> return
-		return ;
-	}
-	if (client->getRequest()->isError()){
-		// ErrorPageHandler::getErrorPageResponseTo(client, REQUEST_ENTITY_TOO_LARGE);
-		ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, REQUEST_ENTITY_TOO_LARGE));
-
-		//Todo: check bottom one line
-		errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
-		client->clientKill();
-		_partialSending(client->getResponse(), client, curEvent);	
-	}
-	try {
-		client->allocateResponse();
-		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
-		PatternType patternType = client->getPatternType(curEvent->getVirtualServerManger());
-		PatternProcessor &patternProcessor = PatternProcessor::getInstance(patternType,
-		curEvent->getVirtualServerManger(), client);
-		
-		// Todo: The processor should pre-populate the normalcase buffer with the appropriate format, 
-		// excluding the content body, in anticipation of a successful scenario. 
-		if (patternProcessor.process() == WAITING) {
-			patternProcessor.clear();
-		}
-		else if (patternProcessor.process() == SUCCESS) {
-			patternProcessor.clear();
-			_partialSending(client->getResponse(), client, curEvent);
-		}
-		else {
-			throw std::runtime_error("WriteEventToClientHandler::handleEvent : patternProcessor.process() is FAIL");
-		}
-	}
-	catch (HttpException &e) {
-		// Logger::getInstance()->log(LogLevel::ERROR, e.what());
-		ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, e.getStatusCode()));
-
-		//Todo: check bottom one line
-		errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
-		_partialSending(client->getResponse(), client, curEvent);
-	}
-	catch (std::exception &e) {
-		//log error
-		ft::shared_ptr<ErrorPageBuilder> errorPageBuilder(new ErrorPageBuilder(client, INTERNAL_SERVER_ERROR));
-
-		//Todo: check bottom one line
-		errorPageBuilder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
-		
-		_partialSending(client->getResponse(), client, curEvent);	
+	switch (handleStatus)
+	{
+	case e_handle_remain:
+		_handleRemain(client, curEvent);
+		break;
+	case e_handle_new:
+		_handleNew(client, curEvent);
+		break;
+	case e_handle_wait:
+		_handleWait();
+		break;
+	case e_handle_end:
+		_handleEnd(curEvent);
+		break;
 	}
 }

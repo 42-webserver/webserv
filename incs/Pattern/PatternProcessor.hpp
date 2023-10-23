@@ -17,9 +17,9 @@ private:
     ft::shared_ptr<VirtualServerManager> _vsm;
     ft::shared_ptr<ProcessorObject> _processorObject;
     ft::shared_ptr<Client> _client;
-    static PatternProcessor *instance;
-private:
-    PatternProcessor();
+public:
+    PatternProcessor(ft::shared_ptr<VirtualServerManager> vsm,
+        PatternType type, ft::shared_ptr<Client> client);
     ~PatternProcessor();
 private:
     void _injectVsm(ft::shared_ptr<VirtualServerManager> vsm);
@@ -30,11 +30,8 @@ private:
     PatternProcessor(const PatternProcessor &ref);
     PatternProcessor &operator=(const PatternProcessor &rhs);
 public:
-    static PatternProcessor &getInstance(PatternType type,
-    ft::shared_ptr<VirtualServerManager> vsm, 
-    ft::shared_ptr<Client> client);
     // void deleteInstance(void);
     e_pattern_Process_result process();
-    void clear();
+    e_pattern_Process_result querryCanSending();
 };
 #endif 

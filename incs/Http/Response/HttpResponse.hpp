@@ -39,10 +39,7 @@ public:
 	{
 		friend class FileManager;
 		friend class ErrorPageBuilder;
-		friend class FileReaderProcessor;
-		friend class FileDeleterProcessor;
-		friend class FileWriterProcessor;
-		friend class RedirectionProcessor;
+		friend class ProcessorObject;
 		friend class WriteEventToClientHandler;
 		private:
 			AccessKey();
@@ -56,10 +53,10 @@ private:
 	// std::string 		_fileName;
 	// std::multimap<std::string, std::string> _headers;
 	// std::vector<Cookie> _cookies;
-	ft::shared_ptr<HttpResponseBuilder> _builder;
+	// ft::shared_ptr<HttpResponseBuilder> _builder;
 	size_t				_previousWriteSize;
 //Todo: connection With processing
-	bool _isSending;
+	// bool _isSending;
 //Relation with file Interface
 private:
 	e_ResponseSize		_responseSize;
@@ -79,11 +76,11 @@ public:
 	HttpResponse();
 	~HttpResponse();
 	e_send_To_client_status sendToClient(ft::shared_ptr<Channel> clientChannel);
-	void setFileName(std::string & fileName);
-	const ft::shared_ptr<HttpResponseBuilder> &getBuilder();
-	void allocateBuilder(HttpResponseBuilder *builder);
-	bool isSending();
-	void setCanSending();
+	// void setFileName(std::string & fileName);
+	// const ft::shared_ptr<HttpResponseBuilder> &getBuilder();
+	// void allocateBuilder(ft::shared_ptr<HttpResponseBuilder> builder);
+	// bool isSending();
+	// void setCanSending();
 
 	// void addHeader(const std::string & key, const std::string & value);
 	// void setStatusCode(HttpStatusCode code);
@@ -100,7 +97,7 @@ public:
 	// friend	std::ostream &operator<<(std::ostream & os, const HttpResponse & response);
 private:
 	e_send_To_client_status _sendNormalToClient(ft::shared_ptr<Channel> clientChannel);
-
+	e_send_To_client_status _sendBigToClient(ft::shared_ptr<Channel> clientChannel);
 };
 
 #endif

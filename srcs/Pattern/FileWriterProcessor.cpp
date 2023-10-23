@@ -12,9 +12,11 @@ e_pattern_Process_result FileWriterProcessor::process(ft::shared_ptr
     FileManager& fileManager = FileManager::getInstance();
     e_FileRequestType type;
     try {
-        client->getResponse()->allocateBuilder(new PutAndPostResponseBuilder(client, virtualServerManager));
-        ft::shared_ptr<HttpResponseBuilder> builder = client->getResponse()->getBuilder();
-        builder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+        //basic Handle All RequireMent
+        _commandBuildHeaderTo(
+            ft::shared_ptr<HttpResponseBuilder>(new PutAndPostResponseBuilder(client, virtualServerManager)),
+            client
+        );
 
         std::string path = RouterUtils::findPath(virtualServerManager, client->getRequest());
         type = fileManager.requestFileUpload(path, client->getRequest());
@@ -31,10 +33,15 @@ e_pattern_Process_result FileWriterProcessor::process(ft::shared_ptr
         //send response
             return SUCCESS;
         break;
-        case FileRequestFail: 
-            //log error
-            throw std::runtime_error("fileWriterProcessor: file request fail unknown");
         default:
             return WAITING;
-           }
+    }
+}
+
+e_pattern_Process_result FileWriterProcessor::querryCanSending(ft::shared_ptr
+    <VirtualServerManager> virtualServerManager,
+    ft::shared_ptr<Client> client) {
+    (void)virtualServerManager;
+    (void)client;
+    return SUCCESS;
 }

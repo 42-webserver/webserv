@@ -39,6 +39,7 @@ public:
     bool isResponseEmpty(void);
     bool isQueueMax(void);
     bool isClientDie(void);
+    bool isFinalRequest(void);
     ft::shared_ptr<HttpRequest> getRequest(void);
     void processCurrentRequestDone(void);
     bool isEventQueueStateTurnOn(e_client_event_queue_state state);

@@ -141,13 +141,7 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
             return (FileRequestFail);
         }
         if (fileInfo == ExistDirectory) {
-            //To do: send directory listing Moduliziing
-            std::vector<char> &buffer = response->getNormalCaseBuffer(HttpResponse::AccessKey());
-            std::string directoryListing = getDirectoryListing(uri);
-
-            buffer.insert(buffer.end(), directoryListing.begin(), directoryListing.end());
-            response->setResponseSize(NormalSize, HttpResponse::AccessKey());
-            return (FileRequestSuccess);
+            throw std::runtime_error("FileManager::requstFileContent() : ExistDirectory, Logically Not Possible");
         }
     }
     if (isInCashSize(fileStat)) {

@@ -10,6 +10,9 @@ class RedirectionProcessor : public ProcessorObject {
         virtual e_pattern_Process_result process(ft::shared_ptr
             <VirtualServerManager> virtualServerManager,
             ft::shared_ptr<Client> client);
+        virtual e_pattern_Process_result querryCanSending(ft::shared_ptr
+            <VirtualServerManager> virtualServerManager,
+            ft::shared_ptr<Client> client);
 };
 
 #endif

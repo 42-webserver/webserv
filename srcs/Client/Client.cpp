@@ -95,3 +95,6 @@ PatternType Client::getPatternType(const ft::shared_ptr<VirtualServerManager>& v
         return DELETE;
 }
 
+bool Client::isFinalRequest(void){
+    return this->requests.size() == 1;
+}

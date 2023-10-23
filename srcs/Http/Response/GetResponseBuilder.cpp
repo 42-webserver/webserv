@@ -21,8 +21,6 @@ void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
         isDirectory = true;
         dirPath = RouterUtils::findPath(this->_vsm, this->getClient()->getRequest());
         dirListing = FileManager::getDirectoryListing(dirPath);
-        // _allocContentLength(ContentLength::e_content_length_header, dirListing.size());
-        // throw ;
     }
     if (isDirectory == true) {
         _allocContentLength(ContentLength::e_content_length_header, dirListing.size());
@@ -34,4 +32,10 @@ void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
 
     std::string header = _ContentTypeHeader + "\r\n\r\n";
     buffer.insert(buffer.end(), header.begin(), header.end());
+
+    //directory listing
+    if (isDirectory == true) {
+        buffer.insert(buffer.end(), dirListing.begin(), dirListing.end());
+        throw DirectoryException();
+    }
 }

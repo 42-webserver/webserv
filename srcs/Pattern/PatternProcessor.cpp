@@ -1,7 +1,11 @@
 #include <Pattern/PatternProcessor.hpp>
 
-PatternProcessor *PatternProcessor::instance = NULL;
-PatternProcessor::PatternProcessor() {}
+PatternProcessor::PatternProcessor(ft::shared_ptr<VirtualServerManager> vsm,
+    PatternType type, ft::shared_ptr<Client> client) {
+    this->_injectVsm(vsm);
+    this->_injectProcessorObject(type);
+    this->_injectClient(client);
+}
 PatternProcessor::~PatternProcessor() {}
 void PatternProcessor::_injectVsm(ft::shared_ptr<VirtualServerManager> vsm) {
     this->_vsm = vsm;
@@ -31,24 +35,11 @@ void PatternProcessor::_injectProcessorObject(PatternType type) {
 void PatternProcessor::_injectClient(ft::shared_ptr<Client> client) {
     this->_client = client;
 }
-PatternProcessor &PatternProcessor::getInstance(PatternType type,
-ft::shared_ptr<VirtualServerManager> vsm,
-ft::shared_ptr<Client> client) {
-    if (PatternProcessor::instance == NULL)
-        PatternProcessor::instance = new PatternProcessor();
-    
-    PatternProcessor::instance->_injectVsm(vsm);
-    PatternProcessor::instance->_injectProcessorObject(type);
-    PatternProcessor::instance->_injectClient(client);
-    return *PatternProcessor::instance;
-}
 
 e_pattern_Process_result PatternProcessor::process() {
     return this->_processorObject->process(this->_vsm, this->_client);
 }
 
-void PatternProcessor::clear(void) {
-    this->_vsm = ft::shared_ptr<VirtualServerManager>();
-    this->_processorObject = ft::shared_ptr<ProcessorObject>();
-    this->_client = ft::shared_ptr<Client>();
+e_pattern_Process_result PatternProcessor::querryCanSending() {
+    return this->_processorObject->querryCanSending(this->_vsm, this->_client);
 }

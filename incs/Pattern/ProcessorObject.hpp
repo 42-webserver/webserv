@@ -13,8 +13,14 @@ class ProcessorObject {
         virtual e_pattern_Process_result process(ft::shared_ptr
             <VirtualServerManager> virtualServerManager,
             ft::shared_ptr<Client> client) = 0;
+        virtual e_pattern_Process_result querryCanSending(ft::shared_ptr
+            <VirtualServerManager> virtualServerManager,
+            ft::shared_ptr<Client> client) = 0;
         virtual ~ProcessorObject(void);
         ProcessorObject(void);
+    protected:
+        void _commandBuildHeaderTo(ft::shared_ptr<HttpResponseBuilder> builder
+        , ft::shared_ptr<Client> client);
 };
 
 #endif 

@@ -162,8 +162,8 @@ void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
 
     oss << this->_dateHeader << "\r\n";
 
-//Todo: hyunkyle님한테 이거 맞냐고 물어봐야됨 
-    if (this->_client->isClientDie() == true || this->_client->getRequest()->getHeader("Connection") == "close")
+    if ((this->_client->isClientDie() == true && this->_client->isFinalRequest())
+    || this->_client->getRequest()->getHeader("Connection") == "close")
         this->_connectionHeader = "Connection: close";
     else
         this->_connectionHeader = "Connection: keep-alive";
