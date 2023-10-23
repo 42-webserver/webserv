@@ -20,6 +20,27 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
     return _findIndex(vsm, req, path);
 }
 
+std::string RouterUtils::findRedirectUri(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+    std::string uri = req->getUri();
+    std::string host = req->getHost();
+
+    ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
+    ServerElement serverElement = targetServer->getServerElement();
+    ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);
+    ServerElement::ElementPtr locationTrie = it->second;
+
+    ft::shared_ptr<LocationTrieElement> locationTrieElement = ft::static_pointer_cast<LocationTrieElement>(locationTrie);
+    ft::shared_ptr<LocationElement> locationElement = locationTrieElement->longestPrefixSearch(uri);
+    if (locationElement.get() == NULL)
+        return "";
+    LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::RETURN);
+    if (it2 == locationElement->end())
+        return "";
+    ft::shared_ptr<ConfigElement> returnConfElem = it2->second;
+    ft::shared_ptr<ReturnElement> returnElem = ft::static_pointer_cast<ReturnElement>(returnConfElem);
+    return returnElem->getUri();
+}
+
 ft::shared_ptr<LocationElement> RouterUtils::findLocation(ft::shared_ptr<HttpRequest> req,
 ft::shared_ptr<VirtualServer> targetServer){
     std::string uri = req->getUri();
@@ -104,7 +125,6 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     if (it == locationElement->end())
         return false;
     return true;
-
 }
 
 std::string RouterUtils::_makePath(std::string &root, std::string &alias, std::string &uri){
