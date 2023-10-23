@@ -40,7 +40,16 @@ e_pattern_Process_result FileDeleterProcessor::process(ft::shared_ptr
 e_pattern_Process_result FileDeleterProcessor::querryCanSending(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
-    (void)virtualServerManager;
-    (void)client;
-    return SUCCESS;
+  FileManager& fileManager = FileManager::getInstance();
+  e_FileRequestType type;
+  std::string path = RouterUtils::findPath(virtualServerManager, client->getRequest());
+  type = fileManager.requestFileDelete(path);
+  switch (type)
+  {
+      case FileRequestSuccess:
+          return SUCCESS;
+      break;
+      default:
+          return WAITING;
+  }
 }

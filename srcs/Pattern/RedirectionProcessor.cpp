@@ -26,6 +26,7 @@ e_pattern_Process_result RedirectionProcessor::process(ft::shared_ptr
     return SUCCESS;
 }
 
+//Todo: implement
 e_pattern_Process_result RedirectionProcessor::querryCanSending(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {

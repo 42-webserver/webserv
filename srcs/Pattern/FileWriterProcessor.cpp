@@ -29,8 +29,6 @@ e_pattern_Process_result FileWriterProcessor::process(ft::shared_ptr
     switch (type)
     {
         case FileRequestSuccess:
-        //Todo: set response
-        //send response
             return SUCCESS;
         break;
         default:
@@ -41,7 +39,16 @@ e_pattern_Process_result FileWriterProcessor::process(ft::shared_ptr
 e_pattern_Process_result FileWriterProcessor::querryCanSending(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
-    (void)virtualServerManager;
-    (void)client;
-    return SUCCESS;
+    FileManager& fileManager = FileManager::getInstance();
+    e_FileRequestType type;
+    std::string path = RouterUtils::findPath(virtualServerManager, client->getRequest());
+    type = fileManager.requestFileUpload(path, client->getRequest());
+    switch (type)
+    {
+        case FileRequestSuccess:
+            return SUCCESS;
+        break;
+        default:
+            return WAITING;
+    }
 }

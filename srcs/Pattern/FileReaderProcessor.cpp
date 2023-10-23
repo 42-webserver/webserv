@@ -44,7 +44,16 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
 e_pattern_Process_result FileReaderProcessor::querryCanSending(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
-    (void)virtualServerManager;
-    (void)client;
-    return SUCCESS;
+    FileManager& fileManager = FileManager::getInstance();
+    e_FileRequestType type;
+    std::string indexingPath = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());
+    type = fileManager.requstFileContent(indexingPath, client->getResponse());
+    switch (type)
+    {
+        case FileRequestSuccess:
+            return SUCCESS;
+        break;
+        default:
+            return WAITING;
+    }
 }
