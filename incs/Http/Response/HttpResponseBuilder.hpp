@@ -56,7 +56,7 @@ protected:
                              int contentLength);
     void _buildDefaultResponseHeader(std::vector<char> &buffer);
     ft::shared_ptr<Client> getClient(void);
-    static  std::string _makeContentTypeHeader(ft::shared_ptr<HttpRequest> request);
+    static  std::string _makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath);
 public:
     virtual void buildResponseHeader(std::vector<char> &buffer) = 0;
 private:

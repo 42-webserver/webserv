@@ -9,15 +9,28 @@ RedirectionProcessor::~RedirectionProcessor(void) {
 e_pattern_Process_result RedirectionProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
+        //Todo : implement
     
     try {
-        client->getResponse()->allocateBuilder(new RedirectionResponseBuilder(client, virtualServerManager));
-        ft::shared_ptr<HttpResponseBuilder> builder = client->getResponse()->getBuilder();
-        builder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+        //basic Handle All RequireMent
+        _commandBuildHeaderTo(
+            ft::shared_ptr<HttpResponseBuilder>(new RedirectionResponseBuilder(client, virtualServerManager)),
+            client
+        );
+
     }
     catch (std::exception& e) {
         //log error
         throw ;
     }
+    return SUCCESS;
+}
+
+//Todo: implement
+e_pattern_Process_result RedirectionProcessor::querryCanSending(ft::shared_ptr
+    <VirtualServerManager> virtualServerManager,
+    ft::shared_ptr<Client> client) {
+    (void)virtualServerManager;
+    (void)client;
     return SUCCESS;
 }

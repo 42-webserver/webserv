@@ -67,13 +67,12 @@ const char *DirectoryException::what() const throw() {
 //         return "Content-Type: application/octet-stream";
 //     }
 // }
-std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request) {
+std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath){
     std::string uri = request->getUri();
 
-    if (uri.find_last_of(".") == std::string::npos) {
+    if (indexingPath[indexingPath.size() - 1] != '/')
         throw DirectoryException();
-    }
-
+        
     std::string extension = uri.substr(uri.find_last_of(".") + 1);
     for (std::string::iterator it = extension.begin(); it != extension.end(); ++it) {
         *it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
@@ -162,8 +161,8 @@ void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
 
     oss << this->_dateHeader << "\r\n";
 
-//Todo: hyunkyle님한테 이거 맞냐고 물어봐야됨 
-    if (this->_client->isClientDie() == true || this->_client->getRequest()->getHeader("Connection") == "close")
+    if ((this->_client->isClientDie() == true && this->_client->isFinalRequest())
+    || this->_client->getRequest()->getHeader("Connection") == "close")
         this->_connectionHeader = "Connection: close";
     else
         this->_connectionHeader = "Connection: keep-alive";

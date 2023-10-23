@@ -1,4 +1,5 @@
 #include "../../../incs/Http/Response/HttpResponse.hpp"
+#include <Buffer/Exception/DisconnectionException.hpp>
 
 HttpResponse::AccessKey::AccessKey()
 {
@@ -41,7 +42,7 @@ void HttpResponse::allocateBigSizeBuffer(AccessKey key)
 	(void)key;
 	this->_BigSizeBuffer = ft::shared_ptr<IoReadAndWriteBuffer>(new IoReadAndWriteBuffer());
 }
-HttpResponse::HttpResponse() : _previousWriteSize(0), _isSending(false), _responseSize(NotSet), _fileSync(NotSetting)
+HttpResponse::HttpResponse() : _previousWriteSize(0), _responseSize(NotSet), _fileSync(NotSetting)
 {
 	this->_NormalCaseBuffer.reserve(e_normal_buffer_size);
 }
@@ -144,8 +145,18 @@ HttpResponse::~HttpResponse()
 // }
 
 e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel> clientChannel)
-{
-	size_t n = ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer, this->_previousWriteSize);
+{	
+	size_t n;
+	try {
+		n = ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer, this->_previousWriteSize);
+	}
+	catch (DisconnectionException &e) {
+		return clientClose;
+	}
+	catch (std::exception &e) {
+		//log
+		throw ;
+	}
 	if (n < 0)
 		return sending;
 	this->_previousWriteSize += n;
@@ -157,47 +168,56 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 	return sending;
 }
 
+e_send_To_client_status HttpResponse::_sendBigToClient(ft::shared_ptr<Channel> clientChannel)
+{
+	if (this->_previousWriteSize < this->_NormalCaseBuffer.size()) {
+		if (_sendNormalToClient(clientChannel) == clientClose)
+			return clientClose;
+		return sending;
+	}
+	else {
+		try {
+			this->_BigSizeBuffer->ioWrite(clientChannel->getFd());
+		}
+		catch (DisconnectionException &e) {
+			return clientClose;
+		}
+		catch (std::exception &e) {
+			throw ;
+		}
+		if (this->_BigSizeBuffer->size() == 0)
+			return sendingDone;
+		return sending;
+	}
+}
+
+
 e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clientChannel)
 {
 	if (this->_responseSize == NotSet)
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
 	if (this->_responseSize == NormalSize)
-	{
 		return this->_sendNormalToClient(clientChannel);
-	}
 	else 
-	{
-		//BigSize
-		if (this->_previousWriteSize < this->_NormalCaseBuffer.size()) {
-			_sendNormalToClient(clientChannel);
-			return sending;
-		}
-		else {
-			this->_BigSizeBuffer->ioWrite(clientChannel->getFd());
-			if (this->_BigSizeBuffer->size() == 0)
-				return sendingDone;
-			return sending;
-		}
-
-	}
+		return this->_sendBigToClient(clientChannel);
 }
 
-bool HttpResponse::isSending()
-{
-	return _isSending == true;
-}
+// bool HttpResponse::isSending()
+// {
+// 	return _isSending == true;
+// }
 
-void HttpResponse::setCanSending()
-{
-	this->_isSending = true;
-}
+// void HttpResponse::setCanSending()
+// {
+// 	this->_isSending = true;
+// }
 
-const ft::shared_ptr<HttpResponseBuilder> &HttpResponse::getBuilder() 
-{
-	return this->_builder;
-}
+// const ft::shared_ptr<HttpResponseBuilder> &HttpResponse::getBuilder() 
+// {
+// 	return this->_builder;
+// }
 
-void HttpResponse::allocateBuilder(HttpResponseBuilder *builder)
-{
-	this->_builder = ft::shared_ptr<HttpResponseBuilder>(builder);
-}
+// void HttpResponse::allocateBuilder(ft::shared_ptr<HttpResponseBuilder> builder)
+// {
+// 	this->_builder = builder;
+// }

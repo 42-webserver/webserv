@@ -21,7 +21,7 @@ std::vector<char> ErrorPageBuilder::getErrorPage(HttpStatusCode status) {
 //Todo :check
 void ErrorPageBuilder::buildResponseHeader(std::vector<char> &buffer) {
     ft::shared_ptr<HttpResponse> response = this->getClient()->getResponse();
-std::vector<char> errorPage = getErrorPage(this->_status);
+    std::vector<char> errorPage = getErrorPage(this->_status);
 	response->setResponseSize(NormalSize, HttpResponse::AccessKey());
     std::string ContenTypeHeader = "Content-Type : text/html";
     _setStatusCode(this->_status);
@@ -30,8 +30,9 @@ std::vector<char> errorPage = getErrorPage(this->_status);
 
     std::string header = ContenTypeHeader + "\r\n\r\n";
     buffer.insert(buffer.end(), header.begin(), header.end());
+
+    //body/
     buffer.insert(buffer.end(), errorPage.begin(), errorPage.end());    
 
-    response->setCanSending();
     this->getClient()->setResponse(response);
 }

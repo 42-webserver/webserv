@@ -4,11 +4,12 @@
 
 
 GetResponseBuilder::GetResponseBuilder(ft::shared_ptr<Client> client, 
-ft::shared_ptr<VirtualServerManager> vsm) : HttpResponseBuilder(client), _vsm(vsm) {
+ft::shared_ptr<VirtualServerManager> vsm, std::string indexingPath) : HttpResponseBuilder(client), _vsm(vsm), _indexingPath(indexingPath) {
 }
 
 GetResponseBuilder::~GetResponseBuilder(void) {
 }
+
 
 void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
     bool isDirectory = false;
@@ -16,13 +17,13 @@ void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
     std::string dirListing;
     _setStatusCode(OK);
     try {
-        _ContentTypeHeader = HttpResponseBuilder::_makeContentTypeHeader(this->getClient()->getRequest());
+        _ContentTypeHeader = 
+        HttpResponseBuilder::_makeContentTypeHeader(this->getClient()->getRequest(), 
+        this->_indexingPath);
     } catch (DirectoryException &e) {
         isDirectory = true;
         dirPath = RouterUtils::findPath(this->_vsm, this->getClient()->getRequest());
         dirListing = FileManager::getDirectoryListing(dirPath);
-        // _allocContentLength(ContentLength::e_content_length_header, dirListing.size());
-        // throw ;
     }
     if (isDirectory == true) {
         _allocContentLength(ContentLength::e_content_length_header, dirListing.size());
@@ -34,4 +35,10 @@ void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
 
     std::string header = _ContentTypeHeader + "\r\n\r\n";
     buffer.insert(buffer.end(), header.begin(), header.end());
+
+    //directory listing
+    if (isDirectory == true) {
+        buffer.insert(buffer.end(), dirListing.begin(), dirListing.end());
+        throw DirectoryException();
+    }
 }

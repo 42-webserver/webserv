@@ -28,7 +28,7 @@ private:
 public:
     void setGetEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm);
     void setPostAndPutEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm,std::string method);
-    void setDeleteEnv(ft::shared_ptr<Client> client);
+    void setDeleteEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm);
     static void execute(const std::map<std::string, std::string>& env);
 private:
     CgiEnvSetter(const CgiEnvSetter& other);

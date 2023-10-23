@@ -10,31 +10,23 @@ e_pattern_Process_result FileDeleterProcessor::process(ft::shared_ptr
   FileManager& fileManager = FileManager::getInstance();
   e_FileRequestType type;
    try { 
-      client->getResponse()->allocateBuilder(new DeleteResponseBuilder(client, vsm));
-      ft::shared_ptr<HttpResponseBuilder> builder = client->getResponse()->getBuilder();
-      builder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+      //basic Handle All RequireMent
+      _commandBuildHeaderTo(
+        ft::shared_ptr<HttpResponseBuilder>(new DeleteResponseBuilder(client, vsm)),
+        client
+      );
 
-      std::string path = RouterUtils::findPriorityPathWithIndex(vsm, client->getRequest());
+      std::string path = RouterUtils::findPath(vsm, client->getRequest());
       type = fileManager.requestFileDelete(path);
    }
    catch (std::exception& e) {
        //log error
        throw ;
    }
-    //To do: deleter를 위한 response안에 내용 다 넣어둘 것 필요
-  //ex)
-// HTTP/1.1 200 OK
-// Date: Mon, 23 Oct 2023 05:12:40 GMT
-// Server: YourServerName
-// Content-Length: 0
 
-
+  //Todo: check this
    switch (type)
    {
-        case FileRequestFail: {
-            throw std::runtime_error("FileDeleterProcessor::process : FileRequestFail");
-          return FAILURE;
-         };
         case FileRequestSuccess: {
     //To do: send success page, 상태 코드 들어있음, 그냥 그거 보고 리스폰스 만들어서 송신
           return SUCCESS;
@@ -43,4 +35,21 @@ e_pattern_Process_result FileDeleterProcessor::process(ft::shared_ptr
         default:
           return WAITING;
    }
+}
+
+e_pattern_Process_result FileDeleterProcessor::querryCanSending(ft::shared_ptr
+    <VirtualServerManager> virtualServerManager,
+    ft::shared_ptr<Client> client) {
+  FileManager& fileManager = FileManager::getInstance();
+  e_FileRequestType type;
+  std::string path = RouterUtils::findPath(virtualServerManager, client->getRequest());
+  type = fileManager.requestFileDelete(path);
+  switch (type)
+  {
+      case FileRequestSuccess:
+          return SUCCESS;
+      break;
+      default:
+          return WAITING;
+  }
 }

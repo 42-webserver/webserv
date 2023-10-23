@@ -12,13 +12,18 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     e_FileRequestType type;
     //Todo : try check
     try {
-        client->getResponse()->allocateBuilder(new GetResponseBuilder(client, virtualServerManager));
-        ft::shared_ptr<HttpResponseBuilder> builder = client->getResponse()->getBuilder();
-        builder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
+        //basic Handle All RequireMent
+        std::string indexingPath = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());
+        _commandBuildHeaderTo(
+            ft::shared_ptr<HttpResponseBuilder>(new GetResponseBuilder(client, virtualServerManager, indexingPath)),
+            client
+        );
 
         //Todo: 여기서부터 로직한번더 체크해야됨
-        std::string path = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());    
-        type = fileManager.requstFileContent(path, client->getResponse());
+        type = fileManager.requstFileContent(indexingPath, client->getResponse());
+    }
+    catch (DirectoryException& e) {
+        return SUCCESS;
     }
     catch (std::exception& e) {
         //log error
@@ -27,14 +32,27 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     
     switch (type)
     {
-        case FileRequestFail: {
-            throw std::runtime_error("FileReaderProcessor::process : FileRequestFail");
-            return FAILURE;
-        };
         case FileRequestSuccess: {
             return SUCCESS;
         }
         // FileRequestShouldwait ->block
+        default:
+            return WAITING;
+    }
+}
+
+e_pattern_Process_result FileReaderProcessor::querryCanSending(ft::shared_ptr
+    <VirtualServerManager> virtualServerManager,
+    ft::shared_ptr<Client> client) {
+    FileManager& fileManager = FileManager::getInstance();
+    e_FileRequestType type;
+    std::string indexingPath = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());
+    type = fileManager.requstFileContent(indexingPath, client->getResponse());
+    switch (type)
+    {
+        case FileRequestSuccess:
+            return SUCCESS;
+        break;
         default:
             return WAITING;
     }
