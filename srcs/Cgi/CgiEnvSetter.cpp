@@ -10,17 +10,18 @@ CgiEnvSetter& CgiEnvSetter::getInstance(){
 }
 
 const std::map<std::string, std::string>& CgiEnvSetter::getEnv(ft::shared_ptr<Client> client,
-CgiEnvSetter::e_method method, ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm){
+    ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm){
     _env.clear();
     _setDefaultEnv(client, channel, vsm);
-    if (method == e_get)
-        setGetEnv(client, vsm);
-    else if (method == e_post)
-        setPostAndPutEnv(client, vsm, "POST");
-    else if (method == e_put)
-        setPostAndPutEnv(client, vsm, "PUT");
-    else if (method == e_delete)
-        setDeleteEnv(client, vsm);
+    std::string method = client->getRequest()->getMethod();
+    if (method == "GET")
+        setGetEnv();
+    else if (method == "POST")
+        setPostAndPutEnv(client, "POST");
+    else if (method == "PUT")
+        setPostAndPutEnv(client, "PUT");
+    else if (method == "DELETE")
+        setDeleteEnv();
     return _env;
 }
 
@@ -33,7 +34,11 @@ ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm){
     _env["SERVER_SOFTWARE"] = "webserv";
     _env["SERVER_NAME"] = client->getRequest()->getHost();
     _env["GATEWAY_INTERFACE"] = "CGI/1.1";
-}
+    //TOdo: check
+    _env["QUERY_STRING"] = joinQueries(client->getRequest()->getQueries());
+    _env["SCRIPT_NAME"] = RouterUtils::findCgiScriptPath(vsm, client->getRequest());
+    _env["PATH_INFO"] = RouterUtils::findPathInfo(vsm, client->getRequest());
+    }
 
 std::string CgiEnvSetter::joinQueries(const std::map<std::string, std::string>& queries) {
     std::stringstream ss;
@@ -48,27 +53,26 @@ std::string CgiEnvSetter::joinQueries(const std::map<std::string, std::string>& 
     return ss.str();
 }
 
-void CgiEnvSetter::setGetEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm){
+void CgiEnvSetter::setGetEnv(){
     _env["REQUEST_METHOD"] = "GET";
-    _env["QUERY_STRING"] = joinQueries(client->getRequest()->getQueries());
-    _env["SCRIPT_NAME"] = RouterUtils::findCgiScriptPath(vsm, client->getRequest());
-    _env["PATH_INFO"] = RouterUtils::findPathInfo(vsm, client->getRequest());
+
 }
 
-void CgiEnvSetter::setPostAndPutEnv(ft::shared_ptr<Client> client, ft::shared_ptr<VirtualServerManager> vsm,
+void CgiEnvSetter::setPostAndPutEnv(ft::shared_ptr<Client> client,
 std::string method){
     _env["REQUEST_METHOD"] = method;
-    _env["QUERY_STRING"] = joinQueries(client->getRequest()->getQueries());
-    _env["SCRIPT_NAME"] = RouterUtils::findCgiScriptPath(vsm, client->getRequest());
-    _env["PATH_INFO"] = RouterUtils::findPathInfo(vsm, client->getRequest());
     _env["CONTENT_LENGTH"] = client->getRequest()->getHeader("Content-Length");
     _env["CONTENT_TYPE"] = client->getRequest()->getHeader("Content-Type");
 }
 
-void CgiEnvSetter::setDeleteEnv(ft::shared_ptr<Client> client,
-ft::shared_ptr<VirtualServerManager> vsm){
+void CgiEnvSetter::setDeleteEnv(){
     _env["REQUEST_METHOD"] = "DELETE";
-    _env["QUERY_STRING"] = joinQueries(client->getRequest()->getQueries());
-    _env["SCRIPT_NAME"] = RouterUtils::findCgiScriptPath(vsm, client->getRequest());
-    _env["PATH_INFO"] = RouterUtils::findPathInfo(vsm, client->getRequest());
+
+}
+
+void CgiEnvSetter::setEnvAll(const std::map<std::string, std::string>& env){
+    std::map<std::string, std::string>::const_iterator it = env.begin();
+    for (; it != env.end(); ++it){
+       setenv(it->first.c_str(), it->second.c_str(), 1);
+    }
 }

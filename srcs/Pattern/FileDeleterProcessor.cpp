@@ -6,7 +6,9 @@ FileDeleterProcessor::~FileDeleterProcessor(void) {
 }
 e_pattern_Process_result FileDeleterProcessor::process(ft::shared_ptr
     <VirtualServerManager> vsm,
-    ft::shared_ptr<Client> client) {
+    ft::shared_ptr<Client> client,
+    ft::shared_ptr<Channel> channel) {
+    (void)channel;
   FileManager& fileManager = FileManager::getInstance();
   e_FileRequestType type;
    try { 

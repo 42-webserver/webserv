@@ -84,6 +84,8 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 		PatternType patternType = client->getPatternType(vsm);
 		PatternProcessor patternProcessor(vsm, patternType, client);
 
+		if (patternType == CGI_READ)
+			patternProcessor.injectChannel(curEvent->getChannel());
 		if (patternProcessor.process() == SUCCESS)
 			_partialSending(client->getResponse(), client, curEvent);
 	}

@@ -36,8 +36,11 @@ void PatternProcessor::_injectClient(ft::shared_ptr<Client> client) {
     this->_client = client;
 }
 
+void PatternProcessor::injectChannel(ft::shared_ptr<Channel> channel) {
+    this->_channel = channel;
+}
 e_pattern_Process_result PatternProcessor::process() {
-    return this->_processorObject->process(this->_vsm, this->_client);
+    return this->_processorObject->process(this->_vsm, this->_client, this->_channel);
 }
 
 e_pattern_Process_result PatternProcessor::querryCanSending() {

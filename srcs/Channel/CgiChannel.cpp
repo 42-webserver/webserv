@@ -24,7 +24,7 @@ void CgiChannel::build(void) {
 	for (int i = 0; i < Count; i += 2) {
 		if (pipe(pipeFd) == -1) {
 			// Logger::getInstance().error("Fail to create pipe");
-			throw (InternalServerErrorException());
+			throw std::runtime_error("Fail to create pipe");
 		}
 		try {
 			this->_channel[i] = ft::shared_ptr<Channel>(new ByteStream(pipeFd[Read]));

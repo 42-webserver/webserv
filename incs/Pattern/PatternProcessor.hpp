@@ -17,6 +17,7 @@ private:
     ft::shared_ptr<VirtualServerManager> _vsm;
     ft::shared_ptr<ProcessorObject> _processorObject;
     ft::shared_ptr<Client> _client;
+    ft::shared_ptr<Channel> _channel;
 public:
     PatternProcessor(ft::shared_ptr<VirtualServerManager> vsm,
         PatternType type, ft::shared_ptr<Client> client);
@@ -25,6 +26,8 @@ private:
     void _injectVsm(ft::shared_ptr<VirtualServerManager> vsm);
     void _injectProcessorObject(PatternType type);
     void _injectClient(ft::shared_ptr<Client> client);
+public:
+    void injectChannel(ft::shared_ptr<Channel> channel);
 private:
 //delete
     PatternProcessor(const PatternProcessor &ref);

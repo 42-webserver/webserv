@@ -7,7 +7,9 @@ FileReaderProcessor::~FileReaderProcessor(void) {
 }
 e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
-    ft::shared_ptr<Client> client) {
+    ft::shared_ptr<Client> client,
+    ft::shared_ptr<Channel> channel) {
+    (void)channel;
     FileManager& fileManager = FileManager::getInstance();
     e_FileRequestType type;
     //Todo : try check
