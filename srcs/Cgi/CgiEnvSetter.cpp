@@ -1,5 +1,32 @@
 #include <Cgi/CgiEnvSetter.hpp>
 #include <Http/Utils/RouterUtils.hpp>
+
+//EnvpManager
+EnvpManager::EnvpManager(const std::map<std::string, std::string>& env) {
+        size = env.size();
+        envp = new char*[size + 1];
+        
+        std::size_t i = 0;
+        for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); ++it) {
+            std::string envString = it->first + "=" + it->second;
+            envp[i] = new char[envString.size() + 1];
+            std::strcpy(envp[i], envString.c_str());
+            ++i;
+        }
+        envp[size] = NULL; // NULL-terminate the array
+}
+
+EnvpManager::~EnvpManager() {
+    for (std::size_t i = 0; i < size; ++i) {
+        delete[] envp[i];
+    }
+    delete[] envp;
+}
+
+char **EnvpManager::getEnvp() const {
+    return envp;
+}
+
 CgiEnvSetter* CgiEnvSetter::_instance = NULL;
 CgiEnvSetter::CgiEnvSetter(){}
 CgiEnvSetter::~CgiEnvSetter(){}
@@ -70,9 +97,6 @@ void CgiEnvSetter::setDeleteEnv(){
 
 }
 
-void CgiEnvSetter::setEnvAll(const std::map<std::string, std::string>& env){
-    std::map<std::string, std::string>::const_iterator it = env.begin();
-    for (; it != env.end(); ++it){
-       setenv(it->first.c_str(), it->second.c_str(), 1);
-    }
+EnvpManager CgiEnvSetter::setEnvAll(const std::map<std::string, std::string>& env){
+    return EnvpManager(env);
 }

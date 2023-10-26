@@ -6,6 +6,18 @@
 #include <Client/Client.hpp>
 #include <Channel/Channel.hpp>
 #include <Server/VirtualServerManager.hpp>
+
+
+class EnvpManager {
+private:
+    char** envp;
+    std::size_t size;
+
+public:
+    EnvpManager(const std::map<std::string, std::string>& env);
+    ~EnvpManager();
+    char** getEnvp() const;
+};
 class CgiEnvSetter {
 private:
     std::map<std::string, std::string> _env;
@@ -21,7 +33,7 @@ private:
     void setDeleteEnv();
  
 public:
-    static void setEnvAll(const std::map<std::string, std::string>& env);
+    static EnvpManager setEnvAll(const std::map<std::string, std::string>& env);
     const std::map<std::string, std::string>& getEnv(ft::shared_ptr<Client> client,
     ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm);
 

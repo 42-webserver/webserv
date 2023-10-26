@@ -27,7 +27,7 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
         try {
             const std::map<std::string, std::string>& env = 
             CgiEnvSetter::getInstance().getEnv(client, channel, virtualServerManager);
-            CgiEnvSetter::setEnvAll(env);
+            EnvpManager envpManager = CgiEnvSetter::setEnvAll(env);
             cgiChannel->_dupFdInCgiProcess();
             cgiChannel->_closeServerSideFd();
             cgiChannel->_closeCgiSideFd();
@@ -35,12 +35,22 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
             if (cgiPath.empty()) {
                 throw std::runtime_error("cgiPath is empty -> logical error");
             }
+            execve(cgiPath.c_str(), NULL, envpManager.getEnvp());
+            if (errno == ENOENT) {
+                throw NotFoundException();
+            }
+            else if (errno == EACCES || errno == EPERM || errno == EISDIR) {
+                throw ForbiddenException();
+            }
+            else {
+                throw std::runtime_error("execve error");
+            }
         }
         catch (const std::exception &e) {
             //log error CgiChannel execute,e.what
             throw ;
         }
-        exit(0);
+        exit(EXIT_FAILURE);
     }
     else {
         //parent
