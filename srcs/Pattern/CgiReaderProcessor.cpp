@@ -48,6 +48,14 @@ void CgiReaderProcessor::_onBoardReadFromCgi(ft::shared_ptr<Channel> channel, ft
     ft::shared_ptr<Event> event = eventFactory.createEvent(ft::READ_EVENT_FROM_CGI, eventDto);
     event->onboardQueue();
 }
+
+void CgiReaderProcessor::_onBoardWriteToCgi(ft::shared_ptr<Channel> channel, ft::shared_ptr<Client> client) {
+    EventFactory& eventFactory = EventFactory::getInstance();
+
+    EventDto eventDto(client, channel);
+    ft::shared_ptr<Event> event = eventFactory.createEvent(ft::WRITE_EVENT_TO_GCI, eventDto);
+    event->onboardQueue();
+}
 e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client,
@@ -74,7 +82,10 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
         try {
             _onBoardReadFromCgi(cgiChannel->getChannel(e_server_read), client);
             cgiChannel->destroy(e_server_read);
-        
+            if (client->getRequest()->getBodySize() > 0) {
+                _onBoardWriteToCgi(cgiChannel->getChannel(e_server_write), client);
+                cgiChannel->destroy(e_server_write);
+            }
             // cgiChannel->_setNonBlockServerSideFd();
         }
         catch (const std::exception &e) {

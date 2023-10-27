@@ -7,7 +7,7 @@
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
 #include <Event/ReadEvent/ReadEventFromCache.hpp>
 #include <Event/ReadEvent/ReadEventFromCgi.hpp>
-// #include "../../../incs/Event/WriteEvent/WriteEventToCgi.hpp"
+#include <Event/WriteEvent/WriteEventToCgi.hpp>
 
 EventFactory *EventFactory::_instance = NULL;
 EventFactory::EventFactory(void) {}	
@@ -51,8 +51,10 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 			return (new ReadEventFromCgi(eventDto.getChannel(),
 			 eventDto.getClient())
 			);
-		// case ft::WRITE_EVENT_TO_CGI:
-		// 	return (new WriteEventToCgi(eventDto));
+		case ft::WRITE_EVENT_TO_GCI:
+			return (new WriteEventToCgi(eventDto.getChannel(),
+			 eventDto.getClient())
+			);
 		case ft::LISTEN_EVENT:
 			return (new ListenEvent(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager())
