@@ -49,6 +49,8 @@ SRCS =	main.cpp \
 		Event/ReadEvent/ReadEventHandler.cpp \
 		Event/ReadEvent/ReadEventFromCache.cpp \
 		Event/ReadEvent/ReadEventFromCacheHandler.cpp \
+		Event/ReadEvent/ReadEventFromCgi.cpp \
+		Event/ReadEvent/ReadEventFromCgiHandler.cpp \
 		Event/WriteEvent/WriteEvent.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \
@@ -57,6 +59,10 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToFileHandler.cpp \
 		Event/WriteEvent/WriteEventToCache.cpp \
 		Event/WriteEvent/WriteEventToCacheHandler.cpp \
+		Event/WriteEvent/WriteEventToCgi.cpp \
+		Event/WriteEvent/WriteEventToCgiHandler.cpp \
+		Event/SpecialEvent/CgiWaitEvent.cpp \
+		Event/SpecialEvent/CgiWaitEventHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Parser/HttpRequestParser.cpp \
 		Http/Parser/HttpResponseParser.cpp \
@@ -74,6 +80,7 @@ SRCS =	main.cpp \
 		Http/Response/PutAndPostResponseBuilder.cpp \
 		Http/Response/RedirectionResponseBuilder.cpp \
 		Http/Response/ErrorPageBuilder.cpp \
+		Http/Response/CgiResponseBuilder.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/RouterUtils.cpp \
@@ -125,6 +132,7 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Event/ListenEvent \
 				${OBJS_DIR}/Event/ReadEvent \
 				${OBJS_DIR}/Event/WriteEvent \
+				${OBJS_DIR}/Event/SpecialEvent \
 				${OBJS_DIR}/Event/Exception \
 				${OBJS_DIR}/Channel \
 				${OBJS_DIR}/Http \

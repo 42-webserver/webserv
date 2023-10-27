@@ -31,6 +31,11 @@ std::vector<char>& HttpResponse::getNormalCaseBuffer(AccessKey key)
 	return this->_NormalCaseBuffer;
 }
 
+e_ResponseSize HttpResponse::getResponseSize()
+{
+	return this->_responseSize;
+}
+
 ft::shared_ptr<IoReadAndWriteBuffer> &HttpResponse::getBigSizeBuffer(AccessKey key)
 {
 	(void)key;
@@ -221,3 +226,13 @@ e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clien
 // {
 // 	this->_builder = builder;
 // }
+
+void HttpResponse::setCgiSync(e_cgi_sync cgiSync)
+{
+	this->_cgiSync = cgiSync;
+}
+
+e_cgi_sync HttpResponse::getCgiSync()
+{
+	return this->_cgiSync;
+}

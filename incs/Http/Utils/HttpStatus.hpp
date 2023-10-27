@@ -1,7 +1,8 @@
 #ifndef HTTPSTATUS_HPP
 #define HTTPSTATUS_HPP
 #include <string>
-
+#include <sstream>
+#include <map>
 typedef enum HttpStatusCode{
 		CONTINUE = 100,
 		SWITCHING_PROTOCOLS = 101,
@@ -48,16 +49,20 @@ typedef enum HttpStatusCode{
 		INSUFFICIENT_STORAGE = 507
 } HttpStatusCode;
 
+
+
 class HttpStatus{
 
 public:
 	static int getStatusCode(HttpStatusCode code);
 	static std::string getReasonPhrase(HttpStatusCode code);
+	static HttpStatusCode stringToHttpStatusCode(const std::string& httpResponseStr);
 
 	class HttpStatusNotValidException : public std::exception{
 	private:
 	const char *_message;
 
+public:
 	public:
 	HttpStatusNotValidException();
 	HttpStatusNotValidException(std::string message);

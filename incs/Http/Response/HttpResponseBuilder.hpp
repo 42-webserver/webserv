@@ -53,7 +53,7 @@ public:
 protected:
     void _setStatusCode(const HttpStatusCode &statusCode);
     void _allocContentLength(ContentLength::e_content_length_header_type contentLengthHeaderType,
-                             int contentLength);
+                             size_t contentLength);
     void _buildDefaultResponseHeader(std::vector<char> &buffer);
     ft::shared_ptr<Client> getClient(void);
     static  std::string _makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath);

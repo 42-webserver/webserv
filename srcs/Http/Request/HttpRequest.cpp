@@ -40,6 +40,7 @@ void HttpRequest::insertBody(std::vector<char> &buffer)
 	this->_body->append(buffer.begin(), buffer.end());
 }
 
+//Todo: 여기서 공백하나라고 가정하는거 위험
 void HttpRequest::addHeader(const std::string & header)
 {
 	std::string::size_type pos;

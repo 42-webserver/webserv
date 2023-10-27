@@ -55,6 +55,9 @@ public:
 private:
     void	_allocate();
     void	_deallocate();
+
+public:
+    size_t ioReadToRemainigSize(int fd, size_t remainingSize);
 public:
     size_t  ioSaveWrite(int fd, size_t start);
     size_t  copyHeadTo(std::vector<char>& dest);

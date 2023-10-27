@@ -100,6 +100,25 @@ size_t IoReadAndWriteBuffer::ioWrite(int fd) {
     }
     return size;
 }
+
+size_t IoReadAndWriteBuffer::ioReadToRemainigSize(int fd, size_t remainingSize) {
+    size_t size = 0;
+
+    try {
+        if (_lst.empty()) _allocate();
+
+        size = _lst.back()->ioReadToRemainigSize(fd, remainingSize);
+        if (size <= 0) return size;
+        if (_lst.back()->isFull()) _allocate();
+    }
+    catch (const std::exception& e) {
+        throw;
+    }
+    catch (...) {
+        throw;
+    }
+    return size;
+}
 size_t IoReadAndWriteBuffer::ioSaveWrite(int fd, size_t start) {
     std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin();
     size_t accumulatesize = 0;

@@ -8,9 +8,11 @@ RedirectionProcessor::~RedirectionProcessor(void) {
 
 e_pattern_Process_result RedirectionProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
-    ft::shared_ptr<Client> client) {
+    ft::shared_ptr<Client> client,
+    ft::shared_ptr<Channel> channel) {
         //Todo : implement
-    
+        (void)channel;
+
     try {
         //basic Handle All RequireMent
         _commandBuildHeaderTo(

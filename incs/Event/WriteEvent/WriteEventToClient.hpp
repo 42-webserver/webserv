@@ -4,7 +4,6 @@
 # include "WriteEvent.hpp"
 # include "../../Http/Request/HttpRequest.hpp"
 # include <Channel/SingleStreamable.hpp>
-# include <Channel/DualStreamable.hpp>
 #include "../../../incs/Event/WriteEvent/WriteEventToClientHandler.hpp"
 #include "../../../incs/Event/EventQueue/EventQueue.hpp"
 #include <Client/Client.hpp>
