@@ -92,8 +92,8 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
             cgiChannel->destroy(e_server_read);
             if (client->getRequest()->getBodySize() > 0) {
                 _onBoardWriteToCgi(cgiChannel->getChannel(e_server_write), client);
-                cgiChannel->destroy(e_server_write);
             }
+            cgiChannel->destroy(e_server_write);
             _onBoardCgiWait(pid);
             // cgiChannel->_setNonBlockServerSideFd();
         }
