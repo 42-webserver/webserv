@@ -8,6 +8,7 @@
 #include <Event/ReadEvent/ReadEventFromCache.hpp>
 #include <Event/ReadEvent/ReadEventFromCgi.hpp>
 #include <Event/WriteEvent/WriteEventToCgi.hpp>
+#include <Event/SpecialEvent/CgiWaitEvent.hpp>
 
 EventFactory *EventFactory::_instance = NULL;
 EventFactory::EventFactory(void) {}	
@@ -58,6 +59,9 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 		case ft::LISTEN_EVENT:
 			return (new ListenEvent(eventDto.getChannel(),
 			 eventDto.getVirtualServerManager())
+			);
+		case ft::CGI_WAITING_EVENT:
+			return (new CgiWaitEvent(eventDto.getPid())
 			);
 		default:
 			throw (FailToEventCreateException());

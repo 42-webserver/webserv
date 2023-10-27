@@ -14,6 +14,7 @@ class  EventDto {
 		std::vector<char>*						_content;
 		std::string								_path;
 		std::string								_mode;
+		pid_t									_pid;
 	public:
 		EventDto(ft::shared_ptr<Channel> channel, 
 		ft::shared_ptr<VirtualServerManager> virtualServerManager = ft::shared_ptr<VirtualServerManager>(),
@@ -22,6 +23,9 @@ class  EventDto {
 		EventDto(ft::shared_ptr<Channel> channel,
 		ft::shared_ptr<VirtualServerManager> virtualServerManager,
 		ft::shared_ptr<Client> client,
+		std::vector<char> *content = NULL);
+
+		EventDto(pid_t pid, 
 		std::vector<char> *content = NULL);
 
 		EventDto(ft::shared_ptr<IoReadAndWriteBuffer> buffer,
@@ -44,6 +48,7 @@ class  EventDto {
 		std::vector<char>	&getContent() const;
 		const std::string	&getPath() const;
 		const std::string	&getMode() const;
+		pid_t				getPid() const;
 		const ft::shared_ptr<Client>	&getClient() const;
 };
 

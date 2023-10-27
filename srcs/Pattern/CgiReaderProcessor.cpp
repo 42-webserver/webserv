@@ -56,6 +56,14 @@ void CgiReaderProcessor::_onBoardWriteToCgi(ft::shared_ptr<Channel> channel, ft:
     ft::shared_ptr<Event> event = eventFactory.createEvent(ft::WRITE_EVENT_TO_GCI, eventDto);
     event->onboardQueue();
 }
+
+void CgiReaderProcessor::_onBoardCgiWait(pid_t pid) {
+    EventFactory& eventFactory = EventFactory::getInstance();
+
+    EventDto eventDto(pid);
+    ft::shared_ptr<Event> event = eventFactory.createEvent(ft::CGI_WAITING_EVENT, eventDto);
+    event->onboardQueue();
+}
 e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client,
@@ -86,6 +94,7 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
                 _onBoardWriteToCgi(cgiChannel->getChannel(e_server_write), client);
                 cgiChannel->destroy(e_server_write);
             }
+            _onBoardCgiWait(pid);
             // cgiChannel->_setNonBlockServerSideFd();
         }
         catch (const std::exception &e) {
@@ -101,6 +110,9 @@ e_pattern_Process_result CgiReaderProcessor::querryCanSending(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
     (void)virtualServerManager;
-    (void)client;
-    return SUCCESS;
+    ft::shared_ptr<HttpResponse> response = client->getResponse();
+    if (response->getCgiSync() == e_cgi_reading_done) {
+        return SUCCESS;
+    }
+    return WAITING;
 }

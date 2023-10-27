@@ -20,5 +20,6 @@ class CgiReaderProcessor : public ProcessorObject {
             ft::shared_ptr<Channel> channel);
         void _onBoardReadFromCgi(ft::shared_ptr<Channel> channel, ft::shared_ptr<Client> client);
         void _onBoardWriteToCgi(ft::shared_ptr<Channel> channel, ft::shared_ptr<Client> client);
+        void _onBoardCgiWait(pid_t pid);
 };
 #endif
