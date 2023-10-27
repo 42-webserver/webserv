@@ -27,7 +27,7 @@ void	ListenEventHandler::handleEvent(Event &event) {
 
 	try {
 		client = connectClient(static_cast<ListenEvent &>(event).getFd());
-		log.info("Client connected");
+		// log.info("Client connected");
 	} catch (const std::exception &e) {
 		log.error(e.what());
 		return ;

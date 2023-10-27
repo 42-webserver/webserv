@@ -13,7 +13,7 @@ void	ListenEvent::onboardQueue(void){
 	int			fd = this->getFd();
 	Event		*event = this;
 
-	Logger::getInstance().info("onboard Listen Event");
+	// Logger::getInstance().info("onboard Listen Event");
 	
 	try {
 		this->getChannel().get()->setNonBlocking();
@@ -53,7 +53,7 @@ void	ListenEvent::onboardQueue(void){
 void	ListenEvent::offboardQueue(void){
 	EventQueue &event_queue = EventQueue::getInstance();
 
-	Logger::getInstance().info("Remove Listen Event");
+	// Logger::getInstance().info("Remove Listen Event");
 	EV_SET(
 		event_queue.getEventSetElementPtr(),
 		this->getFd(),

@@ -10,6 +10,7 @@
 #include <Event/WriteEvent/WriteEventToCgi.hpp>
 #include <Event/SpecialEvent/CgiWaitEvent.hpp>
 #include <Event/WriteEvent/WriteEventToFile.hpp>
+#include <Event/SpecialEvent/LogEvent.hpp>
 
 EventFactory *EventFactory::_instance = NULL;
 EventFactory::EventFactory(void) {}	
@@ -67,6 +68,9 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 		case ft::FILE_WRITE_EVENT:
 			return (new WriteEventToFile(eventDto.getBuffer(),
 			 eventDto.getPath(), eventDto.getMode())
+			);
+		case ft::LOG_EVENT:
+			return (new LogEvent()
 			);
 		default:
 			throw (FailToEventCreateException());

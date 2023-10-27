@@ -48,11 +48,12 @@ void IoReadAndWriteBuffer::_allocate() {
             _lst.push_back(ft::shared_ptr<BaseNode>(new NormalNode()));
             _state = AppendState;
         }
-        else if (_state == AppendState) {
-            _lst.push_back(ft::shared_ptr<BaseNode>(new LargeNode()));
-        }
+        // else if (_state == AppendState) {
+        //     _lst.push_back(ft::shared_ptr<BaseNode>(new LargeNode()));
+        // }
+        //Todo: check this for log file
         else {
-            // ft::Assert::_assert((false), "IoReadAndWriteBuffer::_allocate Invarint Error");
+            _lst.push_back(ft::shared_ptr<BaseNode>(new LargeNode()));
         }
 
 }

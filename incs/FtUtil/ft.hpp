@@ -15,6 +15,7 @@ namespace ft {
 			CACHE_READ_EVENT,
 			CACHE_WRITE_EVENT,
 			CGI_WAITING_EVENT,
+			LOG_EVENT,
 			COUNT
 		};
 };

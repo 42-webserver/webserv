@@ -6,10 +6,10 @@
 # include <iostream>
 # include <ctime>
 # include <cstdarg>
-# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 # include "../../libs/shared_ptr/shared_ptr.hpp"
-# include <Event/EventQueue/EventQueue.hpp>
-# include <Event/EventBase/EventFactory.hpp>
+
+// # include <Event/EventQueue/EventQueue.hpp>
+// # include <Event/EventBase/EventFactory.hpp>
 // Refactoring::daegulee  access, error Expand!
 // Todo:1. Loger must be event
 // 2. Loger using buf 
@@ -27,12 +27,19 @@ typedef enum{
 }	e_log_save;
 
 static const size_t BUFFER_SIZE = 32 * 1024;
-e_log_save g_log_save = e_log_cycle;
-#ifdef DEBUG_FLAG
-	g_log_save = e_log_immidiate;
-#endif
 
+
+class IoReadAndWriteBuffer;
 class Logger {
+	public:
+		class AccessKey
+		{
+			friend class LogEventHandler;
+			friend class Logger;
+			private:
+				AccessKey();
+				~AccessKey();
+		};
 	private:
 		const static std::string	_format[];
 		const static std::string	_log_color[];
@@ -62,12 +69,14 @@ class Logger {
 		// void	warning(const std::string& format, int count, ...); 
 		void	error(const std::string& message); 
 		void	error(const std::string& format, int count, ...);
+		size_t  getBufferSize(void) const;
 		// void	debug(const std::string& message) ;
 		// void	debug(const std::string& format, int count, ...);
 
 	private:
-		void	log(const std::string &message); 
-		void    _onBoardLogEvent(void);
+		void	log(const std::string &message);
+	public:
+		void    _onBoardLogEvent(const AccessKey &accessKey);
 	private:
 		std::string	converformatMessage(const std::string &format, int count, va_list args);
 		std::string	formatMessage(const std::string &message);

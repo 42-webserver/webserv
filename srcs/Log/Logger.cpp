@@ -1,8 +1,18 @@
 #include <Log/Logger.hpp>
+# include <Event/EventQueue/EventQueue.hpp>
+# include <Event/EventBase/EventFactory.hpp>
+# include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
+# include <Event/SpecialEvent/LogEvent.hpp>
+# include <cstdio>
 
+Logger::AccessKey::AccessKey(void) {}
+Logger::AccessKey::~AccessKey(void) {}
 
 Logger	*Logger::_instance = NULL;
-
+static e_log_save g_log_save = e_log_cycle;
+#ifdef DEBUG_FLAG
+	g_log_save = e_log_immidiate;
+#endif
 
 Logger::Logger(void) { 
 }
@@ -16,6 +26,13 @@ Logger	&Logger::getInstance(void) {
 
 Logger::~Logger(void) {
 	_flush();
+}
+
+void	Logger::_flush(void) {
+	FILE	*fp = fopen(DEFAULT_LOG_FILE_NAME.c_str(), "w+");
+	int fd = fileno(fp);
+	while (this->_buffer->size() > 0)
+		this->_buffer->ioWrite(fd);
 }
 
 std::string Logger::converformatMessage(const std::string& format, int count, va_list args) {
@@ -64,6 +81,9 @@ void	Logger::error(const std::string& format, int count, ...) {
 	va_end(args);
 }
 
+size_t  Logger::getBufferSize(void) const {
+	return (this->_buffer->size());
+}
 // void	Logger::debug(const std::string& message) { log(message); }
 // void	Logger::debug(const std::string& format, int count, ...) {
 // 	va_list		args;
@@ -75,7 +95,8 @@ void	Logger::error(const std::string& format, int count, ...) {
 // }
 
 
-void	Logger::_onBoardLogEvent(){
+void	Logger::_onBoardLogEvent(const AccessKey &accessKey) {
+	(void)accessKey;
 	EventFactory& eventFactory = EventFactory::getInstance();
 
 	EventDto eventDto(this->_buffer, DEFAULT_LOG_FILE_NAME, "w+");
@@ -84,14 +105,25 @@ void	Logger::_onBoardLogEvent(){
 }
 
 void	Logger::log( const std::string& message) {
+	static bool is_init = true;
+
+	if (is_init) {
+		EventFactory& eventFactory = EventFactory::getInstance();
+
+		EventDto eventDto;
+		Event* event = eventFactory.createEvent(ft::LOG_EVENT, eventDto);
+		event->onboardQueue();
+		is_init = false;
+	}
+
 	this->_formatted_message = formatMessage(message);
 	this->_buffer->appendString(this->_formatted_message);
 	if (g_log_save == e_log_immidiate) {
-		_onBoardLogEvent();
+		_flush();
 	}
 	else {
 		if (this->_buffer->size() > BUFFER_SIZE) {
-			_onBoardLogEvent();
+			_onBoardLogEvent(Logger::AccessKey());
 		}
 	}
 }

@@ -20,6 +20,7 @@ class  EventDto {
 		ft::shared_ptr<VirtualServerManager> virtualServerManager = ft::shared_ptr<VirtualServerManager>(),
 		std::vector<char> *content = NULL);
 
+		EventDto(void);
 		EventDto(ft::shared_ptr<Channel> channel,
 		ft::shared_ptr<VirtualServerManager> virtualServerManager,
 		ft::shared_ptr<Client> client,
@@ -39,7 +40,6 @@ class  EventDto {
 		~EventDto(void);
 	private:
 		EventDto &operator=(const EventDto &rhs);
-		EventDto(void);
 		EventDto(const EventDto &ref);
 	public:
 		const ft::shared_ptr<Channel>	&getChannel() const;

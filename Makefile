@@ -63,6 +63,8 @@ SRCS =	main.cpp \
 		Event/WriteEvent/WriteEventToCgiHandler.cpp \
 		Event/SpecialEvent/CgiWaitEvent.cpp \
 		Event/SpecialEvent/CgiWaitEventHandler.cpp \
+		Event/SpecialEvent/LogEvent.cpp \
+		Event/SpecialEvent/LogEventHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Parser/HttpRequestParser.cpp \
 		Http/Parser/HttpResponseParser.cpp \
