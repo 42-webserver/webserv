@@ -9,6 +9,7 @@
 #include <iostream>
 #include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 #include "HttpResponseBuilder.hpp"
+
 typedef enum{
 	NotSet,
 	NormalSize,

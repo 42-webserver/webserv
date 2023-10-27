@@ -7,7 +7,7 @@
 # include <Client/Client.hpp>
 class  EventDto {
 	private: 
-		ft::shared_ptr<Channel>				_channel;
+		ft::shared_ptr<Channel>					_channel;
 		ft::shared_ptr<VirtualServerManager>	_virtualServerManager;
 		ft::shared_ptr<IoReadAndWriteBuffer>	_buffer;
 		ft::shared_ptr<Client>					_client;
