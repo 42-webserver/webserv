@@ -27,6 +27,9 @@ class  EventDto {
 		EventDto(ft::shared_ptr<IoReadAndWriteBuffer> buffer,
 		const std::string &path, std::string mode,
 		std::vector<char> *content = NULL);
+		EventDto(ft::shared_ptr<Client> client,
+		ft::shared_ptr<Channel> channel,
+		std::vector<char> *content = NULL);
 		EventDto(std::vector<char> *content,
 		const std::string &path, std::string mode);
 		~EventDto(void);

@@ -31,6 +31,7 @@ class EventQueue {
 
 	public:
 		static EventQueue	&getInstance(void);
+		void deleteInstance(void);
 
 	public:
 		int		pullEvents(void);

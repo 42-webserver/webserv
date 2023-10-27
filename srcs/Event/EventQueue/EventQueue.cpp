@@ -27,6 +27,7 @@ EventQueue::~EventQueue(void) {
 	// EventQueue::_instance = NULL;
 }
 
+
 EventQueue		&EventQueue::getInstance(void) {
 	if (EventQueue::_instance == NULL) {
 		EventQueue::_instance = new EventQueue();
@@ -34,6 +35,13 @@ EventQueue		&EventQueue::getInstance(void) {
 	return (*EventQueue::_instance);
 }
 
+void 			EventQueue::deleteInstance(void) {
+	if (EventQueue::_instance) {
+		close(EventQueue::_instance->_fd);
+		delete EventQueue::_instance;
+		EventQueue::_instance = NULL;
+	}
+}
 int				EventQueue::getEventFd(int idx) const { return (this->_ev_list[idx].ident); }
 int				EventQueue::getEventQueueFd(void) const { return (this->_fd); }
 Event			*EventQueue::getEventData(int idx) const {  return static_cast<Event *>(this->_ev_list[idx].udata); }
@@ -73,6 +81,7 @@ bool	EventQueue::popEvent(Event *event) {
 	} 
 	return (true);
 }
+
 
 // Exception
 const char	*EventQueue::FailToCreateException::what(void) const throw() { return ("EventQueue: Fail to create"); }

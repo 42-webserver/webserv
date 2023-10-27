@@ -14,6 +14,10 @@ std::vector<char>*content): _buffer(buffer), _content(content) , _path(path), _m
 EventDto::EventDto(std::vector<char> *content,
 const std::string &path, std::string mode):  _content(content) ,_path(path), _mode(mode) {}
 
+EventDto::EventDto(ft::shared_ptr<Client> client,
+ft::shared_ptr<Channel> channel,
+std::vector<char> *content): _channel(channel), _client(client), _content(content) {}
+
 EventDto::EventDto(ft::shared_ptr<Channel> channel,
 ft::shared_ptr<VirtualServerManager> virtualServerManager,
 ft::shared_ptr<Client> client,

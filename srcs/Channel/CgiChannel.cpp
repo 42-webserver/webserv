@@ -8,7 +8,7 @@ CgiChannel::CgiChannel(void) {
 
 CgiChannel::~CgiChannel(void) {}
 
-void CgiChannel::_destroy(e_pipe type) {
+void CgiChannel::destroy(e_pipe type) {
 	this->_channel[type] = ft::shared_ptr<Channel>();
 }
 
@@ -39,25 +39,32 @@ void CgiChannel::build(void) {
 	}
 }
 void CgiChannel::_dupFdInCgiProcess(void){
-	if (dup2(this->_channel[CGI_READ]->getFd(), STDIN_FILENO) < 0) {
+	if (dup2(this->_channel[e_cgi_read]->getFd(), STDIN_FILENO) < 0) {
 		Logger::getInstance().error("Fail to dup");
 		throw (FailToDupException());
 	}
-	if (dup2(this->_channel[CGI_WRITE]->getFd(), STDOUT_FILENO) < 0) {
+	if (dup2(this->_channel[e_cgi_write]->getFd(), STDOUT_FILENO) < 0) {
 		Logger::getInstance().error("Fail to dup");
 		throw (FailToDupException());
 	}
 }
 
 void CgiChannel::_closeServerSideFd(void) {
-	this->_channel[SERVER_READ] = ft::shared_ptr<Channel>();
-	this->_channel[SERVER_WRITE] = ft::shared_ptr<Channel>();
+	this->_channel[e_server_read] = ft::shared_ptr<Channel>();
+	this->_channel[e_server_write] = ft::shared_ptr<Channel>();
 }
 
 void CgiChannel::_closeCgiSideFd(void) {
-	this->_channel[CGI_READ] = ft::shared_ptr<Channel>();
-	this->_channel[CGI_WRITE] = ft::shared_ptr<Channel>();
+	this->_channel[e_cgi_read] = ft::shared_ptr<Channel>();
+	this->_channel[e_cgi_write] = ft::shared_ptr<Channel>();
 }
 
+ft::shared_ptr<Channel> &CgiChannel::getChannel(e_pipe type) {
+	return (this->_channel[type]);
+}
+// void CgiChannel::_setNonBlockServerSideFd(void) {
+// 	this->_channel[SERVER_READ]->setNonBlocking();
+// 	this->_channel[SERVER_WRITE]->setNonBlocking();
+// }
 const char	*CgiChannel::FailToCreateException::what(void) const throw() { return ("CgiChannel: Fail to create"); }
 const char	*CgiChannel::FailToDupException::what(void) const throw() { return ("CgiChannel: Fail to dup"); }

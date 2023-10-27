@@ -140,7 +140,7 @@ void HttpResponseBuilder::_setStatusCode(const HttpStatusCode &statusCode)
     this->_statusCode = statusCode;
 }
 void HttpResponseBuilder::_allocContentLength(ContentLength::e_content_length_header_type contentLengthHeaderType,
-                             int contentLength)
+                             size_t contentLength)
 {
     if (contentLengthHeaderType == ContentLength::e_content_length_header)
         this->_contentLength = (ContentLength(contentLength));

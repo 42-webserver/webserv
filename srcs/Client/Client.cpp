@@ -98,3 +98,12 @@ PatternType Client::getPatternType(const ft::shared_ptr<VirtualServerManager>& v
 bool Client::isFinalRequest(void){
     return this->requests.size() == 1;
 }
+
+// const Client* Client::getClientId(void) const{
+//     return this;
+// }
+
+
+// bool Client::operator==(const Client& other) const{
+//     return this->getClientId() == other.getClientId();
+// }

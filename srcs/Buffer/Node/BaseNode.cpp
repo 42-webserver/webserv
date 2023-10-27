@@ -132,6 +132,17 @@ size_t BaseNode::ioRead(int fd){
 	return n;
 }
 
+size_t BaseNode::ioReadToRemainigSize(int fd, size_t remainingSize) {
+	// static Mode _assertReadMode(false, true, true, true, true);
+
+	// ft::Assert::_assert(!_mode.checkMode(_assertReadMode), "Buffer Node Invariant is destroyed (read has created with assert)");
+	// _mode.setReadMode();
+	size_t readSize = _capacity - _size < remainingSize ? _capacity - _size : remainingSize;
+	size_t n = read(fd, _buffer.data() + _size, readSize);
+	_size += n > 0 ? n : 0;
+	return n;
+}
+
 static bool isSIGPIPE = false;
 static bool isHandlerSet = false;
 //because of name mangling

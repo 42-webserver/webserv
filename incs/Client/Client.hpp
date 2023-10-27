@@ -33,6 +33,7 @@ public:
     Client(
     e_client_event_queue_state eventQueueState = None);
     ~Client();
+    // bool operator==(const Client& other) const;
     void clientKill(void);
     void addRequest(ft::shared_ptr<HttpRequest> request);
     bool isRequestEmpty(void);
@@ -51,6 +52,7 @@ public:
     void clearResponseAndRequest(void);
     ft::shared_ptr<HttpResponse> getResponse(void);
     void setResponse(ft::shared_ptr<HttpResponse> response);
+    // const Client* getClientId(void) const;
 public:
     PatternType getPatternType(const ft::shared_ptr<VirtualServerManager>& vsm) const;
 };

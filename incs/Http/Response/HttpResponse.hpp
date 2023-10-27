@@ -21,6 +21,12 @@ typedef enum{
 	ReadingDone
 }	e_File_Sync;
 
+typedef enum{
+	e_cgi_not_sync,
+	e_cgi_reading,
+	e_cgi_reading_done,
+}	e_cgi_sync;
+
 
 typedef enum{
 	sending,
@@ -41,6 +47,8 @@ public:
 		friend class ErrorPageBuilder;
 		friend class ProcessorObject;
 		friend class WriteEventToClientHandler;
+		friend class ReadEventFromCgiHandler;
+
 		private:
 			AccessKey();
 			~AccessKey();
@@ -63,9 +71,20 @@ private:
 	e_File_Sync	_fileSync;
 	ft::shared_ptr<IoReadAndWriteBuffer> _BigSizeBuffer;
 	std::vector<char>	_NormalCaseBuffer;
+
+
+//Relation with Cgi Interface
+private:
+	e_cgi_sync	_cgiSync;
+public:
+	void setCgiSync(e_cgi_sync cgiSync);
+	e_cgi_sync getCgiSync();
+
+
 public:
 	void setFileSync(e_File_Sync fileSync, AccessKey key);
 	void setResponseSize(e_ResponseSize responseSize, AccessKey key);
+	e_ResponseSize getResponseSize();
 	e_File_Sync getFileSync(AccessKey key);
 	std::vector<char>& getNormalCaseBuffer(AccessKey key);
 	ft::shared_ptr<IoReadAndWriteBuffer> &getBigSizeBuffer(AccessKey key);

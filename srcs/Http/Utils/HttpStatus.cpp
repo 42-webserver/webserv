@@ -13,6 +13,16 @@ const char *HttpStatus::HttpStatusNotValidException::what() const throw(){
 	return this->_message;
 }
 
+HttpStatusCode HttpStatus::stringToHttpStatusCode(const std::string& httpResponseStr)
+{
+   std::stringstream ss(httpResponseStr);
+
+   ss << httpResponseStr;
+   int statusCode;
+   ss >> statusCode;
+   return (HttpStatusCode)statusCode;
+}
+
 int HttpStatus::getStatusCode(HttpStatusCode code)
 {
 	if (code == CONTINUE)

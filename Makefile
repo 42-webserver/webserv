@@ -49,6 +49,8 @@ SRCS =	main.cpp \
 		Event/ReadEvent/ReadEventHandler.cpp \
 		Event/ReadEvent/ReadEventFromCache.cpp \
 		Event/ReadEvent/ReadEventFromCacheHandler.cpp \
+		Event/ReadEvent/ReadEventFromCgi.cpp \
+		Event/ReadEvent/ReadEventFromCgiHandler.cpp \
 		Event/WriteEvent/WriteEvent.cpp \
 		Event/WriteEvent/WriteEventHandler.cpp \
 		Event/WriteEvent/WriteEventToClient.cpp \
@@ -74,6 +76,7 @@ SRCS =	main.cpp \
 		Http/Response/PutAndPostResponseBuilder.cpp \
 		Http/Response/RedirectionResponseBuilder.cpp \
 		Http/Response/ErrorPageBuilder.cpp \
+		Http/Response/CgiResponseBuilder.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/RouterUtils.cpp \

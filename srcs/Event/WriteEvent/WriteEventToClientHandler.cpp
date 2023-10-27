@@ -35,8 +35,16 @@ void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, Wri
 	PatternType patternType = client->getPatternType(vsm);
 	PatternProcessor patternProcessor(vsm, patternType, client);
 		
-	if (patternProcessor.querryCanSending() == SUCCESS)
+	try {
+		if (patternProcessor.querryCanSending() == SUCCESS)
 		_partialSending(client->getResponse(), client, curEvent);
+	}
+	catch (HttpException &e) {
+		_hanldeErrorPage(client, curEvent, e.getStatusCode());
+	}
+	catch (std::exception &e) {
+		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
+	}
 }
 
 void WriteEventToClientHandler::_handleEnd(WriteEventToClient *curEvent){
