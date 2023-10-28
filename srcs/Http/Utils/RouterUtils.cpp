@@ -352,7 +352,7 @@ Alias RouterUtils::_findAlias(ft::shared_ptr<VirtualServerManager> vsm, ft::shar
 }
 
 // Todo: this Should be changed -> 제가 고칠게여 
-std::string RouterUtils::findRedirectUri(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+ft::shared_ptr<ReturnElement> RouterUtils::findRedirectUri(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
@@ -364,13 +364,13 @@ std::string RouterUtils::findRedirectUri(ft::shared_ptr<VirtualServerManager> vs
     ft::shared_ptr<LocationTrieElement> locationTrieElement = ft::static_pointer_cast<LocationTrieElement>(locationTrie);
     ft::shared_ptr<LocationElement> locationElement = locationTrieElement->longestPrefixSearch(uri);
     if (locationElement.get() == NULL)
-        return "";
+        return ft::shared_ptr<ReturnElement>();
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::RETURN);
     if (it2 == locationElement->end())
-        return "";
+        return ft::shared_ptr<ReturnElement>();
     ft::shared_ptr<ConfigElement> returnConfElem = it2->second;
     ft::shared_ptr<ReturnElement> returnElem = ft::static_pointer_cast<ReturnElement>(returnConfElem);
-    return returnElem->getUri();
+    return returnElem;
 }
 
 std::string RouterUtils::_findServerPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){

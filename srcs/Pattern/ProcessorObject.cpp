@@ -9,3 +9,4 @@ ft::shared_ptr<Client> client){
     // client->getResponse()->allocateBuilder(builder);
     builder->buildResponseHeader(client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey()));
 }
+

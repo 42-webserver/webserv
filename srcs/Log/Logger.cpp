@@ -4,6 +4,7 @@
 # include <Buffer/Buffer/IoReadAndWriteBuffer.hpp>
 # include <Event/SpecialEvent/LogEvent.hpp>
 # include <cstdio>
+# include <Channel/FileStream.hpp>
 
 Logger::AccessKey::AccessKey(void) {}
 Logger::AccessKey::~AccessKey(void) {}
@@ -29,7 +30,7 @@ Logger::~Logger(void) {
 }
 
 void	Logger::_flush(void) {
-	FILE	*fp = fopen(DEFAULT_LOG_FILE_NAME.c_str(), "w+");
+	FILE	*fp = FileStream::fopen_with_dirs(DEFAULT_LOG_FILE_NAME.c_str(), "w+");
 	int fd = fileno(fp);
 	while (this->_buffer->size() > 0)
 		this->_buffer->ioWrite(fd);
