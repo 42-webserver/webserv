@@ -102,6 +102,22 @@ size_t BaseNode::insert(std::vector<char>::iterator start, std::vector<char>::it
 	return n;
 }
 
+size_t BaseNode::insertString(const std::string& str) {
+	// static Mode _assertInsertMode(true, true, false, true, true);
+	
+	// ft::Assert::_assert(!_mode.checkMode(_assertInsertMode), "Buffer Node Invariant is destroyed (insert is exists after erase)");
+	// _mode.setInsertMode();
+
+	size_t n = str.size();
+	
+	if (n == 0) return n;
+	if (n + _size <= _capacity)
+		n = _capacity - _size;
+	std::copy(str.begin(), str.begin()+n, _buffer.begin() + _size);
+	_size += n;
+	return n;
+}
+
 size_t BaseNode::insert(std::vector<char>::iterator start, size_t size) {
 	// static Mode _assertInsertMode(true, true, false, true, true);
 	

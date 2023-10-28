@@ -53,16 +53,16 @@ struct kevent	*EventQueue::getEventSetElementPtr() {
 int		EventQueue::pullEvents(void) {
 	int	ret;
 
-	Logger::getInstance().info("Enter Pull Event");
+	// Logger::getInstance().info("Enter Pull Event");
 	ret = kevent(this->_fd, NULL, 0, this->_ev_list, MAX_EVENTS, NULL);	
-	Logger::getInstance().info("Pull Event");
+	// Logger::getInstance().info("Pull Event");
 	if (ret == -1) {
 		throw (FailToGetEventException());
 	}
 	return (ret);
 }
 bool	EventQueue::pushEvent(Event *event) {
-	Logger::getInstance().info("Add Event");
+	// Logger::getInstance().info("Add Event");
 	try	{
 		event->onboardQueue();
 	} catch (const std::exception &e) {
@@ -72,7 +72,7 @@ bool	EventQueue::pushEvent(Event *event) {
 	return (true);
 }
 bool	EventQueue::popEvent(Event *event) {
-	Logger::getInstance().info("delete Event");
+	// Logger::getInstance().info("delete Event");
 	try	{
 		event->offboardQueue();
 	} catch (const std::exception &e) {

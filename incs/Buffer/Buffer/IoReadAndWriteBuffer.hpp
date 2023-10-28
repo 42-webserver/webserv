@@ -58,6 +58,7 @@ private:
 
 public:
     size_t ioReadToRemainigSize(int fd, size_t remainingSize);
+    size_t appendString(const std::string& str);
 public:
     size_t  ioSaveWrite(int fd, size_t start);
     size_t  copyHeadTo(std::vector<char>& dest);

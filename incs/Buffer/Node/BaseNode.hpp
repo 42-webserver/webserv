@@ -71,6 +71,7 @@ public:
 	size_t ioRead(int fd);
 	size_t ioWrite(int fd);
 	size_t ioReadToRemainigSize(int fd, size_t remainingSize);
+	size_t insertString(const std::string& str);
 	size_t ioSaveWrite(int fd, size_t start);
 	size_t erase(size_t n);
 	size_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);

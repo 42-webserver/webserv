@@ -55,6 +55,7 @@ protected:
     void _allocContentLength(ContentLength::e_content_length_header_type contentLengthHeaderType,
                              size_t contentLength);
     void _buildDefaultResponseHeader(std::vector<char> &buffer);
+    void _buildEssentialResponseHeader(std::vector<char> &buffer);
     ft::shared_ptr<Client> getClient(void);
     static  std::string _makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath);
 public:

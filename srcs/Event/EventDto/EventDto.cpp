@@ -1,6 +1,6 @@
 # include "../../../incs/Event/EventDto/EventDto.hpp"
 
-EventDto::EventDto(void): _channel(ft::shared_ptr<Channel>(NULL)), _virtualServerManager(ft::shared_ptr<VirtualServerManager>(NULL)) {}
+// EventDto::EventDto(void): _channel(ft::shared_ptr<Channel>(NULL)), _virtualServerManager(ft::shared_ptr<VirtualServerManager>(NULL)) {}
 
 EventDto::EventDto(ft::shared_ptr<Channel> channel, 
 ft::shared_ptr<VirtualServerManager> virtualServerManager,
@@ -24,6 +24,7 @@ ft::shared_ptr<Client> client,
 std::vector<char> *content): _channel(channel), _virtualServerManager(virtualServerManager), _client(client), _content(content) {}
 EventDto::~EventDto(void) {}
 
+EventDto::EventDto(void) {}
 EventDto::EventDto(pid_t pid,
 std::vector<char> *content): _content(content), _pid(pid) {}
 

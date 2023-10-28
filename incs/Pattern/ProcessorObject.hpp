@@ -22,6 +22,7 @@ class ProcessorObject {
     protected:
         void _commandBuildHeaderTo(ft::shared_ptr<HttpResponseBuilder> builder
         , ft::shared_ptr<Client> client);
+
 };
 
 #endif 

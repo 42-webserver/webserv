@@ -9,7 +9,7 @@ Socket::Socket(int fd): Channel(fd), _enable(1), _addr(sockaddr_in()) { }
 Socket::Socket(int fd, std::string clientIp): Channel(fd), _enable(1), _addr(sockaddr_in()), _clientIp(clientIp) { }
 Socket::Socket(const Socket &ref): Channel(),_enable(ref._enable), _addr(ref._addr) {}
 Socket::~Socket(void) {
-	Logger::getInstance().info("Socket is destroyed");
+	// Logger::getInstance().info("Socket is destroyed");
 	this->destroyChannelFd();
 }
 Socket	&Socket::operator=(const Socket &rhs) {
