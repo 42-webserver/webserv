@@ -16,6 +16,7 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     try {
         //basic Handle All RequireMent
         std::string indexingPath = RouterUtils::findPriorityPathWithIndex(virtualServerManager, client->getRequest());
+        std::cerr << "indexingPath : " << indexingPath << std::endl;
         _commandBuildHeaderTo(
             ft::shared_ptr<HttpResponseBuilder>(new GetResponseBuilder(client, virtualServerManager, indexingPath)),
             client
@@ -25,9 +26,11 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
         type = fileManager.requstFileContent(indexingPath, client->getResponse());
     }
     catch (DirectoryException& e) {
+        std::cerr << e.what() << std::endl;
         return SUCCESS;
     }
     catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
         //log error
         throw ;
     }

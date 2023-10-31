@@ -80,8 +80,9 @@ PatternType Client::getPatternType(const ft::shared_ptr<VirtualServerManager>& v
     vsm->getDefaultVirtualServer();
     std::string method = request->getMethod();
 
-    if (!RouterUtils::isMethodAllowed(vsm, request))
+    if (!RouterUtils::isMethodAllowed(vsm, request)){
         throw MethodNotAllowedException();
+    }
     if (RouterUtils::isRedirection(vsm, request))
         return REDIRECTION;
     if (RouterUtils::isCgiRequest(vsm, request))

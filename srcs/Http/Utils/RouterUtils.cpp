@@ -47,9 +47,12 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
         ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
 
+    std::cerr << "here? : " << uri << std::endl;
     std::string root = _findRoot(vsm, req);
+    std::cerr << "root : " << root << std::endl;
     Alias alias = _findAlias(vsm, req);
     std::string path = _makePath(root, alias, uri);
+    std::cerr << "path : " << path << std::endl;
     if (path[path.size() - 1] == '/')
         return _findIndex(vsm, req, path);
     else
@@ -165,14 +168,14 @@ bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::
     //get Default
     if (locationElement.get() == NULL)
         return method.compare(HTTP_METHOD::GET) == 0;
-
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::ALLOW_METHOD);
     if (it == locationElement->end())
         return method.compare(HTTP_METHOD::GET) == 0;
     ft::shared_ptr<ConfigElement> allowMethodsConfElem = it->second;
     ft::shared_ptr<AllowMethodElement> allowMethodsElem = ft::static_pointer_cast<AllowMethodElement>(allowMethodsConfElem);
     
-    if (allowMethodsElem->getFlag() == M_GET && method.compare(HTTP_METHOD::GET) == 0)
+    //fix daegulee -> allowMethod에 get이 안적혀있더라도 있는것 처럼 처리    
+    if (method.compare(HTTP_METHOD::GET) == 0)
         return true;
     if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
         return true;
@@ -210,8 +213,6 @@ std::string RouterUtils::_makePath(const std::string &root, const Alias &alias, 
     std::string path;
     if(root.empty() && alias.empty())
         path = uri;
-    else if(!root.empty())
-        path = root + "/" + uri;
     else if(!alias.empty()){
         std::size_t locationPos = uri.find(alias.getLocation());
         if (locationPos != std::string::npos) {
@@ -222,6 +223,8 @@ std::string RouterUtils::_makePath(const std::string &root, const Alias &alias, 
            throw std::runtime_error("Alias Logic Error");
         }
     }
+    else if(!root.empty())
+        path = root + uri;
     return path;
 }
 

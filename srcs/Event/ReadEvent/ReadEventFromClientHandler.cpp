@@ -18,10 +18,9 @@ ReadEventFromClientHandler::e_client_connection_state	ReadEventFromClientHandler
 //(a b error c d ) -> ( a b error)-> response a, response b, response error
 void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 	HttpRequestParser &parser = *(this->getHttpRequestParser());
-		
-	while (parser.parseRequest(event->getVirtualServerManger()) != FINISH) {
+
+	while (parser.parseRequest(event->getVirtualServerManger()) == FINISH) {
 		event->addRequest(parser.getHttpRequest());
-		// Logger::getInstance().info("Parsing");
 	}
 // parser.parseRequest(event->getVirtualServerManger()) == FINISH
 	//To do Error 잡아서 클라이언트에게 errorHttpResponse를 보내줘야함
@@ -61,6 +60,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	IoOnlyReadBuffer& buffer = IoOnlyReadBuffer::getInstance();
 	size_t n = 0;
 	ReadEventFromClient *readEventClient = static_cast<ReadEventFromClient*>(&event);
+
 	// RequestParseState state;
 	//check Moudle
 	// TotalReadBuffer -> assign-> copy
@@ -71,7 +71,10 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	if (readEventClient->canRead() == false)
 		return ;
 	n = buffer.ioRead(readEventClient->getFd());
+	std::vector<char> readBuffer(buffer.begin(), buffer.end());
+    for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
+		std::cerr << *it;	
+
 	_process(_processMatcher(n), readEventClient);
-	buffer.recycleInstance();
 }
 

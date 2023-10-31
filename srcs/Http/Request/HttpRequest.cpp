@@ -176,10 +176,10 @@ int HttpRequest::getContentLength()
 {
 	std::multimap<std::string, std::string>::iterator it;
 
-	//Todo: hyunkyle, -> error handling
+	//fix : daegulee
 	it = this->_headers.find("Content-Length");
 	if (it == this->_headers.end())
-		throw BadRequestException(BAD_REQUEST);
+		return noContentLength;
 	return std::stoi(it->second);
 }
 

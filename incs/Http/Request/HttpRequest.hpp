@@ -22,6 +22,7 @@ typedef enum {
 	WritingDone
 }	e_file_upload_sync;
 
+static const int noContentLength = -1;
 
 class HttpRequest
 {

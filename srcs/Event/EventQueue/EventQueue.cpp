@@ -12,7 +12,7 @@
 EventQueue	*EventQueue::_instance = NULL;
 
 EventQueue::EventQueue(void) {
-	std::cerr << "EventQueue::EventQueue" << std::endl;
+	// std::cerr << "EventQueue::EventQueue" << std::endl;
 	if ((this->_fd = kqueue()) == -1) {
 		throw (FailToCreateException());
 	}

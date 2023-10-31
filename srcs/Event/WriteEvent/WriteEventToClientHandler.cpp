@@ -92,6 +92,7 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 		PatternType patternType = client->getPatternType(vsm);
 		PatternProcessor patternProcessor(vsm, patternType, client);
 
+		std::cerr << "patternType: " << patternType << std::endl;
 		if (patternType == CGI_READ)
 			patternProcessor.injectChannel(curEvent->getChannel());
 		if (patternProcessor.process() == SUCCESS)
@@ -110,6 +111,8 @@ void WriteEventToClientHandler::handleEvent(Event &event){
 	ft::shared_ptr<Client> client = curEvent->getClient();
 	e_handle_status handleStatus = _queryHandleStatus(client);
 
+	// std::cerr << "WriteEventToClientHandler::handleEvent" << std::endl;
+	// std::cerr << "handleStatus: " << handleStatus << std::endl;
 	switch (handleStatus)
 	{
 	case e_handle_remain:
