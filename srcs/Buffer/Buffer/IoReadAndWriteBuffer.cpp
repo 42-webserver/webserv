@@ -28,10 +28,12 @@ size_t IoReadAndWriteBuffer::_initSize() {
 
 
 size_t IoReadAndWriteBuffer::_AppendSize() {
-   return ((_lst.size() == 1) ? _lst.front()->size() : 
-    NormalNode::_sizeNormal +
-    ((_lst.size() == 2) ? _lst.back()->size() : 
-    (_lst.size() - 2) * LargeNode::_sizeLarge + _lst.back()->size()));
+   size_t size = 0;
+
+    for (std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin(); it != _lst.end(); ++it) {
+        size += (*it)->size();
+    }
+    return size;
 }
 
 size_t IoReadAndWriteBuffer::_EraseSize() {
@@ -125,13 +127,17 @@ size_t IoReadAndWriteBuffer::ioReadToRemainigSize(int fd, size_t remainingSize) 
 size_t IoReadAndWriteBuffer::appendString(const std::string& str) {
     size_t size = 0;
     size_t appendSize = str.size();
+
+    std::cerr << "appendSize : " << appendSize << std::endl;
+    std::string::const_iterator current = str.begin();
     try {
         if (_lst.empty()) _allocate();
 
-        while (size == appendSize) {
-            size = _lst.back()->insertString(str);
+        while (appendSize != 0) {
+            size = _lst.back()->insertString(current, appendSize);
             if (_lst.back()->isFull()) _allocate();
             appendSize -= size;
+            current += size;
         }
     }
     catch (const std::exception& e) {

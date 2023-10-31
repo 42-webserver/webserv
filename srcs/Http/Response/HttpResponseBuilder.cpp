@@ -70,7 +70,7 @@ const char *DirectoryException::what() const throw() {
 std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath){
     std::string uri = request->getUri();
 
-    if (indexingPath[indexingPath.size() - 1] != '/')
+    if (indexingPath[indexingPath.size() - 1] == '/')
         throw DirectoryException();
         
     std::string extension = uri.substr(uri.find_last_of(".") + 1);

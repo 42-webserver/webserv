@@ -99,9 +99,11 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 			_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (HttpException &e) {
+		std::cerr << "WriteEventToClientHandler::_handleNew: " << e.what() << std::endl;
 		_hanldeErrorPage(client, curEvent, e.getStatusCode());
 	}
 	catch (std::exception &e) {
+		std::cerr << "WriteEventToClientHandler::_handleNew: " << e.what() << std::endl;
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
 }

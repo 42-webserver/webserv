@@ -173,15 +173,18 @@ bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::
         return method.compare(HTTP_METHOD::GET) == 0;
     ft::shared_ptr<ConfigElement> allowMethodsConfElem = it->second;
     ft::shared_ptr<AllowMethodElement> allowMethodsElem = ft::static_pointer_cast<AllowMethodElement>(allowMethodsConfElem);
-    
-    //fix daegulee -> allowMethod에 get이 안적혀있더라도 있는것 처럼 처리    
-    if (method.compare(HTTP_METHOD::GET) == 0)
-        return true;
-    if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
-        return true;
-    if (allowMethodsElem->getFlag() == M_PUT && method.compare(HTTP_METHOD::PUT) == 0)
-        return true;
-    if (allowMethodsElem->getFlag() == M_DELETE && method.compare(HTTP_METHOD::DELETE) == 0)
+    if (allowMethodsElem.get() == NULL)
+        return method.compare(HTTP_METHOD::GET) == 0;
+        // std::cerr << "allowMethodsElem->getFlag() : " << allowMethodsElem->getFlag() << std::endl;
+    // if (allowMethodsElem->getFlag() == M_GET && method.compare(HTTP_METHOD::GET) == 0)
+    //     return true;
+    // if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
+    //     return true;
+    // if (allowMethodsElem->getFlag() == M_PUT && method.compare(HTTP_METHOD::PUT) == 0)
+    //     return true;
+    // if (allowMethodsElem->getFlag() == M_DELETE && method.compare(HTTP_METHOD::DELETE) == 0)
+    //     return true;
+    if (allowMethodsElem->isTurnOnMethod(method))
         return true;
     return false;
 }
@@ -193,6 +196,7 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     // /안끝나는데  디렉토리면 redirect
     if (uri[uri.size() - 1] != '/') {
         std::string fullPath = findPath(vsm, req);
+        std::cerr << "fullPath : " << fullPath << std::endl;
         if (FileManager::isDirectory(fullPath))
             return true;
     }
@@ -223,8 +227,9 @@ std::string RouterUtils::_makePath(const std::string &root, const Alias &alias, 
            throw std::runtime_error("Alias Logic Error");
         }
     }
-    else if(!root.empty())
+    else if(!root.empty()){
         path = root + uri;
+    }
     return path;
 }
 

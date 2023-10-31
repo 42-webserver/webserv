@@ -12,8 +12,6 @@ const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualS
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
 	this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
 
-	//fix daegulee
-	readBuffer.recycleInstance();
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)
@@ -65,13 +63,13 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
     std::vector<std::string> headers;
     std::vector<char>::iterator start = _buffer.begin();
     std::vector<char>::iterator end = _buffer.end();
-
+	std::string line;
     while (start < end) {
         std::vector<char>::iterator find = std::search(start, end, _crlfPattern.begin(), _crlfPattern.end());
         if (find == end) {
             break;
         }
-        std::string line(start, find);
+        line = std::string(start, find);
         if (!line.empty()) {
             headers.push_back(line);
         }
@@ -87,7 +85,8 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
     _buffer.erase(_buffer.begin(), start);
 
     if (start == end) {
-        changeStateToBody(vsm);
+		if (line.empty())
+        	changeStateToBody(vsm);
     } else {
         this->_state = HEADERS;
     }

@@ -57,6 +57,15 @@ bool	AllowMethodElement::_parse(std::ifstream &infile) throw(std::exception) {
 
 int	AllowMethodElement::getFlag(void) const { return (this->_flag); }
 
+//fix : daegulee
+bool AllowMethodElement::isTurnOnMethod(const Method &method) {
+	MethodMap::const_iterator	it;
+
+	if ((it = AllowMethodElement::_method_map.find(method)) == AllowMethodElement::_method_map.end()) {
+		return (false);
+	}
+	return (this->_flag & it->second);
+}
 const char	*AllowMethodElement::FailToParseException::what(void) const throw() { return ("AllowMethodElement: Fail to Parse"); }
 const char	*AllowMethodElement::InvalidSyntaxException::what(void) const throw() { return ("AllowMethodElement: Invalid Syntax"); }
 const char	*AllowMethodElement::InvalidArgumentException::what(void) const throw() { return ("AllowMethodElement: Invalid Argument"); }

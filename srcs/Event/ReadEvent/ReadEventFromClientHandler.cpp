@@ -20,6 +20,8 @@ void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 	HttpRequestParser &parser = *(this->getHttpRequestParser());
 
 	while (parser.parseRequest(event->getVirtualServerManger()) == FINISH) {
+		IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+		readBuffer.recycleInstance();
 		event->addRequest(parser.getHttpRequest());
 	}
 // parser.parseRequest(event->getVirtualServerManger()) == FINISH

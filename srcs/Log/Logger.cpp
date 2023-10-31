@@ -15,7 +15,7 @@ static e_log_save g_log_save = e_log_cycle;
 	g_log_save = e_log_immidiate;
 #endif
 
-Logger::Logger(void) { 
+Logger::Logger(void) : _buffer(new IoReadAndWriteBuffer()) {
 }
 
 Logger	&Logger::getInstance(void) {
@@ -118,7 +118,11 @@ void	Logger::log( const std::string& message) {
 	}
 
 	this->_formatted_message = formatMessage(message);
+	std::cerr << "buffer size : " << this->_buffer->size() << std::endl;
+	std::cerr << "formatted_message : " << this->_formatted_message << std::endl;
+	std::cerr << "formatted_message size : " << this->_formatted_message.size() << std::endl;
 	this->_buffer->appendString(this->_formatted_message);
+	std::cerr << "changed buffer size : " << this->_buffer->size() << std::endl;
 	if (g_log_save == e_log_immidiate) {
 		_flush();
 	}
@@ -140,7 +144,7 @@ std::string	Logger::formatMessage(const std::string& message) {
 								<< std::setfill('0') << std::setw(2) << localTime->tm_hour << ":"
 								<< std::setfill('0') << std::setw(2) << localTime->tm_min << ":"
 								<< std::setfill('0') << std::setw(2) << localTime->tm_sec << "] "
-								 << message << '\n';
+								 << message;
 
 	return (formatted_message_stream.str());
 }

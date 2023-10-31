@@ -39,7 +39,8 @@ class AllowMethodElement: public ConfigElement {
 	
 	public:
 		int	getFlag(void) const;
-
+		//fix : daegulee
+		bool isTurnOnMethod(const Method &method);
 	public:
 		class FailToParseException: public std::exception {
 			public:
