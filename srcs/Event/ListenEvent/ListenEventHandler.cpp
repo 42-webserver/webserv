@@ -21,6 +21,8 @@ std::pair<int, std::string>		ListenEventHandler::connectClient(int server_fd) co
 }
 
 void	ListenEventHandler::handleEvent(Event &event) {
+	std::cerr << "ListenEventHandler::handleEvent" << std::endl;
+	
 	Logger		&log = Logger::getInstance();
 	std::pair<int, std::string> client;
 

@@ -118,11 +118,7 @@ void	Logger::log( const std::string& message) {
 	}
 
 	this->_formatted_message = formatMessage(message);
-	std::cerr << "buffer size : " << this->_buffer->size() << std::endl;
-	std::cerr << "formatted_message : " << this->_formatted_message << std::endl;
-	std::cerr << "formatted_message size : " << this->_formatted_message.size() << std::endl;
 	this->_buffer->appendString(this->_formatted_message);
-	std::cerr << "changed buffer size : " << this->_buffer->size() << std::endl;
 	if (g_log_save == e_log_immidiate) {
 		_flush();
 	}

@@ -41,7 +41,9 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 
 		for (int i=0; i<event_length; i++) {
 			event_data = EventQueue::getInstance().getEventData(i);
+			std::cerr << "event_data->callEventHandler()" << std::endl;
 			event_data->callEventHandler();
+			std::cerr << "event_data->callEventHandler() end" << std::endl;
 		}
 	}
 	return (true);

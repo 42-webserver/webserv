@@ -12,6 +12,8 @@ void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleE
 void	ReadEventFromClient::onboardQueue() {
 	int			fd = this->getFd();
 	Event		*event = this;
+	
+		std::cerr << "ReadEventFromClient::onboardQueue()" << std::endl;
 
 	try {
 		this->getChannel()->setNonBlocking();
@@ -27,10 +29,12 @@ void	ReadEventFromClient::onboardQueue() {
 }
 void	ReadEventFromClient::offboardQueue() {
 
+	std::cerr << "ReadEventFromClient::offboardQueue()" << std::endl;
 	try {
+		this->_client->removeClientEventQueueState(Read);
 		this->_offboardRead(this, this->getFd());
 		//To do: check this
-		this->_client->removeClientEventQueueState(Read);
+		std::cerr << "ReadEventFromClient::offboardQueue() end" << std::endl;
 	} catch (const std::exception &e) {
 		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (KqueueError());

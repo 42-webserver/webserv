@@ -150,7 +150,8 @@ void HttpResponseBuilder::_allocContentLength(ContentLength::e_content_length_he
 
 void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
 {
-    std::ostringstream oss;
+    // std::ostringstream oss;
+    std::string header;
     // if (this->_statusCode.has_value() == false)
     //     throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: statusCode is not set");
     
@@ -174,37 +175,39 @@ void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
     if (this->_contentLength.has_value() == false)
         throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: contentLength is not set");
 
-    oss << this->_contentLength->getContentLengthHeader() << "\r\n";
-
-    std::string header = oss.str();
+    // oss << this->_contentLength->getContentLengthHeader() << "\r\n";
+    header += this->_contentLength->getContentLengthHeader() + "\r\n";
+    // std::string header = oss.str();
     _buildEssentialResponseHeader(buffer);
     buffer.insert(buffer.end(), header.begin(), header.end());
 }
 
 void HttpResponseBuilder::_buildEssentialResponseHeader(std::vector<char> &buffer)
 {
-    std::ostringstream oss;
+    std::string header;
     if (this->_statusCode.has_value() == false)
         throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: statusCode is not set");
     
-    oss << "HTTP/1.1 " << this->_statusCode.value() << " " << 
-    HttpStatus::getReasonPhrase(this->_statusCode.value()) << "\r\n";
+    // oss << "HTTP/1.1 " << this->_statusCode.value() << " " << 
+    // HttpStatus::getReasonPhrase(this->_statusCode.value()) << "\r\n";
 
-    oss << this->_serverHeader << "\r\n";
-
-    oss << this->_dateHeader << "\r\n";
-
+    header += "HTTP/1.1 " + std::to_string(this->_statusCode.value()) + " " +
+    HttpStatus::getReasonPhrase(this->_statusCode.value()) + "\r\n";
+    // oss << this->_serverHeader << "\r\n";
+    header += this->_serverHeader + "\r\n";
+    // oss << this->_dateHeader << "\r\n";
+    header += this->_dateHeader + "\r\n";
     if ((this->_client->isClientDie() == true && this->_client->isFinalRequest())
     || this->_client->getRequest()->getHeader("Connection") == "close")
         this->_connectionHeader = "Connection: close";
     else
         this->_connectionHeader = "Connection: keep-alive";
-    oss << this->_connectionHeader << "\r\n";
-
+    // oss << this->_connectionHeader << "\r\n";
+    header += this->_connectionHeader + "\r\n";
     if (this->_client->isClientDie() == false)
-        oss << this->_KeepAliveHeader << "\r\n";
-
-    std::string header = oss.str();
+        // oss << this->_KeepAliveHeader << "\r\n";
+        header += this->_KeepAliveHeader + "\r\n";
+    // std::string header = oss.str();
     buffer.insert(buffer.end(), header.begin(), header.end());
 }
 ft::shared_ptr<Client> HttpResponseBuilder::getClient(void)

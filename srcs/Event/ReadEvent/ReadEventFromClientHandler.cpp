@@ -48,6 +48,7 @@ void ReadEventFromClientHandler::_processNonBlock(ReadEventFromClient *event) {
 }
 void ReadEventFromClientHandler::_processClosed(ReadEventFromClient *event) {
 	(void)event;
+	std::cerr << "ReadEventFromClientHandler::_processClosed" << std::endl;
 	event->offboardQueue();
 }
 
@@ -63,6 +64,7 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	size_t n = 0;
 	ReadEventFromClient *readEventClient = static_cast<ReadEventFromClient*>(&event);
 
+	std::cerr << "ReadEventFromClientHandler::handleEvent" << std::endl;
 	// RequestParseState state;
 	//check Moudle
 	// TotalReadBuffer -> assign-> copy
@@ -73,9 +75,9 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	if (readEventClient->canRead() == false)
 		return ;
 	n = buffer.ioRead(readEventClient->getFd());
-	std::vector<char> readBuffer(buffer.begin(), buffer.end());
-    for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
-		std::cerr << *it;	
+	// std::vector<char> readBuffer(buffer.begin(), buffer.end());
+    // for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
+	// 	std::cerr << *it;	
 
 	_process(_processMatcher(n), readEventClient);
 }
