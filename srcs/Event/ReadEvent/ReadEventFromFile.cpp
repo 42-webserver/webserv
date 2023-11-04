@@ -35,6 +35,7 @@ void ReadEventFromFile::onboardQueue(void) {
 
 void ReadEventFromFile::offboardQueue(void) {
     std::cerr << "ReadEventFromFile::offboardQueue()" << std::endl;
+    // exit(1);
     try {
         this->_offboardRead(this, this->getFd());
     }

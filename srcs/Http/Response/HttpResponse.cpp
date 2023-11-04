@@ -8,17 +8,17 @@ HttpResponse::AccessKey::~AccessKey()
 {
 }
 
-void HttpResponse::setFileSync(e_File_Sync fileSync, AccessKey key)
-{
-	(void)key;
-	this->_fileSync = fileSync;
-}
+// void HttpResponse::setFileSync(e_File_Sync fileSync, AccessKey key)
+// {
+// 	(void)key;
+// 	this->_fileSync = fileSync;
+// }
 
-e_File_Sync HttpResponse::getFileSync(AccessKey key)
-{
-	(void)key;
-	return this->_fileSync;
-}
+// e_File_Sync HttpResponse::getFileSync(AccessKey key)
+// {
+// 	(void)key;
+// 	return this->_fileSync;
+// }
 
 void HttpResponse::setResponseSize(e_ResponseSize responseSize , AccessKey key)
 {
@@ -47,7 +47,7 @@ void HttpResponse::allocateBigSizeBuffer(AccessKey key)
 	(void)key;
 	this->_BigSizeBuffer = ft::shared_ptr<IoReadAndWriteBuffer>(new IoReadAndWriteBuffer());
 }
-HttpResponse::HttpResponse() : _previousWriteSize(0), _responseSize(NotSet), _fileSync(NotSetting)
+HttpResponse::HttpResponse() : _previousWriteSize(0), _responseSize(NotSet)
 {
 	this->_NormalCaseBuffer.reserve(e_normal_buffer_size);
 }

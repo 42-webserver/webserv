@@ -133,18 +133,19 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
     struct stat fileStat;
     e_file_info fileInfo = getFileInfo(uri, fileStat);
 
-    e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
-    // can't here, buildHeader check this
-    if (fileSync == NotSetting) {
+    //To do: this -> must be cacheSync
+    // e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
+    // // can't here, buildHeader check this
+    // if (fileSync == NotSetting) {
 
-        if (fileInfo == NotExistFile) {
-            throw NotFoundException();
-            return (FileRequestFail);
-        }
-        if (fileInfo == ExistDirectory) {
-            throw std::runtime_error("FileManager::requstFileContent() : ExistDirectory, Logically Not Possible");
-        }
+    if (fileInfo == NotExistFile) {
+        throw NotFoundException();
+        return (FileRequestFail);
     }
+    if (fileInfo == ExistDirectory) {
+        throw std::runtime_error("FileManager::requstFileContent() : ExistDirectory, Logically Not Possible");
+        }
+    // }
     if (isInCashSize(fileStat)) {
         Cache & cache = Cache::getInstance();
 
@@ -158,11 +159,11 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
         }
         else {
             std::cerr << "FileManager::requstFileContent() : cache miss" << std::endl;
-            if (fileSync == NotSetting) {
+            e_cache_node_status cacheStatus = cache.queryCacheStatus(uri);
+            if (cacheStatus == e_not_set) {
                 std::cerr << "FileManager::requstFileContent() : fileSync == NotSetting !!!!!!!" << std::endl;
                 // cache에 없지만 cache사이즈 인건데 파일이 존재하는 경우-> 등록하고 기다려야됨
                 cache.initCacheContent(uri);
-                response->setFileSync(Reading, HttpResponse::AccessKey());
             }
             //else 는 파일이 등록 되고 있는중이라 hit안된거임으로 파일을 등록할 필요 없음
             return (FileRequestShouldWait);
@@ -172,15 +173,15 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
         FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
         e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
 
-        if (fileSync == ReadingDone) {
-            return (FileRequestSuccess);
-        }
+        // if (fileSync == ReadingDone) {
+        //     return (FileRequestSuccess);
+        // }
         if (fileProcessingType == ReadingProcessing || fileProcessingType == NoneProcessing) {
-            if (fileSync == NotSetting) {
+            // if (fileSync == NotSetting) {
                 response->setResponseSize(BigSize, HttpResponse::AccessKey());
-                response->setFileSync(Reading, HttpResponse::AccessKey());
+                // response->setFileSync(Reading, HttpResponse::AccessKey());
                 _readFile(uri, response);
-            }
+            // }
             //else 는 파일이 이 읽히고 있는중이고 그리고 따로 readFile에서 자동으로 ReadingProcessing으로 바꿀거라 ㄱㅊ
             return (FileRequestShouldWait);
         }

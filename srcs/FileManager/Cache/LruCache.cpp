@@ -139,6 +139,13 @@ bool LruCache::hit(const std::string &uri) {
 	return (this->_cache.find(uri) != this->_cache.end())
 	&& (this->_cache[uri]->second.getStatus() == e_done);
 }
+
+e_cache_node_status LruCache::queryCacheStatus(const std::string &uri) {
+	if (this->_cache.find(uri) == this->_cache.end()) {
+		return (e_not_set);
+	}
+	return (this->_cache[uri]->second.getStatus());
+}
 size_t				LruCache::getCacheContentSize(const std::string &uri){
 	if (this->_cache.find(uri) == this->_cache.end()) {
 		return (0);

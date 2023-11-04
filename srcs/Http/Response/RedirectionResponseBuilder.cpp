@@ -14,6 +14,7 @@ void RedirectionResponseBuilder::buildResponseHeader(std::vector<char> &buffer) 
     if (uri[uri.size() - 1] != '/') {
         _setStatusCode(MOVED_PERMANENTLY);
         locationHeader = "Location: " + this->getClient()->getRequest()->getUri() + "/";
+        std::cerr << "RedirectionResponseBuilder::buildResponseHeader: " << locationHeader << std::endl;
     }
     else {
         ft::shared_ptr<ReturnElement> returnElement = RouterUtils::findRedirectUri(this->_vsm, this->getClient()->getRequest());

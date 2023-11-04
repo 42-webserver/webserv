@@ -16,11 +16,11 @@ typedef enum{
 	BigSize
 }	e_ResponseSize;
 
-typedef enum{
-	NotSetting,
-	Reading,
-	ReadingDone
-}	e_File_Sync;
+// typedef enum{
+// 	NotSetting,
+// 	Reading,
+// 	ReadingDone
+// }	e_File_Sync;
 
 typedef enum{
 	e_cgi_not_sync,
@@ -69,7 +69,7 @@ private:
 //Relation with file Interface
 private:
 	e_ResponseSize		_responseSize;
-	e_File_Sync	_fileSync;
+	// e_File_Sync	_fileSync;
 	ft::shared_ptr<IoReadAndWriteBuffer> _BigSizeBuffer;
 	std::vector<char>	_NormalCaseBuffer;
 
@@ -83,10 +83,10 @@ public:
 
 
 public:
-	void setFileSync(e_File_Sync fileSync, AccessKey key);
+	// void setFileSync(e_File_Sync fileSync, AccessKey key);
 	void setResponseSize(e_ResponseSize responseSize, AccessKey key);
 	e_ResponseSize getResponseSize();
-	e_File_Sync getFileSync(AccessKey key);
+	// e_File_Sync getFileSync(AccessKey key);
 	std::vector<char>& getNormalCaseBuffer(AccessKey key);
 	ft::shared_ptr<IoReadAndWriteBuffer> &getBigSizeBuffer(AccessKey key);
 	void allocateBigSizeBuffer(AccessKey key);

@@ -53,8 +53,9 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
     Alias alias = _findAlias(vsm, req);
     std::string path = _makePath(root, alias, uri);
     std::cerr << "path : " << path << std::endl;
-    if (path[path.size() - 1] == '/')
+    if (path[path.size() - 1] == '/') {
         return _findIndex(vsm, req, path);
+    }
     else
         return path;
 }
@@ -225,14 +226,16 @@ std::string RouterUtils::_makePath(const std::string &root, const Alias &alias, 
     if(root.empty() && alias.empty())
         path = uri;
     else if(!alias.empty()){
-        std::size_t locationPos = uri.find(alias.getLocation());
+        const std::string aliasLocation = alias.getLocation();
+        std::size_t locationPos = uri.find(aliasLocation);
         if (locationPos != std::string::npos) {
-            path = alias.getAlias() + uri.substr(locationPos + alias.getLocation().size());
+            path = alias.getAlias() + uri.substr(locationPos + aliasLocation.size());
         }
         else {
            //logerrr
            throw std::runtime_error("Alias Logic Error");
         }
+        std::cerr << path << std::endl;
     }
     else if(!root.empty()){
         path = root + uri;
@@ -260,6 +263,7 @@ ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm){
     std::vector<std::string> indexList = indexElem->getUris();
     for (std::vector<std::string>::iterator it = indexList.begin(); it != indexList.end(); it++){
         std::string indexPath = path + *it;
+        std::cerr << "find indexPath : " << indexPath << std::endl;
         if (FileManager::isFileExists(indexPath))
             return indexPath;
     }
@@ -295,6 +299,7 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     ft::shared_ptr<LocationElement> locationElement = ft::shared_ptr<LocationElement>();
     if (locationTrieElement.get() != NULL)
+        std::cerr << "locationTrieElement.get() != NULL" << std::endl;
         locationElement = _findLocation(locationTrieElement, req->getUri());
 
     try { 

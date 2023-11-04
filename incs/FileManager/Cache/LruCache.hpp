@@ -15,7 +15,8 @@
 typedef enum{
 	e_reading,
 	e_writing,
-	e_done
+	e_done,
+	e_not_set
 }	e_cache_node_status;
 
 
@@ -89,6 +90,7 @@ class LruCache {
 		void _writeToCache(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 	public:
 		bool hit(const std::string &uri);
+		e_cache_node_status queryCacheStatus(const std::string &uri);
 		const std::vector<char>	&get(const std::string &uri);
 		// std::vector<char>::iterator	getIter(const std::string &uri);
 		 size_t				getCacheContentSize(const std::string &uri);
