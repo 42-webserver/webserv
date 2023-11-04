@@ -83,6 +83,7 @@ SRCS =	main.cpp \
 		Http/Response/RedirectionResponseBuilder.cpp \
 		Http/Response/ErrorPageBuilder.cpp \
 		Http/Response/CgiResponseBuilder.cpp \
+		Http/Response/DirResponseBuilder.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/RouterUtils.cpp \

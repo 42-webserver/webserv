@@ -195,6 +195,7 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
 
     // /안끝나는데  디렉토리면 redirect 
     // Todo : 일단 뗌질로 해놓음
+    std::cerr << "is in uri " << uri << std::endl;
     if (uri[uri.size() - 1] != '/') {
         std::cerr << "is in uri " << uri << std::endl;
         req->setUri(uri + "/");
@@ -304,7 +305,17 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
             return _findIndexInServer(vsm, req);
     }
     catch (NotFoundException &e){
-        throw ;
+        if (locationElement.get() != NULL){
+            LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::AUTOINDEX);
+            if (it2 != locationElement->end()){
+                ft::shared_ptr<ConfigElement> autoIndexConfElem = it2->second;
+                ft::shared_ptr<AutoIndexElement> autoIndexElem = ft::static_pointer_cast<AutoIndexElement>(autoIndexConfElem);
+                if (autoIndexElem->getFlag())
+                    throw DirectoryException();
+            }
+        }
+        else 
+            throw ;
     }
     catch (std::exception &e){
         std::runtime_error("Index Logic Error");

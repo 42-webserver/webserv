@@ -1,8 +1,9 @@
 #include <Http/Response/HttpResponseBuilder.hpp>
 #include <Http/Response/HttpResponse.hpp>
 #include <Client/Client.hpp>
+#include <Http/Utils/RouterUtils.hpp>
 
-ContentLength::ContentLength(int contentLength) : _transferEncodingHeader(""), _contentLength(contentLength), _contentLengthHeaderType(e_content_length_header)
+ContentLength::ContentLength(ssize_t contentLength) : _transferEncodingHeader(""), _contentLength(contentLength), _contentLengthHeaderType(e_content_length_header)
 {
 }
 ContentLength::ContentLength(void) : _transferEncodingHeader("Transfer-Encoding: chunked"), _contentLength(-1), _contentLengthHeaderType(e_chunked_header)
@@ -18,6 +19,11 @@ std::string ContentLength::getContentLengthHeader(void)
     }
     else
         return (this->_transferEncodingHeader);
+}
+
+ssize_t ContentLength::getContentLength(void)
+{
+    return (this->_contentLength);
 }
 
 DirectoryException::DirectoryException() {
@@ -67,13 +73,13 @@ const char *DirectoryException::what() const throw() {
 //         return "Content-Type: application/octet-stream";
 //     }
 // }
-std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath){
-    std::string uri = request->getUri();
-
+std::string HttpResponseBuilder::_makeContentTypeHeader(std::string indexingPath){
+    
+    std::cerr << "HttpResponseBuilder::_makeContentTypeHeader: indexingPath = " << indexingPath << std::endl;
     if (indexingPath[indexingPath.size() - 1] == '/')
         throw DirectoryException();
         
-    std::string extension = uri.substr(uri.find_last_of(".") + 1);
+    std::string extension = indexingPath.substr(indexingPath.find_last_of(".") + 1);
     for (std::string::iterator it = extension.begin(); it != extension.end(); ++it) {
         *it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
     }
@@ -213,4 +219,11 @@ void HttpResponseBuilder::_buildEssentialResponseHeader(std::vector<char> &buffe
 ft::shared_ptr<Client> HttpResponseBuilder::getClient(void)
 {
     return (this->_client);
+}
+
+ssize_t HttpResponseBuilder::getContentLength(void)
+{
+    if (this->_contentLength.has_value() == false)
+        return (-1); 
+    return (this->_contentLength->getContentLength());
 }

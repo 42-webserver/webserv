@@ -111,6 +111,7 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 	}
 	catch (std::exception &e) {
 		std::cerr << "WriteEventToClientHandler2::_handleNew: " << e.what() << std::endl;
+		std::cerr << client->getRequest()->getUri() << std::endl;
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
 }

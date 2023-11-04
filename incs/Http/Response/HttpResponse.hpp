@@ -49,7 +49,7 @@ public:
 		friend class ProcessorObject;
 		friend class WriteEventToClientHandler;
 		friend class ReadEventFromCgiHandler;
-
+		friend class RedirectionProcessor;
 		private:
 			AccessKey();
 			~AccessKey();

@@ -19,7 +19,7 @@ e_pattern_Process_result RedirectionProcessor::process(ft::shared_ptr
             ft::shared_ptr<HttpResponseBuilder>(new RedirectionResponseBuilder(client, virtualServerManager)),
             client
         );
-
+        client->getResponse()->setResponseSize(NormalSize, HttpResponse::AccessKey());
     }
     catch (std::exception& e) {
         //log error

@@ -16,6 +16,7 @@ public:
         std::string indexingPath);
     virtual ~GetResponseBuilder(void);
     virtual void buildResponseHeader(std::vector<char> &buffer);
+    static void handleDirectoryListing(std::vector<char> &buffer, std::string dirPath);
 };
 
 #endif

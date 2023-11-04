@@ -1,5 +1,6 @@
 #include <Pattern/FileReaderProcessor.hpp>
 #include <Log/Logger.hpp>
+#include <Http/Response/DirResponseBuilder.hpp>
 // To do: implement FileReaderProcessor
 FileReaderProcessor::FileReaderProcessor(void) {
 }
@@ -27,7 +28,12 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
         type = fileManager.requstFileContent(indexingPath, client->getResponse());
     }
     catch (DirectoryException& e) {
-        std::cerr << "DirectoryException" << e.what() << std::endl;
+        std::cerr << "DirectoryException" << std::endl;
+        _commandBuildHeaderTo(
+            ft::shared_ptr<HttpResponseBuilder>(new DirResponseBuilder(client, virtualServerManager)),
+            client
+        );
+        
         return SUCCESS;
     }
     catch (std::exception& e) {
