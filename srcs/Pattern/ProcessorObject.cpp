@@ -1,5 +1,5 @@
 #include <Pattern/ProcessorObject.hpp>
-
+#include <Buffer/Node/NormalNode.hpp>
 ProcessorObject::ProcessorObject(void) {
 }
 ProcessorObject::~ProcessorObject(void) {
@@ -11,7 +11,7 @@ ft::shared_ptr<Client> client){
         ssize_t contentLength = builder->getContentLength();
 
         if (contentLength > 0) {
-            if (contentLength > NormalSize) {
+            if (contentLength <= NormalNode::_sizeNormal) {
                 client->getResponse()->setResponseSize(NormalSize, HttpResponse::AccessKey());
             }
             else {

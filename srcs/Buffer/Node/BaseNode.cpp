@@ -198,7 +198,12 @@ ssize_t BaseNode::ioWrite(int fd) {
     // _mode.setWriteMode();
 
     ssize_t n = write(fd, _buffer.data() + _eraseSize, _size);
-
+	std::cerr << "baseNode::ioWrite: ";
+	std::cerr << "n: " << n << std::endl;
+	std::cerr << "eraseSize: " << _eraseSize << std::endl;
+	std::cerr << "size: " << _size << std::endl;
+	// for (std::vector<char>::iterator it = _buffer.begin() + _eraseSize; it != _buffer.begin() + _size + _eraseSize; it++)
+	// 	std::cerr << *it;
     if (isSIGPIPE) {
         isSIGPIPE = false; // 플래그 재설정
         throw DisconnectionException();
@@ -217,8 +222,12 @@ ssize_t ft::_ioWrite(int fd, std::vector<char>& buffer, ssize_t start) {
 
 	// ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
 	// _mode.setWriteMode();
-
-	ssize_t n = write(fd, buffer.data() + start, buffer.size() - start);	
+	
+	ssize_t n = write(fd, buffer.data() + start, buffer.size() - start);
+	std::vector<char>::iterator end = buffer.begin() + buffer.size() - start;
+	std::cerr << "ft::_ioWrite: ";
+	for (std::vector<char>::iterator it = buffer.begin() + start; it != end; it++)
+		std::cerr << *it;
 	if (isSIGPIPE) {
 		isSIGPIPE = false; // 플래그 재설정
 		throw DisconnectionException();

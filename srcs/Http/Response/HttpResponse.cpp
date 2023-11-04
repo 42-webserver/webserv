@@ -8,17 +8,17 @@ HttpResponse::AccessKey::~AccessKey()
 {
 }
 
-// void HttpResponse::setFileSync(e_File_Sync fileSync, AccessKey key)
-// {
-// 	(void)key;
-// 	this->_fileSync = fileSync;
-// }
+void HttpResponse::setFileSync(e_File_Sync fileSync, AccessKey key)
+{
+	(void)key;
+	this->_fileSync = fileSync;
+}
 
-// e_File_Sync HttpResponse::getFileSync(AccessKey key)
-// {
-// 	(void)key;
-// 	return this->_fileSync;
-// }
+e_File_Sync HttpResponse::getFileSync(AccessKey key)
+{
+	(void)key;
+	return this->_fileSync;
+}
 
 void HttpResponse::setResponseSize(e_ResponseSize responseSize , AccessKey key)
 {
@@ -47,7 +47,7 @@ void HttpResponse::allocateBigSizeBuffer(AccessKey key)
 	(void)key;
 	this->_BigSizeBuffer = ft::shared_ptr<IoReadAndWriteBuffer>(new IoReadAndWriteBuffer());
 }
-HttpResponse::HttpResponse() : _previousWriteSize(0), _responseSize(NotSet)
+HttpResponse::HttpResponse() : _previousWriteSize(0), _responseSize(NotSet), _fileSync(NotSetting)
 {
 	this->_NormalCaseBuffer.reserve(e_normal_buffer_size);
 }
@@ -151,7 +151,6 @@ HttpResponse::~HttpResponse()
 
 e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel> clientChannel)
 {	
-	std::cerr << "HttpResponse::_sendNormalToClient" << std::endl;
 	size_t n;
 	try {
 		n = ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer, this->_previousWriteSize);
@@ -176,20 +175,22 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 
 e_send_To_client_status HttpResponse::_sendBigToClient(ft::shared_ptr<Channel> clientChannel)
 {
-	std::cerr << "HttpResponse::_sendBigToClient" << std::endl;
-	if (this->_previousWriteSize < this->_NormalCaseBuffer.size()) {
+	if (this->_NormalCaseBuffer.size() != 0) {
 		if (_sendNormalToClient(clientChannel) == clientClose)
 			return clientClose;
 		return sending;
 	}
 	else {
 		try {
+			std::cerr << "HttpResponse::_sendBigToClient: " << this->_BigSizeBuffer->size() << std::endl;
 			this->_BigSizeBuffer->ioWrite(clientChannel->getFd());
 		}
 		catch (DisconnectionException &e) {
+			std::cerr << "HttpResponse::_sendBigToClient: DisconnectionException" << std::endl;
 			return clientClose;
 		}
 		catch (std::exception &e) {
+			std::cerr << "HttpResponse::_sendBigToClient: std::exception" << std::endl;
 			throw ;
 		}
 		if (this->_BigSizeBuffer->size() == 0)
@@ -205,10 +206,14 @@ e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clien
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
 		exit(1);
 	}
-	if (this->_responseSize == NormalSize)
+	if (this->_responseSize == NormalSize) {
+		std::cerr << "HttpResponse::sendToClient: NormalSize" << std::endl;
 		return this->_sendNormalToClient(clientChannel);
-	else 
+	}
+	else {
+		std::cerr << "HttpResponse::sendToClient: BigSize" << std::endl;
 		return this->_sendBigToClient(clientChannel);
+	}
 }
 
 // bool HttpResponse::isSending()

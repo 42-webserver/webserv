@@ -12,6 +12,7 @@ WriteEventToClientHandler::~WriteEventToClientHandler() {}
 // 파일을 보내는걸 완료했는데 클라이언트가 죽은 경우 고려 
 void WriteEventToClientHandler::_partialSending(ft::shared_ptr<HttpResponse> response, ft::shared_ptr<Client> client,
 WriteEventToClient *curEvent){
+	std::cerr << "WriteEventToClientHandler::_partialSending" << std::endl;
 	e_send_To_client_status sendingStatus = response->sendToClient(curEvent->getChannel());
 	
 	switch (sendingStatus)
@@ -27,6 +28,9 @@ WriteEventToClient *curEvent){
 		client->clientKill();
 		break;
 	}
+	case sending:
+		std::cerr << "WriteEventToClientHandler::_partialSending: sending" << std::endl;
+		break;
 	default:
 		break;
 	}
@@ -43,9 +47,11 @@ void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, Wri
 			_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (HttpException &e) {
+		std::cerr << "WriteEventToClientHandler::_handleRemain: " << e.what() << std::endl;
 		_hanldeErrorPage(client, curEvent, e.getStatusCode());
 	}
 	catch (std::exception &e) {
+		std::cerr << "WriteEventToClientHandler::_handleRemain: " << e.what() << std::endl;
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
 }

@@ -84,9 +84,12 @@ ssize_t IoReadAndWriteBuffer::ioRead(int fd) {
 
 ssize_t IoReadAndWriteBuffer::ioWrite(int fd) {
     ssize_t size = 0;
-
+    std::cerr << "IoReadAndWriteBuffer::ioWrite" << std::endl;
     try {
-        if (_lst.empty()) return 0;
+        if (_lst.empty()) {
+            std::cerr << "IoReadAndWriteBuffer::ioWrite: _lst.empty()" << std::endl;
+            return 0;
+        }
 
         size = _lst.front()->ioWrite(fd);
         if (size <= 0) return size;
