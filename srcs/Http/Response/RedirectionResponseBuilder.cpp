@@ -26,7 +26,8 @@ void RedirectionResponseBuilder::buildResponseHeader(std::vector<char> &buffer) 
         locationHeader = "Location: " + returnElement->getUri();
         std::cerr << "RedirectionResponseBuilder::buildResponseHeader: " << locationHeader << std::endl;
     }
-    _buildEssentialResponseHeader(buffer);
+    _allocContentLength(ContentLength::e_content_length_header, 0);
+    _buildDefaultResponseHeader(buffer);
 
     std::string header = locationHeader + "\r\n\r\n";
     buffer.insert(buffer.end(), header.begin(), header.end());
