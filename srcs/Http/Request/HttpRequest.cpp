@@ -137,6 +137,12 @@ std::string HttpRequest::getUri()
 	return this->_uri;
 }
 
+void HttpRequest::setUri(std::string uri)
+{
+	this->_uri.clear();
+	this->_uri = uri;
+}
+
 std::string HttpRequest::getVersion()
 {
 	return this->_version;

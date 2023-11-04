@@ -1,8 +1,9 @@
 #include <Event/ReadEvent/ReadEventFromCache.hpp>
-
+#include <FileManager/FileManager/FileManager.hpp>
 ReadEventFromCache::ReadEventFromCache(std::vector<char> &content, const std::string &path, std::string mode
 = "w") : 
-    ReadEvent(new ReadEventFromCacheHandler(content)),
+    ReadEvent(new ReadEventFromCacheHandler(content,
+    FileManager::getFileSize(path))),
     SingleStreamable(new FileStream(path, mode)) {}
 
 ReadEventFromCache::~ReadEventFromCache(void) {}
@@ -16,7 +17,7 @@ void ReadEventFromCache::callEventHandler(void) {
 }
 
 void ReadEventFromCache::onboardQueue(void) {
-
+    std::cerr << "ReadEventFromCache::onboardQueue" << std::endl;
     try {
         this->getChannel()->setNonBlocking();
         this->_onboardRead(this, this->getFd());
@@ -33,7 +34,7 @@ void ReadEventFromCache::onboardQueue(void) {
 }
 
 void ReadEventFromCache::offboardQueue(void) {
-
+    std::cerr << "ReadEventFromCache::offboardQueue" << std::endl;
     try {
         this->_offboardRead(this, this->getFd());
     }
@@ -45,5 +46,4 @@ void ReadEventFromCache::offboardQueue(void) {
         Logger::getInstance().error("{} {}", 2, "ReadEventFromCache", "Fail to offboard Read Event");
         throw ;
     }
-
 }

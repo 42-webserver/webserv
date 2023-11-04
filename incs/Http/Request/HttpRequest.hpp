@@ -69,6 +69,7 @@ public:
 	void insertBody(std::vector<char> &buffer);
 	std::string getMethod();
 	std::string getUri();
+	void setUri(std::string uri);
 	std::string getVersion();
 	std::string getProtocol();
 	std::string getHost();

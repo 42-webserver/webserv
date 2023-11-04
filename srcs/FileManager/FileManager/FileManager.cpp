@@ -147,14 +147,19 @@ e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::sha
     }
     if (isInCashSize(fileStat)) {
         Cache & cache = Cache::getInstance();
+
+        std::cerr << "FileManager::requstFileContent() : isInCashSize" << std::endl;
         //cache hit은 파일이 완전히 업로드 되야 hi
         if (cache.hit(uri)) {
+            std::cerr << "FileManager::requstFileContent() : cache hit" << std::endl;
             cache.copyCacheContentVectorBack(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
             response->setResponseSize(NormalSize, HttpResponse::AccessKey());
             return (FileRequestSuccess);
         }
         else {
+            std::cerr << "FileManager::requstFileContent() : cache miss" << std::endl;
             if (fileSync == NotSetting) {
+                std::cerr << "FileManager::requstFileContent() : fileSync == NotSetting !!!!!!!" << std::endl;
                 // cache에 없지만 cache사이즈 인건데 파일이 존재하는 경우-> 등록하고 기다려야됨
                 cache.initCacheContent(uri);
                 response->setFileSync(Reading, HttpResponse::AccessKey());

@@ -34,34 +34,34 @@ private:
     IoReadAndWriteBuffer& operator=(const IoReadAndWriteBuffer& other);
 //Buffer Inteface
 public:
-    virtual size_t size();
+    virtual ssize_t size();
 private:
-    size_t _initSize();
-    size_t _AppendSize();
-    size_t _EraseSize();
-    typedef size_t (IoReadAndWriteBuffer::*_sizeFunc)();
+    ssize_t _initSize();
+    ssize_t _AppendSize();
+    ssize_t _EraseSize();
+    typedef ssize_t (IoReadAndWriteBuffer::*_sizeFunc)();
     static _sizeFunc _sizeFuncs[StateSize];
 //IoAble interface
 
 public:
-    virtual size_t	ioRead(int fd);
-    virtual size_t	ioWrite(int fd);
+    virtual ssize_t	ioRead(int fd);
+    virtual ssize_t	ioWrite(int fd);
 //Modifiable interface
 public:
-    virtual size_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);
-    virtual size_t append(std::vector<char>::iterator begin, size_t size);
-    virtual size_t eraseFront(size_t size);
+    virtual ssize_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);
+    virtual ssize_t append(std::vector<char>::iterator begin, ssize_t size);
+    virtual ssize_t eraseFront(ssize_t size);
 //IoReadAndWriteBuffer interface
 private:
     void	_allocate();
     void	_deallocate();
 
 public:
-    size_t ioReadToRemainigSize(int fd, size_t remainingSize);
-    size_t appendString(const std::string& str);
+    ssize_t ioReadToRemainigSize(int fd, ssize_t remainingSize);
+    ssize_t appendString(const std::string& str);
 public:
-    size_t  ioSaveWrite(int fd, size_t start);
-    size_t  copyHeadTo(std::vector<char>& dest);
+    ssize_t  ioSaveWrite(int fd, ssize_t start);
+    ssize_t  copyHeadTo(std::vector<char>& dest);
 };
 
 #endif

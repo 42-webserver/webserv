@@ -6,7 +6,7 @@
 class LargeNode : public BaseNode
 {
 public:
-	static const size_t _sizeLarge;
+	static const ssize_t _sizeLarge;
 public:
 	LargeNode();
 	virtual ~LargeNode();

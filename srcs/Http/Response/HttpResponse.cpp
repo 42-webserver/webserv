@@ -151,6 +151,7 @@ HttpResponse::~HttpResponse()
 
 e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel> clientChannel)
 {	
+	std::cerr << "HttpResponse::_sendNormalToClient" << std::endl;
 	size_t n;
 	try {
 		n = ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer, this->_previousWriteSize);
@@ -175,6 +176,7 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 
 e_send_To_client_status HttpResponse::_sendBigToClient(ft::shared_ptr<Channel> clientChannel)
 {
+	std::cerr << "HttpResponse::_sendBigToClient" << std::endl;
 	if (this->_previousWriteSize < this->_NormalCaseBuffer.size()) {
 		if (_sendNormalToClient(clientChannel) == clientClose)
 			return clientClose;

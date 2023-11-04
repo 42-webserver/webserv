@@ -30,7 +30,7 @@ class ReadEventFromClientHandler : public ReadEventHandler {
 		void _processNonBlock(ReadEventFromClient *event);
 		void _processClosed(ReadEventFromClient *event);
 		inline void _process(e_client_connection_state state, ReadEventFromClient *event);
-		inline e_client_connection_state	_processMatcher(size_t n);
+		inline e_client_connection_state	_processMatcher(ssize_t n);
 	public:
 		ReadEventFromClientHandler(void);
 		virtual	~ReadEventFromClientHandler(void);

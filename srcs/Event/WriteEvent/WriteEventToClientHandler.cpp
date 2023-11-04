@@ -40,7 +40,7 @@ void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, Wri
 		
 	try {
 		if (patternProcessor.querryCanSending() == SUCCESS)
-		_partialSending(client->getResponse(), client, curEvent);
+			_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (HttpException &e) {
 		_hanldeErrorPage(client, curEvent, e.getStatusCode());

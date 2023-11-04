@@ -100,7 +100,7 @@ void	Logger::_onBoardLogEvent(const AccessKey &accessKey) {
 	(void)accessKey;
 	EventFactory& eventFactory = EventFactory::getInstance();
 
-	EventDto eventDto(this->_buffer, DEFAULT_LOG_FILE_NAME, "w+");
+	EventDto eventDto(this->_buffer, DEFAULT_LOG_FILE_NAME, "a+");
 	Event* event = eventFactory.createEvent(ft::FILE_WRITE_EVENT, eventDto);
 	event->onboardQueue();
 }

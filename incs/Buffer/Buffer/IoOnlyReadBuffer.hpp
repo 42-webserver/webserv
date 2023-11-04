@@ -31,10 +31,10 @@ private:
 
 //IoReadable interface
 public:
-	virtual size_t	ioRead(int fd);
+	virtual ssize_t	ioRead(int fd);
 //Buffer Inteface
 public:
-	virtual size_t size();
+	virtual ssize_t size();
 //IoOnlyReadBuffer interface
 public:	
 	void	_allocate();

@@ -193,12 +193,16 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
-    // /안끝나는데  디렉토리면 redirect
+    // /안끝나는데  디렉토리면 redirect 
+    // Todo : 일단 뗌질로 해놓음
     if (uri[uri.size() - 1] != '/') {
-        std::string fullPath = findPath(vsm, req);
-        std::cerr << "fullPath : " << fullPath << std::endl;
+        req->setUri(uri + "/");
+        std::cerr << req->getUri() << std::endl;
+        std::string fullPath = findPriorityPathWithIndex(vsm, req);
+        std::cerr << "is in fullpath IN REDIRECT : " << fullPath << std::endl;
         if (FileManager::isDirectory(fullPath))
             return true;
+        req->setUri(uri.substr(0, uri.size()));
     }
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);

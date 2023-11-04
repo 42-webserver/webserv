@@ -11,7 +11,8 @@ HttpRequestParser::HttpRequestParser(void)
 const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
 	this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
-
+	
+	readBuffer.recycleInstance();
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)

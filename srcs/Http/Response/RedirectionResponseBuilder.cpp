@@ -7,13 +7,13 @@ HttpResponseBuilder(client), _vsm(vsm) {}
 RedirectionResponseBuilder::~RedirectionResponseBuilder(void) {}
 
 void RedirectionResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
-    std::string filePath = RouterUtils::findPath(this->_vsm, this->getClient()->getRequest());
-    struct stat fileStat;  
-    e_file_info fileTypeInfo = FileManager::getFileInfo(filePath, fileStat);
+    std::string uri = this->getClient()->getRequest()->getUri();
     std::string locationHeader;
-    if (fileTypeInfo == ExistDirectory) {
+
+    //To do: 일단 똄질로 해결 
+    if (uri[uri.size() - 1] == '/') {
         _setStatusCode(MOVED_PERMANENTLY);
-        locationHeader = "Location: " + this->getClient()->getRequest()->getUri() + "/";
+        locationHeader = "Location: " + this->getClient()->getRequest()->getUri();
     }
     else {
         ft::shared_ptr<ReturnElement> returnElement = RouterUtils::findRedirectUri(this->_vsm, this->getClient()->getRequest());

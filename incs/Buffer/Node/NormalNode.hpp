@@ -7,7 +7,7 @@
 class NormalNode : public BaseNode
 {
 public:
-	static const size_t _sizeNormal;
+	static const ssize_t _sizeNormal;
 public:
 	NormalNode();
 	virtual ~NormalNode();

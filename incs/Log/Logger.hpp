@@ -26,7 +26,7 @@ typedef enum{
 	e_log_immidiate
 }	e_log_save;
 
-static const size_t BUFFER_SIZE = 32 * 1024;
+static const ssize_t BUFFER_SIZE = 32 * 1024;
 
 
 class IoReadAndWriteBuffer;

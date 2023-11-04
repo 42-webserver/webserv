@@ -25,7 +25,7 @@ public:
 	SyncroWriteWithCache(LruCacheNode &lruCache);
 	~SyncroWriteWithCache(void);
 private:
-	LruCacheNode &lruCache;
+	LruCacheNode &_lruCacheNode;
 	int _thisWriterNum;
 public:
 	bool isFinalWriter(void);
@@ -36,7 +36,7 @@ public:
 	SyncroReadWithCache(LruCacheNode &lruCache);
 	~SyncroReadWithCache(void);
 private:
-	LruCacheNode &lruCache;
+	LruCacheNode &_lruCacheNode;
 
 };
 class LruCacheNode {
@@ -45,7 +45,7 @@ class LruCacheNode {
 		e_cache_node_status	_status;
 		int					_finalWriterNum;
 	public:
-		LruCacheNode(void);
+		LruCacheNode(e_cache_node_status status);
 		LruCacheNode(ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 		~LruCacheNode(void);
 		bool isUpdatedContent(void);

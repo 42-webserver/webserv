@@ -18,17 +18,17 @@ _state(InitState), _lst(std::list<ft::shared_ptr<BaseNode> >()) {}
 IoReadAndWriteBuffer::~IoReadAndWriteBuffer() {
 }
 
-size_t IoReadAndWriteBuffer::size() {
+ssize_t IoReadAndWriteBuffer::size() {
     return (this->*_sizeFuncs[_state])();
 }
 
-size_t IoReadAndWriteBuffer::_initSize() {
+ssize_t IoReadAndWriteBuffer::_initSize() {
     return 0;
 }
 
 
-size_t IoReadAndWriteBuffer::_AppendSize() {
-   size_t size = 0;
+ssize_t IoReadAndWriteBuffer::_AppendSize() {
+   ssize_t size = 0;
 
     for (std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin(); it != _lst.end(); ++it) {
         size += (*it)->size();
@@ -36,8 +36,8 @@ size_t IoReadAndWriteBuffer::_AppendSize() {
     return size;
 }
 
-size_t IoReadAndWriteBuffer::_EraseSize() {
-    size_t size = 0;
+ssize_t IoReadAndWriteBuffer::_EraseSize() {
+    ssize_t size = 0;
 
     for (std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin(); it != _lst.end(); ++it) {
         size += (*it)->size();
@@ -63,8 +63,8 @@ void IoReadAndWriteBuffer::_deallocate() {
         // ft::Assert::_assert((_state == EraseState), "IoReadAndWriteBuffer::_deallocate Invarint Error");
         _lst.pop_front();        
 }
-size_t IoReadAndWriteBuffer::ioRead(int fd) {
-    size_t size = 0;
+ssize_t IoReadAndWriteBuffer::ioRead(int fd) {
+    ssize_t size = 0;
 
     try {
         if (_lst.empty()) _allocate();
@@ -82,8 +82,8 @@ size_t IoReadAndWriteBuffer::ioRead(int fd) {
     return size;
 }
 
-size_t IoReadAndWriteBuffer::ioWrite(int fd) {
-    size_t size = 0;
+ssize_t IoReadAndWriteBuffer::ioWrite(int fd) {
+    ssize_t size = 0;
 
     try {
         if (_lst.empty()) return 0;
@@ -104,8 +104,8 @@ size_t IoReadAndWriteBuffer::ioWrite(int fd) {
     return size;
 }
 
-size_t IoReadAndWriteBuffer::ioReadToRemainigSize(int fd, size_t remainingSize) {
-    size_t size = 0;
+ssize_t IoReadAndWriteBuffer::ioReadToRemainigSize(int fd, ssize_t remainingSize) {
+    ssize_t size = 0;
 
     try {
         if (_lst.empty()) _allocate();
@@ -124,11 +124,11 @@ size_t IoReadAndWriteBuffer::ioReadToRemainigSize(int fd, size_t remainingSize) 
 }
 
 
-size_t IoReadAndWriteBuffer::appendString(const std::string& str) {
-    size_t size = 0;
-    size_t appendSize = str.size();
+ssize_t IoReadAndWriteBuffer::appendString(const std::string& str) {
+    ssize_t size = 0;
+    ssize_t appendSize = str.size();
 
-    std::cerr << "appendSize : " << appendSize << std::endl;
+    // std::cerr << "appendSize : " << appendSize << std::endl;
     std::string::const_iterator current = str.begin();
     try {
         if (_lst.empty()) _allocate();
@@ -148,10 +148,10 @@ size_t IoReadAndWriteBuffer::appendString(const std::string& str) {
     }
     return size;
 }
-size_t IoReadAndWriteBuffer::ioSaveWrite(int fd, size_t start) {
+ssize_t IoReadAndWriteBuffer::ioSaveWrite(int fd, ssize_t start) {
     std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin();
-    size_t accumulatesize = 0;
-    size_t writtensize = 0;
+    ssize_t accumulatesize = 0;
+    ssize_t writtensize = 0;
     try {
         if (_lst.empty()) return 0;
 
@@ -177,14 +177,14 @@ size_t IoReadAndWriteBuffer::ioSaveWrite(int fd, size_t start) {
     return writtensize >= 0 ? writtensize + start : start;
 }
 
-size_t IoReadAndWriteBuffer::copyHeadTo(std::vector<char>& dest) {
+ssize_t IoReadAndWriteBuffer::copyHeadTo(std::vector<char>& dest) {
     if (_lst.empty()) return 0;
 
     return _lst.front()->copyTo(dest);
 }
-size_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vector<char>::iterator end) {
-    size_t size = 0;
-    size_t appendSize = std::distance(begin, end);
+ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vector<char>::iterator end) {
+    ssize_t size = 0;
+    ssize_t appendSize = std::distance(begin, end);
     try {
         if (_lst.empty()) _allocate();
         while (size == appendSize) {
@@ -203,9 +203,9 @@ size_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vect
     return size;
 }
 
-size_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, size_t size) {
-    size_t ret = 0;
-    size_t appendSize = size;
+ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, ssize_t size) {
+    ssize_t ret = 0;
+    ssize_t appendSize = size;
     try {
         if (_lst.empty()) _allocate();
 
@@ -225,8 +225,8 @@ size_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, size_t si
     return ret;
 }
 
-size_t IoReadAndWriteBuffer::eraseFront(size_t size) {
-    size_t ret = 0;
+ssize_t IoReadAndWriteBuffer::eraseFront(ssize_t size) {
+    ssize_t ret = 0;
 
     try {
         if (_lst.empty()) return 0;

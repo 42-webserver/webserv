@@ -12,8 +12,8 @@ e_pattern_Process_result RedirectionProcessor::process(ft::shared_ptr
     ft::shared_ptr<Channel> channel) {
         //Todo : implement
         (void)channel;
-
-    try {
+    std::cerr << "RedirectionProcessor::process" << std::endl;
+    try {   
         //basic Handle All RequireMent
         _commandBuildHeaderTo(
             ft::shared_ptr<HttpResponseBuilder>(new RedirectionResponseBuilder(client, virtualServerManager)),
