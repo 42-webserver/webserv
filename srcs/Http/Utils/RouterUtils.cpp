@@ -196,14 +196,16 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     // /안끝나는데  디렉토리면 redirect 
     // Todo : 일단 뗌질로 해놓음
     if (uri[uri.size() - 1] != '/') {
+        std::cerr << "is in uri " << uri << std::endl;
         req->setUri(uri + "/");
         std::cerr << req->getUri() << std::endl;
-        std::string fullPath = findPriorityPathWithIndex(vsm, req);
+        std::string fullPath = findPath(vsm, req);
         std::cerr << "is in fullpath IN REDIRECT : " << fullPath << std::endl;
+        req->setUri(uri.substr(0, uri.size()));
         if (FileManager::isDirectory(fullPath))
             return true;
-        req->setUri(uri.substr(0, uri.size()));
     }
+    std::cerr << "is in uri going to find location : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     if (locationTrieElement.get() == NULL)
@@ -368,6 +370,7 @@ ft::shared_ptr<ReturnElement> RouterUtils::findRedirectUri(ft::shared_ptr<Virtua
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
+    std::cerr << "in findRedirectUri : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ServerElement serverElement = targetServer->getServerElement();
     ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);
@@ -380,6 +383,7 @@ ft::shared_ptr<ReturnElement> RouterUtils::findRedirectUri(ft::shared_ptr<Virtua
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::RETURN);
     if (it2 == locationElement->end())
         return ft::shared_ptr<ReturnElement>();
+
     ft::shared_ptr<ConfigElement> returnConfElem = it2->second;
     ft::shared_ptr<ReturnElement> returnElem = ft::static_pointer_cast<ReturnElement>(returnConfElem);
     return returnElem;
