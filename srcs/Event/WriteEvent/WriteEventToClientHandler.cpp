@@ -95,9 +95,11 @@ void WriteEventToClientHandler::_hanldeErrorPage(ft::shared_ptr<Client> client, 
 void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteEventToClient *curEvent){
 	std::cerr << "WriteEventToClientHandler::_handleNew" << std::endl;
 	if (client->getRequest()->isError()){
+		std::cerr << "WriteEventToClientHandler::_handleNew: isError" << std::endl;
 		_hanldeErrorPage(client, curEvent, REQUEST_ENTITY_TOO_LARGE);
 		return ;
 	}
+	client->getRequest()->_printBody();
 	try {
 		client->allocateResponse();
 		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
@@ -120,6 +122,7 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 		std::cerr << client->getRequest()->getUri() << std::endl;
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
+	std::cerr << "WriteEventToClientHandler::_handleNew end" << std::endl;
 }
 
 void WriteEventToClientHandler::handleEvent(Event &event){

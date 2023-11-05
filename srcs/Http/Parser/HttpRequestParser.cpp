@@ -10,10 +10,10 @@ HttpRequestParser::HttpRequestParser(void)
 
 const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-	if (_state != BODY) {
+	// if (_state != BODY) {
 		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
-		readBuffer.recycleInstance();
-	}
+	// 	readBuffer.recycleInstance();
+	// }
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)
@@ -23,7 +23,21 @@ const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualS
 	readBuffer.recycleInstance();
 	return _state;
 }
-
+// const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
+// 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+// 	if (_state != BODY) {
+// 		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
+// 		readBuffer.recycleInstance();
+// 	}
+// 	if (_state == BEFORE || _state == START_LINE)
+// 		handleStartLineState();
+// 	if (_state == HEADERS)
+// 		handleHeaderState(vsm);
+// 	if (_state == BODY) 
+// 		handleBodyState();
+// 	readBuffer.recycleInstance();
+// 	return _state;
+// }
 void HttpRequestParser::handleStartLineState() {
 	if (_buffer.empty())
 		return;
@@ -97,7 +111,7 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
 void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm){
 	this->_state = BODY;
 
-	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
+	ssize_t clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler();
 
 	//fix 

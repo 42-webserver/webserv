@@ -66,6 +66,10 @@ private:
 public:
 	const std::vector<char>& getBuffer() const;
 	std::vector<char>& getBuffer();
+
+//debug
+public:
+	void _printBuffer();
 public:
 	BaseNode(ssize_t size);
 	ssize_t ioRead(int fd);

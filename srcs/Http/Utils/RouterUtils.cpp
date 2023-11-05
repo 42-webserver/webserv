@@ -95,7 +95,7 @@ std::string uri){
     return locationTrieElement->longestPrefixString(uri);
 }
 
-int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+ssize_t RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string host = req->getHost();
 
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
@@ -104,6 +104,8 @@ int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::s
     if (it == serverElement.end())
         //Todo: check this 80mb
         return 1024 * 1024 * 50;
+    std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum() << std::endl;
+    // exit(1);
     return ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
 }
 

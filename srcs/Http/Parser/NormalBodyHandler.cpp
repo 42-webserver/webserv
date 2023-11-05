@@ -11,28 +11,46 @@ NormalBodyHandler::~NormalBodyHandler(void)
 bool NormalBodyHandler::handleBody(std::vector<char> &buffer)
 {
 	int contentLength = this->_request->getContentLength();
-	writeInMemory(buffer);
+	int writeSize = contentLength - this->_readBodySize;
+	writeInMemory(buffer, writeSize);
 	if (contentLength <= this->_readBodySize)
 		return true;
 	return false;
 }
 
-void NormalBodyHandler::writeInMemory(std::vector<char> &buffer)
+void NormalBodyHandler::writeInMemory(std::vector<char> &buffer, int writeSize)
 {
-	ssize_t n;
-	// std::vector<char> tmp(buffer.begin(), buffer.begin() + writeSize);
-	if (buffer.empty()) {
-		n = this->_request->insertBody(buffer);
-		buffer.clear();
-		this->_readBodySize += n;
-	}
-	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+	// ssize_t n;
+	std::vector<char> tmp(buffer.begin(), buffer.begin() + writeSize);
+	// if (buffer.empty()) {
+	// 	n = this->_request->insertBody(buffer);
+	// 	buffer.clear();
+	// 	this->_readBodySize += n;
+	// }
+	// IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
 
-	if (readBuffer.size() > 0)
-	{
-		n = this->_request->insertBody();
-		this->_readBodySize += n;
-	}
-	// this->_readBodySize += tmp.size();
-	// buffer.erase(buffer.begin(), buffer.begin() + tmp.size());
+	// if (readBuffer.size() > 0)
+	// {
+	// 	n = this->_request->insertBody();
+	// 	this->_readBodySize += n;
+	// }
+	this->_request->insertBody(tmp);
+	this->_readBodySize += tmp.size();
+	buffer.erase(buffer.begin(), buffer.begin() + tmp.size());
 }
+// void NormalBodyHandler::writeInMemory(std::vector<char> &buffer)
+// {
+// 	ssize_t n;
+// 	if (buffer.empty()) {
+// 		n = this->_request->insertBody(buffer);
+// 		buffer.clear();
+// 		this->_readBodySize += n;
+// 	}
+// 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+
+// 	if (readBuffer.size() > 0)
+// 	{
+// 		n = this->_request->insertBody();
+// 		this->_readBodySize += n;
+// 	}
+// }

@@ -24,6 +24,12 @@ public:
 private:
     State _state;
     std::list<ft::shared_ptr<BaseNode> > _lst;
+
+//debug
+public: 
+    void printBuffer();
+
+
 //Constructor
 public:
     IoReadAndWriteBuffer();

@@ -204,7 +204,7 @@ e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clien
 {
 	if (this->_responseSize == NotSet) {
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
-		exit(1);
+		// exit(1);
 	}
 	if (this->_responseSize == NormalSize) {
 		std::cerr << "HttpResponse::sendToClient: NormalSize" << std::endl;

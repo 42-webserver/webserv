@@ -52,6 +52,10 @@ private:
 	std::map<std::string, std::string>	  	_queries;
 	std::map<std::string, std::string>	  	_cookies;
 	std::vector<MultipartRequest>		 	_multipartRequests;
+	//debug
+public:
+	void _printBody();
+
 //file Interface
 private:
 	e_file_upload_sync						_fileUploadSync;
@@ -80,7 +84,7 @@ public:
 	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();
 	std::map<std::string, std::string> getCookies();
-	int  getContentLength();
+	ssize_t  getContentLength();
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 	std::string getHeader(const std::string & key);

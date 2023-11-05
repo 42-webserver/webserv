@@ -8,6 +8,16 @@ IoReadAndWriteBuffer::_sizeFunc IoReadAndWriteBuffer::_sizeFuncs[StateSize] = {
     &IoReadAndWriteBuffer::_EraseSize
 };
 
+void IoReadAndWriteBuffer::printBuffer() {
+    std::cerr << "IoReadAndWriteBuffer::printBuffer" << std::endl;
+    std::cerr << "IoReadAndWriteBuffer::printBuffer: _state: " << _state << std::endl;
+    std::cerr << "IoReadAndWriteBuffer::printBuffer: _lst.size(): " << _lst.size() << std::endl;
+    for (std::list<ft::shared_ptr<BaseNode> >::iterator it = _lst.begin(); it != _lst.end(); ++it) {
+        std::cerr << "IoReadAndWriteBuffer::printBuffer: (*it)->size(): " << (*it)->size() << std::endl;
+        std::cerr << std::endl;
+        (*it)->_printBuffer();
+    }
+}
 // IoReadAndWriteBuffer::IoReadAndWriteBuffer() : 
 // (), IoAble(), Modifiable(), 
 // _state(InitState), _lst(std::list<ft::shared_ptr<BaseNode> >()) {}

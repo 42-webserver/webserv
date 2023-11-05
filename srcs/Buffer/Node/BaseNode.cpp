@@ -60,6 +60,14 @@
 
 //Mode
 
+//debug
+void BaseNode::_printBuffer() {
+	std::cerr << "buffer: ";
+	for (std::vector<char>::iterator it = _buffer.begin(); it != _buffer.end(); it++)
+		std::cerr << *it;
+	std::cerr << std::endl;
+}
+
 BaseNode::AccessKey::AccessKey() {}
 BaseNode::AccessKey::~AccessKey() {}
 
