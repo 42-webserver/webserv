@@ -138,19 +138,20 @@ ssize_t IoReadAndWriteBuffer::ioReadToRemainigSize(int fd, ssize_t remainingSize
 
 
 ssize_t IoReadAndWriteBuffer::appendString(const std::string& str) {
-    ssize_t size = 0;
+    ssize_t n = 0;
     ssize_t appendSize = str.size();
-
+    ssize_t size = 0;
     // std::cerr << "appendSize : " << appendSize << std::endl;
     std::string::const_iterator current = str.begin();
     try {
         if (_lst.empty()) _allocate();
 
         while (appendSize != 0) {
-            size = _lst.back()->insertString(current, appendSize);
+            n = _lst.back()->insertString(current, appendSize);
             if (_lst.back()->isFull()) _allocate();
-            appendSize -= size;
-            current += size;
+            appendSize -= n;
+            current += n;
+            size += n;
         }
     }
     catch (const std::exception& e) {
