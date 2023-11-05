@@ -40,7 +40,7 @@ std::string HttpRequestParser::_getDebugString(RequestParseState state){
 // }
 const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-	if (_state != BODY) {
+	if (_state != BODY || this->_httpRequest->getBodyType() != NORMAL) {
 		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
 		readBuffer.recycleInstance();
 	}
@@ -106,10 +106,12 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
             break;
         }
         line = std::string(start, find);
-        if (!line.empty()) {
-            headers.push_back(line);
-        }
-        start = find + _crlfPatternSize;
+		start = find + _crlfPatternSize;
+
+		if (line.empty())
+			break;
+        headers.push_back(line);
+        // }
     }
 
     // 모든 헤더 추가
@@ -121,7 +123,7 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
     _buffer.erase(_buffer.begin(), start);
 
 	if (line.empty())
-        	changeStateToBody(vsm);
+        changeStateToBody(vsm);
     else {
         this->_state = HEADERS;
 		std::cerr << "handleHeaderState -- this->_state: " << _getDebugString(this->_state) << std::endl;
@@ -135,6 +137,11 @@ void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> v
 
 	//fix 
 	ssize_t contentLength = this->_httpRequest->getContentLength();
+	//todo : 만약에 Multipart하면 여기 수정
+	if (this->_httpRequest->getBodyType() == MULTIPART_FORM_DATA){
+		this->_httpRequest->setError(UNSUPPORTED_MEDIA_TYPE);
+		this->_state = FINISH;
+	}
 	if (contentLength > clientMaxBodySize){
 		this->_httpRequest->setError(REQUEST_ENTITY_TOO_LARGE);
 		this->_state = FINISH;
