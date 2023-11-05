@@ -66,7 +66,8 @@ public:
 	~HttpRequest();
 	void addHeader(const std::string & header);
 	void setStartLine(std::string line);
-	void insertBody(std::vector<char> &buffer);
+	ssize_t insertBody(std::vector<char> &buffer);
+	ssize_t insertBody(void);
 	std::string getMethod();
 	std::string getUri();
 	void setUri(std::string uri);

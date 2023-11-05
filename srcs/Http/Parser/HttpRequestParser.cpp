@@ -10,15 +10,17 @@ HttpRequestParser::HttpRequestParser(void)
 
 const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-	this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
-	
-	readBuffer.recycleInstance();
+	if (_state != BODY) {
+		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
+		readBuffer.recycleInstance();
+	}
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)
 		handleHeaderState(vsm);
 	if (_state == BODY) 
 		handleBodyState();
+	readBuffer.recycleInstance();
 	return _state;
 }
 
@@ -56,7 +58,8 @@ void HttpRequestParser::handleStartLineState() {
 // 	}
 // }
 
-//fix : daegulee
+// fix : daegulee
+// Todo: check this
 void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> vsm) {
     if (_buffer.empty())
         return;
@@ -65,7 +68,7 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
     std::vector<char>::iterator start = _buffer.begin();
     std::vector<char>::iterator end = _buffer.end();
 	std::string line;
-    while (start < end) {
+    while (start != end) {
         std::vector<char>::iterator find = std::search(start, end, _crlfPattern.begin(), _crlfPattern.end());
         if (find == end) {
             break;
@@ -85,10 +88,9 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
     // 버퍼에서 처리한 부분 제거
     _buffer.erase(_buffer.begin(), start);
 
-    if (start == end) {
-		if (line.empty())
+	if (line.empty())
         	changeStateToBody(vsm);
-    } else {
+    else {
         this->_state = HEADERS;
     }
 }

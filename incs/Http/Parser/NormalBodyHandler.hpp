@@ -11,7 +11,7 @@ public:
 	~NormalBodyHandler(void);
 
 private:
-	void writeInMemory(std::vector<char> &buffer, int writeSize);
+	void writeInMemory(std::vector<char> &buffer);
 };
 
 #endif

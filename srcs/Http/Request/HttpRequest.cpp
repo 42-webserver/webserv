@@ -1,4 +1,5 @@
 #include "../../../incs/Http/Request/HttpRequest.hpp"
+#include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
 
 // FileUpload 
 
@@ -35,9 +36,16 @@ HttpRequest::~HttpRequest()
 {
 }
 
-void HttpRequest::insertBody(std::vector<char> &buffer)
+ssize_t HttpRequest::insertBody(std::vector<char> &buffer)
 {
-	this->_body->append(buffer.begin(), buffer.end());
+	return (this->_body->append(buffer.begin(), buffer.end()));
+}
+
+ssize_t HttpRequest::insertBody(void )
+{
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+
+	return (this->_body->append(readBuffer.begin(), readBuffer.end()));
 }
 
 //Todo: 여기서 공백하나라고 가정하는거 위험

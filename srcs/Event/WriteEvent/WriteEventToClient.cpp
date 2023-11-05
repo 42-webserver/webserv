@@ -30,6 +30,7 @@ void	WriteEventToClient::onboardQueue(void){
 
 void	WriteEventToClient::offboardQueue(void){
 	std::cerr << "WriteEventToClient::offboardQueue()" << std::endl;
+
 	try {
 		this->_client->removeClientEventQueueState(Write);
 		this->_offboardWrite(this, this->getFd());

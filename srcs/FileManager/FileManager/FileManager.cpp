@@ -229,6 +229,7 @@ ft::shared_ptr<HttpRequest> request) {
     //fileTableManager 에 없으면 fileData를 만들어서 넣어줌 NoneProcessing으로
     e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
     size_t contentLength = request->getBodySize();
+    std::cerr << "FileManager::requestFileUpload() : contentLength : " << contentLength << std::endl;
     e_file_upload_sync fileUploadSync = request->getFileUploadSync(HttpRequest::AccessKey());
     Cache &cache = Cache::getInstance();
 

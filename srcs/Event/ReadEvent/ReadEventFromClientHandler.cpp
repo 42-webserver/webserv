@@ -26,6 +26,8 @@ void ReadEventFromClientHandler::_processReading(ReadEventFromClient *event) {
 	}
 // parser.parseRequest(event->getVirtualServerManger()) == FINISH
 	//To do Error 잡아서 클라이언트에게 errorHttpResponse를 보내줘야함
+	std::cerr << "ReadEventFromClientHandler::_processReading::isRequestEmpty: " << event->isRequestEmpty() << std::endl;
+	std::cerr << "ReadEventFromClientHandler::_processReading::isEventQueueTurnOn: " << event->isEventQueueTurnOn(Write) << std::endl;
 	if (!event->isRequestEmpty() && !event->isEventQueueTurnOn(Write)) {
 		EventFactory& eventFactory = EventFactory::getInstance();
 		EventDto eventDto(
@@ -78,10 +80,10 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 		return ;
 	// std::cerr << "buffer size: " << buffer.size() << std::endl;
 	n = buffer.ioRead(readEventClient->getFd());
-	// std::cerr << "ReadEventFromClientHandler::handleEvent::n: " << n << std::endl;
-	// std::vector<char> readBuffer(buffer.begin(), buffer.end());
-    // for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
-	// 	std::cerr << *it;	
+	std::cerr << "ReadEventFromClientHandler::handleEvent::n: " << n << std::endl;
+	std::vector<char> readBuffer(buffer.begin(), buffer.end());
+    for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
+		std::cerr << *it;	
 
 	_process(_processMatcher(n), readEventClient);
 }
