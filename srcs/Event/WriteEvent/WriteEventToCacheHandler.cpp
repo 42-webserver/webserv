@@ -19,7 +19,6 @@ void WriteEventToCacheHandler::handleEvent(Event &event) {
         throw ;
     }
     catch (...) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToCacheHandler", "Fail to write to cache");
         throw ;
     }
     if (_buffer->size() == 0) {

@@ -45,7 +45,8 @@ void LogEvent::offboardQueue(void) {
             EVFILT_TIMER,
             EV_DELETE,
             0,
-            3 * 60 * 1000,
+            // 3 * 60 * 1000,
+            3 * 1000,
             event
         );
         if (kevent(eventQueue.getEventQueueFd(),

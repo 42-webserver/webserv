@@ -27,11 +27,9 @@ void WriteEventToCache::onboardQueue(void) {
         this->_onboardWrite(this, this->getFd());
     }
     catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToCache", e.what());
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToCache", "Fail to onboard Write Event");
+    catch (std::exception &e) {
         throw ;
     }
 }
@@ -40,11 +38,9 @@ void WriteEventToCache::offboardQueue(void) {
         this->_offboardWrite(this, this->getFd());
     }
     catch (const std::exception &e) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToCache", e.what());
         throw (KqueueError());
     }
     catch (...) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToCache", "Fail to offboard Write Event");
         throw ;
     }
 }

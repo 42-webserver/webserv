@@ -68,7 +68,7 @@ class Logger {
 		// void	warning(const std::string& message) ;
 		// void	warning(const std::string& format, int count, ...); 
 		void	error(const std::string& message); 
-		void	error(const std::string& format, int count, ...);
+		// void	error(const std::string& format, int count, ...);
 		ssize_t  getBufferSize(void) const;
 		// void	debug(const std::string& message) ;
 		// void	debug(const std::string& format, int count, ...);

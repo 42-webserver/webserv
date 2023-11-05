@@ -19,11 +19,9 @@ void	ReadEventFromClient::onboardQueue() {
 		this->getChannel()->setNonBlocking();
 		this->_onboardRead(event, fd);
 	} catch (KqueueError &e) {
-		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (KqueueError());
 	}
-	catch (...) {
-		Logger::getInstance().error("{} {}", 2, "ReadEventClient", "Fail to onboard Read Event");
+	catch (std::exception &e) {
 		throw ;
 	}
 }
@@ -35,9 +33,11 @@ void	ReadEventFromClient::offboardQueue() {
 		this->_offboardRead(this, this->getFd());
 		//To do: check this
 		std::cerr << "ReadEventFromClient::offboardQueue() end" << std::endl;
-	} catch (const std::exception &e) {
-		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
+	} catch (KqueueError &e) {
 		throw (KqueueError());
+	}
+	catch (std::exception &e) {
+		throw ;
 	}
 
 }

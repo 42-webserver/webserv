@@ -22,8 +22,10 @@ void	WriteEventToClient::onboardQueue(void){
 		this->getChannel().get()->setNonBlocking();
 		this->_onboardWrite(event, this->getFd());
 	}
-	catch (...) {
-		Logger::getInstance().error("Fail to onboard Write Event");
+	catch (KqueueError &e) {
+		throw (KqueueError());
+	}
+	catch (std::exception &e) {
 		throw ;
 	}
 }

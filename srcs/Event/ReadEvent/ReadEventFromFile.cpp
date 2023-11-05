@@ -24,11 +24,9 @@ void ReadEventFromFile::onboardQueue(void) {
         this->_onboardRead(event, this->getFd());
     }
     catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", e.what());
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", "Fail to onboard Read Event");
+    catch (std::exception &e) {
         throw ;
     }
 }
@@ -39,12 +37,10 @@ void ReadEventFromFile::offboardQueue(void) {
     try {
         this->_offboardRead(this, this->getFd());
     }
-    catch (const std::exception &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", e.what());
+    catch (KqueueError &e) {
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", "Fail to offboard Read Event");
+    catch (std::exception &e) {
         throw ;
     }
 

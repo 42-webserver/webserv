@@ -38,7 +38,6 @@ e_pattern_Process_result FileReaderProcessor::process(ft::shared_ptr
     }
     catch (std::exception& e) {
         std::cerr << "std::exception" << e.what() << std::endl;
-        Logger::getInstance().error("{} {}", 2, "FileReaderProcessor", e.what());
         std::cerr << "FileReaderProcessor::process: " << e.what() << std::endl;
         throw ;
     }

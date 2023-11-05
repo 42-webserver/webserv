@@ -19,11 +19,9 @@ void ReadEventFromCgi::onboardQueue(void){
         this->getChannel()->setNonBlocking();
         this->_onboardRead(event, fd);
     } catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCgi", e.what());
         throw (KqueueError());
     }
     catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCgi", "Fail to onboard Read Event");
         throw ;
     }
 }
@@ -35,11 +33,9 @@ void ReadEventFromCgi::offboardQueue(void){
     try {
         this->_offboardRead(event, fd);
     } catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCgi", e.what());
         throw (KqueueError());
     }
     catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCgi", "Fail to offboard Read Event");
         throw ;
     }
 }

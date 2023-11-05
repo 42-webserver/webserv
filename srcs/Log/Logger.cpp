@@ -74,13 +74,13 @@ std::string Logger::converformatMessage(const std::string& format, int count, va
 // }
 
 void	Logger::error(const std::string& message) { log(message); }
-void	Logger::error(const std::string& format, int count, ...) {
-	va_list		args;
+// void	Logger::error(const std::string& format, int count, ...) {
+// 	va_list		args;
 
-	va_start(args, count);
-	log(converformatMessage(format, count, args));
-	va_end(args);
-}
+// 	va_start(args, count);
+// 	log(converformatMessage(format, count, args));
+// 	va_end(args);
+// }
 
 ssize_t  Logger::getBufferSize(void) const {
 	return (this->_buffer->size());

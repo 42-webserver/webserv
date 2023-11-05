@@ -23,11 +23,11 @@ void ReadEventFromCache::onboardQueue(void) {
         this->_onboardRead(this, this->getFd());
     }
     catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCache", e.what());
+        Logger::getInstance().error("kqueue error ");
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCache", "Fail to onboard Read Event");
+    catch (std::exception &e) {
+        Logger::getInstance().error(e.what());
         throw ;
     }
 
@@ -38,12 +38,10 @@ void ReadEventFromCache::offboardQueue(void) {
     try {
         this->_offboardRead(this, this->getFd());
     }
-    catch (const std::exception &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCache", e.what());
+    catch (KqueueError &e) {
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromCache", "Fail to offboard Read Event");
+    catch (std::exception &e) {
         throw ;
     }
 }

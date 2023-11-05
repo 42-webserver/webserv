@@ -18,8 +18,10 @@ void	WriteEventToCgi::onboardQueue(void){
         this->getChannel().get()->setNonBlocking();
         this->_onboardWrite(event, this->getFd());
     }
+    catch (KqueueError &e) {
+        throw (KqueueError());
+    }
     catch (...) {
-        Logger::getInstance().error("Fail to onboard Write Event");
         throw ;
     }
 }

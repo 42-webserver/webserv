@@ -95,7 +95,7 @@ void WriteEventToClientHandler::_hanldeErrorPage(ft::shared_ptr<Client> client, 
 void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteEventToClient *curEvent){
 	std::cerr << "WriteEventToClientHandler::_handleNew" << std::endl;
 	if (client->getRequest()->isError()){
-		std::cerr << "WriteEventToClientHandler::_handleNew: isError" << std::endl;
+		client->allocateResponse();
 		_hanldeErrorPage(client, curEvent, REQUEST_ENTITY_TOO_LARGE);
 		return ;
 	}
@@ -115,16 +115,12 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 	}
 	catch (HttpException &e) {
 		std::cerr << "WriteEventToClientHandler1::_handleNew: " << e.what() << std::endl;
-		Logger::getInstance().error("client uri : {}, client Method : {} error : {}", 
-		3, client->getRequest()->getUri().c_str(), client->getRequest()->getMethod().c_str(),
-		e.what());
+		Logger::getInstance().error(e.what());
 		_hanldeErrorPage(client, curEvent, e.getStatusCode());
 	}
 	catch (std::exception &e) {
 		std::cerr << "WriteEventToClientHandler2::_handleNew: " << e.what() << std::endl;
-		Logger::getInstance().error("client uri : {}, client Method : {} error : {}", 
-		3, client->getRequest()->getUri().c_str(), client->getRequest()->getMethod().c_str(),
-		e.what());		
+		Logger::getInstance().error(e.what());
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
 	std::cerr << "WriteEventToClientHandler::_handleNew end" << std::endl;
