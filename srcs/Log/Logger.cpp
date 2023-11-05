@@ -30,6 +30,7 @@ Logger::~Logger(void) {
 }
 
 void	Logger::_flush(void) {
+	exit(1);
 	FILE	*fp = FileStream::fopen_with_dirs(DEFAULT_LOG_FILE_NAME.c_str(), "w+");
 	int fd = fileno(fp);
 	while (this->_buffer->size() > 0)

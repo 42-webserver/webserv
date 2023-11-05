@@ -97,6 +97,8 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 	if (client->getRequest()->isError()){
 		client->allocateResponse();
 		_hanldeErrorPage(client, curEvent, REQUEST_ENTITY_TOO_LARGE);
+		std::string error = "Request Entity Too Large";
+		Logger::getInstance().error(error);
 		return ;
 	}
 	// client->getRequest()->_printBody();

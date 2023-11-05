@@ -135,7 +135,7 @@ ssize_t BaseNode::insertString(std::string::const_iterator start, ssize_t size) 
 	if (size == 0) return size;
 	if (size + _size > _capacity)
 		size = _capacity - _size;
-	std::copy(start, start+size, _buffer.begin());
+	std::copy(start, start+size, _buffer.begin() + _size);
 	_size += size;
 	return size;
 }

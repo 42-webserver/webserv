@@ -27,6 +27,7 @@ void FileManager::_readFile(const std::string &uri, ft::shared_ptr<HttpResponse>
 
 void FileManager::_writeFile(const std::string &uri, ft::shared_ptr<HttpRequest> request) {
 
+    // exit(1);
     FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
     FileData &fileData = fileTableManager.getFileData(uri);
     EventFactory &eventFactory = EventFactory::getInstance();
