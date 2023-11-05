@@ -233,14 +233,19 @@ ft::shared_ptr<HttpRequest> request) {
     e_file_upload_sync fileUploadSync = request->getFileUploadSync(HttpRequest::AccessKey());
     Cache &cache = Cache::getInstance();
 
+    std::cerr << "FileManager::requestFileUpload() : fileProcessingType : " << fileProcessingType << std::endl;
+    std::cerr << "FileManager::requestFileUpload() : fileUploadSync : " << fileUploadSync << std::endl;
     if (fileProcessingType == ReadingProcessing) {
+        std::cerr << "FileManager::requestFileUpload() : ReadingProcessing" << std::endl;
         return (FileRequestShouldWait);
     }
     else if (fileProcessingType == WritingProcessing) {
+        std::cerr << "FileManager::requestFileUpload() : WritingProcessing" << std::endl;
         // 자기가 쓰고 있던 남의 쓰고 있던 기다려야됨 
         return (FileRequestShouldWait);
     }
     else if (fileProcessingType == NoneProcessing) {
+        std::cerr << "FileManager::requestFileUpload() : NoneProcessing" << std::endl;
         // 자기가 쓴게 완료된 경우 처리부터
         if (fileUploadSync == Writing) {
             request->setFileUploadSync(WritingDone, HttpRequest::AccessKey());
@@ -251,7 +256,9 @@ ft::shared_ptr<HttpRequest> request) {
 
         if (fileUploadSync == NoneSetting) {
             //cache에 있는건데 쓰려는 경우
+            std::cerr << "FileManager::requestFileUpload() : NoneSetting" << std::endl;
             if (cache.hit(uri)) {
+                std::cerr << "FileManager::requestFileUpload() : cache hit" << std::endl;
                 if (!isInCashSize(contentLength)){
                     cache.deleteCacheContent(uri);
                     _writeFile(uri, request);
@@ -264,12 +271,15 @@ ft::shared_ptr<HttpRequest> request) {
                     return (FileRequestSuccess);
                 }
             }
-            if (isInCashSize(contentLength)){
+            else if (isInCashSize(contentLength)){
+                std::cerr << "FileManager::requestFileUpload() : cache miss in cash size" << std::endl;
                 cache.putCacheContent(uri, request->getBody());
+                std::cerr << "putCacheContent" << std::endl;
                 request->setFileUploadSync(WritingDone, HttpRequest::AccessKey());
                 return (FileRequestSuccess);
             }
             else {
+                std::cerr << "FileManager::requestFileUpload() : cache miss out cash size" << std::endl;
                 _writeFile(uri, request);
                 request->setFileUploadSync(Writing, HttpRequest::AccessKey());
                 return (FileRequestShouldWait);

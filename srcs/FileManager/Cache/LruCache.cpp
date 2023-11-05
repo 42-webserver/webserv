@@ -167,8 +167,8 @@ void LruCache::put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> 
 
 	this->_lru_list.push_front(std::make_pair(uri, 
 	LruCacheNode(buffer)));
-	_writeToCache(uri, buffer);
 	this->_cache[uri] = this->_lru_list.begin();
+	_writeToCache(uri, buffer);
 }
 void LruCache::put(const std::string& uri){
    if (this->_cache.size() >= this->_capacity) {
@@ -183,7 +183,6 @@ void LruCache::put(const std::string& uri){
 	LruCacheNode(e_reading)));
 	this->_cache[uri] = this->_lru_list.begin();
 	_readToCache(uri);
-	this->_cache[uri] = this->_lru_list.begin();	
 }
 
 //Todo :check

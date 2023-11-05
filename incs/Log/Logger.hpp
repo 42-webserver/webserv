@@ -19,7 +19,7 @@
 						// -> Error (LogError.txt)
 						// Logger Behavior a) buffer 4개- warning, info, error, debug
 // 4. 만약에 디렉토리 없으면 만드는 코드 필요
-const std::string DEFAULT_LOG_FILE_NAME = "LogSave/Log.txt";
+const std::string DEFAULT_LOG_FILE_NAME = "/Users/idaegyu/Desktop/daeguWeb/Logsave/Log.txt";
 
 typedef enum{
 	e_log_cycle,
@@ -69,7 +69,7 @@ class Logger {
 		// void	warning(const std::string& format, int count, ...); 
 		void	error(const std::string& message); 
 		void	error(const std::string& format, int count, ...);
-		size_t  getBufferSize(void) const;
+		ssize_t  getBufferSize(void) const;
 		// void	debug(const std::string& message) ;
 		// void	debug(const std::string& format, int count, ...);
 
