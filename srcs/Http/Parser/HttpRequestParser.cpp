@@ -8,27 +8,12 @@ HttpRequestParser::HttpRequestParser(void)
 	this->_buffer.reserve(_BUFFER_SIZE);
 }
 
-const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
-	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-	// if (_state != BODY) {
-		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
-	// 	readBuffer.recycleInstance();
-	// }
-	if (_state == BEFORE || _state == START_LINE)
-		handleStartLineState();
-	if (_state == HEADERS)
-		handleHeaderState(vsm);
-	if (_state == BODY) 
-		handleBodyState();
-	readBuffer.recycleInstance();
-	return _state;
-}
 // const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
 // 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-// 	if (_state != BODY) {
+// 	// if (_state != BODY) {
 // 		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
-// 		readBuffer.recycleInstance();
-// 	}
+// 	// 	readBuffer.recycleInstance();
+// 	// }
 // 	if (_state == BEFORE || _state == START_LINE)
 // 		handleStartLineState();
 // 	if (_state == HEADERS)
@@ -38,6 +23,21 @@ const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualS
 // 	readBuffer.recycleInstance();
 // 	return _state;
 // }
+const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+	if (_state != BODY) {
+		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
+		readBuffer.recycleInstance();
+	}
+	if (_state == BEFORE || _state == START_LINE)
+		handleStartLineState();
+	if (_state == HEADERS)
+		handleHeaderState(vsm);
+	if (_state == BODY) 
+		handleBodyState();
+	readBuffer.recycleInstance();
+	return _state;
+}
 void HttpRequestParser::handleStartLineState() {
 	if (_buffer.empty())
 		return;
@@ -109,13 +109,14 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
     }
 }
 void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm){
+	std::cerr << "changeStateToBody" << std::endl;
 	this->_state = BODY;
 
 	ssize_t clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler();
 
 	//fix 
-	int contentLength = this->_httpRequest->getContentLength();
+	ssize_t contentLength = this->_httpRequest->getContentLength();
 	if (contentLength > clientMaxBodySize){
 		this->_httpRequest->setError(REQUEST_ENTITY_TOO_LARGE);
 		this->_state = FINISH;
@@ -131,6 +132,7 @@ void HttpRequestParser::injectionHandler(){
 			std::string boundary = it->second.substr(it->second.find("boundary=") + 9);
 			this->_bodyHandler = ft::make_shared<MultipartRequestBodyHandler>(boundary, this->_httpRequest);
 			this->_httpRequest->setBodyType(MULTIPART_FORM_DATA);
+			std::cerr << "multipart -- exit injectionHandler" << std::endl;
 			return;
 		}
 	}
@@ -145,11 +147,15 @@ void HttpRequestParser::injectionHandler(){
 	}
 	this->_httpRequest->setBodyType(NORMAL);
 	this->_bodyHandler = ft::make_shared<NormalBodyHandler>(this->_httpRequest);
+
 }
 
 void HttpRequestParser::handleBodyState() {
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
 
-	if (_buffer.empty()){
+//Todo: check this
+	if (_buffer.empty() && readBuffer.size() == 0){
+		std::cout << "buffer body  empty" << std::endl;
 		//fix : daegulee
 		int contentLength = this->_httpRequest->getContentLength();
 		if (contentLength == noContentLength && NORMAL == this->_httpRequest->getBodyType())

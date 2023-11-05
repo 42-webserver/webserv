@@ -104,9 +104,23 @@ ssize_t RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, f
     if (it == serverElement.end())
         //Todo: check this 80mb
         return 1024 * 1024 * 50;
-    std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum() << std::endl;
+    // std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum() << std::endl;
+    // std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getUnit() << std::endl;
     // exit(1);
-    return ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
+    int num = ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
+    char unit = ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getUnit();
+    ssize_t size = num;
+    if (unit == 'B')
+        size *= 1;
+    else if (unit == 'K')
+        size *= 1024;
+    else if (unit == 'M')
+        size *= 1024 * 1024;
+    else if (unit == 'G')
+        size *= 1024 * 1024 * 1024;
+    else
+        throw std::runtime_error("ClientMaxBodySize Logic Error");
+    return size;
 }
 
 bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
