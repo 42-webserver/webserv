@@ -197,15 +197,19 @@ ssize_t IoReadAndWriteBuffer::copyHeadTo(std::vector<char>& dest) {
 }
 ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vector<char>::iterator end) {
     ssize_t size = 0;
+    ssize_t n = 0;
     ssize_t appendSize = std::distance(begin, end);
+    std::cerr << "IoReadAndWriteBuffer::append1: appendSize: " << appendSize << std::endl;
     try {
         if (_lst.empty()) _allocate();
-        while (size == appendSize) {
-            size = _lst.back()->insert(begin, end);
+        while (begin != end) {
+            n = _lst.back()->insert(begin, end);
             if (_lst.back()->isFull()) _allocate();
-            begin += size;
-            appendSize -= size;
+            begin += n;
+            appendSize -= n;
+            size += n;
         }
+        std::cerr << "IoReadAndWriteBuffer::append1 size: " << size << std::endl;
     }
     catch (const std::exception& e) {
         throw;
@@ -216,27 +220,28 @@ ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vec
     return size;
 }
 
-ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, ssize_t size) {
-    ssize_t ret = 0;
-    ssize_t appendSize = size;
-    try {
-        if (_lst.empty()) _allocate();
+// ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, ssize_t size) {
+//     ssize_t ret = 0;
+//     ssize_t appendSize = size;
+//     std::cerr << "IoReadAndWriteBuffer::append2: appendSize: " << appendSize << std::endl;
+//     try {
+//         if (_lst.empty()) _allocate();
 
-        while (ret == appendSize) {
-            ret = _lst.back()->insert(begin, size);
-            if (_lst.back()->isFull()) _allocate();
-            begin += ret;
-            appendSize -= ret;
-        }
-    }
-    catch (const std::exception& e) {
-        throw;
-    }
-    catch (...) {
-        throw;
-    }
-    return ret;
-}
+//         while (appendSize != 0) {
+//             ret = _lst.back()->insert(begin, size);
+//             if (_lst.back()->isFull()) _allocate();
+//             begin += ret;
+//             appendSize -= ret;
+//         }
+//     }
+//     catch (const std::exception& e) {
+//         throw;
+//     }
+//     catch (...) {
+//         throw;
+//     }
+//     return ret;
+// }
 
 ssize_t IoReadAndWriteBuffer::eraseFront(ssize_t size) {
     ssize_t ret = 0;

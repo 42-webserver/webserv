@@ -55,7 +55,7 @@ public:
 //Modifiable interface
 public:
     virtual ssize_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end);
-    virtual ssize_t append(std::vector<char>::iterator begin, ssize_t size);
+    // virtual ssize_t append(std::vector<char>::iterator begin, ssize_t size);
     virtual ssize_t eraseFront(ssize_t size);
 //IoReadAndWriteBuffer interface
 private:

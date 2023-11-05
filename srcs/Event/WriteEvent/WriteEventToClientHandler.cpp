@@ -99,7 +99,7 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 		_hanldeErrorPage(client, curEvent, REQUEST_ENTITY_TOO_LARGE);
 		return ;
 	}
-	client->getRequest()->_printBody();
+	// client->getRequest()->_printBody();
 	try {
 		client->allocateResponse();
 		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();

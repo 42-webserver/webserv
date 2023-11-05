@@ -45,6 +45,10 @@ private:
 	std::vector<char>					_buffer;
 	ft::shared_ptr<RequestBodyHandler>	_bodyHandler;
 
+//debug
+public:
+	std::string _getDebugString(RequestParseState state);
+
 
 public:
 	//check: this maybe void

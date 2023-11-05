@@ -14,6 +14,8 @@ bool NormalBodyHandler::handleBody(std::vector<char> &buffer)
 	// int writeSize = contentLength - this->_readBodySize;
 	// std::cerr << "normal -- contentLength: " << contentLength << std::endl;
 	writeInMemory(buffer);
+		std::cerr << "normal -- contentLength: " << contentLength << std::endl;
+	std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
 	// std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
 	if (contentLength <= this->_readBodySize) {
 		// std::cerr << "normal -- contentLength <= this->_readBodySize" << std::endl;
