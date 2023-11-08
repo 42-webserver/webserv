@@ -49,6 +49,7 @@ bool NormalBodyHandler::handleBody(std::vector<char> &buffer)
 void NormalBodyHandler::writeInMemory(std::vector<char> &buffer)
 {
 	ssize_t n;
+
 	if (!buffer.empty()) {
 		n = this->_request->insertBody(buffer);
 		buffer.clear();

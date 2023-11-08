@@ -9,24 +9,26 @@ CgiResponseBuilder::~CgiResponseBuilder(void) {
 
 
 void CgiResponseBuilder::_handleStatusCode() {
-    if (this->_headers.find("HTTP/1.1") != this->_headers.end()){
+    if (this->_headers.find("Status") == this->_headers.end()){
         if (this->_headers.find("Location") != this->_headers.end())
             _setStatusCode(FOUND);
         else
             _setStatusCode(OK);
     }
     else {
-        _setStatusCode(HttpStatus::stringToHttpStatusCode(this->_headers["HTTP/1.1"]));
+        _setStatusCode(HttpStatus::stringToHttpStatusCode(this->_headers["Status"]));
     }
 }
 
 void CgiResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
     _handleStatusCode();
-    if (this->_headers.find("Content-Type") == this->_headers.end())
-        this->_headers["Content-Type"] = "application/octet-stream";
+    if (this->_headers.find("Content-type") == this->_headers.end())
+        this->_headers["Content-type"] = "application/octet-stream";
 
+    ssize_t ContentLength = std::atol(this->_headers["Content-Length"].c_str());
+    std::cerr << "ContentLength: " << ContentLength << std::endl;
     _allocContentLength(ContentLength::e_content_length_header, 
-        std::atol(this->_headers["Content-Length"].c_str()));
+        ContentLength);
     _buildDefaultResponseHeader(buffer);
 
     static std::set<std::string> defaultHeaders;

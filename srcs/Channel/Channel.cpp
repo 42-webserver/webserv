@@ -2,7 +2,9 @@
 
 Channel::Channel(void) : _ChannelFd(-1) {}
 Channel::Channel(int fd) : _ChannelFd(fd) {}
-Channel::~Channel(void) {}
+Channel::~Channel(void) {
+	close(this->_ChannelFd);
+}
 Channel::Channel(const Channel &ref) { *this = ref; }
 Channel	&Channel::operator=(const Channel &rhs) {
 	if (this != &rhs) {
@@ -19,16 +21,21 @@ void	Channel::destroyChannelFd(void) {
 void	Channel::setNonBlocking(void){
 	int flags;
 
-	if ((flags = fcntl(this->getFd(), F_GETFL, 0)) == -1) {
-		Logger::getInstance().error("Fail to control client");
-		close(this->getFd());
+	int fd = this->getFd();
+	// std::cerr << "setNonBlocking getFd" << std::endl;
+	if ((flags = fcntl(fd, F_GETFL, 0)) == -1) {
+		// Logger::getInstance().error("Fail to control client");
+		std::cerr << "Fail to control client" << std::endl;
+		perror("fcntl1");
+		exit(1);
 		throw (FailToNonBlockException());
-		return ;
 	}
 
-	if (fcntl(this->getFd(), F_SETFL, flags | O_NONBLOCK) == -1) {
-		Logger::getInstance().error("Fail to control client");
-		close(this->getFd());
+	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
+		// Logger::getInstance().error("Fail to control client");
+		std::cerr << "Fail to control client" << std::endl;
+		perror("fcntl2");
+		exit(1);
 		throw (FailToNonBlockException());
 	}
 }

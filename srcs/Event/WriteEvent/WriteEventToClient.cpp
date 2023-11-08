@@ -12,6 +12,7 @@ _virtualServerManager(virtualServerManager), _client(client) {
 
 WriteEventToClient::~WriteEventToClient(void) {}
 void	WriteEventToClient::callEventHandler(void) {
+	std::cerr << "WriteEventToClient::callEventHandler()" << std::endl;
 	this->_event_handler->handleEvent(*this);
 }
 void	WriteEventToClient::onboardQueue(void){

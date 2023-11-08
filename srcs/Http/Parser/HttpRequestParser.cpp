@@ -174,7 +174,6 @@ void HttpRequestParser::injectionHandler(){
 	}
 	this->_httpRequest->setBodyType(NORMAL);
 	this->_bodyHandler = ft::make_shared<NormalBodyHandler>(this->_httpRequest);
-
 }
 
 void HttpRequestParser::handleBodyState() {
@@ -186,6 +185,8 @@ void HttpRequestParser::handleBodyState() {
 		std::cout << "buffer body  empty" << std::endl;
 		//fix : daegulee
 		int contentLength = this->_httpRequest->getContentLength();
+		if (contentLength == 0)
+			this->_state = FINISH;
 		if (contentLength == noContentLength && NORMAL == this->_httpRequest->getBodyType()){
 			this->_state = FINISH;
 			std::cerr << "handleBodyState -- this->_state: " << _getDebugString(this->_state) << std::endl;
@@ -193,7 +194,13 @@ void HttpRequestParser::handleBodyState() {
 		return;
 	}
 	bool result;
-	result = _bodyHandler->handleBody(_buffer);
+	try {
+		result = _bodyHandler->handleBody(_buffer);
+	}
+	catch (const std::exception& e) {
+		this->_httpRequest->setError(BAD_REQUEST);
+		result = true;
+	}
 	if(result)
 		this->_state = FINISH;
 	std::cerr << "handleBodyState -- this->_state: " << _getDebugString(this->_state) << std::endl;

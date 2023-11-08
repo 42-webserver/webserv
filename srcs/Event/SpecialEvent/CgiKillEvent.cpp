@@ -1,22 +1,22 @@
-#include <Event/SpecialEvent/LogEvent.hpp>
-#include <Log/Logger.hpp>
+#include <Event/SpecialEvent/CgiKillEvent.hpp>
 #include <Event/EventQueue/EventQueue.hpp>
 #include <Event/Exception/KqueueError.hpp>
 
-LogEvent::LogEvent(void): Event(new LogEventHandler()) {}
-LogEvent::~LogEvent(void) {}
+CgiKillEvent::CgiKillEvent(pid_t cgiPid): Event(new CgiKillEventHandler()), _cgiPid(cgiPid) {}
+CgiKillEvent::~CgiKillEvent(void) {}
 
-void LogEvent::callEventHandler(void) { 
-    std::cerr << "LogEvent::callEventHandler" << std::endl;
+pid_t CgiKillEvent::getCgiPid(void) {
+    return (this->_cgiPid);
+}
 
+void CgiKillEvent::callEventHandler(void) {
     this->_event_handler->handleEvent(*this);
 }
 
-void LogEvent::onboardQueue(void) {
-    std::cerr << "LogEvent::onboardQueue" << std::endl;
+void CgiKillEvent::onboardQueue(void) {
     EventQueue& eventQueue = EventQueue::getInstance();
     Event *event = this;
-        // EV_SET(&change, 1, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 3 * 60 * 1000, 0); // 3분 = 3 * 60 * 1000ms
+        
         EV_SET(
             eventQueue.getEventSetElementPtr(),
             1,
@@ -30,13 +30,11 @@ void LogEvent::onboardQueue(void) {
         if (kevent(eventQueue.getEventQueueFd(),
             eventQueue.getEventSet(),
             1, NULL, 0, NULL) == -1) {
-            std::cerr << "LogEvent::onboardQueue" << std::endl;
             throw (KqueueError());
         }
 }
 
-void LogEvent::offboardQueue(void) {
-    std::cerr << "LogEvent::offboardQueue" << std::endl;
+void CgiKillEvent::offboardQueue(void) {
     EventQueue& eventQueue = EventQueue::getInstance();
     Event *event = this;
         // EV_SET(&change, 1, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 3 * 60 * 1000, 0); // 3분 = 3 * 60 * 1000ms

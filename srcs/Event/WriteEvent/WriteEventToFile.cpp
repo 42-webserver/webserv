@@ -14,6 +14,7 @@ void WriteEventToFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndWriter
 }
 
 void WriteEventToFile::callEventHandler(void) {
+    std::cerr << "WriteEventToFile::callEventHandler()" << std::endl;
     this->_event_handler->handleEvent(*this);
 }
 void WriteEventToFile::onboardQueue(void) {

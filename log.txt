@@ -1,0 +1,6 @@
+2023-11-09 03:15:34 - Method: POST, Path: /Users/idaegyu/Desktop/daeguWeb/test.txt, Status: 200 OK, Info: Action: append, Info: Data appended successfully
+2023-11-09 03:16:37 - Method: POST, Path: /Users/idaegyu/Desktop/daeguWeb/test.txt, Status: 200 OK, Info: Action: append, Info: Data appended successfully
+2023-11-09 03:17:12 - Method: DELETE, Path: /Users/idaegyu/Desktop/daeguWeb/test.txt, Status: 200 OK, Info: Action: delete, Info: File deleted successfully
+2023-11-09 03:18:45 - Method: POST, Path: /Users/idaegyu/Desktop/daeguWeb/test.txt, Status: 400 Bad Request, Info: Action: append, Info: File does not exist
+2023-11-09 03:18:48 - Method: PUT, Path: /Users/idaegyu/Desktop/daeguWeb/test.txt, Status: 200 OK, Info: Action: create/replace, Info: File created or replaced successfully
+2023-11-09 03:19:00 - Method: DELETE, Path: /Users/idaegyu/Desktop/daeguWeb/test.txt, Status: 200 OK, Info: Action: delete, Info: File deleted successfully

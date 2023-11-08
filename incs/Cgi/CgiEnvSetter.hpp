@@ -7,17 +7,38 @@
 #include <Channel/Channel.hpp>
 #include <Server/VirtualServerManager.hpp>
 
+class CharArray {
+public:
+    CharArray(int size);
+    CharArray();
+    ~CharArray();
+    CharArray(const CharArray& other);
+    CharArray& operator=(const CharArray& other);
 
+    char** get();
+    char* operator[](int i);
+    void insert(const std::string& str);
+    int size() const;
+
+private:
+    int _size;
+    char** _data;
+    int _mallocSize;
+
+    void _alloc(size_t size);
+    void _dealloc();
+};
 class EnvpManager {
 private:
-    char** envp;
-    std::size_t size;
+    std::size_t _size;
+    CharArray _envp;
 
 public:
     EnvpManager(const std::map<std::string, std::string>& env);
     ~EnvpManager();
-    char** getEnvp() const;
+    char** getEnvp();
 };
+
 class CgiEnvSetter {
 private:
     std::map<std::string, std::string> _env;

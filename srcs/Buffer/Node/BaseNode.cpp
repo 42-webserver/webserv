@@ -62,7 +62,7 @@
 
 //debug
 void BaseNode::_printBuffer() {
-	std::cerr << "buffer: ";
+	std::cerr << "buffer: " << std::endl;
 	for (std::vector<char>::iterator it = _buffer.begin(); it != _buffer.end(); it++)
 		std::cerr << *it;
 	std::cerr << std::endl;

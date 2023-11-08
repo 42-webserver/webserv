@@ -2,7 +2,7 @@
 #include "../../../incs/Event/WriteEvent/WriteEventToClient.hpp"
 #include <Http/Exception/HttpException.hpp>
 #include <Http/Exception/MethodNotAllowedException.hpp>
-
+#include <Event/EventQueue/EventQueue.hpp>
 WriteEventToClientHandler::WriteEventToClientHandler() : WriteEventHandler() {}
 WriteEventToClientHandler::~WriteEventToClientHandler() {}
 
@@ -41,10 +41,26 @@ void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, Wri
 	ft::shared_ptr<VirtualServerManager> vsm = curEvent->getVirtualServerManger();
 	PatternType patternType = client->getPatternType(vsm);
 	PatternProcessor patternProcessor(vsm, patternType, client);
+	ft::shared_ptr<Channel> channel = curEvent->getChannel();
 		
 	try {
 		if (patternProcessor.querryCanSending() == SUCCESS)
 			_partialSending(client->getResponse(), client, curEvent);
+		// else {
+		// 	EventQueue & eventQueue = EventQueue::getInstance();
+		// 	EV_SET(
+		// 	eventQueue.getEventSetElementPtr(),
+		// 	channel->getFd(),
+		// 	EVFILT_WRITE,
+		// 	EV_DISABLE, 
+		// 	0, 0, 
+		// 	NULL);
+		// 	if (kevent(eventQueue.getEventQueueFd(), eventQueue.getEventSet(), 1, NULL, 0, NULL) == -1) {
+		// 		exit(1);
+		// 		throw (KqueueError());
+		// 	}
+		// }
+		std::cerr << "WriteEventToClientHandler::_handleRemain end" << std::endl;
 	}
 	catch (HttpException &e) {
 		std::cerr << "WriteEventToClientHandler::_handleRemain: " << e.what() << std::endl;

@@ -5,7 +5,7 @@
 #include "../../incs/Log/Logger.hpp"
 #include <unistd.h>
 #include <stdlib.h>
-
+#include <typeinfo>
 Webserv::Webserv(void): _physical_server_manager() {}
 Webserv::~Webserv(void) {}
 Webserv::Webserv(const Webserv &ref): _physical_server_manager(ref._physical_server_manager) {}
@@ -17,7 +17,7 @@ Webserv	&Webserv::operator=(const Webserv &rhs) {
 	return (*this);
 }
 
-bool	Webserv::run(const Config &config) throw(std::exception) {
+bool	Webserv::run(const Config &config) {
 	try {
 		this->_physical_server_manager.build(config);
 		this->_physical_server_manager.run();
@@ -26,6 +26,7 @@ bool	Webserv::run(const Config &config) throw(std::exception) {
 		//exit(0);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
+		std::cerr << "Webserv::run() catch" << std::endl;
 		throw (FailToRunException());
 	}
 

@@ -43,6 +43,7 @@ bool	Socket::build(const int port, const std::string &ip){
 bool	Socket::run(void)  {
 	if (bind(this->getFd(), (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1) {
 		Logger::getInstance().error(strerror(errno));
+		std::cerr << "Socket::run() catch" << strerror(errno) << std::endl;
 		throw (FailToBindException());
 	}
 	if (listen(this->getFd(), MAX_SIZE) == -1) {

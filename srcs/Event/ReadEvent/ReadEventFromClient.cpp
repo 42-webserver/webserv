@@ -8,7 +8,10 @@ ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel,
 	_client(new Client(Read))
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
-void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
+void	ReadEventFromClient::callEventHandler(void) { 
+	std::cerr << "ReadEventFromClient::callEventHandler()" << std::endl;
+
+	this->_event_handler->handleEvent(*this); }
 void	ReadEventFromClient::onboardQueue() {
 	int			fd = this->getFd();
 	Event		*event = this;

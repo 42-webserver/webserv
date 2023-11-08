@@ -14,11 +14,8 @@ class ChunkDataSizeNotMatchException : public std::exception {
 			virtual const char* what() const throw();
 };
 
-private:
-	ft::shared_ptr<HttpRequest> 			_request;
-
 public:
-	bool handleBody(std::vector<char> &buffer) throw(ChunkDataSizeNotMatchException);
+	bool handleBody(std::vector<char> &buffer);
 	ChunkedRequestBodyHandler(ft::shared_ptr<HttpRequest> req);
 	~ChunkedRequestBodyHandler(void);
 

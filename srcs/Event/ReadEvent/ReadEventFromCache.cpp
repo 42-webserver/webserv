@@ -13,6 +13,7 @@ void ReadEventFromCache::_syncWithCache(ft::shared_ptr<SyncroReadWithCache> sync
 }
 
 void ReadEventFromCache::callEventHandler(void) {
+    std::cerr << "ReadEventFromCache::callEventHandler" << std::endl;
     this->_event_handler->handleEvent(*this);
 }
 

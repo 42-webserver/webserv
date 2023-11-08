@@ -13,6 +13,8 @@ void ReadEventFromFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndReade
     this->_syncroFileDataAndReader = syncroFileDataAndReader;
 }
 void ReadEventFromFile::callEventHandler(void) {
+    std::cerr << "ReadEventFromFile::callEventHandler()" << std::endl;
+
     this->_event_handler->handleEvent(*this);
 }
 void ReadEventFromFile::onboardQueue(void) {

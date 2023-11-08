@@ -1,0 +1,13 @@
+Content-type: text/html
+
+<html>
+<head>
+<title>CGI Program</title>
+</head>
+<body>
+<h1>This is my first CGI program</h1>
+<p>Received input:</p>
+<pre>adsfadsfsad123123dasf<br>
+</pre>
+</body>
+</html>

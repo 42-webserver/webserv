@@ -25,14 +25,14 @@ public:
 		Write,
 	}			e_std;
 private:
-	ft::shared_ptr<Channel>		_channel[Count];
+	int _pipeFd[Count];
 public:
 	void destroy(e_pipe type);
 public:
 	void _dupFdInCgiProcess();
 	void _closeServerSideFd();
 	void _closeCgiSideFd();
-	ft::shared_ptr<Channel> &getChannel(e_pipe type);
+	int getPipFd(e_pipe type);
 	// void _setNonBlockServerSideFd();
 	// void _close
 public:
@@ -42,7 +42,7 @@ private:
 	CgiChannel(const CgiChannel &ref);
 	CgiChannel	&operator=(const CgiChannel &rhs);
 public:
-	int getFd(e_pipe pipe) const;
+	int getFd(e_pipe pipe);
 	void build(void);
 class FailToCreateException: public std::exception {
 	public:

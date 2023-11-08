@@ -82,10 +82,10 @@ void ReadEventFromClientHandler::handleEvent(Event &event) {
 	// std::cerr << "buffer size: " << buffer.size() << std::endl;
 	n = buffer.ioRead(readEventClient->getFd());
 	std::cerr << "ReadEventFromClientHandler::handleEvent::n: " << n << std::endl;
-	std::vector<char> readBuffer(buffer.begin(), buffer.end());
-    for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
-		std::cerr << *it;	
-
+	// std::vector<char> readBuffer(buffer.begin(), buffer.end());
+    // for (std::vector<char>::iterator it = readBuffer.begin(); it != readBuffer.end(); it++)
+	// 	std::cerr << *it;	
+	// exit(1);
 	_process(_processMatcher(n), readEventClient);
 }
 

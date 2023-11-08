@@ -138,7 +138,7 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
 }
 
 std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string fullPath = findPath(vsm, req);
+    std::string fullPath = req->getUri();
 
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
@@ -148,17 +148,16 @@ std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> 
     std::string locationString = _findLocationString(locationTrieElement, req->getUri());
 
     // locationString과 일치하는 부분부터 시작
-    size_t startPos = fullPath.find(locationString) + locationString.size();
-
+    size_t startPos = fullPath.find(locationString);
+    size_t dotPos = fullPath.find(".", startPos);
     // '.'을 찾기 시작
-    startPos = fullPath.find(".", startPos);
-    if (startPos != std::string::npos) {
-        size_t endPos = fullPath.find("/", startPos);
+    if (dotPos != std::string::npos) {
+        size_t endPos = fullPath.find("/", dotPos);
         if (endPos == std::string::npos) {
             // '/'가 없으면 문자열 끝까지
             return fullPath.substr(startPos);
         } else {
-            return fullPath.substr(startPos, endPos - startPos);
+            return fullPath.substr(startPos, endPos);
         }
     }
 
@@ -167,7 +166,7 @@ std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> 
 }
 
 std::string RouterUtils::findPathInfo(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string fullPath = findPath(vsm, req);
+    std::string fullPath = req->getUri();
     std::string cgiScriptPath = findCgiScriptPath(vsm, req);
 
     return fullPath.substr(cgiScriptPath.size());
@@ -212,18 +211,18 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
 
     // /안끝나는데  디렉토리면 redirect 
     // Todo : 일단 뗌질로 해놓음
-    std::cerr << "is in uri " << uri << std::endl;
+    // std::cerr << "is in uri " << uri << std::endl;
     if (uri[uri.size() - 1] != '/') {
-        std::cerr << "is in uri " << uri << std::endl;
+        // std::cerr << "is in uri " << uri << std::endl;
         req->setUri(uri + "/");
         std::cerr << req->getUri() << std::endl;
         std::string fullPath = findPath(vsm, req);
-        std::cerr << "is in fullpath IN REDIRECT : " << fullPath << std::endl;
+        // std::cerr << "is in fullpath IN REDIRECT : " << fullPath << std::endl;
         req->setUri(uri.substr(0, uri.size()));
         if (FileManager::isDirectory(fullPath))
             return true;
     }
-    std::cerr << "is in uri going to find location : " << uri << std::endl;
+    // std::cerr << "is in uri going to find location : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     if (locationTrieElement.get() == NULL)
@@ -251,7 +250,6 @@ std::string RouterUtils::_makePath(const std::string &root, const Alias &alias, 
            //logerrr
            throw std::runtime_error("Alias Logic Error");
         }
-        std::cerr << path << std::endl;
     }
     else if(!root.empty()){
         path = root + uri;

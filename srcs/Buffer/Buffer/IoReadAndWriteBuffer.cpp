@@ -199,6 +199,7 @@ ssize_t IoReadAndWriteBuffer::copyHeadTo(std::vector<char>& dest) {
 ssize_t IoReadAndWriteBuffer::append(std::vector<char>::iterator begin, std::vector<char>::iterator end) {
     ssize_t size = 0;
     ssize_t n = 0;
+    std::cerr << "IoReadAndWriteBuffer::append1" << std::endl;
     ssize_t appendSize = std::distance(begin, end);
     std::cerr << "IoReadAndWriteBuffer::append1: appendSize: " << appendSize << std::endl;
     try {
