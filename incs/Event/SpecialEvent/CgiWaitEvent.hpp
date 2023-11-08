@@ -16,7 +16,7 @@ class CgiWaitEvent: public Event {
         CgiWaitEvent(const CgiWaitEvent &ref);
         CgiWaitEvent	&operator=(const CgiWaitEvent &rhs);
     public:
-        pid_t getCgiPid(void) const;
+        pid_t getCgiPid(void);
     private:
         pid_t _cgiPid;
     public:

@@ -12,6 +12,7 @@ e_pattern_Process_result FileWriterProcessor::process(ft::shared_ptr
     (void)channel;
 
     FileManager& fileManager = FileManager::getInstance();
+    std::cerr << "FileWriterProcessor::process" << std::endl;
     e_FileRequestType type;
     try {
         //basic Handle All RequireMent

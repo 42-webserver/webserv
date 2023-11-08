@@ -16,7 +16,6 @@ void WriteEventToFileHandler::handleEvent(Event &event) {
         throw ;
     }
     catch (...) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToFileHandler", "Fail to write to file");
         throw ;
     }
     if (n == 0) {

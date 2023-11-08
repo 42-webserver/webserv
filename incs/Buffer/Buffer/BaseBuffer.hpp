@@ -2,11 +2,12 @@
 # define BASEBUFFER_HPP
 
 #include <cstddef>
+#include <iostream>
 class BaseBuffer{
 public:
     BaseBuffer();
     virtual ~BaseBuffer();
-    virtual size_t  size()=0;
+    virtual ssize_t  size()=0;
 };
 
 #endif

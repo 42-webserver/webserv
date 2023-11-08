@@ -1,8 +1,9 @@
 #include <Http/Response/HttpResponseBuilder.hpp>
 #include <Http/Response/HttpResponse.hpp>
 #include <Client/Client.hpp>
+#include <Http/Utils/RouterUtils.hpp>
 
-ContentLength::ContentLength(int contentLength) : _transferEncodingHeader(""), _contentLength(contentLength), _contentLengthHeaderType(e_content_length_header)
+ContentLength::ContentLength(ssize_t contentLength) : _transferEncodingHeader(""), _contentLength(contentLength), _contentLengthHeaderType(e_content_length_header)
 {
 }
 ContentLength::ContentLength(void) : _transferEncodingHeader("Transfer-Encoding: chunked"), _contentLength(-1), _contentLengthHeaderType(e_chunked_header)
@@ -18,6 +19,11 @@ std::string ContentLength::getContentLengthHeader(void)
     }
     else
         return (this->_transferEncodingHeader);
+}
+
+ssize_t ContentLength::getContentLength(void)
+{
+    return (this->_contentLength);
 }
 
 DirectoryException::DirectoryException() {
@@ -67,13 +73,13 @@ const char *DirectoryException::what() const throw() {
 //         return "Content-Type: application/octet-stream";
 //     }
 // }
-std::string HttpResponseBuilder::_makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath){
-    std::string uri = request->getUri();
-
-    if (indexingPath[indexingPath.size() - 1] != '/')
+std::string HttpResponseBuilder::_makeContentTypeHeader(std::string indexingPath){
+    
+    std::cerr << "HttpResponseBuilder::_makeContentTypeHeader: indexingPath = " << indexingPath << std::endl;
+    if (indexingPath[indexingPath.size() - 1] == '/')
         throw DirectoryException();
         
-    std::string extension = uri.substr(uri.find_last_of(".") + 1);
+    std::string extension = indexingPath.substr(indexingPath.find_last_of(".") + 1);
     for (std::string::iterator it = extension.begin(); it != extension.end(); ++it) {
         *it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
     }
@@ -150,7 +156,8 @@ void HttpResponseBuilder::_allocContentLength(ContentLength::e_content_length_he
 
 void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
 {
-    std::ostringstream oss;
+    // std::ostringstream oss;
+    std::string header;
     // if (this->_statusCode.has_value() == false)
     //     throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: statusCode is not set");
     
@@ -174,40 +181,49 @@ void HttpResponseBuilder::_buildDefaultResponseHeader(std::vector<char> &buffer)
     if (this->_contentLength.has_value() == false)
         throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: contentLength is not set");
 
-    oss << this->_contentLength->getContentLengthHeader() << "\r\n";
-
-    std::string header = oss.str();
+    // oss << this->_contentLength->getContentLengthHeader() << "\r\n";
+    header += this->_contentLength->getContentLengthHeader() + "\r\n";
+    // std::string header = oss.str();
     _buildEssentialResponseHeader(buffer);
     buffer.insert(buffer.end(), header.begin(), header.end());
 }
 
 void HttpResponseBuilder::_buildEssentialResponseHeader(std::vector<char> &buffer)
 {
-    std::ostringstream oss;
+    std::string header;
     if (this->_statusCode.has_value() == false)
         throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: statusCode is not set");
     
-    oss << "HTTP/1.1 " << this->_statusCode.value() << " " << 
-    HttpStatus::getReasonPhrase(this->_statusCode.value()) << "\r\n";
+    // oss << "HTTP/1.1 " << this->_statusCode.value() << " " << 
+    // HttpStatus::getReasonPhrase(this->_statusCode.value()) << "\r\n";
 
-    oss << this->_serverHeader << "\r\n";
-
-    oss << this->_dateHeader << "\r\n";
-
+    header += "HTTP/1.1 " + std::to_string(this->_statusCode.value()) + " " +
+    HttpStatus::getReasonPhrase(this->_statusCode.value()) + "\r\n";
+    // oss << this->_serverHeader << "\r\n";
+    header += this->_serverHeader + "\r\n";
+    // oss << this->_dateHeader << "\r\n";
+    header += this->_dateHeader + "\r\n";
     if ((this->_client->isClientDie() == true && this->_client->isFinalRequest())
     || this->_client->getRequest()->getHeader("Connection") == "close")
         this->_connectionHeader = "Connection: close";
     else
         this->_connectionHeader = "Connection: keep-alive";
-    oss << this->_connectionHeader << "\r\n";
-
+    // oss << this->_connectionHeader << "\r\n";
+    header += this->_connectionHeader + "\r\n";
     if (this->_client->isClientDie() == false)
-        oss << this->_KeepAliveHeader << "\r\n";
-
-    std::string header = oss.str();
+        // oss << this->_KeepAliveHeader << "\r\n";
+        header += this->_KeepAliveHeader + "\r\n";
+    // std::string header = oss.str();
     buffer.insert(buffer.end(), header.begin(), header.end());
 }
 ft::shared_ptr<Client> HttpResponseBuilder::getClient(void)
 {
     return (this->_client);
+}
+
+ssize_t HttpResponseBuilder::getContentLength(void)
+{
+    if (this->_contentLength.has_value() == false)
+        return (-1); 
+    return (this->_contentLength->getContentLength());
 }

@@ -28,14 +28,15 @@ public:
     }   e_content_length_header_type;
 private:
     const std::string _transferEncodingHeader;
-    int _contentLength;
+    ssize_t _contentLength;
     e_content_length_header_type _contentLengthHeaderType;
 public:
     //for ContentLength::e_content_length_header
-    ContentLength(int cotentLength);
+    ContentLength(ssize_t cotentLength);
     //for ContentLength::e_chunked_header
     ContentLength(void);
     std::string getContentLengthHeader(void);
+    ssize_t getContentLength(void);
 };
 class HttpResponseBuilder
 {
@@ -57,7 +58,9 @@ protected:
     void _buildDefaultResponseHeader(std::vector<char> &buffer);
     void _buildEssentialResponseHeader(std::vector<char> &buffer);
     ft::shared_ptr<Client> getClient(void);
-    static  std::string _makeContentTypeHeader(ft::shared_ptr<HttpRequest> request, std::string indexingPath);
+    static  std::string _makeContentTypeHeader(std::string indexingPath);
+public: 
+    ssize_t getContentLength(void);
 public:
     virtual void buildResponseHeader(std::vector<char> &buffer) = 0;
 private:

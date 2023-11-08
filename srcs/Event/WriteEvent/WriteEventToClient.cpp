@@ -12,26 +12,33 @@ _virtualServerManager(virtualServerManager), _client(client) {
 
 WriteEventToClient::~WriteEventToClient(void) {}
 void	WriteEventToClient::callEventHandler(void) {
+	std::cerr << "WriteEventToClient::callEventHandler()" << std::endl;
 	this->_event_handler->handleEvent(*this);
 }
 void	WriteEventToClient::onboardQueue(void){
 	Event *event = this;
 
+	std::cerr << "WriteEventToClient::onboardQueue()" << std::endl;
 	try {
 		this->getChannel().get()->setNonBlocking();
 		this->_onboardWrite(event, this->getFd());
 	}
-	catch (...) {
-		Logger::getInstance().error("Fail to onboard Write Event");
+	catch (KqueueError &e) {
+		throw (KqueueError());
+	}
+	catch (std::exception &e) {
 		throw ;
 	}
 }
 
 void	WriteEventToClient::offboardQueue(void){
+	std::cerr << "WriteEventToClient::offboardQueue()" << std::endl;
+
 	try {
+		this->_client->removeClientEventQueueState(Write);
 		this->_offboardWrite(this, this->getFd());
 		//Todo: check this
-		this->_client->clientKill();
+		std::cerr << "WriteEventToClient::offboardQueue() end" << std::endl;
 	}
 	catch (...) {
 		Logger::getInstance().error("Fail to offboard Write Event");

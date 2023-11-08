@@ -21,6 +21,11 @@ Cache	&Cache::getInstance(void) {
 bool Cache::hit(const std::string &uri) {
 	return (this->_cache.hit(uri));
 }
+
+e_cache_node_status Cache::queryCacheStatus(const std::string &uri) {
+	return (this->_cache.queryCacheStatus(uri));
+}
+
 // size_t	Cache::copyFromCacheTo(IoReadAndWriteBuffer &buffer, const std::string &uri) {
 	
 // 	size_t size = buffer.append(_cache.getIter(uri), this->_cache.getCacheContentSize(uri));

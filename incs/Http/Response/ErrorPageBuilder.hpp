@@ -13,6 +13,6 @@ public:
     ErrorPageBuilder(ft::shared_ptr<Client> client, HttpStatusCode status);
     virtual ~ErrorPageBuilder(void);
     virtual void buildResponseHeader(std::vector<char> &buffer);
-    static std::vector<char> getErrorPage(HttpStatusCode status);
+    static std::string getErrorPage(HttpStatusCode status);
 };
 #endif

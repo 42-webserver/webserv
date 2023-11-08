@@ -18,6 +18,7 @@ public:
 		void	deleteCacheContent(const std::string &uri);
 public:		
 		bool hit(const std::string &uri);
+		e_cache_node_status queryCacheStatus(const std::string &uri);
 private:
 	Cache(void);
 	~Cache(void);

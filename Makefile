@@ -65,6 +65,8 @@ SRCS =	main.cpp \
 		Event/SpecialEvent/CgiWaitEventHandler.cpp \
 		Event/SpecialEvent/LogEvent.cpp \
 		Event/SpecialEvent/LogEventHandler.cpp \
+		Event/SpecialEvent/CgiKillEvent.cpp \
+		Event/SpecialEvent/CgiKillEventHandler.cpp \
 		Event/Exception/KqueueError.cpp \
 		Http/Parser/HttpRequestParser.cpp \
 		Http/Parser/HttpResponseParser.cpp \
@@ -83,6 +85,7 @@ SRCS =	main.cpp \
 		Http/Response/RedirectionResponseBuilder.cpp \
 		Http/Response/ErrorPageBuilder.cpp \
 		Http/Response/CgiResponseBuilder.cpp \
+		Http/Response/DirResponseBuilder.cpp \
 		Http/Utils/HttpStatus.cpp \
 		Http/Utils/Cookie.cpp \
 		Http/Utils/RouterUtils.cpp \

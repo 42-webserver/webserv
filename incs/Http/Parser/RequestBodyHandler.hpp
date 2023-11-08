@@ -11,7 +11,7 @@ class RequestBodyHandler
 {
 
 protected:
-int 						_readBodySize;
+ssize_t 						_readBodySize;
 ft::shared_ptr<HttpRequest> _request;
  
 public:

@@ -27,6 +27,7 @@ void FileManager::_readFile(const std::string &uri, ft::shared_ptr<HttpResponse>
 
 void FileManager::_writeFile(const std::string &uri, ft::shared_ptr<HttpRequest> request) {
 
+    // exit(1);
     FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
     FileData &fileData = fileTableManager.getFileData(uri);
     EventFactory &eventFactory = EventFactory::getInstance();
@@ -96,7 +97,7 @@ bool FileManager::isInCashSize(size_t size) {
     return (false);
 }
 
-size_t FileManager::getFileSize(const std::string &uri) {
+ssize_t FileManager::getFileSize(const std::string &uri) {
     struct stat fileStat;
     e_file_info fileInfo = getFileInfo(uri, fileStat);
 
@@ -129,54 +130,70 @@ bool FileManager::isDirectory(const std::string &uri) {
 // modulizing Need
 // 이 전에 헤더 내용이 buffer에 들어가있다라고 가정하기떄문에 파일 사이즈 물어보는게 있어서 수정하고 들어가있는걸 가정
 // check FileSuccess with response->statusCode setting
+e_FileRequestType FileManager::_requestFileCache(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
+    Cache & cache = Cache::getInstance();
+
+    std::cerr << "FileManager::requstFileContent() : isInCashSize" << std::endl;
+    //cache hit은 파일이 완전히 업로드 되야 hi
+    if (cache.hit(uri)) {
+        std::cerr << "FileManager::requstFileContent() : cache hit" << std::endl;
+        cache.copyCacheContentVectorBack(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
+        response->setResponseSize(NormalSize, HttpResponse::AccessKey());
+        return (FileRequestSuccess);
+    }
+    else {
+        std::cerr << "FileManager::requstFileContent() : cache miss" << std::endl;
+        e_cache_node_status cacheStatus = cache.queryCacheStatus(uri);
+        if (cacheStatus == e_not_set) {
+            std::cerr << "FileManager::requstFileContent() : fileSync == NotSetting !!!!!!!" << std::endl;
+            // cache에 없지만 cache사이즈 인건데 파일이 존재하는 경우-> 등록하고 기다려야됨
+            cache.initCacheContent(uri);
+        }
+        //else 는 파일이 등록 되고 있는중이라 hit안된거임으로 파일을 등록할 필요 없음
+        return (FileRequestShouldWait);
+    }   
+}
+
 e_FileRequestType FileManager::requstFileContent(const std::string &uri, ft::shared_ptr<HttpResponse> response) {
     struct stat fileStat;
     e_file_info fileInfo = getFileInfo(uri, fileStat);
 
-    e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
-    // can't here, buildHeader check this
-    if (fileSync == NotSetting) {
+    //To do: this -> must be cacheSync
+    // e_File_Sync fileSync = response->getFileSync(HttpResponse::AccessKey());
+    // // can't here, buildHeader check this
+    // if (fileSync == NotSetting) {
 
-        if (fileInfo == NotExistFile) {
-            throw NotFoundException();
-            return (FileRequestFail);
-        }
-        if (fileInfo == ExistDirectory) {
-            throw std::runtime_error("FileManager::requstFileContent() : ExistDirectory, Logically Not Possible");
-        }
+    if (fileInfo == NotExistFile) {
+        throw NotFoundException();
+        return (FileRequestFail);
     }
+    if (fileInfo == ExistDirectory) {
+        throw std::runtime_error("FileManager::requstFileContent() : ExistDirectory, Logically Not Possible");
+        }
+    // }
     if (isInCashSize(fileStat)) {
-        Cache & cache = Cache::getInstance();
-        //cache hit은 파일이 완전히 업로드 되야 hi
-        if (cache.hit(uri)) {
-            cache.copyCacheContentVectorBack(uri, response->getNormalCaseBuffer(HttpResponse::AccessKey()));
-            response->setResponseSize(NormalSize, HttpResponse::AccessKey());
-            return (FileRequestSuccess);
-        }
-        else {
-            if (fileSync == NotSetting) {
-                // cache에 없지만 cache사이즈 인건데 파일이 존재하는 경우-> 등록하고 기다려야됨
-                cache.initCacheContent(uri);
-                response->setFileSync(Reading, HttpResponse::AccessKey());
-            }
-            //else 는 파일이 등록 되고 있는중이라 hit안된거임으로 파일을 등록할 필요 없음
-            return (FileRequestShouldWait);
-        }
+        return (_requestFileCache(uri, response));
     }
     else {
         FileTableManager &fileTableManager = FileTableManager::getInstance(FileTableManager::Accesskey());
         e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
+        e_File_Sync fileSyncWithResponse = response->getFileSync(HttpResponse::AccessKey());
 
-        if (fileSync == ReadingDone) {
-            return (FileRequestSuccess);
-        }
         if (fileProcessingType == ReadingProcessing || fileProcessingType == NoneProcessing) {
-            if (fileSync == NotSetting) {
-                response->setResponseSize(BigSize, HttpResponse::AccessKey());
-                response->setFileSync(Reading, HttpResponse::AccessKey());
+            if (fileSyncWithResponse == NotSetting) {
                 _readFile(uri, response);
+                 response->setFileSync(Reading, HttpResponse::AccessKey());
             }
-            //else 는 파일이 이 읽히고 있는중이고 그리고 따로 readFile에서 자동으로 ReadingProcessing으로 바꿀거라 ㄱㅊ
+            else if (fileSyncWithResponse == Reading) {
+                if (FileManager::getFileSize(uri) == 
+                response->getBigSizeBuffer(HttpResponse::AccessKey())->size()) {
+                    std::cerr << "FileManager::requstFileContent() : fileSyncWithResponse == ReadingDone" << std::endl;
+                    response->setFileSync(ReadingDone, HttpResponse::AccessKey());
+                    return (FileRequestSuccess);
+                }
+            }
+            else
+                return (FileRequestSuccess);
             return (FileRequestShouldWait);
         }
         else
@@ -213,17 +230,23 @@ ft::shared_ptr<HttpRequest> request) {
     //fileTableManager 에 없으면 fileData를 만들어서 넣어줌 NoneProcessing으로
     e_FileProcessingType fileProcessingType = fileTableManager.findFileProcessingType(uri);
     size_t contentLength = request->getBodySize();
+    std::cerr << "FileManager::requestFileUpload() : contentLength : " << contentLength << std::endl;
     e_file_upload_sync fileUploadSync = request->getFileUploadSync(HttpRequest::AccessKey());
     Cache &cache = Cache::getInstance();
 
+    std::cerr << "FileManager::requestFileUpload() : fileProcessingType : " << fileProcessingType << std::endl;
+    std::cerr << "FileManager::requestFileUpload() : fileUploadSync : " << fileUploadSync << std::endl;
     if (fileProcessingType == ReadingProcessing) {
+        std::cerr << "FileManager::requestFileUpload() : ReadingProcessing" << std::endl;
         return (FileRequestShouldWait);
     }
     else if (fileProcessingType == WritingProcessing) {
+        std::cerr << "FileManager::requestFileUpload() : WritingProcessing" << std::endl;
         // 자기가 쓰고 있던 남의 쓰고 있던 기다려야됨 
         return (FileRequestShouldWait);
     }
     else if (fileProcessingType == NoneProcessing) {
+        std::cerr << "FileManager::requestFileUpload() : NoneProcessing" << std::endl;
         // 자기가 쓴게 완료된 경우 처리부터
         if (fileUploadSync == Writing) {
             request->setFileUploadSync(WritingDone, HttpRequest::AccessKey());
@@ -234,7 +257,9 @@ ft::shared_ptr<HttpRequest> request) {
 
         if (fileUploadSync == NoneSetting) {
             //cache에 있는건데 쓰려는 경우
+            std::cerr << "FileManager::requestFileUpload() : NoneSetting" << std::endl;
             if (cache.hit(uri)) {
+                std::cerr << "FileManager::requestFileUpload() : cache hit" << std::endl;
                 if (!isInCashSize(contentLength)){
                     cache.deleteCacheContent(uri);
                     _writeFile(uri, request);
@@ -247,12 +272,15 @@ ft::shared_ptr<HttpRequest> request) {
                     return (FileRequestSuccess);
                 }
             }
-            if (isInCashSize(contentLength)){
+            else if (isInCashSize(contentLength)){
+                std::cerr << "FileManager::requestFileUpload() : cache miss in cash size" << std::endl;
                 cache.putCacheContent(uri, request->getBody());
+                std::cerr << "putCacheContent" << std::endl;
                 request->setFileUploadSync(WritingDone, HttpRequest::AccessKey());
                 return (FileRequestSuccess);
             }
             else {
+                std::cerr << "FileManager::requestFileUpload() : cache miss out cash size" << std::endl;
                 _writeFile(uri, request);
                 request->setFileUploadSync(Writing, HttpRequest::AccessKey());
                 return (FileRequestShouldWait);

@@ -8,61 +8,146 @@ HttpRequestParser::HttpRequestParser(void)
 	this->_buffer.reserve(_BUFFER_SIZE);
 }
 
+std::string HttpRequestParser::_getDebugString(RequestParseState state){
+	if (state == BEFORE)
+		return "BEFORE";
+	else if (state == START_LINE)
+		return "START_LINE";
+	else if (state == HEADERS)
+		return "HEADERS";
+	else if (state == BODY)
+		return "BODY";
+	else if (state == FINISH)
+		return "FINISH";
+	else
+		return "UNKNOWN";
+}
+
+// const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
+// 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+// 	// if (_state != BODY) {
+// 		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
+// 	// 	readBuffer.recycleInstance();
+// 	// }
+// 	if (_state == BEFORE || _state == START_LINE)
+// 		handleStartLineState();
+// 	if (_state == HEADERS)
+// 		handleHeaderState(vsm);
+// 	if (_state == BODY) 
+// 		handleBodyState();
+// 	readBuffer.recycleInstance();
+// 	return _state;
+// }
 const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualServerManager> vsm) {
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-	this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
+	if (_state != BODY || this->_httpRequest->getBodyType() != NORMAL) {
+		this->_buffer.insert(this->_buffer.end(), readBuffer.begin(), readBuffer.end());
+		readBuffer.recycleInstance();
+	}
 	if (_state == BEFORE || _state == START_LINE)
 		handleStartLineState();
 	if (_state == HEADERS)
 		handleHeaderState(vsm);
 	if (_state == BODY) 
 		handleBodyState();
+	readBuffer.recycleInstance();
 	return _state;
 }
-
 void HttpRequestParser::handleStartLineState() {
+	std::cerr << "handleStartLineState" << std::endl;
 	if (_buffer.empty())
 		return;
 	std::vector<char>::iterator find = std::search(_buffer.begin(), _buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	if (find == _buffer.end()) {
 		this->_state = START_LINE;
+		std::cerr << "handleStartLineState -- return" << std::endl;
 		return;
 	}
 	_httpRequest->setStartLine(std::string(_buffer.begin(), find));
 	_buffer.erase(_buffer.begin(), find + _crlfPatternSize);
 	this->_state = HEADERS;
+	std::cerr << "handleStartLineState -- this->_state: " << _getDebugString(this->_state) << std::endl;
 }
 
+// void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> vsm) {
+// 	if (_buffer.empty())
+// 		return;
+// 	std::string line;
+// 	std::vector<char>::iterator find = std::search(_buffer.begin(), _buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+// 	if (find == _buffer.end()) {
+// 		this->_state = HEADERS;
+// 		return;
+// 	}
+// 	while (find != _buffer.end()) {
+// 		line = std::string(_buffer.begin(), find);
+// 		_buffer.erase(_buffer.begin(), find + _crlfPatternSize);
+// 		if (line.empty()) {
+// 			changeStateToBody(vsm);
+// 			return;
+// 		}
+// 		_httpRequest->addHeader(line);
+// 		find = std::search(_buffer.begin(), _buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
+// 	}
+// }
+
+// fix : daegulee
+// Todo: check this
 void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> vsm) {
-	if (_buffer.empty())
-		return;
+    if (_buffer.empty())
+        return;
+	std::cerr << "handleHeaderState" << std::endl;
+    std::vector<std::string> headers;
+    std::vector<char>::iterator start = _buffer.begin();
+    std::vector<char>::iterator end = _buffer.end();
 	std::string line;
-	std::vector<char>::iterator find = std::search(_buffer.begin(), _buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
-	if (find == _buffer.end()) {
-		this->_state = HEADERS;
-		return;
-	}
-	while (find != _buffer.end()) {
-		line = std::string(_buffer.begin(), find);
-		_buffer.erase(_buffer.begin(), find + _crlfPatternSize);
-		if (line.empty()) {
-			changeStateToBody(vsm);
-			return;
-		}
-		_httpRequest->addHeader(line);
-		find = std::search(_buffer.begin(), _buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
-	}
-}
+    while (start != end) {
+        std::vector<char>::iterator find = std::search(start, end, _crlfPattern.begin(), _crlfPattern.end());
+        if (find == end) {
+            break;
+        }
+        line = std::string(start, find);
+		start = find + _crlfPatternSize;
 
+		if (line.empty())
+			break;
+        headers.push_back(line);
+        // }
+    }
+
+    // 모든 헤더 추가
+    for (size_t i = 0; i < headers.size(); ++i) {
+        _httpRequest->addHeader(headers[i]);
+    }
+
+    // 버퍼에서 처리한 부분 제거
+    _buffer.erase(_buffer.begin(), start);
+
+	if (line.empty())
+        changeStateToBody(vsm);
+    else {
+        this->_state = HEADERS;
+		std::cerr << "handleHeaderState -- this->_state: " << _getDebugString(this->_state) << std::endl;
+    }
+}
 void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm){
+	std::cerr << "changeStateToBody" << std::endl;
 	this->_state = BODY;
-	int clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
+	ssize_t clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler();
-	int contentLength = this->_httpRequest->getContentLength();
+
+	//fix 
+	ssize_t contentLength = this->_httpRequest->getContentLength();
+	//todo : 만약에 Multipart하면 여기 수정
+	if (this->_httpRequest->getBodyType() == MULTIPART_FORM_DATA){
+		this->_httpRequest->setError(UNSUPPORTED_MEDIA_TYPE);
+		this->_state = FINISH;
+	}
 	if (contentLength > clientMaxBodySize){
 		this->_httpRequest->setError(REQUEST_ENTITY_TOO_LARGE);
 		this->_state = FINISH;
 	}
+	std::cerr << "changeStateToBody -- this->_state: " << _getDebugString(this->_state) << std::endl;
+
 }
 
 void HttpRequestParser::injectionHandler(){
@@ -74,6 +159,7 @@ void HttpRequestParser::injectionHandler(){
 			std::string boundary = it->second.substr(it->second.find("boundary=") + 9);
 			this->_bodyHandler = ft::make_shared<MultipartRequestBodyHandler>(boundary, this->_httpRequest);
 			this->_httpRequest->setBodyType(MULTIPART_FORM_DATA);
+			std::cerr << "multipart -- exit injectionHandler" << std::endl;
 			return;
 		}
 	}
@@ -91,12 +177,33 @@ void HttpRequestParser::injectionHandler(){
 }
 
 void HttpRequestParser::handleBodyState() {
-	if (_buffer.empty())
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+
+//Todo: check this
+	std::cerr << "handleBodyState" << std::endl;
+	if (_buffer.empty() && readBuffer.size() == 0){
+		std::cout << "buffer body  empty" << std::endl;
+		//fix : daegulee
+		int contentLength = this->_httpRequest->getContentLength();
+		if (contentLength == 0)
+			this->_state = FINISH;
+		if (contentLength == noContentLength && NORMAL == this->_httpRequest->getBodyType()){
+			this->_state = FINISH;
+			std::cerr << "handleBodyState -- this->_state: " << _getDebugString(this->_state) << std::endl;
+		}
 		return;
+	}
 	bool result;
-	result = _bodyHandler->handleBody(_buffer);
+	try {
+		result = _bodyHandler->handleBody(_buffer);
+	}
+	catch (const std::exception& e) {
+		this->_httpRequest->setError(BAD_REQUEST);
+		result = true;
+	}
 	if(result)
 		this->_state = FINISH;
+	std::cerr << "handleBodyState -- this->_state: " << _getDebugString(this->_state) << std::endl;
 }
 
 

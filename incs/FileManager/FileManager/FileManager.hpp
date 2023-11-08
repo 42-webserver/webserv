@@ -50,14 +50,15 @@ public:
     e_FileRequestType _requestFileUploadMultiPart(const std::string &uri,
     ft::shared_ptr<HttpRequest> request);
     e_FileRequestType requestFileDelete(const std::string &uri);
-
+private:
+    e_FileRequestType _requestFileCache(const std::string &uri, ft::shared_ptr<HttpResponse> response);
 //static utility
 public:
     static std::string getDirectoryListing(const std::string& path);
     static e_file_info getFileInfo(const std::string &uri, struct stat &fileStat);
     static bool isInCashSize(struct stat &fileStat);
     static bool isInCashSize(size_t size);
-    static size_t getFileSize(const std::string &uri);
+    static ssize_t getFileSize(const std::string &uri);
     static bool isFileExists(const std::string &uri);
     static bool isDirectory(const std::string &uri);
 };

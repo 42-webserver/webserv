@@ -7,9 +7,9 @@
 
 class Modifiable{
 public:
-    virtual size_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end) = 0;
-    virtual size_t append(std::vector<char>::iterator begin, size_t size) = 0;
-    virtual size_t eraseFront(size_t size) = 0;
+    virtual ssize_t append(std::vector<char>::iterator begin, std::vector<char>::iterator end) = 0;
+    // virtual ssize_t append(std::vector<char>::iterator begin, ssize_t size) = 0;
+    virtual ssize_t eraseFront(ssize_t size) = 0;
 };
 
 #endif

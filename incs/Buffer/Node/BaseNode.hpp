@@ -51,7 +51,7 @@
 class IoOnlyReadBuffer;
 
 namespace ft{
-	size_t _ioWrite(int fd, std::vector<char>& buffer, size_t start);
+	ssize_t _ioWrite(int fd, std::vector<char>& buffer, ssize_t start);
 };
 class BaseNode {
 typedef std::vector<char>::iterator iterator;
@@ -59,33 +59,37 @@ typedef std::vector<char>::const_iterator const_iterator;
 // private:
 // 	Mode	_mode;
 private:
-	size_t _size;
-	size_t _capacity;
-	size_t _eraseSize;
+	ssize_t _size;
+	ssize_t _capacity;
+	ssize_t _eraseSize;
 	std::vector<char> _buffer;
 public:
 	const std::vector<char>& getBuffer() const;
 	std::vector<char>& getBuffer();
+
+//debug
 public:
-	BaseNode(size_t size);
-	size_t ioRead(int fd);
-	size_t ioWrite(int fd);
-	size_t ioReadToRemainigSize(int fd, size_t remainingSize);
-	size_t insertString(const std::string& str);
-	size_t ioSaveWrite(int fd, size_t start);
-	size_t erase(size_t n);
-	size_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);
-	size_t insert(std::vector<char>::iterator start, size_t size);
+	void _printBuffer();
+public:
+	BaseNode(ssize_t size);
+	ssize_t ioRead(int fd);
+	ssize_t ioWrite(int fd);
+	ssize_t ioReadToRemainigSize(int fd, ssize_t remainingSize);
+	ssize_t insertString(std::string::const_iterator start, ssize_t size);
+	ssize_t ioSaveWrite(int fd, ssize_t start);
+	ssize_t erase(ssize_t n);
+	ssize_t insert(std::vector<char>::iterator start, std::vector<char>::iterator end);
+	ssize_t insert(std::vector<char>::iterator start, ssize_t size);
 	virtual ~BaseNode();
 public:
 	iterator begin();
 	iterator end();
 	const_iterator begin() const;
 	const_iterator end() const;
-    size_t size() const;
+    ssize_t size() const;
 	virtual bool isFull() const = 0;
 	bool isEmpty() const;
-	size_t copyTo(std::vector<char>& dest);
+	ssize_t copyTo(std::vector<char>& dest);
 
 class AccessKey {
 friend class IoOnlyReadBuffer;

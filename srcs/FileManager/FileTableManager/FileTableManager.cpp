@@ -28,6 +28,13 @@ e_FileProcessingType FileTableManager::findFileProcessingType(const std::string 
     return (_fileTable[fileName].getFileProcessingType());
 }
 
+// void FileTableManager::setFileNoneProcessing(const std::string &fileName)
+// {
+//     std::map<std::string, FileData>::iterator iter = this->_fileTable.find(fileName);
+//     if (iter == this->_fileTable.end())
+//         throw std::runtime_error("FileTableManager::setFileNoneProcessing: file not found");
+//     this->_fileTable[fileName].setNoneProcessing();
+// }
 // 위와 거의 동일
 FileData &FileTableManager::getFileData(const std::string &fileName)
 {

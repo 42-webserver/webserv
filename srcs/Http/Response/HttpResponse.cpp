@@ -175,19 +175,22 @@ e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel
 
 e_send_To_client_status HttpResponse::_sendBigToClient(ft::shared_ptr<Channel> clientChannel)
 {
-	if (this->_previousWriteSize < this->_NormalCaseBuffer.size()) {
+	if (this->_NormalCaseBuffer.size() != 0) {
 		if (_sendNormalToClient(clientChannel) == clientClose)
 			return clientClose;
 		return sending;
 	}
 	else {
 		try {
+			std::cerr << "HttpResponse::_sendBigToClient: " << this->_BigSizeBuffer->size() << std::endl;
 			this->_BigSizeBuffer->ioWrite(clientChannel->getFd());
 		}
 		catch (DisconnectionException &e) {
+			std::cerr << "HttpResponse::_sendBigToClient: DisconnectionException" << std::endl;
 			return clientClose;
 		}
 		catch (std::exception &e) {
+			std::cerr << "HttpResponse::_sendBigToClient: std::exception" << std::endl;
 			throw ;
 		}
 		if (this->_BigSizeBuffer->size() == 0)
@@ -199,12 +202,18 @@ e_send_To_client_status HttpResponse::_sendBigToClient(ft::shared_ptr<Channel> c
 
 e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clientChannel)
 {
-	if (this->_responseSize == NotSet)
+	if (this->_responseSize == NotSet) {
 		throw std::runtime_error("HttpResponse::sendToClient : responseSize is NotSet");
-	if (this->_responseSize == NormalSize)
+		// exit(1);
+	}
+	if (this->_responseSize == NormalSize) {
+		std::cerr << "HttpResponse::sendToClient: NormalSize" << std::endl;
 		return this->_sendNormalToClient(clientChannel);
-	else 
+	}
+	else {
+		std::cerr << "HttpResponse::sendToClient: BigSize" << std::endl;
 		return this->_sendBigToClient(clientChannel);
+	}
 }
 
 // bool HttpResponse::isSending()

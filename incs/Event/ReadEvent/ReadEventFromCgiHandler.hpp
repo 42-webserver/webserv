@@ -31,23 +31,23 @@ class ReadEventFromCgiHandler: public ReadEventHandler{
         void          _handleCgiBody(ReadEventFromCgi &readEventFromCgi);
         void          _handleCgiEnd(ReadEventFromCgi &readEventFromCgi);
         void           _buildCgiResponseHeader(ReadEventFromCgi &readEventFromCgi);
-        void            _parseToBody(ReadEventFromCgi &readEventFromCgi);
+        void            _parseToBody(void);
         void            _addHeader(const std::string& key, const std::string& value);
         std::string           _spaceTrim(const std::string& str);
         bool            _checkStartBody(std::vector<char>::iterator find, std::vector<char>::iterator end);
         std::vector<char>::iterator _begin();
         std::vector<char>::iterator _end();
-
-    public:
+        void _callErrorPageBuilder(ReadEventFromCgi &readEventFromCgi);
         std::map<std::string, std::string> &getHeaders();
     private:
         std::vector<char> _buffer;
         e_parse_cgi_state _state;
-        size_t            _realSize;
+        ssize_t            _realSize;
         std::map<std::string, std::string> _headers;
-        size_t          _previousReadSize;
+        ssize_t          _previousReadSize;
         bool            _firstInCgiBody;
-        bool            _isContentLengthSet;
+        ssize_t         _contentLength;
+        ssize_t         _capacity;
 };
 
 #endif

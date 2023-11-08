@@ -1,4 +1,5 @@
 #include "../../../incs/Http/Parser/NormalBodyHandler.hpp"
+#include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
 
 
 NormalBodyHandler::NormalBodyHandler(ft::shared_ptr<HttpRequest> req) : RequestBodyHandler(0, req)
@@ -9,18 +10,56 @@ NormalBodyHandler::~NormalBodyHandler(void)
 
 bool NormalBodyHandler::handleBody(std::vector<char> &buffer)
 {
-	int contentLength = this->_request->getContentLength();
-	int writeSize = contentLength - this->_readBodySize;
-	writeInMemory(buffer, writeSize);
-	if (contentLength <= this->_readBodySize)
+	ssize_t contentLength = this->_request->getContentLength();
+	// int writeSize = contentLength - this->_readBodySize;
+	// std::cerr << "normal -- contentLength: " << contentLength << std::endl;
+	writeInMemory(buffer);
+		std::cerr << "normal -- contentLength: " << contentLength << std::endl;
+	std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
+	// std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
+	if (contentLength <= this->_readBodySize) {
+		// std::cerr << "normal -- contentLength <= this->_readBodySize" << std::endl;
 		return true;
+	}
+	// std::cerr << "normal -- contentLength: " << contentLength << std::endl;
+	// std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
 	return false;
 }
 
-void NormalBodyHandler::writeInMemory(std::vector<char> &buffer, int writeSize)
+// void NormalBodyHandler::writeInMemory(std::vector<char> &buffer, int writeSize)
+// {
+// 	// ssize_t n;
+// 	std::vector<char> tmp(buffer.begin(), buffer.begin() + writeSize);
+// 	// if (buffer.empty()) {
+// 	// 	n = this->_request->insertBody(buffer);
+// 	// 	buffer.clear();
+// 	// 	this->_readBodySize += n;
+// 	// }
+// 	// IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+
+// 	// if (readBuffer.size() > 0)
+// 	// {
+// 	// 	n = this->_request->insertBody();
+// 	// 	this->_readBodySize += n;
+// 	// }
+// 	this->_request->insertBody(tmp);
+// 	this->_readBodySize += tmp.size();
+// 	buffer.erase(buffer.begin(), buffer.begin() + tmp.size());
+// }
+void NormalBodyHandler::writeInMemory(std::vector<char> &buffer)
 {
-	std::vector<char> tmp(buffer.begin(), buffer.begin() + writeSize);
-	this->_request->insertBody(tmp);
-	this->_readBodySize += tmp.size();
-	buffer.erase(buffer.begin(), buffer.begin() + tmp.size());
+	ssize_t n;
+
+	if (!buffer.empty()) {
+		n = this->_request->insertBody(buffer);
+		buffer.clear();
+		this->_readBodySize += n;
+	}
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+	// std::cerr << "normal -- readBuffer.size(): " << readBuffer.size() << std::endl;
+	if (readBuffer.size() > 0)
+	{
+		n = this->_request->insertBody();
+		this->_readBodySize += n;
+	}
 }

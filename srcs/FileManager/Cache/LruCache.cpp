@@ -2,29 +2,29 @@
 #include <FileManager/FileManager/FileManager.hpp>
 #include <Event/WriteEvent/WriteEventToCache.hpp>
 #include <Event/ReadEvent/ReadEventFromCache.hpp>
-SyncroWriteWithCache::SyncroWriteWithCache(LruCacheNode &lruCache): lruCache(lruCache), _thisWriterNum(lruCache.getFinalWriterNum() + 1) {
-	this->lruCache.setWriting();
+SyncroWriteWithCache::SyncroWriteWithCache(LruCacheNode &lruCache): _lruCacheNode(lruCache), _thisWriterNum(lruCache.getFinalWriterNum() + 1) {
+	this->_lruCacheNode.setWriting();
 }
 
 SyncroWriteWithCache::~SyncroWriteWithCache(void) {
-	if (this->lruCache.isFinalWriter(this->_thisWriterNum)) {
-		this->lruCache.updateFinsish();
+	if (this->_lruCacheNode.isFinalWriter(this->_thisWriterNum)) {
+		this->_lruCacheNode.updateFinsish();
 	}
 }
 
 bool SyncroWriteWithCache::isFinalWriter(void) {
-	return (this->lruCache.isFinalWriter(this->_thisWriterNum));
+	return (this->_lruCacheNode.isFinalWriter(this->_thisWriterNum));
 }
 
-SyncroReadWithCache::SyncroReadWithCache(LruCacheNode &lruCache): lruCache(lruCache) {
-	this->lruCache.setReading();
+SyncroReadWithCache::SyncroReadWithCache(LruCacheNode &lruCache): _lruCacheNode(lruCache) {
+	this->_lruCacheNode.setReading();
 }
 
 SyncroReadWithCache::~SyncroReadWithCache(void) {
-	this->lruCache.updateFinsish();
+	this->_lruCacheNode.updateFinsish();
 }
 
-LruCacheNode::LruCacheNode(void): _content(LruCache::_BlockSize), _status(e_done), _finalWriterNum(0) {
+LruCacheNode::LruCacheNode(e_cache_node_status status): _content(LruCache::_BlockSize), _status(status), _finalWriterNum(0) {
 }
 
 LruCacheNode::~LruCacheNode(void) {}
@@ -102,7 +102,6 @@ void LruCache::_readToCache(const std::string &uri) {
 	EventDto eventDto(&(lruCacheNode.getContent()), uri, "r");
 	ReadEventFromCache *readEventFromCache = static_cast<ReadEventFromCache *>
 	(eventFactory.createEvent(ft::CACHE_READ_EVENT, eventDto));
-
 	readEventFromCache->_syncWithCache(syncroReadWithCache);
 	readEventFromCache->onboardQueue();
 }
@@ -140,6 +139,13 @@ bool LruCache::hit(const std::string &uri) {
 	return (this->_cache.find(uri) != this->_cache.end())
 	&& (this->_cache[uri]->second.getStatus() == e_done);
 }
+
+e_cache_node_status LruCache::queryCacheStatus(const std::string &uri) {
+	if (this->_cache.find(uri) == this->_cache.end()) {
+		return (e_not_set);
+	}
+	return (this->_cache[uri]->second.getStatus());
+}
 size_t				LruCache::getCacheContentSize(const std::string &uri){
 	if (this->_cache.find(uri) == this->_cache.end()) {
 		return (0);
@@ -161,8 +167,8 @@ void LruCache::put(const std::string& uri, ft::shared_ptr<IoReadAndWriteBuffer> 
 
 	this->_lru_list.push_front(std::make_pair(uri, 
 	LruCacheNode(buffer)));
-	_writeToCache(uri, buffer);
 	this->_cache[uri] = this->_lru_list.begin();
+	_writeToCache(uri, buffer);
 }
 void LruCache::put(const std::string& uri){
    if (this->_cache.size() >= this->_capacity) {
@@ -174,9 +180,9 @@ void LruCache::put(const std::string& uri){
     }
 
 	this->_lru_list.push_front(std::make_pair(uri, 
-	LruCacheNode()));
+	LruCacheNode(e_reading)));
+	this->_cache[uri] = this->_lru_list.begin();
 	_readToCache(uri);
-	this->_cache[uri] = this->_lru_list.begin();	
 }
 
 //Todo :check

@@ -1,5 +1,5 @@
 #include "../../../incs/Buffer/Node/BaseNode.hpp"
-
+#include <Log/Logger.hpp>
 
 // //Mode
 // Mode::Mode() : mode(0) {}
@@ -60,23 +60,31 @@
 
 //Mode
 
+//debug
+void BaseNode::_printBuffer() {
+	std::cerr << "buffer: " << std::endl;
+	for (std::vector<char>::iterator it = _buffer.begin(); it != _buffer.end(); it++)
+		std::cerr << *it;
+	std::cerr << std::endl;
+}
+
 BaseNode::AccessKey::AccessKey() {}
 BaseNode::AccessKey::~AccessKey() {}
 
 BaseNode::~BaseNode() {}
 
 
-BaseNode::BaseNode(size_t capacity) : 
+BaseNode::BaseNode(ssize_t capacity) : 
 // _mode(), 
 _size(0), _capacity(capacity), _eraseSize(0), _buffer(capacity) {}
-size_t BaseNode::erase(size_t n) {
+ssize_t BaseNode::erase(ssize_t n) {
 	// static Mode _assertEraseMode(false, false, false, false, true);
 	
 	// ft::Assert::_assert(!_mode.checkMode(_assertEraseMode), "Buffer Node Invariant is destroyed (erase is assertion)");
 	// _mode.setEraseMode();
 
 	if (_size < n) {
-		size_t tmp = _size;
+		ssize_t tmp = _size;
 		// _mode.setCanDeleteMode();
 		_size = 0;
 		return tmp;
@@ -86,75 +94,93 @@ size_t BaseNode::erase(size_t n) {
 	return n;
 }
 
-size_t BaseNode::insert(std::vector<char>::iterator start, std::vector<char>::iterator end) {
+ssize_t BaseNode::insert(std::vector<char>::iterator start, std::vector<char>::iterator end) {
 	// static Mode _assertInsertMode(true, true, false, true, true);
 	
 	// ft::Assert::_assert(!_mode.checkMode(_assertInsertMode), "Buffer Node Invariant is destroyed (insert is exists after erase)");
 	// _mode.setInsertMode();
 
-	size_t n = std::distance(start, end);
+	ssize_t n = std::distance(start, end);
 	
 	if (n == 0) return n;
-	if (n + _size <= _capacity)
+	if (n + _size > _capacity)
 		n = _capacity - _size;
 	std::copy(start, start+n, _buffer.begin() + _size);
 	_size += n;
 	return n;
 }
 
-size_t BaseNode::insertString(const std::string& str) {
-	// static Mode _assertInsertMode(true, true, false, true, true);
+// ssize_t BaseNode::insertString(const std::string& str) {
+// 	// static Mode _assertInsertMode(true, true, false, true, true);
 	
-	// ft::Assert::_assert(!_mode.checkMode(_assertInsertMode), "Buffer Node Invariant is destroyed (insert is exists after erase)");
-	// _mode.setInsertMode();
+// 	// ft::Assert::_assert(!_mode.checkMode(_assertInsertMode), "Buffer Node Invariant is destroyed (insert is exists after erase)");
+// 	// _mode.setInsertMode();
 
-	size_t n = str.size();
+// 	ssize_t n = str.size();
 	
-	if (n == 0) return n;
-	if (n + _size <= _capacity)
-		n = _capacity - _size;
-	std::copy(str.begin(), str.begin()+n, _buffer.begin() + _size);
-	_size += n;
-	return n;
-}
-
-size_t BaseNode::insert(std::vector<char>::iterator start, size_t size) {
+// 	std::cout << "insertString: " << n << std::endl;
+// 	if (n == 0) return n;
+// 	if (n + _size <= _capacity)
+// 		n = _capacity - _size;
+// 	std::copy(str.begin(), str.begin()+n, _buffer.begin() + _size);
+// 	_size += n;
+// 	return n;
+// }
+ssize_t BaseNode::insertString(std::string::const_iterator start, ssize_t size) {
 	// static Mode _assertInsertMode(true, true, false, true, true);
 	
 	// ft::Assert::_assert(!_mode.checkMode(_assertInsertMode), "Buffer Node Invariant is destroyed (insert is exists after erase)");
 	// _mode.setInsertMode();
 
 	if (size == 0) return size;
-	if (size + _size <= _capacity)
+	if (size + _size > _capacity)
 		size = _capacity - _size;
 	std::copy(start, start+size, _buffer.begin() + _size);
 	_size += size;
 	return size;
 }
-size_t BaseNode::size() const {return _size;}
+
+ssize_t BaseNode::insert(std::vector<char>::iterator start, ssize_t size) {
+	// static Mode _assertInsertMode(true, true, false, true, true);
+	
+	// ft::Assert::_assert(!_mode.checkMode(_assertInsertMode), "Buffer Node Invariant is destroyed (insert is exists after erase)");
+	// _mode.setInsertMode();
+
+	if (size == 0) return size;
+	if (size + _size > _capacity)
+		size = _capacity - _size;
+	std::copy(start, start+size, _buffer.begin() + _size);
+	_size += size;
+	return size;
+}
+ssize_t BaseNode::size() const {return _size;}
 void BaseNode::reset(AccessKey key) {
 	(void)key;
 	_size = 0;
 	_eraseSize = 0;
+	std::cerr << "reset" << std::endl;
 }
-size_t BaseNode::ioRead(int fd){
+ssize_t BaseNode::ioRead(int fd){
 	// static Mode _assertReadMode(false, true, true, true, true);
 
 	// ft::Assert::_assert(!_mode.checkMode(_assertReadMode), "Buffer Node Invariant is destroyed (read has created with assert)");
 	// _mode.setReadMode();
-
-	size_t n = read(fd, _buffer.data() + _size, _capacity - _size);
-	_size += n > 0 ? n : 0;
+	ssize_t n = read(fd, _buffer.data() + _size, _capacity - _size);
+	if (n < 0) {
+		Logger::getInstance().error("read error");
+		return n;
+	}
+	_size += n;
 	return n;
 }
 
-size_t BaseNode::ioReadToRemainigSize(int fd, size_t remainingSize) {
+ssize_t BaseNode::ioReadToRemainigSize(int fd, ssize_t remainingSize) {
 	// static Mode _assertReadMode(false, true, true, true, true);
 
 	// ft::Assert::_assert(!_mode.checkMode(_assertReadMode), "Buffer Node Invariant is destroyed (read has created with assert)");
 	// _mode.setReadMode();
-	size_t readSize = _capacity - _size < remainingSize ? _capacity - _size : remainingSize;
-	size_t n = read(fd, _buffer.data() + _size, readSize);
+	ssize_t readSize = _capacity - _size < remainingSize ? _capacity - _size : remainingSize;
+	ssize_t n = read(fd, _buffer.data() + _size, readSize);
 	_size += n > 0 ? n : 0;
 	return n;
 }
@@ -168,7 +194,7 @@ extern "C" {
     }
 }
 
-size_t BaseNode::ioWrite(int fd) {
+ssize_t BaseNode::ioWrite(int fd) {
     // static Mode _assertWriteMode(false, false, false, false, true); 
 
     if (!isHandlerSet) {
@@ -179,8 +205,13 @@ size_t BaseNode::ioWrite(int fd) {
     // ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
     // _mode.setWriteMode();
 
-    size_t n = write(fd, _buffer.data() + _eraseSize, _size);
-
+    ssize_t n = write(fd, _buffer.data() + _eraseSize, _size);
+	std::cerr << "baseNode::ioWrite: ";
+	std::cerr << "n: " << n << std::endl;
+	std::cerr << "eraseSize: " << _eraseSize << std::endl;
+	std::cerr << "size: " << _size << std::endl;
+	// for (std::vector<char>::iterator it = _buffer.begin() + _eraseSize; it != _buffer.begin() + _size + _eraseSize; it++)
+	// 	std::cerr << *it;
     if (isSIGPIPE) {
         isSIGPIPE = false; // 플래그 재설정
         throw DisconnectionException();
@@ -189,7 +220,7 @@ size_t BaseNode::ioWrite(int fd) {
     return n;
 }
 
-size_t ft::_ioWrite(int fd, std::vector<char>& buffer, size_t start) {
+ssize_t ft::_ioWrite(int fd, std::vector<char>& buffer, ssize_t start) {
 	// static Mode _assertWriteMode(false, false, false, false, true); 
 
 	if (!isHandlerSet) {
@@ -199,8 +230,12 @@ size_t ft::_ioWrite(int fd, std::vector<char>& buffer, size_t start) {
 
 	// ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
 	// _mode.setWriteMode();
-
-	size_t n = write(fd, buffer.data() + start, buffer.size() - start);	
+	
+	ssize_t n = write(fd, buffer.data() + start, buffer.size() - start);
+	std::vector<char>::iterator end = buffer.begin() + buffer.size() - start;
+	std::cerr << "ft::_ioWrite: ";
+	for (std::vector<char>::iterator it = buffer.begin() + start; it != end; it++)
+		std::cerr << *it;
 	if (isSIGPIPE) {
 		isSIGPIPE = false; // 플래그 재설정
 		throw DisconnectionException();
@@ -210,7 +245,7 @@ size_t ft::_ioWrite(int fd, std::vector<char>& buffer, size_t start) {
 
 
 
-size_t BaseNode::ioSaveWrite(int fd, size_t start) {
+ssize_t BaseNode::ioSaveWrite(int fd, ssize_t start) {
 	// static Mode _assertWriteMode(false, false, false, false, true); 
 
 	if (!isHandlerSet) {
@@ -221,7 +256,7 @@ size_t BaseNode::ioSaveWrite(int fd, size_t start) {
 	// ft::Assert::_assert(!_mode.checkMode(_assertWriteMode), "Buffer Node Invariant is destroyed (write has created with assert)");
 	// _mode.setWriteMode();
 
-	size_t n = write(fd, _buffer.data() + start, _size - start);
+	ssize_t n = write(fd, _buffer.data() + start, _size - start);
 	
 	if (isSIGPIPE) {
 		isSIGPIPE = false; // 플래그 재설정
@@ -258,8 +293,8 @@ bool BaseNode::isEmpty() const {
 	return _size == 0;
 }
 
-size_t BaseNode::copyTo(std::vector<char>& dest) {
-	size_t n = _size;
+ssize_t BaseNode::copyTo(std::vector<char>& dest) {
+	ssize_t n = _size;
 	dest.resize(n);
 	std::copy(_buffer.begin() + _eraseSize, _buffer.begin() + _size, dest.begin());
 	return n;

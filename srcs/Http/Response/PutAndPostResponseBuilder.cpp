@@ -9,7 +9,9 @@ PutAndPostResponseBuilder::~PutAndPostResponseBuilder(void) {
 }
 
 void PutAndPostResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
+    std::cerr << "PutAndPostResponseBuilder::buildResponseHeader" << std::endl;
     std::string filePath = RouterUtils::findPath(this->_vsm, this->getClient()->getRequest());
+    std::cerr << "filePath : " << filePath << std::endl;
     struct stat fileStat;
     e_file_info fileTypeInfo = FileManager::getFileInfo(filePath, fileStat);
 

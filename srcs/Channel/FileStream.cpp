@@ -43,7 +43,8 @@ FILE* FileStream::fopen_with_dirs(const std::string& path, const char* mode) {
 
 
 FileStream::FileStream(std::string path, std::string mode) {
-    if (mode == "w" || mode == "w+" || mode == "wb" || mode == "w+b") {
+    if (mode == "w" || mode == "w+" || mode == "wb" || mode == "w+b"
+        || mode == "a" || mode == "a+" || mode == "ab" || mode == "a+b") {
             this->_fp = fopen_with_dirs(path, mode.c_str());
         if (this->_fp == NULL) {
             //log error

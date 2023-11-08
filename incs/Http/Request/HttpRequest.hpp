@@ -22,6 +22,7 @@ typedef enum {
 	WritingDone
 }	e_file_upload_sync;
 
+static const int noContentLength = -1;
 
 class HttpRequest
 {
@@ -51,6 +52,10 @@ private:
 	std::map<std::string, std::string>	  	_queries;
 	std::map<std::string, std::string>	  	_cookies;
 	std::vector<MultipartRequest>		 	_multipartRequests;
+	//debug
+public:
+	void _printBody();
+
 //file Interface
 private:
 	e_file_upload_sync						_fileUploadSync;
@@ -65,9 +70,11 @@ public:
 	~HttpRequest();
 	void addHeader(const std::string & header);
 	void setStartLine(std::string line);
-	void insertBody(std::vector<char> &buffer);
+	ssize_t insertBody(std::vector<char> &buffer);
+	ssize_t insertBody(void);
 	std::string getMethod();
 	std::string getUri();
+	void setUri(std::string uri);
 	std::string getVersion();
 	std::string getProtocol();
 	std::string getHost();
@@ -77,7 +84,7 @@ public:
 	std::multimap<std::string, std::string> &getHeaders();
 	std::map<std::string, std::string> getQueries();
 	std::map<std::string, std::string> getCookies();
-	int  getContentLength();
+	ssize_t  getContentLength();
 	BodyType getBodyType();
 	void setBodyType(BodyType bodyType);
 	std::string getHeader(const std::string & key);

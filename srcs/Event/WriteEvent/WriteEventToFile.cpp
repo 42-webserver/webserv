@@ -14,34 +14,33 @@ void WriteEventToFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndWriter
 }
 
 void WriteEventToFile::callEventHandler(void) {
+    std::cerr << "WriteEventToFile::callEventHandler()" << std::endl;
     this->_event_handler->handleEvent(*this);
 }
 void WriteEventToFile::onboardQueue(void) {
 
+    std::cerr << "WriteEventToFile::onboardQueue()" << std::endl;
     try {
         this->getChannel()->setNonBlocking();
         this->_onboardWrite(this, this->getFd());
     }
     catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToFile", e.what());
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToFile", "Fail to onboard Write Event");
+    catch (std::exception &e) {
         throw ;
     }
 }
 void WriteEventToFile::offboardQueue(void) {
 
+    std::cerr << "WriteEventToFile::offboardQueue()" << std::endl;
     try {
         this->_offboardWrite(this, this->getFd());
     }
-    catch (const std::exception &e) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToFile", e.what());
+    catch (KqueueError &e) {
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "WriteEventToFile", "Fail to offboard Write Event");
+    catch (std::exception &e) {
         throw ;
     }
 

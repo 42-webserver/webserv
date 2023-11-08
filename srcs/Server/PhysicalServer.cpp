@@ -41,6 +41,7 @@ bool	PhysicalServer::run(void) throw(std::exception) {
 		Event*listen_event = event_factory.createEvent(ft::LISTEN_EVENT, event_dto);
 		listen_event->onboardQueue();
 	} catch (const std::exception &e) {
+		std::cerr << "PhysicalServer::run() catch" << e.what() << std::endl;
 		Logger::getInstance().error(e.what());
 		throw (FailToRunException());
 	}

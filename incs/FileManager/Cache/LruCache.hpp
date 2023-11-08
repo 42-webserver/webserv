@@ -15,7 +15,8 @@
 typedef enum{
 	e_reading,
 	e_writing,
-	e_done
+	e_done,
+	e_not_set
 }	e_cache_node_status;
 
 
@@ -25,7 +26,7 @@ public:
 	SyncroWriteWithCache(LruCacheNode &lruCache);
 	~SyncroWriteWithCache(void);
 private:
-	LruCacheNode &lruCache;
+	LruCacheNode &_lruCacheNode;
 	int _thisWriterNum;
 public:
 	bool isFinalWriter(void);
@@ -36,7 +37,7 @@ public:
 	SyncroReadWithCache(LruCacheNode &lruCache);
 	~SyncroReadWithCache(void);
 private:
-	LruCacheNode &lruCache;
+	LruCacheNode &_lruCacheNode;
 
 };
 class LruCacheNode {
@@ -45,7 +46,7 @@ class LruCacheNode {
 		e_cache_node_status	_status;
 		int					_finalWriterNum;
 	public:
-		LruCacheNode(void);
+		LruCacheNode(e_cache_node_status status);
 		LruCacheNode(ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 		~LruCacheNode(void);
 		bool isUpdatedContent(void);
@@ -89,6 +90,7 @@ class LruCache {
 		void _writeToCache(const std::string &uri, ft::shared_ptr<IoReadAndWriteBuffer> buffer);
 	public:
 		bool hit(const std::string &uri);
+		e_cache_node_status queryCacheStatus(const std::string &uri);
 		const std::vector<char>	&get(const std::string &uri);
 		// std::vector<char>::iterator	getIter(const std::string &uri);
 		 size_t				getCacheContentSize(const std::string &uri);

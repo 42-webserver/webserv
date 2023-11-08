@@ -6,7 +6,7 @@
 typedef enum{
     NoneProcessing,
     ReadingProcessing,
-    WritingProcessing
+    WritingProcessing,
 }   e_FileProcessingType;
 
 class FileData;

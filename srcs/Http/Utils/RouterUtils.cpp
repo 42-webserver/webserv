@@ -47,11 +47,15 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
         ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
 
+    std::cerr << "here? : " << uri << std::endl;
     std::string root = _findRoot(vsm, req);
+    std::cerr << "root : " << root << std::endl;
     Alias alias = _findAlias(vsm, req);
     std::string path = _makePath(root, alias, uri);
-    if (path[path.size() - 1] == '/')
+    std::cerr << "path : " << path << std::endl;
+    if (path[path.size() - 1] == '/') {
         return _findIndex(vsm, req, path);
+    }
     else
         return path;
 }
@@ -91,7 +95,7 @@ std::string uri){
     return locationTrieElement->longestPrefixString(uri);
 }
 
-int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
+ssize_t RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
     std::string host = req->getHost();
 
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
@@ -100,7 +104,23 @@ int RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, ft::s
     if (it == serverElement.end())
         //Todo: check this 80mb
         return 1024 * 1024 * 50;
-    return ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
+    // std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum() << std::endl;
+    // std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getUnit() << std::endl;
+    // exit(1);
+    int num = ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
+    char unit = ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getUnit();
+    ssize_t size = num;
+    if (unit == 'B')
+        size *= 1;
+    else if (unit == 'K')
+        size *= 1024;
+    else if (unit == 'M')
+        size *= 1024 * 1024;
+    else if (unit == 'G')
+        size *= 1024 * 1024 * 1024;
+    else
+        throw std::runtime_error("ClientMaxBodySize Logic Error");
+    return size;
 }
 
 bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
@@ -118,7 +138,7 @@ bool RouterUtils::isCgiRequest(ft::shared_ptr<VirtualServerManager> vsm, ft::sha
 }
 
 std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string fullPath = findPath(vsm, req);
+    std::string fullPath = req->getUri();
 
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
@@ -128,17 +148,16 @@ std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> 
     std::string locationString = _findLocationString(locationTrieElement, req->getUri());
 
     // locationString과 일치하는 부분부터 시작
-    size_t startPos = fullPath.find(locationString) + locationString.size();
-
+    size_t startPos = fullPath.find(locationString);
+    size_t dotPos = fullPath.find(".", startPos);
     // '.'을 찾기 시작
-    startPos = fullPath.find(".", startPos);
-    if (startPos != std::string::npos) {
-        size_t endPos = fullPath.find("/", startPos);
+    if (dotPos != std::string::npos) {
+        size_t endPos = fullPath.find("/", dotPos);
         if (endPos == std::string::npos) {
             // '/'가 없으면 문자열 끝까지
             return fullPath.substr(startPos);
         } else {
-            return fullPath.substr(startPos, endPos - startPos);
+            return fullPath.substr(startPos, endPos);
         }
     }
 
@@ -147,7 +166,7 @@ std::string RouterUtils::findCgiScriptPath(ft::shared_ptr<VirtualServerManager> 
 }
 
 std::string RouterUtils::findPathInfo(ft::shared_ptr<VirtualServerManager> vsm, ft::shared_ptr<HttpRequest> req){
-    std::string fullPath = findPath(vsm, req);
+    std::string fullPath = req->getUri();
     std::string cgiScriptPath = findCgiScriptPath(vsm, req);
 
     return fullPath.substr(cgiScriptPath.size());
@@ -165,20 +184,23 @@ bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::
     //get Default
     if (locationElement.get() == NULL)
         return method.compare(HTTP_METHOD::GET) == 0;
-
     LocationElement::iterator it = locationElement->find(LocationElement::KEY::ALLOW_METHOD);
     if (it == locationElement->end())
         return method.compare(HTTP_METHOD::GET) == 0;
     ft::shared_ptr<ConfigElement> allowMethodsConfElem = it->second;
     ft::shared_ptr<AllowMethodElement> allowMethodsElem = ft::static_pointer_cast<AllowMethodElement>(allowMethodsConfElem);
-    
-    if (allowMethodsElem->getFlag() == M_GET && method.compare(HTTP_METHOD::GET) == 0)
-        return true;
-    if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
-        return true;
-    if (allowMethodsElem->getFlag() == M_PUT && method.compare(HTTP_METHOD::PUT) == 0)
-        return true;
-    if (allowMethodsElem->getFlag() == M_DELETE && method.compare(HTTP_METHOD::DELETE) == 0)
+    if (allowMethodsElem.get() == NULL)
+        return method.compare(HTTP_METHOD::GET) == 0;
+        // std::cerr << "allowMethodsElem->getFlag() : " << allowMethodsElem->getFlag() << std::endl;
+    // if (allowMethodsElem->getFlag() == M_GET && method.compare(HTTP_METHOD::GET) == 0)
+    //     return true;
+    // if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
+    //     return true;
+    // if (allowMethodsElem->getFlag() == M_PUT && method.compare(HTTP_METHOD::PUT) == 0)
+    //     return true;
+    // if (allowMethodsElem->getFlag() == M_DELETE && method.compare(HTTP_METHOD::DELETE) == 0)
+    //     return true;
+    if (allowMethodsElem->isTurnOnMethod(method))
         return true;
     return false;
 }
@@ -187,12 +209,20 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
-    // /안끝나는데  디렉토리면 redirect
+    // /안끝나는데  디렉토리면 redirect 
+    // Todo : 일단 뗌질로 해놓음
+    // std::cerr << "is in uri " << uri << std::endl;
     if (uri[uri.size() - 1] != '/') {
+        // std::cerr << "is in uri " << uri << std::endl;
+        req->setUri(uri + "/");
+        std::cerr << req->getUri() << std::endl;
         std::string fullPath = findPath(vsm, req);
+        // std::cerr << "is in fullpath IN REDIRECT : " << fullPath << std::endl;
+        req->setUri(uri.substr(0, uri.size()));
         if (FileManager::isDirectory(fullPath))
             return true;
     }
+    // std::cerr << "is in uri going to find location : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     if (locationTrieElement.get() == NULL)
@@ -210,17 +240,19 @@ std::string RouterUtils::_makePath(const std::string &root, const Alias &alias, 
     std::string path;
     if(root.empty() && alias.empty())
         path = uri;
-    else if(!root.empty())
-        path = root + "/" + uri;
     else if(!alias.empty()){
-        std::size_t locationPos = uri.find(alias.getLocation());
+        const std::string aliasLocation = alias.getLocation();
+        std::size_t locationPos = uri.find(aliasLocation);
         if (locationPos != std::string::npos) {
-            path = alias.getAlias() + uri.substr(locationPos + alias.getLocation().size());
+            path = alias.getAlias() + uri.substr(locationPos + aliasLocation.size());
         }
         else {
            //logerrr
            throw std::runtime_error("Alias Logic Error");
         }
+    }
+    else if(!root.empty()){
+        path = root + uri;
     }
     return path;
 }
@@ -245,6 +277,7 @@ ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm){
     std::vector<std::string> indexList = indexElem->getUris();
     for (std::vector<std::string>::iterator it = indexList.begin(); it != indexList.end(); it++){
         std::string indexPath = path + *it;
+        std::cerr << "find indexPath : " << indexPath << std::endl;
         if (FileManager::isFileExists(indexPath))
             return indexPath;
     }
@@ -280,6 +313,7 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     ft::shared_ptr<LocationElement> locationElement = ft::shared_ptr<LocationElement>();
     if (locationTrieElement.get() != NULL)
+        std::cerr << "locationTrieElement.get() != NULL" << std::endl;
         locationElement = _findLocation(locationTrieElement, req->getUri());
 
     try { 
@@ -290,7 +324,17 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
             return _findIndexInServer(vsm, req);
     }
     catch (NotFoundException &e){
-        throw ;
+        if (locationElement.get() != NULL){
+            LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::AUTOINDEX);
+            if (it2 != locationElement->end()){
+                ft::shared_ptr<ConfigElement> autoIndexConfElem = it2->second;
+                ft::shared_ptr<AutoIndexElement> autoIndexElem = ft::static_pointer_cast<AutoIndexElement>(autoIndexConfElem);
+                if (autoIndexElem->getFlag())
+                    throw DirectoryException();
+            }
+        }
+        else 
+            throw ;
     }
     catch (std::exception &e){
         std::runtime_error("Index Logic Error");
@@ -356,6 +400,7 @@ ft::shared_ptr<ReturnElement> RouterUtils::findRedirectUri(ft::shared_ptr<Virtua
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
+    std::cerr << "in findRedirectUri : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ServerElement serverElement = targetServer->getServerElement();
     ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);
@@ -368,6 +413,7 @@ ft::shared_ptr<ReturnElement> RouterUtils::findRedirectUri(ft::shared_ptr<Virtua
     LocationElement::iterator it2 = locationElement->find(LocationElement::KEY::RETURN);
     if (it2 == locationElement->end())
         return ft::shared_ptr<ReturnElement>();
+
     ft::shared_ptr<ConfigElement> returnConfElem = it2->second;
     ft::shared_ptr<ReturnElement> returnElem = ft::static_pointer_cast<ReturnElement>(returnConfElem);
     return returnElem;

@@ -1,9 +1,10 @@
 #include <Event/ReadEvent/ReadEventFromFile.hpp>
-
+#include <FileManager/FileManager/FileManager.hpp>
 ReadEventFromFile::ReadEventFromFile(
     ft::shared_ptr<IoReadAndWriteBuffer> buffer,
     const std::string &path, std::string mode = "w") :
-    ReadEvent(new ReadEventFromFileHandler(buffer)),
+    ReadEvent(new ReadEventFromFileHandler(buffer,
+        FileManager::getFileSize(path))),
     SingleStreamable(new FileStream(path, mode)) {}
 
 ReadEventFromFile::~ReadEventFromFile(void) {}
@@ -12,36 +13,36 @@ void ReadEventFromFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndReade
     this->_syncroFileDataAndReader = syncroFileDataAndReader;
 }
 void ReadEventFromFile::callEventHandler(void) {
+    std::cerr << "ReadEventFromFile::callEventHandler()" << std::endl;
+
     this->_event_handler->handleEvent(*this);
 }
 void ReadEventFromFile::onboardQueue(void) {
     Event *event = this;
 
+    std::cerr << "ReadEventFromFile::onboardQueue()" << std::endl;
     try {
         this->getChannel()->setNonBlocking();
         this->_onboardRead(event, this->getFd());
     }
     catch (KqueueError &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", e.what());
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", "Fail to onboard Read Event");
+    catch (std::exception &e) {
         throw ;
     }
 }
 
 void ReadEventFromFile::offboardQueue(void) {
-
+    std::cerr << "ReadEventFromFile::offboardQueue()" << std::endl;
+    // exit(1);
     try {
         this->_offboardRead(this, this->getFd());
     }
-    catch (const std::exception &e) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", e.what());
+    catch (KqueueError &e) {
         throw (KqueueError());
     }
-    catch (...) {
-        Logger::getInstance().error("{} {}", 2, "ReadEventFromFile", "Fail to offboard Read Event");
+    catch (std::exception &e) {
         throw ;
     }
 

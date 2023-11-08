@@ -11,10 +11,9 @@ ListenEventHandler::~ListenEventHandler() {};
 std::pair<int, std::string>		ListenEventHandler::connectClient(int server_fd) const{
 	int	client_fd;
 	struct sockaddr_in address;
-
+	socklen_t address_len = sizeof(address);
 	if ((client_fd = ::accept(server_fd, 
-	(struct sockaddr *) &address, 
-	(socklen_t*)sizeof(address))) == -1) {
+	(struct sockaddr *) &address, &address_len)) == -1) {
 		Logger::getInstance().error("Fail to accept client");
 		throw (FailToAcceptException());
 	}
@@ -22,6 +21,8 @@ std::pair<int, std::string>		ListenEventHandler::connectClient(int server_fd) co
 }
 
 void	ListenEventHandler::handleEvent(Event &event) {
+	std::cerr << "ListenEventHandler::handleEvent" << std::endl;
+	
 	Logger		&log = Logger::getInstance();
 	std::pair<int, std::string> client;
 
@@ -32,6 +33,7 @@ void	ListenEventHandler::handleEvent(Event &event) {
 		log.error(e.what());
 		return ;
 	}
+
 	EventFactory &factory = EventFactory::getInstance();
 	try {
 		ListenEvent *listenEvent =static_cast<ListenEvent *>(&event);
@@ -40,6 +42,7 @@ void	ListenEventHandler::handleEvent(Event &event) {
 		//Todo: socket New Constructor
 		EventDto event_dto(ft::shared_ptr<Channel>(new Socket(client.first, client.second)),
 		listenEvent->getVirtualServerManager());
+
 		Event *readEventFromClient = factory.createEvent(ft::READ_EVENT_FROM_CLIENT, event_dto);
 		readEventFromClient->onboardQueue();
 	} catch (const std::exception &e) {

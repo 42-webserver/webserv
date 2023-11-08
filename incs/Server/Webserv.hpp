@@ -16,7 +16,7 @@ class Webserv {
 		Webserv	&operator=(const Webserv &rhs);
 
 	public:
-		bool	run(const Config &config) throw(std::exception);
+		bool	run(const Config &config);
 
 	public:
 		class FailToRunException: public std::exception {

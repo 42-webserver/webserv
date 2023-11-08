@@ -8,32 +8,39 @@ ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel,
 	_client(new Client(Read))
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
-void	ReadEventFromClient::callEventHandler(void) { this->_event_handler->handleEvent(*this); }
+void	ReadEventFromClient::callEventHandler(void) { 
+	std::cerr << "ReadEventFromClient::callEventHandler()" << std::endl;
+
+	this->_event_handler->handleEvent(*this); }
 void	ReadEventFromClient::onboardQueue() {
 	int			fd = this->getFd();
 	Event		*event = this;
+	
+		std::cerr << "ReadEventFromClient::onboardQueue()" << std::endl;
 
 	try {
 		this->getChannel()->setNonBlocking();
 		this->_onboardRead(event, fd);
 	} catch (KqueueError &e) {
-		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
 		throw (KqueueError());
 	}
-	catch (...) {
-		Logger::getInstance().error("{} {}", 2, "ReadEventClient", "Fail to onboard Read Event");
+	catch (std::exception &e) {
 		throw ;
 	}
 }
 void	ReadEventFromClient::offboardQueue() {
 
+	std::cerr << "ReadEventFromClient::offboardQueue()" << std::endl;
 	try {
+		this->_client->removeClientEventQueueState(Read);
 		this->_offboardRead(this, this->getFd());
 		//To do: check this
-		this->_client->removeClientEventQueueState(Read);
-	} catch (const std::exception &e) {
-		Logger::getInstance().error("{} {}", 2, "ReadEventClient", e.what());
+		std::cerr << "ReadEventFromClient::offboardQueue() end" << std::endl;
+	} catch (KqueueError &e) {
 		throw (KqueueError());
+	}
+	catch (std::exception &e) {
+		throw ;
 	}
 
 }

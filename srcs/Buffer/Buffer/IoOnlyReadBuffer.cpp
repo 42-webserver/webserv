@@ -4,6 +4,7 @@ IoOnlyReadBuffer::IoOnlyReadBuffer() : BaseBuffer(), IoReadable(), _head(ft::Opt
 IoOnlyReadBuffer::~IoOnlyReadBuffer() {
 }
 IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
+    std::cerr << "IoOnlyReadBuffer::getInstance()" << std::endl;
     if (_instance == NULL) {
         try {
         _instance = new IoOnlyReadBuffer();
@@ -18,10 +19,11 @@ IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
     return *_instance;
 }
 
-size_t IoOnlyReadBuffer::size(){
+ssize_t IoOnlyReadBuffer::size(){
 	// ft::Assert::_assert((!_head.has_value()),
 	// "IoOnlyReadBuffer:: size Invarint Error");
-	return _head.value_or(0);
+    if (!_head.has_value()) throw std::runtime_error("IoOnlyReadBuffer:: size Invarint Error");
+	return (*_head)->size();
 }
 void	IoOnlyReadBuffer::recycleInstance(){
 	// ft::Assert::_assert((!_head.has_value()),
@@ -38,7 +40,7 @@ void	IoOnlyReadBuffer::_allocate() {
     }
 }
 
-size_t	IoOnlyReadBuffer::ioRead(int fd) {
+ssize_t	IoOnlyReadBuffer::ioRead(int fd) {
     //if No alloc->alloc
     try {
         if (!_head.has_value()) _allocate();

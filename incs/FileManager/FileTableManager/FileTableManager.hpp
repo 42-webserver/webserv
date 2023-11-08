@@ -22,6 +22,7 @@ public:
     e_FileProcessingType findFileProcessingType(const std::string &fileName);
     FileData& getFileData(const std::string &fileName);
     void deleteFileData(const std::string &fileName);
+    // void setFileNoneProcessing(const std::string &fileName);
 private:
     FileTableManager(void);
     FileTableManager(const FileTableManager &ref);

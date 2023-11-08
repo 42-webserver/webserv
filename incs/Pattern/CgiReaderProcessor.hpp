@@ -4,6 +4,9 @@
 #include <Pattern/ProcessorObject.hpp>
 #include <Channel/CgiChannel.hpp>
 #include <Cgi/CgiEnvSetter.hpp>
+
+
+
 class CgiReaderProcessor : public ProcessorObject {
     public:
         CgiReaderProcessor(void);
@@ -18,8 +21,12 @@ class CgiReaderProcessor : public ProcessorObject {
         void _handleCgiProcess(ft::shared_ptr<CgiChannel> cgiChannel, ft::shared_ptr<Client> client,
             ft::shared_ptr<VirtualServerManager> virtualServerManager,
             ft::shared_ptr<Channel> channel);
-        void _onBoardReadFromCgi(ft::shared_ptr<Channel> channel, ft::shared_ptr<Client> client);
-        void _onBoardWriteToCgi(ft::shared_ptr<Channel> channel, ft::shared_ptr<Client> client);
+        void _onBoardReadFromCgi(int fd, ft::shared_ptr<Client> client);
+        void _onBoardWriteToCgi(int fd, ft::shared_ptr<Client> client);
         void _onBoardCgiWait(pid_t pid);
+        void _onBoardGateWayTimeout(pid_t pid);
+    public:
+        static std::string getInterPreterPath(const std::string & extention);
+  
 };
 #endif

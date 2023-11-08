@@ -11,6 +11,7 @@
 #include <Event/SpecialEvent/CgiWaitEvent.hpp>
 #include <Event/WriteEvent/WriteEventToFile.hpp>
 #include <Event/SpecialEvent/LogEvent.hpp>
+#include <Event/SpecialEvent/CgiKillEvent.hpp>
 
 EventFactory *EventFactory::_instance = NULL;
 EventFactory::EventFactory(void) {}	
@@ -71,6 +72,9 @@ Event *EventFactory::createEvent(ft::EventType eventType, EventDto &eventDto){
 			);
 		case ft::LOG_EVENT:
 			return (new LogEvent()
+			);
+		case ft::CGI_KILL_EVENT:
+			return (new CgiKillEvent(eventDto.getPid())
 			);
 		default:
 			throw (FailToEventCreateException());

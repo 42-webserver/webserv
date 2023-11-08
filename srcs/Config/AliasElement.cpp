@@ -27,6 +27,10 @@ bool	AliasElement::_parse(std::ifstream &infile) throw(std::exception) {
 		throw (InvalidSyntaxException());
 	}
 	this->_path = token.substr(0, token.length() - 1);
+	//TO do: check this
+	if (this->_path.back() != '/') {
+		this->_path.push_back('/');
+	}
 	if (this->_pathIsNotValid(this->_path)) {
 		throw (InvalidArgumentException());
 	}

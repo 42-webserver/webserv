@@ -8,7 +8,7 @@
 
 class Socket : public Channel {
 	public:
-		static const int	MAX_SIZE = 20;
+		static const int	MAX_SIZE = 128;
 
 	private:
 		int					_enable;

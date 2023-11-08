@@ -1,4 +1,31 @@
 #include "../../../incs/Http/Request/HttpRequest.hpp"
+#include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
+
+//debug
+void HttpRequest::_printBody()
+{
+	std::cerr << "Method: " << this->_method << std::endl;
+	std::cerr << "Uri: " << this->_uri << std::endl;
+	std::cerr << "Version: " << this->_version << std::endl;
+	std::cerr << "Protocol: " << this->_protocol << std::endl;
+	std::cerr << "BodyType: " << this->_bodyType << std::endl;
+	std::cerr << "Body: " << std::endl;
+	this->_body->printBuffer();
+	
+	
+	std::cerr << std::endl;
+	std::cerr << "Headers: " << std::endl;
+	for (std::multimap<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
+		std::cerr << it->first << ": " << it->second << std::endl;
+	std::cerr << "Queries: " << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = this->_queries.begin(); it != this->_queries.end(); it++)
+		std::cerr << it->first << ": " << it->second << std::endl;
+	std::cerr << "Cookies: " << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = this->_cookies.begin(); it != this->_cookies.end(); it++)
+		std::cerr << it->first << ": " << it->second << std::endl;
+}
+
+
 
 // FileUpload 
 
@@ -35,9 +62,16 @@ HttpRequest::~HttpRequest()
 {
 }
 
-void HttpRequest::insertBody(std::vector<char> &buffer)
+ssize_t HttpRequest::insertBody(std::vector<char> &buffer)
 {
-	this->_body->append(buffer.begin(), buffer.end());
+	return (this->_body->append(buffer.begin(), buffer.end()));
+}
+
+ssize_t HttpRequest::insertBody(void )
+{
+	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
+
+	return (this->_body->append(readBuffer.begin(), readBuffer.end()));
 }
 
 //Todo: 여기서 공백하나라고 가정하는거 위험
@@ -137,6 +171,12 @@ std::string HttpRequest::getUri()
 	return this->_uri;
 }
 
+void HttpRequest::setUri(std::string uri)
+{
+	this->_uri.clear();
+	this->_uri = uri;
+}
+
 std::string HttpRequest::getVersion()
 {
 	return this->_version;
@@ -172,15 +212,15 @@ std::map<std::string, std::string> HttpRequest::getCookies()
 	return this->_cookies;
 }
 
-int HttpRequest::getContentLength()
+ssize_t HttpRequest::getContentLength()
 {
 	std::multimap<std::string, std::string>::iterator it;
 
-	//Todo: hyunkyle, -> error handling
+	//fix : daegulee
 	it = this->_headers.find("Content-Length");
 	if (it == this->_headers.end())
-		throw BadRequestException(BAD_REQUEST);
-	return std::stoi(it->second);
+		return noContentLength;
+	return std::stoul(it->second);
 }
 
 std::vector<MultipartRequest> & HttpRequest::getMultipartRequests()

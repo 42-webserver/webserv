@@ -1,124 +1,15 @@
-[2023-07-18 01:03:16] [INFO] onboard Listen Event
-[2023-07-18 01:03:16] [INFO] Enter Pull Event
-[2023-07-18 01:03:19] [INFO] Pull Event
-[2023-07-18 01:03:19] [INFO] Client connected
-[2023-07-18 01:03:19] [INFO] Enter Pull Event
-[2023-07-18 01:03:19] [INFO] Pull Event
-[2023-07-18 01:03:19] [INFO] Client connected
-[2023-07-18 01:03:19] [INFO] Enter Pull Event
-[2023-07-18 01:03:19] [INFO] Pull Event
-[2023-07-18 01:03:19] [INFO] FIN ISH Parse
-[2023-07-18 01:03:19] [INFO] Remove Read Event
-[2023-07-18 01:03:19] [INFO] onboard Write Event
-[2023-07-18 01:03:19] [INFO] Enter Pull Event
-[2023-07-18 01:03:19] [INFO] Pull Event
-[2023-07-18 01:03:19] [INFO] WriteEventToClientHandler::handleEvent
-[2023-07-18 01:03:19] [INFO] Remove Write Event
-[2023-07-18 01:03:19] [INFO] Enter Pull Event
-[2023-07-18 01:03:19] [INFO] Pull Event
-[2023-07-18 01:03:19] [INFO] Remove Read Event
-[2023-07-18 01:03:19] [INFO] Socket is destroyed
-[2023-07-18 01:03:19] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] FIN ISH Parse
-[2023-07-18 01:03:24] [INFO] Remove Read Event
-[2023-07-18 01:03:24] [INFO] onboard Write Event
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] WriteEventToClientHandler::handleEvent
-[2023-07-18 01:03:24] [INFO] Remove Write Event
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] Remove Read Event
-[2023-07-18 01:03:24] [INFO] Socket is destroyed
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] Client connected
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] Client connected
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] FIN ISH Parse
-[2023-07-18 01:03:24] [INFO] Remove Read Event
-[2023-07-18 01:03:24] [INFO] onboard Write Event
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] WriteEventToClientHandler::handleEvent
-[2023-07-18 01:03:24] [INFO] Remove Write Event
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 01:03:24] [INFO] Pull Event
-[2023-07-18 01:03:24] [INFO] Remove Read Event
-[2023-07-18 01:03:24] [INFO] Socket is destroyed
-[2023-07-18 01:03:24] [INFO] Enter Pull Event
-[2023-07-18 02:49:45] [INFO] onboard Listen Event
-[2023-07-18 02:49:45] [INFO] Enter Pull Event
-[2023-07-18 02:49:47] [INFO] Pull Event
-[2023-07-18 02:49:47] [INFO] Client connected
-[2023-07-18 02:49:47] [INFO] Enter Pull Event
-[2023-07-18 02:49:47] [INFO] Pull Event
-[2023-07-18 02:49:47] [INFO] Client connected
-[2023-07-18 02:49:47] [INFO] Enter Pull Event
-[2023-07-18 02:49:47] [INFO] Pull Event
-[2023-07-18 02:49:47] [INFO] FIN ISH Parse
-[2023-07-18 02:49:47] [INFO] Remove Read Event
-[2023-07-18 02:49:47] [INFO] onboard Write Event
-[2023-07-18 02:49:47] [INFO] Enter Pull Event
-[2023-07-18 02:49:47] [INFO] Pull Event
-[2023-07-18 02:49:47] [INFO] WriteEventToClientHandler::handleEvent
-[2023-07-18 02:49:47] [INFO] Remove Write Event
-[2023-07-18 02:49:47] [INFO] Enter Pull Event
-[2023-07-18 02:49:47] [INFO] Pull Event
-[2023-07-18 02:49:47] [INFO] Client Send Eof
-[2023-07-18 02:49:47] [INFO] Remove Read Event
-[2023-07-18 02:49:47] [INFO] Socket is destroyed
-[2023-07-18 02:49:47] [INFO] Enter Pull Event
-[2023-07-18 02:49:57] [INFO] Pull Event
-[2023-07-18 02:49:57] [INFO] Client connected
-[2023-07-18 02:49:57] [INFO] Enter Pull Event
-[2023-07-18 02:49:57] [INFO] Pull Event
-[2023-07-18 02:49:57] [INFO] FIN ISH Parse
-[2023-07-18 02:49:57] [INFO] Remove Read Event
-[2023-07-18 02:49:57] [INFO] onboard Write Event
-[2023-07-18 02:49:57] [INFO] Enter Pull Event
-[2023-07-18 02:49:57] [INFO] Pull Event
-[2023-07-18 02:49:57] [INFO] WriteEventToClientHandler::handleEvent
-[2023-07-18 02:49:57] [INFO] Remove Write Event
-[2023-07-18 02:49:57] [INFO] Enter Pull Event
-[2023-07-18 02:49:57] [INFO] Pull Event
-[2023-07-18 02:49:57] [INFO] Client Send Eof
-[2023-07-18 02:49:57] [INFO] Remove Read Event
-[2023-07-18 02:49:57] [INFO] Socket is destroyed
-[2023-07-18 02:49:57] [INFO] Enter Pull Event
-[2023-10-07 21:45:09] [ERROR] LocationElement: Invalid Element
-[2023-10-07 21:45:09] [ERROR] LocationElement: Fail to Parse
-[2023-10-07 21:45:09] [ERROR] LocationTrieElement: Fail to insert
-[2023-10-07 21:45:09] [ERROR] ServerElement: Fail to Create Element
-[2023-10-07 21:45:09] [ERROR] ServerElement: Fail to Parse
-[2023-10-07 21:45:09] [ERROR] Config: Fail to parse
-[2023-10-07 21:45:33] [ERROR] LocationElement: Invalid Element
-[2023-10-07 21:45:33] [ERROR] LocationElement: Fail to Parse
-[2023-10-07 21:45:33] [ERROR] LocationTrieElement: Fail to insert
-[2023-10-07 21:45:33] [ERROR] ServerElement: Fail to Create Element
-[2023-10-07 21:45:33] [ERROR] ServerElement: Fail to Parse
-[2023-10-07 21:45:33] [ERROR] Config: Fail to parse
-[2023-10-07 21:46:08] [ERROR] LocationElement: Invalid Element
-[2023-10-07 21:46:08] [ERROR] LocationElement: Fail to Parse
-[2023-10-07 21:46:08] [ERROR] LocationTrieElement: Fail to insert
-[2023-10-07 21:46:08] [ERROR] ServerElement: Fail to Create Element
-[2023-10-07 21:46:08] [ERROR] ServerElement: Fail to Parse
-[2023-10-07 21:46:08] [ERROR] Config: Fail to parse
-[2023-10-07 21:47:11] [ERROR] LocationElement: Invalid Element
-[2023-10-07 21:47:11] [ERROR] LocationElement: Fail to Parse
-[2023-10-07 21:47:11] [ERROR] LocationTrieElement: Fail to insert
-[2023-10-07 21:47:11] [ERROR] ServerElement: Fail to Create Element
-[2023-10-07 21:47:11] [ERROR] ServerElement: Fail to Parse
-[2023-10-07 21:47:11] [ERROR] Config: Fail to parse
-[2023-10-07 21:47:28] [ERROR] CgiPassElement: Invalid Argument
-[2023-10-07 21:47:28] [ERROR] CgiPassElement: Fail to Parse
-[2023-10-07 21:47:28] [ERROR] LocationElement: Fail to Create Element
-[2023-10-07 21:47:28] [ERROR] LocationElement: Fail to Parse
-[2023-10-07 21:47:28] [ERROR] LocationTrieElement: Fail to insert
-[2023-10-07 21:47:28] [ERROR] ServerElement: Fail to Create Element
-[2023-10-07 21:47:28] [ERROR] ServerElement: Fail to Parse
-[2023-10-07 21:47:28] [ERROR] Config: Fail to parse
+[2023-11-08 20:15:54] read error
+[2023-11-08 20:55:54] read error
+[2023-11-08 21:36:29] read error
+[2023-11-08 21:36:30] read error
+[2023-11-08 21:36:38] read error
+[2023-11-08 22:09:21] read error
+[2023-11-08 22:18:29] read error
+[2023-11-09 02:20:19] 405 Method Not Allowed
+[2023-11-09 02:21:55] 405 Method Not Allowed
+[2023-11-09 05:01:06] Request Entity Too Large
+[2023-11-09 05:01:06] 405 Method Not Allowed
+[2023-11-09 05:01:07] read error
+[2023-11-09 05:01:55] Request Entity Too Large
+[2023-11-09 05:01:55] 405 Method Not Allowed
+[2023-11-09 05:01:55] read error
