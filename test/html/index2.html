@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Request Example</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  label, input, textarea, button {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  button {
+    margin-top: 20px;
+  }
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Send HTTP Requests</h1>
+
+  <label for="url">URL:</label>
+  <input type="text" id="url" value="/your-endpoint">
+
+  <label for="bodyContent">Body Content:</label>
+  <textarea id="bodyContent" rows="10"></textarea>
+
+  <button onclick="sendPost()">Send POST</button>
+  <button onclick="sendPut()">Send PUT</button>
+  <button onclick="sendDelete()">Send DELETE</button>
+
+  <div id="errorMessage" class="error" style="display:none;"></div>
+</div>
+
+<script>
+  function createMultipartBody(bodyContent, boundary) {
+    return `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="example.txt"\r\nContent-Type: text/plain\r\n\r\n${bodyContent}\r\n\r\n--${boundary}--\r\n`;
+  }
+
+  async function sendRequest(method) {
+    var url = document.getElementById('url').value;
+    var bodyContent = document.getElementById('bodyContent').value;
+    var boundary = 'example-boundary';
+    var body = createMultipartBody(bodyContent, boundary);
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}` },
+        body: method === 'GET' || method === 'DELETE' ? null : body
+      });
+      if(response.status === 415) {
+          document.getElementById('errorMessage').style.display = 'block';
+          document.getElementById('errorMessage').innerText = 'Error: Unsupported Media Type';
+      } else {
+          const data = await response.json();
+          console.log(data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  function sendPost() {
+    sendRequest('POST');
+  }
+
+  function sendPut() {
+    sendRequest('PUT');
+  }
+
+  function sendDelete() {
+    sendRequest('DELETE');
+  }
+</script>
+
+</body>
+</html>

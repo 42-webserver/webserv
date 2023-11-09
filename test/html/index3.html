@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chunked Data Streaming Example</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  label, textarea, button {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  button {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <label for="bodyContent">Body Content (one chunk per line):</label>
+  <textarea id="bodyContent" rows="10"></textarea>
+
+  <button onclick="sendChunks()">Send Chunks</button>
+</div>
+
+<script>
+  async function sendChunks() {
+    const ws = new WebSocket('ws://your-server-url');
+
+    ws.onopen = function(event) {
+      console.log('WebSocket is open now.');
+      
+      // Split your data into chunks (one chunk per line)
+      const data = document.getElementById('bodyContent').value;
+      const chunks = data.split('\n');
+      
+      chunks.forEach(chunk => {
+        ws.send(chunk);
+      });
+      
+      ws.close();
+    };
+
+    ws.onclose = function(event) {
+      console.log('WebSocket is closed now.');
+    };
+  }
+</script>
+
+</body>
+</html>
