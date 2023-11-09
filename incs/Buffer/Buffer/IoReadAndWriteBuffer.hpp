@@ -27,7 +27,7 @@ private:
 
 //debug
 public: 
-    void printBuffer();
+    // void printBuffer();
 
 
 //Constructor

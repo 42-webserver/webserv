@@ -26,7 +26,6 @@ void CgiResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
         this->_headers["Content-type"] = "application/octet-stream";
 
     ssize_t ContentLength = std::atol(this->_headers["Content-Length"].c_str());
-    std::cerr << "ContentLength: " << ContentLength << std::endl;
     _allocContentLength(ContentLength::e_content_length_header, 
         ContentLength);
     _buildDefaultResponseHeader(buffer);

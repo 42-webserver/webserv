@@ -39,20 +39,15 @@ std::vector<char>::iterator ReadEventFromCgiHandler::_end() {
 }
 
 void ReadEventFromCgiHandler::_parseToBody(void){
-    std::cerr << "ReadEventFromCgiHandler::_parseToBody" << std::endl;
     std::vector<char>& buffer = this->_buffer;
     std::vector<char>::iterator current = _begin();
     std::vector<char>::iterator end = _end();
     std::vector<std::string> headers;
     std::string line;
-    int distance = std::distance(current, end);
-    std::cerr << "distance:" << distance << std::endl;
-    for (int i = 0; i < distance; i++)
-        std::cerr << buffer[i];
+
     while (current != end) {
         std::vector<char>::iterator find = std::search(current, end, _crlfPattern.begin(), _crlfPattern.end());
         if (find == end) {
-            std::cerr << "ReadEventFromCgiHandler::_parseToBody->find == end" << std::endl;
             break ;
         }
 
@@ -89,22 +84,16 @@ void ReadEventFromCgiHandler::_parseToBody(void){
 }
 
 void ReadEventFromCgiHandler::_handleCgiStart(ReadEventFromCgi& event){
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiStart" << std::endl;
     std::vector<char>& buffer = this->_buffer;
     ft::shared_ptr<Client> client = event.getClient();
     ft::shared_ptr<HttpResponse> response = client->getResponse();
     ssize_t readSize = read(event.getFd(), buffer.data(), _capacity);
     
     if (readSize <= 0){
-        std::cerr << "ReadEventFromCgiHandler::_handleCgiStart->readSize <= 0" << std::endl;
         _callErrorPageBuilder(event);
         event.offboardQueue();
         return ;
     }
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiStart->readSize > 0" << std::endl;
-    for (int i = 0; i < readSize; i++)
-        std::cerr << buffer[i];
-    std::cerr << std::endl;
     response->setCgiSync(e_cgi_reading);
     this->_realSize = readSize;
     _parseToBody();
@@ -119,7 +108,6 @@ void ReadEventFromCgiHandler::_callErrorPageBuilder(ReadEventFromCgi &readEventF
     this->_state = e_parse_cgi_end;
 }
 void ReadEventFromCgiHandler::_handleCgiHeader(ReadEventFromCgi& event){
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiHeader" << std::endl;
     std::vector<char>& buffer = this->_buffer;
     ft::shared_ptr<Client> client = event.getClient();
     size_t readSize = read(event.getFd(), buffer.data() + this->_realSize, 
@@ -135,11 +123,9 @@ void ReadEventFromCgiHandler::_handleCgiHeader(ReadEventFromCgi& event){
 }
 
 void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiBody" << std::endl;
     ft::shared_ptr<HttpResponse> response = event.getClient()->getResponse();
 
     if (_firstInCgiBody) {
-        std::cerr << "ReadEventFromCgiHandler::_handleCgiBody->_firstInCgiBody" << std::endl;
         ft::shared_ptr<Client> client = event.getClient();
         response->setResponseSize(BigSize, HttpResponse::AccessKey());
         response->allocateBigSizeBuffer(HttpResponse::AccessKey());
@@ -151,13 +137,11 @@ void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
             _contentLength = -1;
         ft::shared_ptr<IoReadAndWriteBuffer> bigSizeBuffer = response->getBigSizeBuffer(HttpResponse::AccessKey());
         bigSizeBuffer->append(_begin(), _end());
-        std::cerr << "bigSizeBuffer->size():" << bigSizeBuffer->size() << std::endl;
         _firstInCgiBody = false;
     }
     ft::shared_ptr<IoReadAndWriteBuffer> bigSizeBuffer = response->getBigSizeBuffer(HttpResponse::AccessKey());
 
     if (_contentLength > 0) {
-        std::cerr << "ReadEventFromCgiHandler::_handleCgiBody->contentLength > 0" << std::endl;
         // _previousReadSize += bigSizeBuffer->ioRead(event.getFd(), contentLength - _previousReadSize);
         ssize_t n = bigSizeBuffer->ioReadToRemainigSize(event.getFd(), _contentLength - _previousReadSize);
         if (n == 0) {
@@ -167,7 +151,6 @@ void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
             return ;
         }
         if (n < 0) {
-            std::cerr << "ReadEventFromCgiHandler::_handleCgiBody->contentLength > 0->n < 0" << std::endl;
             _callErrorPageBuilder(event);
             event.offboardQueue();
             return ;
@@ -178,20 +161,14 @@ void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
         }
     }
     else {
-        std::cerr << "ReadEventFromCgiHandler::_handleCgiBody->contentLength <= 0" << std::endl;
         int fd = event.getFd();
-        std::cerr << "fd:" << fd << std::endl;
-        std::cerr << "bigSizeBuffer->size():" << bigSizeBuffer->size() << std::endl;
         size_t n = bigSizeBuffer->ioRead(fd);
-        std::cerr << "n:" << n << std::endl;
         if (n < 0) {
-            std::cerr << "ReadEventFromCgiHandler::_handleCgiBody->contentLength <= 0->n < 0" << std::endl;
             _callErrorPageBuilder(event);
             event.offboardQueue();
             return ;
         }
         if (n == 0) {
-            std::cerr << "ReadEventFromCgiHandler::_handleCgiBody->contentLength <= 0->n == 0" << std::endl;
             this->_state = e_parse_cgi_end;
         }
     }
@@ -200,7 +177,6 @@ void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
 }
 
 void ReadEventFromCgiHandler::_buildCgiResponseHeader(ReadEventFromCgi& event){
-    std::cerr << "ReadEventFromCgiHandler::_buildCgiResponseHeader" << std::endl;
     ft::shared_ptr<Client> client = event.getClient();
     std::vector<char>& buffer = client->getResponse()->getNormalCaseBuffer(HttpResponse::AccessKey());
     ft::shared_ptr<HttpResponseBuilder> builder(new CgiResponseBuilder(this->_headers, client));
@@ -209,7 +185,6 @@ void ReadEventFromCgiHandler::_buildCgiResponseHeader(ReadEventFromCgi& event){
 }   
 
 void ReadEventFromCgiHandler::_handleCgiEnd(ReadEventFromCgi& event){
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiEnd" << std::endl;
     ft::shared_ptr<Client> client = event.getClient();
     ft::shared_ptr<HttpResponse> response = client->getResponse();
     ft::shared_ptr<IoReadAndWriteBuffer> bigSizeBuffer = response->getBigSizeBuffer(HttpResponse::AccessKey());
@@ -219,19 +194,10 @@ void ReadEventFromCgiHandler::_handleCgiEnd(ReadEventFromCgi& event){
 
     _buildCgiResponseHeader(event);
     response->setCgiSync(e_cgi_reading_done);
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiEnd- normal" << std::endl;
-    std::vector<char> normalSizeBuffer = response->getNormalCaseBuffer(HttpResponse::AccessKey());
-    for (size_t i = 0; i < normalSizeBuffer.size(); i++)
-        std::cerr << normalSizeBuffer[i];
-    std::cerr << std::endl;
-    std::cerr << "ReadEventFromCgiHandler::_handleCgiEnd- big" << std::endl;
-    bigSizeBuffer->printBuffer();
     event.offboardQueue();
 }
 void ReadEventFromCgiHandler::handleEvent(Event &event){
-    std::cerr << "ReadEventFromCgiHandler::handleEvent" << std::endl;
    ReadEventFromCgi *readEventFromCgi = static_cast<ReadEventFromCgi*>(&event);
-    std::cerr << "this state:" << this->_state << std::endl;
     switch (this->_state){
         case e_parse_cgi_start:
                 this->_handleCgiStart(*readEventFromCgi);

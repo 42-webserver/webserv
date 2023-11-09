@@ -60,7 +60,6 @@ std::string CgiReaderProcessor::getInterPreterPath(const std::string &extension)
 }
 void CgiReaderProcessor::_handleCgiProcess(ft::shared_ptr<CgiChannel> cgiChannel, ft::shared_ptr<Client> client,
     ft::shared_ptr<VirtualServerManager> virtualServerManager, ft::shared_ptr<Channel> channel) {
-        std::cerr << "CgiReaderProcessor::_handleCildProcess" << std::endl;
         try {
             const std::map<std::string, std::string>& env = 
             CgiEnvSetter::getInstance().getEnv(client, channel, virtualServerManager);
@@ -76,11 +75,9 @@ void CgiReaderProcessor::_handleCgiProcess(ft::shared_ptr<CgiChannel> cgiChannel
             std::string fullPath = RouterUtils::findPath(virtualServerManager, request);
             std::string cgiPath =  fullPath.substr(0, fullPath.size() - 
             RouterUtils::findPathInfo(virtualServerManager, request).size());
-            std::cerr << "cgipath: " << cgiPath << std::endl;
             size_t dotpos = cgiPath.find_last_of(".");
             std::string extension = cgiPath.substr(dotpos + 1);
             CharArray argv;
-            std::cerr << "CgiReaderProcessor::_handleCgiProcess::findInterpreters" << std::endl;
             std::string interPreterPath = getInterPreterPath(extension);
             if (cgiPath.empty()) {
                 throw std::runtime_error("cgiPath is empty -> logical error");
@@ -94,7 +91,6 @@ void CgiReaderProcessor::_handleCgiProcess(ft::shared_ptr<CgiChannel> cgiChannel
                 argv.insert(interPreterPath);
                 argv.insert(cgiPath);
             }
-            std::cerr << "CgiReaderProcessor::_handleCgiProcess::execve" << std::endl;
             execve(argv[0], argv.get(), envpManager.getEnvp());
             perror("execve error");
             if (errno == ENOENT) {
@@ -108,7 +104,6 @@ void CgiReaderProcessor::_handleCgiProcess(ft::shared_ptr<CgiChannel> cgiChannel
             }
         }
         catch (const std::exception &e) {
-            std::cerr << "CgiReaderProcessor::_handleCgiProcess::exception" << e.what() << std::endl;
             // log error CgiChannel execute,e.what
             // throw ;
             // Logger::getInstance().error(e.what());
@@ -128,24 +123,18 @@ void CgiReaderProcessor::_handleCgiProcess(ft::shared_ptr<CgiChannel> cgiChannel
 }
 
 void CgiReaderProcessor::_onBoardReadFromCgi(int fd, ft::shared_ptr<Client> client) {
-    std::cerr << "CgiRxeaderProcessor::_onBoardReadFromCgi" << std::endl;
     EventFactory& eventFactory = EventFactory::getInstance();
 
     EventDto eventDto(client, ft::shared_ptr<Channel>(new ByteStream(fd)));
-    std::cerr << "CgiReaderProcessor::_onBoardReadFromCgi::createEvent" << std::endl;
      Event*event = eventFactory.createEvent(ft::READ_EVENT_FROM_CGI, eventDto);
-    std::cerr << "CgiReaderProcessor::_onBoardReadFromCgi::onboardQueue" << std::endl;
     event->onboardQueue();
-    std::cerr << "CgiReaderProcessor::_onBoardReadFromCgi end" << std::endl;
 }
 
 void CgiReaderProcessor::_onBoardWriteToCgi(int fd, ft::shared_ptr<Client> client) {
     EventFactory& eventFactory = EventFactory::getInstance();
-    std::cerr << "CgiReaderProcessor::_onBoardWriteToCgi" << std::endl;
     EventDto eventDto(client, ft::shared_ptr<Channel>(new ByteStream(fd)));
      Event* event = eventFactory.createEvent(ft::WRITE_EVENT_TO_GCI, eventDto);
     event->onboardQueue();
-    std::cerr << "CgiReaderProcessor::_onBoardWriteToCgi end" << std::endl;
 }
 
 void CgiReaderProcessor::_onBoardCgiWait(pid_t pid) {
@@ -169,9 +158,7 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
     ft::shared_ptr<Channel> channel) {
     ft::shared_ptr<CgiChannel> cgiChannel = ft::make_shared<CgiChannel>();
     pid_t pid;
-    std::cerr << "CgiReaderProcessor::process" << std::endl;
     try {
-        std::cerr << "CgiReaderProcessor::process::build" << std::endl;
         cgiChannel->build();
     }
     catch (const std::exception &e) {
@@ -183,30 +170,22 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
         throw std::runtime_error("fork error");
     }
     else if (pid == 0) {
-        std::cerr << "CgiReaderProcessor::process::child" << std::endl;
         _handleCgiProcess(cgiChannel, client, virtualServerManager, channel);
     }
     else {
         //parent
-        std::cerr << "CgiReaderProcessor::process::parent" << std::endl;
         cgiChannel->_closeCgiSideFd();
         try {
-            std::cerr << "CgiReaderProcessor::process::parent::onBoardReadFromCgi st" << std::endl;
-            std::cerr << "fd server read: " << cgiChannel->getPipFd(e_server_read) << std::endl;
+
             _onBoardReadFromCgi(cgiChannel->getPipFd(e_server_read), client);
-            std::cerr << "CgiReaderProcessor::process::parent::onBoardWriteToCgi end" << std::endl;
             if (client->getRequest()->getBodySize() > 0) {
-                std::cerr << "fd server write: " << cgiChannel->getPipFd(e_server_write) << std::endl;
                 _onBoardWriteToCgi(cgiChannel->getPipFd(e_server_write), client);
-                std::cerr << "CgiReaderProcessor::process::parent::onBoardWriteToCgi" << std::endl;
             }
             else {
                 cgiChannel->destroy(e_server_write);
             }
             _onBoardCgiWait(pid);
             _onBoardGateWayTimeout(pid);
-            std::cerr << "CgiReaderProcessor::process::parent::onBoardCgiWait" << std::endl;
-            std::cerr << "CgiReaderProcessor::process::parent::closeServerSideFd" << std::endl;
             // cgiChannel->_setNonBlockServerSideFd();
         }
         
@@ -222,13 +201,10 @@ e_pattern_Process_result CgiReaderProcessor::process(ft::shared_ptr
 e_pattern_Process_result CgiReaderProcessor::querryCanSending(ft::shared_ptr
     <VirtualServerManager> virtualServerManager,
     ft::shared_ptr<Client> client) {
-        std::cerr << "CgiReaderProcessor::querryCanSending" << std::endl;
     (void)virtualServerManager;
     ft::shared_ptr<HttpResponse> response = client->getResponse();
     if (response->getCgiSync() == e_cgi_reading_done) {
-        std::cerr << "CgiReaderProcessor::querryCanSending::e_cgi_reading_done" << std::endl;
         return SUCCESS;
     }
-    std::cerr << "CgiReaderProcessor::querryCanSending::WAITING" << std::endl;
     return WAITING;
 }

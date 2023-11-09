@@ -24,7 +24,6 @@ void ReadEvent::_onboardRead(Event *event, int fd) {
     1, NULL, 0, NULL) == -1) {
         throw (KqueueError());
     }
-    std::cerr << "ReadEvent::_onboardRead end" << std::endl;
 }
 
 void ReadEvent::_offboardRead(Event *event, int fd) {

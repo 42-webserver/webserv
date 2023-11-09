@@ -15,7 +15,7 @@ class EventQueue {
 		WRITE_SET
 	};
 	private:
-		static const int	MAX_EVENTS = 2;
+		static const int	MAX_EVENTS = 1024;
 		static EventQueue	*_instance;
 
 	private:

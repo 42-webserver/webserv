@@ -12,17 +12,10 @@ bool NormalBodyHandler::handleBody(std::vector<char> &buffer)
 {
 	ssize_t contentLength = this->_request->getContentLength();
 	// int writeSize = contentLength - this->_readBodySize;
-	// std::cerr << "normal -- contentLength: " << contentLength << std::endl;
 	writeInMemory(buffer);
-		std::cerr << "normal -- contentLength: " << contentLength << std::endl;
-	std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
-	// std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
 	if (contentLength <= this->_readBodySize) {
-		// std::cerr << "normal -- contentLength <= this->_readBodySize" << std::endl;
 		return true;
 	}
-	// std::cerr << "normal -- contentLength: " << contentLength << std::endl;
-	// std::cerr << "normal -- this->_readBodySize: " << this->_readBodySize << std::endl;
 	return false;
 }
 
@@ -56,7 +49,6 @@ void NormalBodyHandler::writeInMemory(std::vector<char> &buffer)
 		this->_readBodySize += n;
 	}
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
-	// std::cerr << "normal -- readBuffer.size(): " << readBuffer.size() << std::endl;
 	if (readBuffer.size() > 0)
 	{
 		n = this->_request->insertBody();

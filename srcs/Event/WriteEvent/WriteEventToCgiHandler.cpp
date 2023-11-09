@@ -9,10 +9,7 @@ void WriteEventToCgiHandler::handleEvent(Event& event){
     ft::shared_ptr<Client> client = writeEventToCgi->getClient();
     ft::shared_ptr<IoReadAndWriteBuffer> buffer = client->getRequest()->getBody();
 
-    ssize_t size = buffer->size();
-    ssize_t writeSize = buffer->ioWrite(writeEventToCgi->getChannel()->getFd());
-    std::cerr << "WriteEventToCgiHandler::handleEvent: size: " << size << std::endl;
-    std::cerr << "WriteEventToCgiHandler::handleEvent: writeSize: " << writeSize << std::endl;
+    buffer->ioWrite(writeEventToCgi->getChannel()->getFd());
     if (buffer->size() == 0) {
         writeEventToCgi->offboardQueue();
     }

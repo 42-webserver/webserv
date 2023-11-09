@@ -19,18 +19,13 @@ void CgiChannel::build(void) {
 	for (int i = 0; i < Count; i += 2) {
 		try {
 			if (pipe(pipeFd) == -1) {
-			// Logger::getInstance().error("Fail to create pipe");
 				throw std::runtime_error("Fail to create pipe");
 			}		
-			// std::cerr << "pipeFd[Read]: " << pipeFd[Read] << std::endl;
-			// std::cerr << "pipeFd[Write]: " << pipeFd[Write] << std::endl;
 			this->_pipeFd[i] = pipeFd[Read];
 			this->_pipeFd[i + 1] = pipeFd[Write];
 		}
 		catch (const std::exception &e) {
-			// Logger::getInstance().error(e.what());
-			std::cerr << e.what() << std::endl;
-			// exit(1);
+			Logger::getInstance().error(e.what());
 			throw (InternalServerErrorException());
 		}
 	}

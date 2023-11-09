@@ -8,7 +8,6 @@ Event(new ListenEventHandler()), SingleStreamable(channel), _virtualServerManage
 ListenEvent::~ListenEvent(void) {}
 
 void	ListenEvent::callEventHandler(void) { 
-	std::cerr << "ListenEvent::callEventHandler" << std::endl;
 	this->_event_handler->handleEvent(*this); }
 void	ListenEvent::onboardQueue(void){
 	EventQueue	&event_queue = EventQueue::getInstance();

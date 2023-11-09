@@ -12,31 +12,26 @@ WriteEventToClientHandler::~WriteEventToClientHandler() {}
 // 파일을 보내는걸 완료했는데 클라이언트가 죽은 경우 고려 
 void WriteEventToClientHandler::_partialSending(ft::shared_ptr<HttpResponse> response, ft::shared_ptr<Client> client,
 WriteEventToClient *curEvent){
-	std::cerr << "WriteEventToClientHandler::_partialSending" << std::endl;
 	e_send_To_client_status sendingStatus = response->sendToClient(curEvent->getChannel());
 	
 	switch (sendingStatus)
 	{
 	case sendingDone:{
-		std::cerr << "WriteEventToClientHandler::_partialSending: sendingDone" << std::endl;
 			client->clearResponseAndRequest();
 		}
 		break;
 	case clientClose: {
-		std::cerr << "WriteEventToClientHandler::_partialSending: clientClose" << std::endl;
 		curEvent->offboardQueue();
 		client->clientKill();
 		break;
 	}
 	case sending:
-		std::cerr << "WriteEventToClientHandler::_partialSending: sending" << std::endl;
 		break;
 	default:
 		break;
 	}
 }
 void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, WriteEventToClient *curEvent){
-	std::cerr << "WriteEventToClientHandler::_handleRemain" << std::endl;
 	ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
 	ft::shared_ptr<VirtualServerManager> vsm = curEvent->getVirtualServerManger();
 	PatternType patternType = client->getPatternType(vsm);
@@ -60,25 +55,20 @@ void WriteEventToClientHandler::_handleRemain(ft::shared_ptr<Client> client, Wri
 		// 		throw (KqueueError());
 		// 	}
 		// }
-		std::cerr << "WriteEventToClientHandler::_handleRemain end" << std::endl;
 	}
 	catch (HttpException &e) {
-		std::cerr << "WriteEventToClientHandler::_handleRemain: " << e.what() << std::endl;
 		_hanldeErrorPage(client, curEvent, e.getStatusCode());
 	}
 	catch (std::exception &e) {
-		std::cerr << "WriteEventToClientHandler::_handleRemain: " << e.what() << std::endl;
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
 }
 
 void WriteEventToClientHandler::_handleEnd(WriteEventToClient *curEvent){
-	std::cerr << "WriteEventToClientHandler::_handleEnd" << std::endl;
 	curEvent->offboardQueue();
 }
 
 void WriteEventToClientHandler::_handleWait(void){
-	std::cerr << "WriteEventToClientHandler::_handleWait" << std::endl;
 	// curEvent->offboardQueue();
 	//do nothing
 }
@@ -109,7 +99,6 @@ void WriteEventToClientHandler::_hanldeErrorPage(ft::shared_ptr<Client> client, 
 }
 
 void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteEventToClient *curEvent){
-	std::cerr << "WriteEventToClientHandler::_handleNew" << std::endl;
 	if (client->getRequest()->isError()){
 		client->allocateResponse();
 		ft::shared_ptr<HttpRequest> curRequest = client->getRequest();
@@ -126,33 +115,27 @@ void WriteEventToClientHandler::_handleNew(ft::shared_ptr<Client> client, WriteE
 		PatternType patternType = client->getPatternType(vsm);
 		PatternProcessor patternProcessor(vsm, patternType, client);
 
-		std::cerr << "patternType: " << patternType << std::endl;
 		if (patternType == CGI_READ)
 			patternProcessor.injectChannel(curEvent->getChannel());
 		if (patternProcessor.process() == SUCCESS)
 			_partialSending(client->getResponse(), client, curEvent);
 	}
 	catch (HttpException &e) {
-		std::cerr << "WriteEventToClientHandler1::_handleNew: " << e.what() << std::endl;
 		Logger::getInstance().error(e.what());
 		_hanldeErrorPage(client, curEvent, e.getStatusCode());
 	}
 	catch (std::exception &e) {
-		std::cerr << "WriteEventToClientHandler2::_handleNew: " << e.what() << std::endl;
 		Logger::getInstance().error(e.what());
 		_hanldeErrorPage(client, curEvent, INTERNAL_SERVER_ERROR);
 	}
-	std::cerr << "WriteEventToClientHandler::_handleNew end" << std::endl;
 }
 
 void WriteEventToClientHandler::handleEvent(Event &event){
-		std::cerr << "WriteEventToClientHandler::handleEvent" << std::endl;
 
 	WriteEventToClient *curEvent = static_cast<WriteEventToClient *>(&event);
 	ft::shared_ptr<Client> client = curEvent->getClient();
 	e_handle_status handleStatus = _queryHandleStatus(client);
 
-	// std::cerr << "handleStatus: " << handleStatus << std::endl;
 	switch (handleStatus)
 	{
 	case e_handle_remain:

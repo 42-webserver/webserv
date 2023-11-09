@@ -22,20 +22,11 @@ void	Channel::setNonBlocking(void){
 	int flags;
 
 	int fd = this->getFd();
-	// std::cerr << "setNonBlocking getFd" << std::endl;
 	if ((flags = fcntl(fd, F_GETFL, 0)) == -1) {
-		// Logger::getInstance().error("Fail to control client");
-		std::cerr << "Fail to control client" << std::endl;
-		perror("fcntl1");
-		exit(1);
 		throw (FailToNonBlockException());
 	}
 
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		// Logger::getInstance().error("Fail to control client");
-		std::cerr << "Fail to control client" << std::endl;
-		perror("fcntl2");
-		exit(1);
 		throw (FailToNonBlockException());
 	}
 }

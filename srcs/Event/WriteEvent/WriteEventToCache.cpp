@@ -13,7 +13,6 @@ void WriteEventToCache::_syncWithCache(ft::shared_ptr<SyncroWriteWithCache> sync
 }
 
 void WriteEventToCache::callEventHandler(void) {
-    std::cerr << "WriteEventToCache::callEventHandler()" << std::endl;
     this->_event_handler->handleEvent(*this);
 }
 

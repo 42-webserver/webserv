@@ -2,28 +2,7 @@
 #include <Buffer/Buffer/IoOnlyReadBuffer.hpp>
 
 //debug
-void HttpRequest::_printBody()
-{
-	std::cerr << "Method: " << this->_method << std::endl;
-	std::cerr << "Uri: " << this->_uri << std::endl;
-	std::cerr << "Version: " << this->_version << std::endl;
-	std::cerr << "Protocol: " << this->_protocol << std::endl;
-	std::cerr << "BodyType: " << this->_bodyType << std::endl;
-	std::cerr << "Body: " << std::endl;
-	this->_body->printBuffer();
-	
-	
-	std::cerr << std::endl;
-	std::cerr << "Headers: " << std::endl;
-	for (std::multimap<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++)
-		std::cerr << it->first << ": " << it->second << std::endl;
-	std::cerr << "Queries: " << std::endl;
-	for (std::map<std::string, std::string>::const_iterator it = this->_queries.begin(); it != this->_queries.end(); it++)
-		std::cerr << it->first << ": " << it->second << std::endl;
-	std::cerr << "Cookies: " << std::endl;
-	for (std::map<std::string, std::string>::const_iterator it = this->_cookies.begin(); it != this->_cookies.end(); it++)
-		std::cerr << it->first << ": " << it->second << std::endl;
-}
+
 
 
 
