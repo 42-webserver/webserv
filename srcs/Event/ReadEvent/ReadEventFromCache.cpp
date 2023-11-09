@@ -13,12 +13,10 @@ void ReadEventFromCache::_syncWithCache(ft::shared_ptr<SyncroReadWithCache> sync
 }
 
 void ReadEventFromCache::callEventHandler(void) {
-    std::cerr << "ReadEventFromCache::callEventHandler" << std::endl;
     this->_event_handler->handleEvent(*this);
 }
 
 void ReadEventFromCache::onboardQueue(void) {
-    std::cerr << "ReadEventFromCache::onboardQueue" << std::endl;
     try {
         this->getChannel()->setNonBlocking();
         this->_onboardRead(this, this->getFd());
@@ -35,7 +33,6 @@ void ReadEventFromCache::onboardQueue(void) {
 }
 
 void ReadEventFromCache::offboardQueue(void) {
-    std::cerr << "ReadEventFromCache::offboardQueue" << std::endl;
     try {
         this->_offboardRead(this, this->getFd());
     }

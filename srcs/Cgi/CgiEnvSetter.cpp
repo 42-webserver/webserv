@@ -86,22 +86,13 @@ void CharArray::_dealloc() {
 //EnvpManager
 EnvpManager::EnvpManager(const std::map<std::string, std::string>& env) :
 _size(env.size()), _envp(_size) {
-        std::cerr << "EnvpManager::EnvpManager" << std::endl;
-        // _size = env.size();
-        // _envp = ft::shared_ptr<char*>(new char*[_size + 1]);
+
         for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); ++it) {
-            // std::cerr << it->first << " " << it->second << std::endl;
             std::string envString = it->first + "=" + it->second;
             _envp.insert(envString);
         }
-        std::cerr << "EnvpManager::EnvpManager::NULL" << std::endl;
-        std::cerr << "EnvpManager::EnvpManager::NULL::start" << std::endl;
-        // for (int i = 0; i < _envp.size(); ++i) {
-        //     std::cerr << _envp[i] << std::endl;
-        // }
         if (_envp[_envp.size()] != NULL)
             throw std::runtime_error("EnvpManager::EnvpManager::NULL::end");
-        std::cerr << "EnvpManager::EnvpManager::NULL::end" << std::endl;
 }
 
 EnvpManager::~EnvpManager() {
@@ -122,7 +113,6 @@ CgiEnvSetter& CgiEnvSetter::getInstance(){
 
 const std::map<std::string, std::string>& CgiEnvSetter::getEnv(ft::shared_ptr<Client> client,
     ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm){
-        std::cerr << "CgiEnvSetter::getEnv" << std::endl;
     _env.clear();
     _setDefaultEnv(client, channel, vsm);
     std::string method = client->getRequest()->getMethod();

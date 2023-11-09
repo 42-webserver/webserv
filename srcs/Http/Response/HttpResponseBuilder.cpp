@@ -75,7 +75,6 @@ const char *DirectoryException::what() const throw() {
 // }
 std::string HttpResponseBuilder::_makeContentTypeHeader(std::string indexingPath){
     
-    std::cerr << "HttpResponseBuilder::_makeContentTypeHeader: indexingPath = " << indexingPath << std::endl;
     if (indexingPath[indexingPath.size() - 1] == '/')
         throw DirectoryException();
         

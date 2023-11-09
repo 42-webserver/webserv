@@ -99,23 +99,17 @@ ssize_t  Logger::getBufferSize(void) const {
 
 void	Logger::_onBoardLogEvent(const AccessKey &accessKey) {
 	(void)accessKey;
-	std::cerr << "onBoardLogEvent" << std::endl;
 	EventFactory& eventFactory = EventFactory::getInstance();
 
 	EventDto eventDto(this->_buffer, DEFAULT_LOG_FILE_NAME, "a+");
-	std::cerr << "eventDto" << std::endl;
 	Event* event = NULL;
 	try {
 		event = eventFactory.createEvent(ft::FILE_WRITE_EVENT, eventDto);
 	}
 	catch(std::exception &e) {
-		std::cerr << e.what() << std::endl;
-		std::cerr << "log can't work log file open error" << std::endl;
 		return ;
 	}
-	std::cerr << "event" << std::endl;
 	event->onboardQueue();
-	std::cerr << "onBoardLogEvent end" << std::endl;
 }
 
 void	Logger::log( const std::string& message) {

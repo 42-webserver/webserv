@@ -9,14 +9,13 @@ ReadEventFromClient::ReadEventFromClient(ft::shared_ptr<Channel> channel,
 	{}
 ReadEventFromClient::~ReadEventFromClient(void) {}
 void	ReadEventFromClient::callEventHandler(void) { 
-	std::cerr << "ReadEventFromClient::callEventHandler()" << std::endl;
 
-	this->_event_handler->handleEvent(*this); }
+	this->_event_handler->handleEvent(*this); 
+	}
 void	ReadEventFromClient::onboardQueue() {
 	int			fd = this->getFd();
 	Event		*event = this;
 	
-		std::cerr << "ReadEventFromClient::onboardQueue()" << std::endl;
 
 	try {
 		this->getChannel()->setNonBlocking();
@@ -30,12 +29,10 @@ void	ReadEventFromClient::onboardQueue() {
 }
 void	ReadEventFromClient::offboardQueue() {
 
-	std::cerr << "ReadEventFromClient::offboardQueue()" << std::endl;
 	try {
 		this->_client->removeClientEventQueueState(Read);
 		this->_offboardRead(this, this->getFd());
 		//To do: check this
-		std::cerr << "ReadEventFromClient::offboardQueue() end" << std::endl;
 	} catch (KqueueError &e) {
 		throw (KqueueError());
 	}

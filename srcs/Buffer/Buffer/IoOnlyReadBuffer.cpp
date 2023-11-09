@@ -4,7 +4,6 @@ IoOnlyReadBuffer::IoOnlyReadBuffer() : BaseBuffer(), IoReadable(), _head(ft::Opt
 IoOnlyReadBuffer::~IoOnlyReadBuffer() {
 }
 IoOnlyReadBuffer& IoOnlyReadBuffer::getInstance() {
-    std::cerr << "IoOnlyReadBuffer::getInstance()" << std::endl;
     if (_instance == NULL) {
         try {
         _instance = new IoOnlyReadBuffer();

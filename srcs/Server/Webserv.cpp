@@ -26,7 +26,6 @@ bool	Webserv::run(const Config &config) {
 		//exit(0);
 	} catch (const std::exception &e) {
 		Logger::getInstance().error(e.what());
-		std::cerr << "Webserv::run() catch" << std::endl;
 		throw (FailToRunException());
 	}
 
@@ -42,9 +41,7 @@ bool	Webserv::run(const Config &config) {
 
 		for (int i=0; i<event_length; i++) {
 			event_data = EventQueue::getInstance().getEventData(i);
-			std::cerr << "event_data->callEventHandler()" << std::endl;
 			event_data->callEventHandler();
-			std::cerr << "event_data->callEventHandler() end" << std::endl;
 		}
 	}
 	return (true);

@@ -6,7 +6,6 @@ CgiKillEventHandler::CgiKillEventHandler(void) {}
 CgiKillEventHandler::~CgiKillEventHandler(void) {}
 
 void CgiKillEventHandler::handleEvent(Event &event) {
-    std::cerr << "CgiKillEventHandler::handleEvent" << std::endl;
     CgiKillEvent *cgiKillEvent = static_cast<CgiKillEvent *>(&event);
     pid_t cgiPid = cgiKillEvent->getCgiPid();
     
@@ -14,15 +13,12 @@ void CgiKillEventHandler::handleEvent(Event &event) {
     int status;
     if (waitpid(cgiPid, &status, WNOHANG) == 0) {
         // 여전히 실행 중인 프로세스를 강제 종료합니다.
-        std::cerr << "CgiKillEventHandler::handleEvent: cgiPid = " << cgiPid << " is still running." << std::endl;
         if (kill(cgiPid, SIGKILL) == 0) {
-            std::cerr << "CgiKillEventHandler::handleEvent: kill success" << std::endl;
             Logger::getInstance().error("cgi gateway timeout: kill success");
         }
         event.offboardQueue();
     } else {
         // 프로세스가 이미 종료되었으므로, 이벤트 큐에서만 제거합니다.
-        std::cerr << "CgiKillEventHandler::handleEvent: cgiPid = " << cgiPid << " has already exited." << std::endl;
         event.offboardQueue();
     }
 }

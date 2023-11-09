@@ -47,12 +47,9 @@ std::string RouterUtils::findPriorityPathWithIndex(ft::shared_ptr<VirtualServerM
         ft::shared_ptr<HttpRequest> req){
     std::string uri = req->getUri();
 
-    std::cerr << "here? : " << uri << std::endl;
     std::string root = _findRoot(vsm, req);
-    std::cerr << "root : " << root << std::endl;
     Alias alias = _findAlias(vsm, req);
     std::string path = _makePath(root, alias, uri);
-    std::cerr << "path : " << path << std::endl;
     if (path[path.size() - 1] == '/') {
         return _findIndex(vsm, req, path);
     }
@@ -104,9 +101,7 @@ ssize_t RouterUtils::findMaxBodySize(ft::shared_ptr<VirtualServerManager> vsm, f
     if (it == serverElement.end())
         //Todo: check this 80mb
         return 1024 * 1024 * 50;
-    // std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum() << std::endl;
-    // std::cerr << "findMaxBodySize : " << ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getUnit() << std::endl;
-    // exit(1);
+
     int num = ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getNum();
     char unit = ft::static_pointer_cast<ClientMaxBodySizeElement>(it->second)->getUnit();
     ssize_t size = num;
@@ -191,15 +186,7 @@ bool RouterUtils::isMethodAllowed(ft::shared_ptr<VirtualServerManager> vsm, ft::
     ft::shared_ptr<AllowMethodElement> allowMethodsElem = ft::static_pointer_cast<AllowMethodElement>(allowMethodsConfElem);
     if (allowMethodsElem.get() == NULL)
         return method.compare(HTTP_METHOD::GET) == 0;
-        // std::cerr << "allowMethodsElem->getFlag() : " << allowMethodsElem->getFlag() << std::endl;
-    // if (allowMethodsElem->getFlag() == M_GET && method.compare(HTTP_METHOD::GET) == 0)
-    //     return true;
-    // if (allowMethodsElem->getFlag() == M_POST && method.compare(HTTP_METHOD::POST) == 0)
-    //     return true;
-    // if (allowMethodsElem->getFlag() == M_PUT && method.compare(HTTP_METHOD::PUT) == 0)
-    //     return true;
-    // if (allowMethodsElem->getFlag() == M_DELETE && method.compare(HTTP_METHOD::DELETE) == 0)
-    //     return true;
+       
     if (allowMethodsElem->isTurnOnMethod(method))
         return true;
     return false;
@@ -211,18 +198,13 @@ bool RouterUtils::isRedirection(ft::shared_ptr<VirtualServerManager> vsm, ft::sh
 
     // /안끝나는데  디렉토리면 redirect 
     // Todo : 일단 뗌질로 해놓음
-    // std::cerr << "is in uri " << uri << std::endl;
     if (uri[uri.size() - 1] != '/') {
-        // std::cerr << "is in uri " << uri << std::endl;
         req->setUri(uri + "/");
-        std::cerr << req->getUri() << std::endl;
         std::string fullPath = findPath(vsm, req);
-        // std::cerr << "is in fullpath IN REDIRECT : " << fullPath << std::endl;
         req->setUri(uri.substr(0, uri.size()));
         if (FileManager::isDirectory(fullPath))
             return true;
     }
-    // std::cerr << "is in uri going to find location : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     if (locationTrieElement.get() == NULL)
@@ -277,7 +259,6 @@ ft::shared_ptr<HttpRequest> req, ft::shared_ptr<VirtualServerManager> vsm){
     std::vector<std::string> indexList = indexElem->getUris();
     for (std::vector<std::string>::iterator it = indexList.begin(); it != indexList.end(); it++){
         std::string indexPath = path + *it;
-        std::cerr << "find indexPath : " << indexPath << std::endl;
         if (FileManager::isFileExists(indexPath))
             return indexPath;
     }
@@ -313,7 +294,6 @@ std::string RouterUtils::_findIndex(ft::shared_ptr<VirtualServerManager> vsm, ft
     ft::shared_ptr<LocationTrieElement> locationTrieElement = _findLocationTrieElement(targetServer);
     ft::shared_ptr<LocationElement> locationElement = ft::shared_ptr<LocationElement>();
     if (locationTrieElement.get() != NULL)
-        std::cerr << "locationTrieElement.get() != NULL" << std::endl;
         locationElement = _findLocation(locationTrieElement, req->getUri());
 
     try { 
@@ -400,7 +380,6 @@ ft::shared_ptr<ReturnElement> RouterUtils::findRedirectUri(ft::shared_ptr<Virtua
     std::string uri = req->getUri();
     std::string host = req->getHost();
 
-    std::cerr << "in findRedirectUri : " << uri << std::endl;
     ft::shared_ptr<VirtualServer> targetServer = _findVirtualServer(vsm, req);
     ServerElement serverElement = targetServer->getServerElement();
     ServerElement::iterator it = serverElement.find(ServerElement::KEY::LOCATION_TRIE);

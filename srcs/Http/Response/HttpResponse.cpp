@@ -182,15 +182,12 @@ e_send_To_client_status HttpResponse::_sendBigToClient(ft::shared_ptr<Channel> c
 	}
 	else {
 		try {
-			std::cerr << "HttpResponse::_sendBigToClient: " << this->_BigSizeBuffer->size() << std::endl;
 			this->_BigSizeBuffer->ioWrite(clientChannel->getFd());
 		}
 		catch (DisconnectionException &e) {
-			std::cerr << "HttpResponse::_sendBigToClient: DisconnectionException" << std::endl;
 			return clientClose;
 		}
 		catch (std::exception &e) {
-			std::cerr << "HttpResponse::_sendBigToClient: std::exception" << std::endl;
 			throw ;
 		}
 		if (this->_BigSizeBuffer->size() == 0)
@@ -207,11 +204,9 @@ e_send_To_client_status HttpResponse::sendToClient(ft::shared_ptr<Channel> clien
 		// exit(1);
 	}
 	if (this->_responseSize == NormalSize) {
-		std::cerr << "HttpResponse::sendToClient: NormalSize" << std::endl;
 		return this->_sendNormalToClient(clientChannel);
 	}
 	else {
-		std::cerr << "HttpResponse::sendToClient: BigSize" << std::endl;
 		return this->_sendBigToClient(clientChannel);
 	}
 }

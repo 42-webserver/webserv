@@ -54,19 +54,16 @@ const RequestParseState &HttpRequestParser::parseRequest(ft::shared_ptr<VirtualS
 	return _state;
 }
 void HttpRequestParser::handleStartLineState() {
-	std::cerr << "handleStartLineState" << std::endl;
 	if (_buffer.empty())
 		return;
 	std::vector<char>::iterator find = std::search(_buffer.begin(), _buffer.end(), _crlfPattern.begin(), _crlfPattern.end());
 	if (find == _buffer.end()) {
 		this->_state = START_LINE;
-		std::cerr << "handleStartLineState -- return" << std::endl;
 		return;
 	}
 	_httpRequest->setStartLine(std::string(_buffer.begin(), find));
 	_buffer.erase(_buffer.begin(), find + _crlfPatternSize);
 	this->_state = HEADERS;
-	std::cerr << "handleStartLineState -- this->_state: " << _getDebugString(this->_state) << std::endl;
 }
 
 // void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> vsm) {
@@ -95,7 +92,6 @@ void HttpRequestParser::handleStartLineState() {
 void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> vsm) {
     if (_buffer.empty())
         return;
-	std::cerr << "handleHeaderState" << std::endl;
     std::vector<std::string> headers;
     std::vector<char>::iterator start = _buffer.begin();
     std::vector<char>::iterator end = _buffer.end();
@@ -126,11 +122,9 @@ void HttpRequestParser::handleHeaderState(ft::shared_ptr<VirtualServerManager> v
         changeStateToBody(vsm);
     else {
         this->_state = HEADERS;
-		std::cerr << "handleHeaderState -- this->_state: " << _getDebugString(this->_state) << std::endl;
     }
 }
 void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> vsm){
-	std::cerr << "changeStateToBody" << std::endl;
 	this->_state = BODY;
 	ssize_t clientMaxBodySize = RouterUtils::findMaxBodySize(vsm, this->_httpRequest);
 	injectionHandler();
@@ -146,7 +140,6 @@ void HttpRequestParser::changeStateToBody(ft::shared_ptr<VirtualServerManager> v
 		this->_httpRequest->setError(REQUEST_ENTITY_TOO_LARGE);
 		this->_state = FINISH;
 	}
-	std::cerr << "changeStateToBody -- this->_state: " << _getDebugString(this->_state) << std::endl;
 
 }
 
@@ -159,7 +152,6 @@ void HttpRequestParser::injectionHandler(){
 			std::string boundary = it->second.substr(it->second.find("boundary=") + 9);
 			this->_bodyHandler = ft::make_shared<MultipartRequestBodyHandler>(boundary, this->_httpRequest);
 			this->_httpRequest->setBodyType(MULTIPART_FORM_DATA);
-			std::cerr << "multipart -- exit injectionHandler" << std::endl;
 			return;
 		}
 	}
@@ -180,16 +172,13 @@ void HttpRequestParser::handleBodyState() {
 	IoOnlyReadBuffer &readBuffer = IoOnlyReadBuffer::getInstance();
 
 //Todo: check this
-	std::cerr << "handleBodyState" << std::endl;
 	if (_buffer.empty() && readBuffer.size() == 0){
-		std::cout << "buffer body  empty" << std::endl;
 		//fix : daegulee
 		int contentLength = this->_httpRequest->getContentLength();
 		if (contentLength == 0)
 			this->_state = FINISH;
 		if (contentLength == noContentLength && NORMAL == this->_httpRequest->getBodyType()){
 			this->_state = FINISH;
-			std::cerr << "handleBodyState -- this->_state: " << _getDebugString(this->_state) << std::endl;
 		}
 		return;
 	}
@@ -203,7 +192,6 @@ void HttpRequestParser::handleBodyState() {
 	}
 	if(result)
 		this->_state = FINISH;
-	std::cerr << "handleBodyState -- this->_state: " << _getDebugString(this->_state) << std::endl;
 }
 
 

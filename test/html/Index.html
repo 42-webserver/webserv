@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Request Example</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  label, input, textarea, button {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  button {
+    margin-top: 20px;
+  }
+  #responseDisplay {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Send HTTP Requests</h1>
+
+  <label for="url">URL:</label>
+  <input type="text" id="url" value="/your-endpoint">
+
+  <label for="bodyContent">Body Content:</label>
+  <textarea id="bodyContent" rows="10"></textarea>
+
+  <label for="fileInput">Or upload a file:</label>
+  <input type="file" id="fileInput">
+
+  <button onclick="sendPost()">Send POST</button>
+  <button onclick="sendPut()">Send PUT</button>
+  <button onclick="sendDelete()">Send DELETE</button>
+
+  <div id="responseDisplay"></div>  <!-- 응답 표시 영역 -->
+</div>
+
+<script>
+  async function sendRequest(method) {
+    var url = document.getElementById('url').value;
+    var bodyContent = document.getElementById('bodyContent').value;
+    var fileInput = document.getElementById('fileInput').files[0];
+
+    var body;
+    if (fileInput) {
+      body = fileInput;
+    } else {
+      body = bodyContent;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: fileInput ? { 'Content-Type': 'application/octet-stream' } : { 'Content-Type': 'text/plain' },
+        body: method === 'GET' || method === 'DELETE' ? null : body
+      });
+      
+      const responseText = await response.text();
+      const status = response.status;
+      const locationHeader = response.headers.get('Location');
+      
+      document.getElementById('responseDisplay').innerHTML = 
+        'Status: ' + status + '<br>' +
+        'Location Header: ' + locationHeader + '<br>' +
+        'Response Body: ' + responseText;
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  function sendPost() {
+    sendRequest('POST');
+  }
+
+  function sendPut() {
+    sendRequest('PUT');
+  }
+
+  function sendDelete() {
+    sendRequest('DELETE');
+  }
+</script>
+
+</body>
+</html>

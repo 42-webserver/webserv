@@ -11,9 +11,7 @@ void ReadEventFromFileHandler::handleEvent(Event &event) {
     if (n < 0)
         throw std::runtime_error("ReadEventFromFileHandler::handleEvent: ioRead error");
     this->_offset += n;
-    std::cerr << "ReadEventFromFileHandler::handleEvent: _offset: " << this->_offset << std::endl;
     if (this->_offset == this->_fileSize) {
-        std::cerr << "ReadEventFromFileHandler::handleEvent: _offset == _fileSize" << std::endl;
         readEventFromFile->offboardQueue();
     }
 }

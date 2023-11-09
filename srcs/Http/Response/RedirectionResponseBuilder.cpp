@@ -14,17 +14,14 @@ void RedirectionResponseBuilder::buildResponseHeader(std::vector<char> &buffer) 
     if (uri[uri.size() - 1] != '/') {
         _setStatusCode(MOVED_PERMANENTLY);
         locationHeader = "Location: " + this->getClient()->getRequest()->getUri() + "/";
-        std::cerr << "RedirectionResponseBuilder::buildResponseHeader: " << locationHeader << std::endl;
     }
     else {
         ft::shared_ptr<ReturnElement> returnElement = RouterUtils::findRedirectUri(this->_vsm, this->getClient()->getRequest());
         if (returnElement.get() == NULL) {
-            std::cerr << "RedirectionResponseBuilder::buildResponseHeader: NotFoundException" << std::endl;
             throw NotFoundException();
         }
         _setStatusCode((HttpStatusCode)returnElement->getCode());
         locationHeader = "Location: " + returnElement->getUri();
-        std::cerr << "RedirectionResponseBuilder::buildResponseHeader: " << locationHeader << std::endl;
     }
     _allocContentLength(ContentLength::e_content_length_header, 0);
     _buildDefaultResponseHeader(buffer);

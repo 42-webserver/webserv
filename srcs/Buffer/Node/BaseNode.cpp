@@ -60,13 +60,7 @@
 
 //Mode
 
-//debug
-void BaseNode::_printBuffer() {
-	std::cerr << "buffer: " << std::endl;
-	for (std::vector<char>::iterator it = _buffer.begin(); it != _buffer.end(); it++)
-		std::cerr << *it;
-	std::cerr << std::endl;
-}
+
 
 BaseNode::AccessKey::AccessKey() {}
 BaseNode::AccessKey::~AccessKey() {}
@@ -158,13 +152,8 @@ void BaseNode::reset(AccessKey key) {
 	(void)key;
 	_size = 0;
 	_eraseSize = 0;
-	std::cerr << "reset" << std::endl;
 }
 ssize_t BaseNode::ioRead(int fd){
-	// static Mode _assertReadMode(false, true, true, true, true);
-
-	// ft::Assert::_assert(!_mode.checkMode(_assertReadMode), "Buffer Node Invariant is destroyed (read has created with assert)");
-	// _mode.setReadMode();
 	ssize_t n = read(fd, _buffer.data() + _size, _capacity - _size);
 	if (n < 0) {
 		Logger::getInstance().error("read error");
@@ -206,12 +195,7 @@ ssize_t BaseNode::ioWrite(int fd) {
     // _mode.setWriteMode();
 
     ssize_t n = write(fd, _buffer.data() + _eraseSize, _size);
-	std::cerr << "baseNode::ioWrite: ";
-	std::cerr << "n: " << n << std::endl;
-	std::cerr << "eraseSize: " << _eraseSize << std::endl;
-	std::cerr << "size: " << _size << std::endl;
-	// for (std::vector<char>::iterator it = _buffer.begin() + _eraseSize; it != _buffer.begin() + _size + _eraseSize; it++)
-	// 	std::cerr << *it;
+
     if (isSIGPIPE) {
         isSIGPIPE = false; // 플래그 재설정
         throw DisconnectionException();
@@ -232,10 +216,7 @@ ssize_t ft::_ioWrite(int fd, std::vector<char>& buffer, ssize_t start) {
 	// _mode.setWriteMode();
 	
 	ssize_t n = write(fd, buffer.data() + start, buffer.size() - start);
-	std::vector<char>::iterator end = buffer.begin() + buffer.size() - start;
-	std::cerr << "ft::_ioWrite: ";
-	for (std::vector<char>::iterator it = buffer.begin() + start; it != end; it++)
-		std::cerr << *it;
+
 	if (isSIGPIPE) {
 		isSIGPIPE = false; // 플래그 재설정
 		throw DisconnectionException();

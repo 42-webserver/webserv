@@ -23,7 +23,6 @@ void GetResponseBuilder::buildResponseHeader(std::vector<char> &buffer) {
     std::string filePath = RouterUtils::findPriorityPathWithIndex(this->_vsm, this->getClient()->getRequest());
     struct stat fileStat;
     if (FileManager::getFileInfo(filePath, fileStat) == NotExistFile) {
-        std::cerr << "GetResponseBuilder::buildResponseHeader: file not found" << std::endl;
         throw NotFoundException();
     }
     _allocContentLength(ContentLength::e_content_length_header, FileManager::getFileSize(filePath));

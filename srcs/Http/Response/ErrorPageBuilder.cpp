@@ -34,7 +34,6 @@ std::string ErrorPageBuilder::getErrorPage(HttpStatusCode status) {
     errorPage += "</body>";
     errorPage += "</html>";
 
-    std::cerr << "ErrorPageBuilder::getErrorPage: size = " << errorPage.size() << std::endl;
 	return errorPage;
 }
 
@@ -43,11 +42,9 @@ void ErrorPageBuilder::buildResponseHeader(std::vector<char> &buffer) {
     ft::shared_ptr<HttpResponse> response = this->getClient()->getResponse();
    std::string errorPage = getErrorPage(this->_status);
 
-    std::cerr << "buffer size: " << buffer.size() << std::endl;
 	response->setResponseSize(NormalSize, HttpResponse::AccessKey());
     std::string ContenTypeHeader = "Content-Type : text/html";
     _setStatusCode(this->_status);
-    std::cerr << "ErrorPageBuilder::buildResponseHeader:  errorPage.size() = " << errorPage.size() << std::endl;
     _allocContentLength(ContentLength::e_content_length_header, errorPage.size());
     _buildDefaultResponseHeader(buffer);
 

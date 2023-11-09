@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGI Request Test</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  .container {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  label, input, textarea, button, iframe {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  iframe {
+    height: 200px; /* Adjust height as per requirement */
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>CGI Request Test</h1>
+
+  <label for="uri">URI:</label>
+  <input type="text" id="uri" placeholder="Enter the endpoint URI" value="http://localhost/cgi-bin/script.py">
+
+  <label for="bodyContent">Body Content:</label>
+  <textarea id="bodyContent" rows="4"></textarea>
+
+  <button onclick="sendRequest('POST')">Send POST</button>
+  <button onclick="sendRequest('PUT')">Send PUT</button>
+  <button onclick="sendRequest('DELETE')">Send DELETE</button>
+
+  <pre id="responseDisplay"></pre> <!-- 응답 표시 영역 -->
+  <iframe id="responseFrame"></iframe> <!-- 페이지 로딩 영역 -->
+</div>
+
+<script>
+  async function sendRequest(method) {
+    const uri = document.getElementById('uri').value;
+    if (!uri) {
+      alert('Please enter the URI.');
+      return;
+    }
+    const bodyContent = document.getElementById('bodyContent').value;
+
+    try {
+      const response = await fetch(uri, {
+        method: method,
+        headers: { 'Content-Type': 'text/plain' },
+        body: method !== 'GET' && method !== 'DELETE' ? bodyContent : null
+      });
+
+      const contentType = response.headers.get('Content-Type');
+
+      if (contentType && contentType.includes('text/plain')) {
+        let responseText = await response.text();
+        document.getElementById('responseDisplay').textContent = 
+          `Status: ${response.status}\n\nResponse: ${responseText}`;
+        document.getElementById('responseFrame').style.display = 'none';
+      } else if (contentType && contentType.includes('text/html')) {
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
+        document.getElementById('responseDisplay').textContent = '';
+        document.getElementById('responseFrame').style.display = 'block';
+        document.getElementById('responseFrame').src = objectURL;
+      } else {
+        document.getElementById('responseDisplay').textContent = 
+          `Status: ${response.status}\n\nResponse type not supported for display.`;
+        document.getElementById('responseFrame').style.display = 'none';
+      }
+    } catch (error) {
+      document.getElementById('responseDisplay').textContent = 'Error: ' + error.message;
+      document.getElementById('responseFrame').style.display = 'none';
+    }
+  }
+</script>
+
+</body>
+</html>
+

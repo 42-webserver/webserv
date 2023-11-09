@@ -14,12 +14,10 @@ void WriteEventToFile::_syncWithFileTable(ft::shared_ptr<SyncroFileDataAndWriter
 }
 
 void WriteEventToFile::callEventHandler(void) {
-    std::cerr << "WriteEventToFile::callEventHandler()" << std::endl;
     this->_event_handler->handleEvent(*this);
 }
 void WriteEventToFile::onboardQueue(void) {
 
-    std::cerr << "WriteEventToFile::onboardQueue()" << std::endl;
     try {
         this->getChannel()->setNonBlocking();
         this->_onboardWrite(this, this->getFd());
@@ -33,7 +31,6 @@ void WriteEventToFile::onboardQueue(void) {
 }
 void WriteEventToFile::offboardQueue(void) {
 
-    std::cerr << "WriteEventToFile::offboardQueue()" << std::endl;
     try {
         this->_offboardWrite(this, this->getFd());
     }
