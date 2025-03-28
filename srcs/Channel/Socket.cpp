@@ -1,6 +1,7 @@
 #include "../../incs/Channel/Socket.hpp"
 #include <new>
-#include <sys/_endian.h>
+// #include <sys/_endian.h>
+#include <arpa/inet.h>      // 네트워크 관련 함수 사용
 #include <memory.h>
 #include <sstream>
 #include "../../incs/Log/Logger.hpp"

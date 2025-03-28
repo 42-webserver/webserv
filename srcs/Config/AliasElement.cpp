@@ -10,7 +10,7 @@ AliasElement::AliasElement(std::ifstream &infile) throw(std::exception) {
 		throw (FailToParseException());
 	}
 }
-AliasElement::AliasElement(const AliasElement &ref): _path(ref._path) {}
+AliasElement::AliasElement(const AliasElement &ref): ConfigElement(ref), _path(ref._path) {}
 AliasElement::~AliasElement(void) {}
 AliasElement	&AliasElement::operator=(const AliasElement &rhs) {
 	if (this != &rhs) {
@@ -23,12 +23,12 @@ AliasElement	&AliasElement::operator=(const AliasElement &rhs) {
 bool	AliasElement::_parse(std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) && (token.back() != ';')) {
+	if (!(infile >> token) && (!token.empty() && token[token.size() - 1] != ';')) {
 		throw (InvalidSyntaxException());
 	}
 	this->_path = token.substr(0, token.length() - 1);
 	//TO do: check this
-	if (this->_path.back() != '/') {
+	if (!this->_path.empty() && this->_path[this->_path.size() - 1] != '/') {
 		this->_path.push_back('/');
 	}
 	if (this->_pathIsNotValid(this->_path)) {

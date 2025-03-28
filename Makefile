@@ -128,7 +128,7 @@ SRCS =	main.cpp \
 		Hash/Etag.cpp \
 		Cgi/CgiEnvSetter.cpp \
 		
-OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
+OBJS_SUBDIR = 	${OBJS_DIR}/Cgi \
 				${OBJS_DIR}/Config \
 				${OBJS_DIR}/Event \
 				${OBJS_DIR}/Event/EventBase \
@@ -142,10 +142,10 @@ OBJS_SUBDIR = 	${OBJS_DIR}/CGI \
 				${OBJS_DIR}/Channel \
 				${OBJS_DIR}/Http \
 				${OBJS_DIR}/Http/handler \
-				${OBJS_DIR}/Http/parser \
-				${OBJS_DIR}/Http/request \
-				${OBJS_DIR}/Http/response \
-				${OBJS_DIR}/Http/utils \
+				${OBJS_DIR}/Http/Parser \
+				${OBJS_DIR}/Http/Request \
+				${OBJS_DIR}/Http/Response \
+				${OBJS_DIR}/Http/Utils \
 				${OBJS_DIR}/Http/test \
 				${OBJS_DIR}/Log \
 				${OBJS_DIR}/route \

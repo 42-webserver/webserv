@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <Hash/sha256.h>
+#include <cstdio>
 
 void generate_etag(const std::string& filepath, std::string& etag) {
     struct stat file_stat;

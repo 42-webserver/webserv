@@ -193,13 +193,13 @@ std::map<std::string, std::string> HttpRequest::getCookies()
 
 ssize_t HttpRequest::getContentLength()
 {
-	std::multimap<std::string, std::string>::iterator it;
+    std::multimap<std::string, std::string>::iterator it;
 
-	//fix : daegulee
-	it = this->_headers.find("Content-Length");
-	if (it == this->_headers.end())
-		return noContentLength;
-	return std::stoul(it->second);
+    // fix : daegulee
+    it = this->_headers.find("Content-Length");
+    if (it == this->_headers.end())
+        return noContentLength;
+    return static_cast<ssize_t>(std::strtoul(it->second.c_str(), NULL, 10));
 }
 
 std::vector<MultipartRequest> & HttpRequest::getMultipartRequests()

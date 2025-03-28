@@ -1,27 +1,36 @@
 #ifndef EVENTQUEUE_HPP
 # define EVENTQUEUE_HPP
 
-# include <exception>
+#include <exception>
+
+#if defined(__APPLE__) || defined(__FreeBSD__)
 # include <sys/event.h>
-# include "../EventBase/Event.hpp"
-# include <vector>
+typedef struct kevent event_t;
+#elif defined(__linux__)
+# include <sys/epoll.h>
+typedef struct epoll_event event_t;
+#else
+# error "Unsupported platform for event handling"
+#endif
 
-
+#include "../EventBase/Event.hpp"
+#include <vector>
 
 class EventQueue {
 	public:
 		enum EventSetIndex {
-		READ_SET,
-		WRITE_SET
-	};
-	private:
-		static const int	MAX_EVENTS = 1024;
-		static EventQueue	*_instance;
+			READ_SET,
+			WRITE_SET
+		};
 
 	private:
-		int				_fd;
-		struct kevent	_ev_set;
-		struct kevent	_ev_list[MAX_EVENTS];
+		static const int MAX_EVENTS = 1024;
+		static EventQueue *_instance;
+
+	private:
+		int _fd;
+		event_t _ev_set;
+		event_t _ev_list[MAX_EVENTS];
 
 	private:
 		EventQueue(void);
@@ -30,21 +39,21 @@ class EventQueue {
 		~EventQueue(void);
 
 	public:
-		static EventQueue	&getInstance(void);
+		static EventQueue &getInstance(void);
 		void deleteInstance(void);
 
 	public:
-		int		pullEvents(void);
-		bool	pushEvent(Event *event);
-		bool	popEvent(Event *event);
+		int pullEvents(void);
+		bool pushEvent(Event *event);
+		bool popEvent(Event *event);
 
 	public:
-		int				getEventFd(int idx) const;
-		int				getEventQueueFd(void) const;
-		Event			*getEventData(int idx) const;
-		struct kevent	*getEventList(void);
-		struct kevent 	*getEventSet(void);
-		struct kevent	*getEventSetElementPtr();
+		int getEventFd(int idx) const;
+		int getEventQueueFd(void) const;
+		Event *getEventData(int idx) const;
+		event_t *getEventList(void);
+		event_t *getEventSet(void);
+		event_t *getEventSetElementPtr(void);
 
 	public:
 		class FailToCreateException: public std::exception {
@@ -67,6 +76,5 @@ class EventQueue {
 				virtual const char *what() const throw();
 		};
 };
-
 
 #endif

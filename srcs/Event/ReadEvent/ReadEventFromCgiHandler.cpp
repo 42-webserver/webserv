@@ -2,6 +2,7 @@
 #include <Buffer/Node/NormalNode.hpp>
 #include <Event/ReadEvent/ReadEventFromCgi.hpp>
 #include <Http/Parser/ParsePatternMatcher.hpp>
+#include <sstream> // std::stringstream 사용을 위해 추가
 ReadEventFromCgiHandler::ReadEventFromCgiHandler()
 : _buffer(NormalNode::_sizeNormal), _state(e_parse_cgi_start),
 _realSize(0), _firstInCgiBody(true), _capacity(NormalNode::_sizeNormal) {}
@@ -122,7 +123,7 @@ void ReadEventFromCgiHandler::_handleCgiHeader(ReadEventFromCgi& event){
     _parseToBody();
 }
 
-void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
+void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event) {
     ft::shared_ptr<HttpResponse> response = event.getClient()->getResponse();
 
     if (_firstInCgiBody) {
@@ -142,18 +143,18 @@ void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
     ft::shared_ptr<IoReadAndWriteBuffer> bigSizeBuffer = response->getBigSizeBuffer(HttpResponse::AccessKey());
 
     if (_contentLength > 0) {
-        // _previousReadSize += bigSizeBuffer->ioRead(event.getFd(), contentLength - _previousReadSize);
-        ssize_t n = bigSizeBuffer->ioReadToRemainigSize(event.getFd(), _contentLength - _previousReadSize);
+        // 캐스팅을 통해 음수 검사가 가능한 ssize_t 타입으로 처리
+        ssize_t n = static_cast<ssize_t>(bigSizeBuffer->ioReadToRemainigSize(event.getFd(), _contentLength - _previousReadSize));
         if (n == 0) {
             this->_state = e_parse_cgi_end;
             _contentLength = _previousReadSize;
             _handleCgiEnd(event);
-            return ;
+            return;
         }
         if (n < 0) {
             _callErrorPageBuilder(event);
             event.offboardQueue();
-            return ;
+            return;
         }
         _previousReadSize += n;
         if (_previousReadSize == _contentLength) {
@@ -163,11 +164,6 @@ void ReadEventFromCgiHandler::_handleCgiBody(ReadEventFromCgi& event){
     else {
         int fd = event.getFd();
         size_t n = bigSizeBuffer->ioRead(fd);
-        if (n < 0) {
-            _callErrorPageBuilder(event);
-            event.offboardQueue();
-            return ;
-        }
         if (n == 0) {
             this->_state = e_parse_cgi_end;
         }
@@ -184,12 +180,15 @@ void ReadEventFromCgiHandler::_buildCgiResponseHeader(ReadEventFromCgi& event){
 
 }   
 
-void ReadEventFromCgiHandler::_handleCgiEnd(ReadEventFromCgi& event){
+void ReadEventFromCgiHandler::_handleCgiEnd(ReadEventFromCgi& event) {
     ft::shared_ptr<Client> client = event.getClient();
     ft::shared_ptr<HttpResponse> response = client->getResponse();
     ft::shared_ptr<IoReadAndWriteBuffer> bigSizeBuffer = response->getBigSizeBuffer(HttpResponse::AccessKey());
     if (_contentLength < 0) {
-        _headers["Content-Length"] = std::to_string(bigSizeBuffer->size());
+        // std::to_string 대신 stringstream를 사용
+        std::stringstream ss;
+        ss << bigSizeBuffer->size();
+        _headers["Content-Length"] = ss.str();
     }
 
     _buildCgiResponseHeader(event);

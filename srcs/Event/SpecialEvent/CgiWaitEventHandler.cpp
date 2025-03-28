@@ -1,5 +1,6 @@
 #include <Event/SpecialEvent/CgiWaitEventHandler.hpp>
 #include <Event/SpecialEvent/CgiWaitEvent.hpp>
+#include <wait.h>
 CgiWaitEventHandler::CgiWaitEventHandler(void) {}
 CgiWaitEventHandler::~CgiWaitEventHandler(void) {}
 

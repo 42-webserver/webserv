@@ -27,7 +27,7 @@ LocationElement::LocationElement(std::ifstream &infile) throw(std::exception): _
 	}
 }
 LocationElement::~LocationElement(void) {}
-LocationElement::LocationElement(const LocationElement &ref): _element_map(ref._element_map) {}
+LocationElement::LocationElement(const LocationElement &ref): ConfigElement(ref), _element_map(ref._element_map) {}
 LocationElement	&LocationElement::operator=(const LocationElement &rhs) {
 	if (this != &rhs) {
 		this->~LocationElement();

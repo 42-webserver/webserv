@@ -1,5 +1,6 @@
 #include "../../../incs/Buffer/Node/BaseNode.hpp"
 #include <Log/Logger.hpp>
+#include <signal.h>
 
 // //Mode
 // Mode::Mode() : mode(0) {}
