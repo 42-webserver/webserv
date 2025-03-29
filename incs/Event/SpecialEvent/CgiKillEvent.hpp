@@ -3,7 +3,9 @@
 
 #include <Event/EventBase/Event.hpp>
 #include <Event/SpecialEvent/CgiKillEventHandler.hpp>
-
+#if defined(__linux__)
+  #include <sys/timerfd.h>
+#endif
 class CgiKillEvent: public Event {
     public:
         CgiKillEvent(pid_t cgiPid);
@@ -20,6 +22,9 @@ class CgiKillEvent: public Event {
 
     private:
         pid_t _cgiPid;
+    #if defined(__linux__)
+        int _timerFd; // Linux 전용: timerfd를 저장하기 위한 멤버
+    #endif
 };
 
 #endif

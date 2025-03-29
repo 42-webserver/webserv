@@ -2,6 +2,7 @@
 #include "../../incs/Log/Logger.hpp"
 
 ErrorPageElement::ErrorPageElement(void) {}
+
 ErrorPageElement::ErrorPageElement(std::ifstream &infile) throw(std::exception) {
 	try {
 		this->_parse(infile);
@@ -10,9 +11,13 @@ ErrorPageElement::ErrorPageElement(std::ifstream &infile) throw(std::exception) 
 		throw (FailToParseException());
 	}
 }
-ErrorPageElement::ErrorPageElement(const ErrorPageElement &ref): _code(ref._code), _uri(ref._uri) {}
+
+ErrorPageElement::ErrorPageElement(const ErrorPageElement &ref)
+    : ConfigElement(ref), _code(ref._code), _uri(ref._uri) {}
+
 ErrorPageElement::~ErrorPageElement(void) {}
-ErrorPageElement	&ErrorPageElement::operator=(const ErrorPageElement &rhs) {
+
+ErrorPageElement &ErrorPageElement::operator=(const ErrorPageElement &rhs) {
 	if (this != &rhs) {
 		this->~ErrorPageElement();
 		new (this) ErrorPageElement(rhs);
@@ -20,13 +25,13 @@ ErrorPageElement	&ErrorPageElement::operator=(const ErrorPageElement &rhs) {
 	return (*this);
 }
 
-bool	ErrorPageElement::_parse(std::ifstream &infile) throw(std::exception) {
-	std::string	token;
+bool ErrorPageElement::_parse(std::ifstream &infile) throw(std::exception) {
+	std::string token;
 
 	if (!(infile >> token)) {
 		throw (InvalidSyntaxException());
 	}
-	for (size_t i=0; i<token.length(); i++) {
+	for (size_t i = 0; i < token.length(); i++) {
 		if (!std::isdigit(token[i])) {
 			throw (InvalidArgumentException());
 		}
@@ -35,7 +40,7 @@ bool	ErrorPageElement::_parse(std::ifstream &infile) throw(std::exception) {
 	if (this->_codeIsNotValid(this->_code)) {
 		throw (InvalidArgumentException());
 	}
-	if (!(infile >> token) && (token.back() != ';')) {
+	if (!(infile >> token) || token.empty() || token[token.size() - 1] != ';') {
 		throw (InvalidSyntaxException());
 	}
 	this->_uri = token.substr(0, token.length() - 1);
@@ -45,17 +50,35 @@ bool	ErrorPageElement::_parse(std::ifstream &infile) throw(std::exception) {
 	return (true);
 }
 
-bool	ErrorPageElement::_codeIsNotValid(int code) { return (code < 100 || 600 <= code); }
-bool	ErrorPageElement::_uriIsNotValid(const std::string &uri) { return (uri[0] != '/'); }
+bool ErrorPageElement::_codeIsNotValid(int code) { 
+	return (code < 100 || 600 <= code); 
+}
 
-int					ErrorPageElement::getCode(void) const { return (this->_code); }
-const std::string	&ErrorPageElement::getUri(void) const { return (this->_uri); }
+bool ErrorPageElement::_uriIsNotValid(const std::string &uri) { 
+	return (uri[0] != '/'); 
+}
 
-const char	*ErrorPageElement::FailToParseException::what(void) const throw() { return ("ErrorPageElement: Fail to Parse"); }
-const char	*ErrorPageElement::InvalidSyntaxException::what(void) const throw() { return ("ErrorPageElement: Invalid Syntax"); }
-const char	*ErrorPageElement::InvalidArgumentException::what(void) const throw() { return ("ErrorPageElement: Invalid Argument"); }
+int ErrorPageElement::getCode(void) const { 
+	return (this->_code); 
+}
 
-std::ostream	&operator<<(std::ostream &os, const ErrorPageElement &rhs) {
+const std::string &ErrorPageElement::getUri(void) const { 
+	return (this->_uri); 
+}
+
+const char *ErrorPageElement::FailToParseException::what(void) const throw() { 
+	return ("ErrorPageElement: Fail to Parse"); 
+}
+
+const char *ErrorPageElement::InvalidSyntaxException::what(void) const throw() { 
+	return ("ErrorPageElement: Invalid Syntax"); 
+}
+
+const char *ErrorPageElement::InvalidArgumentException::what(void) const throw() { 
+	return ("ErrorPageElement: Invalid Argument"); 
+}
+
+std::ostream &operator<<(std::ostream &os, const ErrorPageElement &rhs) {
 	os << rhs.getCode() << " " << rhs.getUri();
 	return (os);
 }

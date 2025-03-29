@@ -2,7 +2,7 @@
 #include <Http/Response/HttpResponse.hpp>
 #include <Client/Client.hpp>
 #include <Http/Utils/RouterUtils.hpp>
-
+#include <sstream>
 ContentLength::ContentLength(ssize_t contentLength) : _transferEncodingHeader(""), _contentLength(contentLength), _contentLengthHeaderType(e_content_length_header)
 {
 }
@@ -192,27 +192,25 @@ void HttpResponseBuilder::_buildEssentialResponseHeader(std::vector<char> &buffe
     std::string header;
     if (this->_statusCode.has_value() == false)
         throw std::runtime_error("HttpResponseBuilder::_buildResponseHeader: statusCode is not set");
-    
-    // oss << "HTTP/1.1 " << this->_statusCode.value() << " " << 
-    // HttpStatus::getReasonPhrase(this->_statusCode.value()) << "\r\n";
 
-    header += "HTTP/1.1 " + std::to_string(this->_statusCode.value()) + " " +
-    HttpStatus::getReasonPhrase(this->_statusCode.value()) + "\r\n";
-    // oss << this->_serverHeader << "\r\n";
+    // 숫자 변환을 위해 stringstream 사용
+    std::stringstream ss;
+    ss << this->_statusCode.value();
+    header += "HTTP/1.1 " + ss.str() + " " +
+              HttpStatus::getReasonPhrase(this->_statusCode.value()) + "\r\n";
     header += this->_serverHeader + "\r\n";
-    // oss << this->_dateHeader << "\r\n";
     header += this->_dateHeader + "\r\n";
-    if ((this->_client->isClientDie() == true && this->_client->isFinalRequest())
-    || this->_client->getRequest()->getHeader("Connection") == "close")
+
+    if ((this->_client->isClientDie() == true && this->_client->isFinalRequest()) ||
+         this->_client->getRequest()->getHeader("Connection") == "close")
         this->_connectionHeader = "Connection: close";
     else
         this->_connectionHeader = "Connection: keep-alive";
-    // oss << this->_connectionHeader << "\r\n";
+
     header += this->_connectionHeader + "\r\n";
     if (this->_client->isClientDie() == false)
-        // oss << this->_KeepAliveHeader << "\r\n";
         header += this->_KeepAliveHeader + "\r\n";
-    // std::string header = oss.str();
+
     buffer.insert(buffer.end(), header.begin(), header.end());
 }
 ft::shared_ptr<Client> HttpResponseBuilder::getClient(void)

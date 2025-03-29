@@ -21,7 +21,7 @@ AllowMethodElement::AllowMethodElement(std::ifstream &infile) throw(std::excepti
 		throw (FailToParseException());
 	}
 }
-AllowMethodElement::AllowMethodElement(const AllowMethodElement &ref): _flag(ref._flag) {}
+AllowMethodElement::AllowMethodElement(const AllowMethodElement &ref): ConfigElement(ref), _flag(ref._flag) {} 
 AllowMethodElement::~AllowMethodElement(void) {}
 AllowMethodElement	&AllowMethodElement::operator=(const AllowMethodElement &rhs) {
 	if (this != &rhs) {
@@ -36,7 +36,7 @@ bool	AllowMethodElement::_parse(std::ifstream &infile) throw(std::exception) {
 	MethodMap::const_iterator	it;
 
 	while (infile >> token) {
-		if (token.back() == ';') {
+		if (!token.empty() && token[token.size() - 1] == ';') {
 			token = token.substr(0, token.length() - 1);
 			if ((it = AllowMethodElement::_method_map.find(token)) == AllowMethodElement::_method_map.end()) {
 				throw (InvalidArgumentException());

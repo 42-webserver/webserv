@@ -4,8 +4,11 @@
 #include "../../incs/Log/Logger.hpp"
 #include <fstream>
 
-Config::Config(void): _file_name(""), _element_ptr_vector(ElementPtrVector()) {}
-Config::Config(const char *file_name): _file_name(file_name), _element_ptr_vector(ElementPtrVector()) {
+Config::Config(void)
+    : _file_name(""), _element_ptr_vector(ElementPtrVector()) {}
+
+Config::Config(const char *file_name)
+    : _file_name(file_name), _element_ptr_vector(ElementPtrVector()) {
 	try {
 		this->_parse();
 	} catch (const std::exception &e) {
@@ -14,9 +17,12 @@ Config::Config(const char *file_name): _file_name(file_name), _element_ptr_vecto
 	}
 }
 
-Config::Config(const Config &ref): _file_name(ref._file_name), _element_ptr_vector(ref._element_ptr_vector) {}
+Config::Config(const Config &ref)
+    : _file_name(ref._file_name), _element_ptr_vector(ref._element_ptr_vector) {}
+
 Config::~Config(void) {}
-Config	&Config::operator=(const Config &rhs) {
+
+Config &Config::operator=(const Config &rhs) {
 	if (this != &rhs) {
 		this->~Config();
 		new (this) Config(rhs);
@@ -24,18 +30,19 @@ Config	&Config::operator=(const Config &rhs) {
 	return (*this);
 }
 
-const Config::ElementPtrVector	&Config::getElementPtrVector(void) const { return (this->_element_ptr_vector); }
+const Config::ElementPtrVector &Config::getElementPtrVector(void) const {
+	return (this->_element_ptr_vector);
+}
 
-bool	Config::_parse(void) throw(std::exception) {
-	std::ifstream	infile;
-	std::string		token;
+bool Config::_parse(void) throw(std::exception) {
+	std::ifstream infile(this->_file_name.c_str());
+	std::string token;
 
 	if (Config::invalidFileName(this->_file_name)) {
 		throw (InvalidFileNameException());
 	}
 	
-	infile = std::ifstream(this->_file_name);
-	if (infile.is_open() == false) {
+	if (!infile.is_open()) {
 		throw (FailToOpenFileException());
 	}
 	
@@ -43,14 +50,16 @@ bool	Config::_parse(void) throw(std::exception) {
 		if (token != "server") {
 			throw (InvalidSyntaxException());
 		}
-		this->_element_ptr_vector.push_back(ConfigElementFactory::getInstance().create("server", infile));
+		this->_element_ptr_vector.push_back(
+			ConfigElementFactory::getInstance().create("server", infile)
+		);
 	}
 
 	if (this->_element_ptr_vector.size() == 0) {
 		throw (InvalidArgumentException());
 	}
 
-	if (infile.eof() == false) {
+	if (!infile.eof()) {
 		throw (InvalidSyntaxException());
 	}
 
@@ -61,7 +70,7 @@ bool	Config::_parse(void) throw(std::exception) {
 	return (true);
 }
 
-bool	Config::invalidFileName(const std::string &file_name) {
+bool Config::invalidFileName(const std::string &file_name) {
 	if (file_name.length() <= 5) {
 		return (true);
 	}
@@ -73,8 +82,22 @@ bool	Config::invalidFileName(const std::string &file_name) {
 	return (false);
 }
 
-const char	*Config::FailToParseException::what() const throw() { return ("Config: Fail to parse"); }
-const char	*Config::InvalidFileNameException::what() const throw() { return ("Config: Invalid file name"); }
-const char	*Config::FailToOpenFileException::what() const throw() { return ("Config: Fail to open file"); }
-const char	*Config::InvalidSyntaxException::what() const throw() { return ("Config: Invalid syntax"); }
-const char	*Config::InvalidArgumentException::what() const throw() { return ("Config: Invalid argument"); }
+const char *Config::FailToParseException::what() const throw() {
+	return ("Config: Fail to parse");
+}
+
+const char *Config::InvalidFileNameException::what() const throw() {
+	return ("Config: Invalid file name");
+}
+
+const char *Config::FailToOpenFileException::what() const throw() {
+	return ("Config: Fail to open file");
+}
+
+const char *Config::InvalidSyntaxException::what() const throw() {
+	return ("Config: Invalid syntax");
+}
+
+const char *Config::InvalidArgumentException::what() const throw() {
+	return ("Config: Invalid argument");
+}

@@ -4,31 +4,34 @@
 #include <sstream>
 
 const VirtualServerManager::EtcHostsMap 			VirtualServerManager::ETC_HOSTS_MAP = VirtualServerManager::_initEtcHostsMap();
-VirtualServerManager::EtcHostsMap 					VirtualServerManager::_initEtcHostsMap(void) {
-	std::map<ServerName, Ip>	ret;
-	std::ifstream				infile;
-	std::string					line;
+VirtualServerManager::EtcHostsMap VirtualServerManager::_initEtcHostsMap(void) {
+    std::map<ServerName, Ip> ret;
+    
+    // 수정: ifstream 객체를 생성자 초기화 방식으로 생성 (대입 연산자 사용 안 함)
+    std::ifstream infile("/etc/hosts"); // 기존: infile = std::ifstream("/etc/hosts");
+    
+    std::string line;
 
-	infile = std::ifstream("/etc/hosts");
-	if (infile.is_open()) {
-		while (std::getline(infile, line)) {
-			std::istringstream	iss;
-			Ip					ip;
-			ServerName			server_name;
+    if (infile.is_open()) {
+        while (std::getline(infile, line)) {
+            // 수정: 빈 문자열 체크 추가 (line이 비어있을 경우에도 안전하게 처리)
+            if (line.empty() || line[0] == '#') {
+                continue;
+            }
 
-			if (line[0] == '#') {
-				continue ;
-			}
+            // 수정: istringstream 객체도 생성자 초기화 방식으로 생성
+            std::istringstream iss(line); // 기존: iss = std::istringstream(line);
+            Ip ip;
+            ServerName server_name;
 
-			iss = std::istringstream(line);
-			iss >> ip;
-			while (iss >> server_name) {
-				ret.insert(std::make_pair(server_name, ip));
-			}
-		}
-		infile.close();
-	}
-	return (ret);
+            iss >> ip;
+            while (iss >> server_name) {
+                ret.insert(std::make_pair(server_name, ip));
+            }
+        }
+        infile.close();
+    }
+    return ret;
 }
 
 VirtualServerManager::VirtualServerManager(void): _ip_map(), _server_name_map() {}

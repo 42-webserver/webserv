@@ -10,7 +10,7 @@ CgiPassElement::CgiPassElement(std::ifstream &infile) throw(std::exception) {
 		throw (FailToParseException());
 	}
 }
-CgiPassElement::CgiPassElement(const CgiPassElement &ref): _flag(ref._flag) {}
+CgiPassElement::CgiPassElement(const CgiPassElement &ref): ConfigElement(ref), _flag(ref._flag) {}
 CgiPassElement::~CgiPassElement(void) {}
 CgiPassElement	&CgiPassElement::operator=(const CgiPassElement &rhs) {
 	if (this != &rhs) {
@@ -23,7 +23,7 @@ CgiPassElement	&CgiPassElement::operator=(const CgiPassElement &rhs) {
 bool	CgiPassElement::_parse(std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) && (token.back() != ';')) {
+	if (!(infile >> token) && (!token.empty() && token[token.size() - 1] != ';')) {
 		throw (InvalidSyntaxException());
 	}
 	this->_flag = token.substr(0, token.length() - 1);

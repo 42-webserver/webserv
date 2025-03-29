@@ -10,7 +10,7 @@ AutoIndexElement::AutoIndexElement(std::ifstream &infile) throw(std::exception) 
 		throw (FailToParseException());
 	}
 }
-AutoIndexElement::AutoIndexElement(const AutoIndexElement &ref): _flag(ref._flag) {}
+AutoIndexElement::AutoIndexElement(const AutoIndexElement &ref): ConfigElement(ref), _flag(ref._flag) {}
 AutoIndexElement::~AutoIndexElement(void) {}
 AutoIndexElement	&AutoIndexElement::operator=(const AutoIndexElement &rhs) {
 	if (this != &rhs) {
@@ -23,7 +23,7 @@ AutoIndexElement	&AutoIndexElement::operator=(const AutoIndexElement &rhs) {
 bool	AutoIndexElement::_parse(std::ifstream &infile) throw(std::exception) {
 	std::string	token;
 
-	if (!(infile >> token) && (token.back() != ';')) {
+	if (!(infile >> token) && (!token.empty() && token[token.size() - 1] != ';')) {
 		throw (InvalidSyntaxException());
 	}
 	token = token.substr(0, token.length() - 1);

@@ -8,7 +8,7 @@ ReadEventFromCacheHandler::~ReadEventFromCacheHandler(void) {}
 void ReadEventFromCacheHandler::handleEvent(Event &event) {
     ReadEventFromCache *readEventFromCache = static_cast<ReadEventFromCache *>(&event);
     
-    size_t n;
+    ssize_t n;
     n = read(readEventFromCache->getFd(), _content.data() + _offset, _content.size() - _offset);
     if (n < 0) return ;
     _offset += n;

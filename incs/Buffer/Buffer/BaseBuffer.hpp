@@ -1,5 +1,6 @@
 #ifndef BASEBUFFER_HPP
 # define BASEBUFFER_HPP
+#include <sys/types.h>
 
 #include <cstddef>
 #include <iostream>

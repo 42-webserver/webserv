@@ -5,6 +5,7 @@
 # include <Event/SpecialEvent/LogEvent.hpp>
 # include <cstdio>
 # include <Channel/FileStream.hpp>
+#include <iomanip>
 
 Logger::AccessKey::AccessKey(void) {}
 Logger::AccessKey::~AccessKey(void) {}

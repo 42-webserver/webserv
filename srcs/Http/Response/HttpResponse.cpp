@@ -151,7 +151,7 @@ HttpResponse::~HttpResponse()
 
 e_send_To_client_status HttpResponse::_sendNormalToClient(ft::shared_ptr<Channel> clientChannel)
 {	
-	size_t n;
+	ssize_t n;
 	try {
 		n = ft::_ioWrite(clientChannel->getFd(), this->_NormalCaseBuffer, this->_previousWriteSize);
 	}

@@ -1,7 +1,7 @@
 #include <Cgi/CgiEnvSetter.hpp>
 #include <Http/Utils/RouterUtils.hpp>
 #include <iostream>
-
+#include <sstream>
 CharArray::CharArray(int size) : _size(size), _data(new char*[size + 1]), _mallocSize(0) {
     std::fill_n(_data, _size + 1, static_cast<char*>(0)); // C++98-compliant NULL initialization.
 }
@@ -51,12 +51,13 @@ char* CharArray::operator[](int i) {
 //0 1 2 3
 //0 1 2 3
 void CharArray::_alloc(size_t size) {
-    if (_mallocSize >= _size + 1) {  // Check if we have reached or exceeded capacity
-        throw std::length_error("CharArray is at its capacity or invalid allocation attempted."
-        + std::to_string(_size));
+    if (_mallocSize >= _size + 1) {  
+        std::stringstream ss;
+        ss << _size;
+        throw std::length_error("CharArray is at its capacity or invalid allocation attempted. " + ss.str());
     }
     _data[_mallocSize] = new char[size];
-    std::fill_n(_data[_mallocSize], size, 0); // Fill the allocated memory with 0 (null-terminators for strings).
+    std::fill_n(_data[_mallocSize], size, 0);
     ++_mallocSize;
     if (_mallocSize == _size + 1) {
         _data[_mallocSize] = new char(1);
@@ -132,7 +133,9 @@ ft::shared_ptr<Channel> channel, ft::shared_ptr<VirtualServerManager> vsm){
     ft::shared_ptr<Socket> socket = ft::static_pointer_cast<Socket>(channel);
     ft::shared_ptr<HttpRequest> request = client->getRequest();
     _env["REMOTE_ADDR"] = socket->getClientIp();
-    _env["SERVER_PORT"] = std::to_string(vsm->getPort());
+    std::stringstream ss;
+    ss << vsm->getPort();
+    _env["SERVER_PORT"] = ss.str();
     _env["SERVER_PROTOCOL"] = "HTTP/1.1";
     _env["SERVER_SOFTWARE"] = "webserv";
     _env["SERVER_NAME"] = request->getHost();

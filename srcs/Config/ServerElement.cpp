@@ -34,7 +34,7 @@ ServerElement::ServerElement(std::ifstream &infile) throw(std::exception): _elem
 	}
 }
 ServerElement::~ServerElement(void) {}
-ServerElement::ServerElement(const ServerElement &ref): _element_map(ref._element_map) {}
+ServerElement::ServerElement(const ServerElement &ref): ConfigElement(ref), _element_map(ref._element_map) {}
 ServerElement	&ServerElement::operator=(const ServerElement &rhs) {
 	if (this != &rhs) {
 		this->~ServerElement();

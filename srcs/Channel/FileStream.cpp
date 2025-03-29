@@ -30,8 +30,9 @@ bool FileStream::ensure_directory_exists(const std::string& path) {
 
 FILE* FileStream::fopen_with_dirs(const std::string& path, const char* mode) {
     std::string filePath = path;
+    // 수정: C++98에서는 pop_back() 대신 resize()로 마지막 문자를 제거
     if (filePath[filePath.length() - 1] == '/') {
-        filePath.pop_back();
+        filePath.resize(filePath.size() - 1);
     }
     std::string directoryPath = filePath.substr(0, filePath.find_last_of('/'));
     if (!FileStream::ensure_directory_exists(directoryPath)) {
@@ -39,7 +40,6 @@ FILE* FileStream::fopen_with_dirs(const std::string& path, const char* mode) {
     }
     return fopen(filePath.c_str(), mode);
 }
-
 
 
 FileStream::FileStream(std::string path, std::string mode) {
