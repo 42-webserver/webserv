@@ -28,11 +28,10 @@ Supports multiple server blocks on different ports or hostnames in one configura
 
 
 . Within each server, multiple route locations can be defined with longest-prefix matching for efficient request routing (implemented via a trie structure for fast lookup)​
-FILE-EAOQ3MUHEKKEIT94EHNTW2.
+.
 
 **Configurable Request Limits:**  
-Allows setting a maximum client request body size per server or route to prevent abuse (e.g. client_max_body_size directive)​
-GITHUB.COM. Requests exceeding the limit are rejected with appropriate errors.
+Allows setting a maximum client request body size per server or route to prevent abuse (e.g. client_max_body_size directive)​ Requests exceeding the limit are rejected with appropriate errors.
 
 **File Uploads:**  
 Clients can upload files to the server via HTTP POST. Specific routes can be configured to accept file uploads and store them in a designated directory on the server​
@@ -50,9 +49,9 @@ Utilizes a single I/O multiplexing loop (poll, with OS-specific variants like kq
 
 **High Performance and Optimization:**  
 Built with system-level efficiency in mind. A custom buffer management system is used for network I/O to minimize syscalls and allocations, improving data throughput​
-FILE-EAOQ3MUHEKKEIT94EHNTW2. Frequently requested resources can be cached in-memory with an LRU (Least Recently Used) cache to reduce disk reads​
-FILE-EAOQ3MUHEKKEIT94EHNTW2. The routing lookup uses a Trie to achieve O(m) lookup (where m is URL length) for the best-matching location, which scales well even as configuration grows​
-FILE-EAOQ3MUHEKKEIT94EHNTW2.
+. Frequently requested resources can be cached in-memory with an LRU (Least Recently Used) cache to reduce disk reads​
+. The routing lookup uses a Trie to achieve O(m) lookup (where m is URL length) for the best-matching location, which scales well even as configuration grows​
+.
 
 **Multi-Platform Support:**  
 Designed to run on both Linux and macOS. It uses epoll on Linux and kqueue on BSD-based systems like macOS for efficient event polling, with fallbacks to poll/select for portability​
@@ -86,11 +85,11 @@ Single-threaded, asynchronous event loop architecture. All client I/O is handled
 **Data Structures:**  
 Custom-built structures and algorithms were used for performance:  
 - **Buffer** – a custom buffer class for reading/writing sockets efficiently (inspired by analyzing STL containers)​
-FILE-EAOQ3MUHEKKEIT94EHNTW2, which reduces allocations and copies during HTTP message transfer.  
+, which reduces allocations and copies during HTTP message transfer.  
 - **Trie** – used for parsing and storing the configuration of route locations, enabling quick longest-prefix match for incoming request URIs​
-FILE-EAOQ3MUHEKKEIT94EHNTW2.  
+.  
 - **LRU Cache** – caches frequently accessed files or generated responses in memory, with eviction of least-recently-used items to cap memory usage​
-FILE-EAOQ3MUHEKKEIT94EHNTW2.
+.
 
 **HTTP Parsing & Generation:**  
 The server includes an HTTP request parser that reads incoming data byte-by-byte and builds the request structure (method, URI, headers, body). It carefully follows HTTP/1.1 requirements for parsing, including handling chunked transfer encoding and connection persistence. The response generator can form proper HTTP responses (status line, headers, body) and supports content types, content-length or chunked encoding, and persistent or closed connections.
@@ -119,7 +118,7 @@ Each client connection in the server is managed by a stateful handler:
 
 .
 - **Routing:** Once a complete request is parsed, the server determines which configuration route should handle it. This is done by comparing the request URI against the route prefixes in the config. A Trie is used to efficiently find the longest prefix match, which corresponds to the most specific location block in the configuration for that request​
-FILE-EAOQ3MUHEKKEIT94EHNTW2. The route configuration provides settings like the filesystem root for that route, allowed methods, whether to generate a directory listing, and if a CGI or upload handling is required.
+. The route configuration provides settings like the filesystem root for that route, allowed methods, whether to generate a directory listing, and if a CGI or upload handling is required.
 - **Generating Response:** Based on the route and request:
   - For a static file request (e.g., GET on a regular file path), the server constructs the file path by appending the request URI to the route’s root directory. If the path is a directory and autoindex is on, it generates an HTML index of the directory. If the path is a directory and autoindex is off, it attempts to serve a default index file (e.g. index.html)​
 GITHUB.COM
